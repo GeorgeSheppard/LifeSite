@@ -1,8 +1,16 @@
-import '../styles/globals.css'
-import type { AppProps } from 'next/app'
+import Layout, { ILayoutProps } from "../components/layout";
 
-function MyApp({ Component, pageProps }: AppProps) {
-  return <Component {...pageProps} />
+export interface IMyLifeProps {
+  Component: React.JSXElementConstructor<ILayoutProps>;
+  pageProps: ILayoutProps;
 }
 
-export default MyApp
+export default function MyLife(props: IMyLifeProps) {
+  const { Component } = props;
+
+  return (
+    <Layout>
+      <Component {...props.pageProps} />
+    </Layout>
+  );
+}
