@@ -1,4 +1,6 @@
+import { ThemeProvider } from "@mui/material/styles";
 import Layout, { ILayoutProps } from "../components/layout";
+import { theme } from "./_theme";
 
 export interface IMyLifeProps {
   Component: React.JSXElementConstructor<ILayoutProps>;
@@ -9,8 +11,10 @@ export default function MyLife(props: IMyLifeProps) {
   const { Component } = props;
 
   return (
-    <Layout>
-      <Component {...props.pageProps} />
-    </Layout>
+    <ThemeProvider theme={theme}>
+      <Layout>
+        <Component {...props.pageProps} />
+      </Layout>
+    </ThemeProvider>
   );
 }
