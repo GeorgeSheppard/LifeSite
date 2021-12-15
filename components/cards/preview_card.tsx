@@ -55,12 +55,12 @@ export const previewCards: IPreviewCardProps[] = [
     filename: "Ash Pot",
     description: "A pot to hold a small succulent.",
     imageSrc: "/images/ash_pot_preview.png",
-    uuid: uuidv4(),
+    uuid: "id1sdlkfjas;ldkfjals;djf;laskdjf;l",
   },
   {
     filename: "Stand",
     description: "A stand to hold a globe.",
     imageSrc: "/images/stand_preview.jpg",
-    uuid: uuidv4(),
+    uuid: "id2sdhfalksjdhflkasjhdfkljashdflkjashl",
   },
 ];

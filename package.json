@@ -30,6 +30,7 @@
     "redux": "^4.1.2",
     "sass": "^1.45.0",
     "three": "^0.135.0",
+    "use-file-picker": "^1.4.1",
     "uuid": "^8.3.2"
   },
   "devDependencies": {
