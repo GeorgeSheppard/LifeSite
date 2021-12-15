@@ -8,18 +8,21 @@ import Badge from "@mui/material/Badge";
 import AccountCircle from "@mui/icons-material/AccountCircle";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 
+// TODO: Min height in MUI is set to 64 so don't go lower than this, make it so I can though
+export const headerHeight = 65;
+
 export default function Header() {
   return (
     <AppBar position="relative">
-      <Toolbar>
+      <Toolbar id="toolbar" sx={{ height: headerHeight }}>
         {/* TODO: Better icon */}
         <EmojiPeopleIcon sx={{ mr: 2 }} />
         {/* TODO: Better name */}
         <Typography variant="h6" color="inherit" noWrap>
           MyLife
         </Typography>
-        <Box sx={{ flexGrow: 1 }} />
-        <Box sx={{ display: "flex" }}>
+        <Box component="div" sx={{ flexGrow: 1 }} />
+        <Box component="div" sx={{ display: "flex" }}>
           <IconButton size="large" color="inherit">
             <Badge badgeContent={17} color="error">
               <NotificationsIcon />

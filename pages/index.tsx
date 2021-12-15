@@ -10,6 +10,7 @@ export default function Home(props: any) {
     <main>
       {/* Hero unit */}
       <Box
+        component="div"
         sx={{
           bgcolor: "background.paper",
           pt: 8,

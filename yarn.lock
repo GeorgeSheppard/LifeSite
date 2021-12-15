@@ -78,6 +78,13 @@
   dependencies:
     regenerator-runtime "^0.13.4"
 
+"@babel/runtime@^7.11.2", "@babel/runtime@^7.14.6":
+  version "7.16.5"
+  resolved "https://artifactory6.grabcad.net:443/artifactory/api/npm/npm-repo/@babel/runtime/-/runtime-7.16.5.tgz#7f3e34bf8bdbbadf03fbb7b1ea0d929569c9487a"
+  integrity sha1-fz40v4vbut8D+7ex6g2SlWnJSHo=
+  dependencies:
+    regenerator-runtime "^0.13.4"
+
 "@babel/types@7.15.0":
   version "7.15.0"
   resolved "https://registry.yarnpkg.com/@babel/types/-/types-7.15.0.tgz#61af11f2286c4e9c69ca8deb5f4375a73c72dcbd"
@@ -93,6 +100,16 @@
   dependencies:
     "@babel/helper-validator-identifier" "^7.15.7"
     to-fast-properties "^2.0.0"
+
+"@chevrotain/types@^9.1.0":
+  version "9.1.0"
+  resolved "https://artifactory6.grabcad.net:443/artifactory/api/npm/npm-repo/@chevrotain/types/-/types-9.1.0.tgz#689f2952be5ad9459dae3c8e9209c0f4ec3c5ec4"
+  integrity sha1-aJ8pUr5a2UWdrjyOkgnA9Ow8XsQ=
+
+"@chevrotain/utils@^9.1.0":
+  version "9.1.0"
+  resolved "https://artifactory6.grabcad.net:443/artifactory/api/npm/npm-repo/@chevrotain/utils/-/utils-9.1.0.tgz#a34ab0696f9491dee934e848984517d226356f21"
+  integrity sha1-o0qwaW+Ukd7pNOhImEUX0iY1byE=
 
 "@emotion/babel-plugin@^11.3.0":
   version "11.7.1"
@@ -455,6 +472,89 @@
   resolved "https://registry.yarnpkg.com/@popperjs/core/-/core-2.11.0.tgz#6734f8ebc106a0860dff7f92bf90df193f0935d7"
   integrity sha512-zrsUxjLOKAzdewIDRWy9nsV1GQsKBCWaGwsZQlCgr6/q+vjyZhFgqedLfFBuI9anTPEUT4APq9Mu0SZBTzIcGQ==
 
+"@react-spring/animated@~9.3.0":
+  version "9.3.1"
+  resolved "https://artifactory6.grabcad.net:443/artifactory/api/npm/npm-repo/@react-spring/animated/-/animated-9.3.1.tgz#ffc4706121e8406efeaeacb407b42b5022943b46"
+  integrity sha1-/8RwYSHoQG7+rqy0B7QrUCKUO0Y=
+  dependencies:
+    "@react-spring/shared" "~9.3.0"
+    "@react-spring/types" "~9.3.0"
+
+"@react-spring/core@~9.3.0":
+  version "9.3.1"
+  resolved "https://artifactory6.grabcad.net:443/artifactory/api/npm/npm-repo/@react-spring/core/-/core-9.3.1.tgz#b98e1dca1eb4871dec75fdab350327e8a5222865"
+  integrity sha1-uY4dyh60hx3sdf2rNQMn6KUiKGU=
+  dependencies:
+    "@react-spring/animated" "~9.3.0"
+    "@react-spring/shared" "~9.3.0"
+    "@react-spring/types" "~9.3.0"
+
+"@react-spring/rafz@~9.3.0":
+  version "9.3.1"
+  resolved "https://artifactory6.grabcad.net:443/artifactory/api/npm/npm-repo/@react-spring/rafz/-/rafz-9.3.1.tgz#8dd6a598ffea487252b75d05d199e4aca5ea9d5e"
+  integrity sha1-jdalmP/qSHJSt10F0ZnkrKXqnV4=
+
+"@react-spring/shared@~9.3.0":
+  version "9.3.1"
+  resolved "https://artifactory6.grabcad.net:443/artifactory/api/npm/npm-repo/@react-spring/shared/-/shared-9.3.1.tgz#e7f22a4b8f5fea4491fa6a24c108db5abd19ddba"
+  integrity sha1-5/IqS49f6kSR+mokwQjbWr0Z3bo=
+  dependencies:
+    "@react-spring/rafz" "~9.3.0"
+    "@react-spring/types" "~9.3.0"
+
+"@react-spring/three@^9.3.1":
+  version "9.3.1"
+  resolved "https://artifactory6.grabcad.net:443/artifactory/api/npm/npm-repo/@react-spring/three/-/three-9.3.1.tgz#91a50851639c5a88fed8f76b4e25ff388d2b24e7"
+  integrity sha1-kaUIUWOcWoj+2PdrTiX/OI0rJOc=
+  dependencies:
+    "@react-spring/animated" "~9.3.0"
+    "@react-spring/core" "~9.3.0"
+    "@react-spring/shared" "~9.3.0"
+    "@react-spring/types" "~9.3.0"
+
+"@react-spring/types@~9.3.0":
+  version "9.3.1"
+  resolved "https://artifactory6.grabcad.net:443/artifactory/api/npm/npm-repo/@react-spring/types/-/types-9.3.1.tgz#20f392ecad15a1ea6c0865ffe86ca5016c05a278"
+  integrity sha1-IPOS7K0VoepsCGX/6GylAWwFong=
+
+"@react-three/drei@^8.2.1":
+  version "8.2.1"
+  resolved "https://artifactory6.grabcad.net:443/artifactory/api/npm/npm-repo/@react-three/drei/-/drei-8.2.1.tgz#45b7503f7a727deb81309a2a8db9793569161b46"
+  integrity sha1-RbdQP3pyfeuBMJoqjbl5NWkWG0Y=
+  dependencies:
+    "@babel/runtime" "^7.11.2"
+    "@react-spring/three" "^9.3.1"
+    "@use-gesture/react" "^10.2.0"
+    detect-gpu "^3.1.28"
+    glsl-noise "^0.0.0"
+    lodash.omit "^4.5.0"
+    lodash.pick "^4.4.0"
+    react-composer "^5.0.2"
+    react-merge-refs "^1.1.0"
+    stats.js "^0.17.0"
+    three-mesh-bvh "^0.5.2"
+    three-stdlib "^2.6.1"
+    troika-three-text "^0.44.0"
+    use-asset "^1.0.4"
+    utility-types "^3.10.0"
+    zustand "^3.5.13"
+
+"@react-three/fiber@^7.0.24":
+  version "7.0.24"
+  resolved "https://artifactory6.grabcad.net:443/artifactory/api/npm/npm-repo/@react-three/fiber/-/fiber-7.0.24.tgz#f3a40326e233e4a1c95b3bb5384ff19c81412958"
+  integrity sha1-86QDJuIz5KHJWzu1OE/xnIFBKVg=
+  dependencies:
+    "@babel/runtime" "^7.13.10"
+    react-merge-refs "^1.1.0"
+    react-reconciler "^0.26.2"
+    react-three-fiber "0.0.0-deprecated"
+    react-use-measure "^2.1.1"
+    resize-observer-polyfill "^1.5.1"
+    scheduler "^0.20.2"
+    use-asset "^1.0.4"
+    utility-types "^3.10.0"
+    zustand "^3.5.1"
+
 "@rushstack/eslint-patch@^1.0.8":
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/@rushstack/eslint-patch/-/eslint-patch-1.1.0.tgz#7f698254aadf921e48dda8c0a6b304026b8a9323"
@@ -526,6 +626,16 @@
   resolved "https://registry.yarnpkg.com/@types/scheduler/-/scheduler-0.16.2.tgz#1a62f89525723dde24ba1b01b092bf5df8ad4d39"
   integrity sha512-hppQEBDmlwhFAXKJX2KnWLYu5yMfi91yazPb2l+lbJiwW+wdo1gNeRA+3RgNSO39WYX2euey41KEwnqesU2Jew==
 
+"@types/three@^0.135.0":
+  version "0.135.0"
+  resolved "https://artifactory6.grabcad.net:443/artifactory/api/npm/npm-repo/@types/three/-/three-0.135.0.tgz#db7f9d9699b60aba844fc5b2893adf6dd6811665"
+  integrity sha1-23+dlpm2CrqET8WyiTrfbdaBFmU=
+
+"@types/uuid@^8.3.3":
+  version "8.3.3"
+  resolved "https://artifactory6.grabcad.net:443/artifactory/api/npm/npm-repo/@types/uuid/-/uuid-8.3.3.tgz#c6a60686d953dbd1b1d45e66f4ecdbd5d471b4d0"
+  integrity sha1-xqYGhtlT29Gx1F5m9Ozb1dRxtNA=
+
 "@typescript-eslint/parser@^5.0.0":
   version "5.7.0"
   resolved "https://registry.yarnpkg.com/@typescript-eslint/parser/-/parser-5.7.0.tgz#4dca6de463d86f02d252e681136a67888ea3b181"
@@ -569,6 +679,28 @@
   dependencies:
     "@typescript-eslint/types" "5.7.0"
     eslint-visitor-keys "^3.0.0"
+
+"@use-gesture/core@10.2.4":
+  version "10.2.4"
+  resolved "https://artifactory6.grabcad.net:443/artifactory/api/npm/npm-repo/@use-gesture/core/-/core-10.2.4.tgz#139370223174b0589bd4b4f8ac7c0beb6ba64ba2"
+  integrity sha1-E5NwIjF0sFib1LT4rHwL62umS6I=
+
+"@use-gesture/react@^10.2.0":
+  version "10.2.4"
+  resolved "https://artifactory6.grabcad.net:443/artifactory/api/npm/npm-repo/@use-gesture/react/-/react-10.2.4.tgz#b333e91b00670785ee32e8f4f1530ac6b8894bbc"
+  integrity sha1-szPpGwBnB4XuMuj08VMKxriJS7w=
+  dependencies:
+    "@use-gesture/core" "10.2.4"
+
+"@webgpu/glslang@^0.0.15":
+  version "0.0.15"
+  resolved "https://artifactory6.grabcad.net:443/artifactory/api/npm/npm-repo/@webgpu/glslang/-/glslang-0.0.15.tgz#f5ccaf6015241e6175f4b90906b053f88483d1f2"
+  integrity sha1-9cyvYBUkHmF19LkJBrBT+ISD0fI=
+
+"@webxr-input-profiles/motion-controllers@^1.0.0":
+  version "1.0.0"
+  resolved "https://artifactory6.grabcad.net:443/artifactory/api/npm/npm-repo/@webxr-input-profiles/motion-controllers/-/motion-controllers-1.0.0.tgz#0a84533288af39d85bfe1987721035925d69be47"
+  integrity sha1-CoRTMoivOdhb/hmHchA1kl1pvkc=
 
 acorn-jsx@^5.3.1:
   version "5.3.2"
@@ -737,6 +869,13 @@ base64-js@^1.0.2:
   version "1.5.1"
   resolved "https://registry.yarnpkg.com/base64-js/-/base64-js-1.5.1.tgz#1b1b440160a5bf7ad40b650f095963481903930a"
   integrity sha512-AKpaYlHn8t4SVbOHCy+b5+KKgvR4vrsD8vbvrbiQJps7fKDTkjkDry6ji0rUJjC0kzbNePLwzxq8iypo41qeWA==
+
+bidi-js@^1.0.2:
+  version "1.0.2"
+  resolved "https://artifactory6.grabcad.net:443/artifactory/api/npm/npm-repo/bidi-js/-/bidi-js-1.0.2.tgz#1a497a762c2ddea377429d2649c9ce0f8a91527f"
+  integrity sha1-Gkl6diwt3qN3Qp0mScnOD4qRUn8=
+  dependencies:
+    require-from-string "^2.0.2"
 
 big.js@^5.2.2:
   version "5.2.2"
@@ -915,6 +1054,15 @@ chalk@^4.0.0:
   dependencies:
     ansi-styles "^4.1.0"
     supports-color "^7.1.0"
+
+chevrotain@^9.0.2:
+  version "9.1.0"
+  resolved "https://artifactory6.grabcad.net:443/artifactory/api/npm/npm-repo/chevrotain/-/chevrotain-9.1.0.tgz#ca2a811372687ad6f4d11c063cd27a26e5fbd52d"
+  integrity sha1-yiqBE3Joetb00RwGPNJ6JuX71S0=
+  dependencies:
+    "@chevrotain/types" "^9.1.0"
+    "@chevrotain/utils" "^9.1.0"
+    regexp-to-ast "0.5.0"
 
 chokidar@3.5.1:
   version "3.5.1"
@@ -1129,6 +1277,11 @@ data-uri-to-buffer@3.0.1:
   resolved "https://registry.yarnpkg.com/data-uri-to-buffer/-/data-uri-to-buffer-3.0.1.tgz#594b8973938c5bc2c33046535785341abc4f3636"
   integrity sha512-WboRycPNsVw3B3TL559F7kuBUM4d8CgMEvk6xEJlOp7OBPjt6G7z8WMWlD2rOFZLk6OYfFIUGsCOWzcQH9K2og==
 
+debounce@^1.2.1:
+  version "1.2.1"
+  resolved "https://artifactory6.grabcad.net:443/artifactory/api/npm/npm-repo/debounce/-/debounce-1.2.1.tgz#38881d8f4166a5c5848020c11827b834bcb3e0a5"
+  integrity sha1-OIgdj0FmpcWEgCDBGCe4NLyz4KU=
+
 debug@2, debug@^2.6.9:
   version "2.6.9"
   resolved "https://registry.yarnpkg.com/debug/-/debug-2.6.9.tgz#5d128515df134ff327e90a4c93f4e077a536341f"
@@ -1175,6 +1328,13 @@ des.js@^1.0.0:
     inherits "^2.0.1"
     minimalistic-assert "^1.0.0"
 
+detect-gpu@^3.1.28:
+  version "3.1.30"
+  resolved "https://artifactory6.grabcad.net:443/artifactory/api/npm/npm-repo/detect-gpu/-/detect-gpu-3.1.30.tgz#5f81d02dc8c6417f686e1057256b3bd5d5a6f3f5"
+  integrity sha1-X4HQLcjGQX9obhBXJWs71dWm8/U=
+  dependencies:
+    webgl-constants "^1.1.1"
+
 diffie-hellman@^5.0.0:
   version "5.0.3"
   resolved "https://registry.yarnpkg.com/diffie-hellman/-/diffie-hellman-5.0.3.tgz#40e8ee98f55a2149607146921c63e1ae5f3d2875"
@@ -1217,6 +1377,11 @@ domain-browser@4.19.0:
   version "4.19.0"
   resolved "https://registry.yarnpkg.com/domain-browser/-/domain-browser-4.19.0.tgz#1093e17c0a17dbd521182fe90d49ac1370054af1"
   integrity sha512-fRA+BaAWOR/yr/t7T9E9GJztHPeFjj8U35ajyAjCDtAAnTn1Rc1f6W6VGPJrO1tkQv9zWu+JRof7z6oQtiYVFQ==
+
+draco3d@^1.4.1:
+  version "1.5.0"
+  resolved "https://artifactory6.grabcad.net:443/artifactory/api/npm/npm-repo/draco3d/-/draco3d-1.5.0.tgz#768d5e449b6ca60684ed4666e56a5bb585f8c408"
+  integrity sha1-do1eRJtspgaE7UZm5WpbtYX4xAg=
 
 electron-to-chromium@^1.3.723:
   version "1.4.17"
@@ -1592,6 +1757,11 @@ fastq@^1.6.0:
   dependencies:
     reusify "^1.0.4"
 
+fflate@^0.6.9:
+  version "0.6.10"
+  resolved "https://artifactory6.grabcad.net:443/artifactory/api/npm/npm-repo/fflate/-/fflate-0.6.10.tgz#5f40f9659205936a2d18abf88b2e7781662b6d43"
+  integrity sha1-X0D5ZZIFk2otGKv4iy53gWYrbUM=
+
 file-entry-cache@^6.0.1:
   version "6.0.1"
   resolved "https://registry.yarnpkg.com/file-entry-cache/-/file-entry-cache-6.0.1.tgz#211b2dd9659cb0394b073e7323ac3c933d522027"
@@ -1758,6 +1928,11 @@ globby@^11.0.4:
     ignore "^5.1.4"
     merge2 "^1.3.0"
     slash "^3.0.0"
+
+glsl-noise@^0.0.0:
+  version "0.0.0"
+  resolved "https://artifactory6.grabcad.net:443/artifactory/api/npm/npm-repo/glsl-noise/-/glsl-noise-0.0.0.tgz#367745f3a33382c0eeec4cb54b7e99cfc1d7670b"
+  integrity sha1-NndF86MzgsDu7Ey1S36Zz8HXZws=
 
 graceful-fs@^4.1.2:
   version "4.2.8"
@@ -2132,6 +2307,11 @@ json5@^1.0.1:
     array-includes "^3.1.3"
     object.assign "^4.1.2"
 
+ktx-parse@^0.2.1:
+  version "0.2.1"
+  resolved "https://artifactory6.grabcad.net:443/artifactory/api/npm/npm-repo/ktx-parse/-/ktx-parse-0.2.1.tgz#6805c0929eae0a1f571ab3ce789e860e9135b432"
+  integrity sha1-aAXAkp6uCh9XGrPOeJ6GDpE1tDI=
+
 language-subtag-registry@~0.3.2:
   version "0.3.21"
   resolved "https://registry.yarnpkg.com/language-subtag-registry/-/language-subtag-registry-0.3.21.tgz#04ac218bea46f04cb039084602c6da9e788dd45a"
@@ -2185,6 +2365,16 @@ lodash.merge@^4.6.2:
   version "4.6.2"
   resolved "https://registry.yarnpkg.com/lodash.merge/-/lodash.merge-4.6.2.tgz#558aa53b43b661e1925a0afdfa36a9a1085fe57a"
   integrity sha512-0KpjqXRVvrYyCsX1swR/XTK0va6VQkQM6MNo7PqW77ByjAhoARA8EfrP1N4+KlKj8YS0ZUCtRT/YUuhyYDujIQ==
+
+lodash.omit@^4.5.0:
+  version "4.5.0"
+  resolved "https://artifactory6.grabcad.net:443/artifactory/api/npm/npm-repo/lodash.omit/-/lodash.omit-4.5.0.tgz#6eb19ae5a1ee1dd9df0b969e66ce0b7fa30b5e60"
+  integrity sha1-brGa5aHuHdnfC5aeZs4Lf6MLXmA=
+
+lodash.pick@^4.4.0:
+  version "4.4.0"
+  resolved "https://artifactory6.grabcad.net:443/artifactory/api/npm/npm-repo/lodash.pick/-/lodash.pick-4.4.0.tgz#52f05610fff9ded422611441ed1fc123a03001b3"
+  integrity sha1-UvBWEP/53tQiYRRB7R/BI6AwAbM=
 
 lodash.sortby@^4.7.0:
   version "4.7.0"
@@ -2268,6 +2458,11 @@ minimist@^1.2.0:
   version "1.2.5"
   resolved "https://registry.yarnpkg.com/minimist/-/minimist-1.2.5.tgz#67d66014b66a6a8aaa0c083c5fd58df4e4e97602"
   integrity sha512-FM9nNUYrRBAELZQT3xeZQ7fmMOBg6nWNmJKTcgsJeaLstP/UODVpGsr5OhXhhXg6f+qtJ8uiZ+PUxkDWcgIXLw==
+
+mmd-parser@^1.0.4:
+  version "1.0.4"
+  resolved "https://artifactory6.grabcad.net:443/artifactory/api/npm/npm-repo/mmd-parser/-/mmd-parser-1.0.4.tgz#87cc05782cb5974ca854f0303fc5147bc9d690e7"
+  integrity sha1-h8wFeCy1l0yoVPAwP8UUe8nWkOc=
 
 ms@2.0.0:
   version "2.0.0"
@@ -2458,6 +2653,14 @@ once@^1.3.0:
   dependencies:
     wrappy "1"
 
+opentype.js@^1.3.3:
+  version "1.3.4"
+  resolved "https://artifactory6.grabcad.net:443/artifactory/api/npm/npm-repo/opentype.js/-/opentype.js-1.3.4.tgz#1c0e72e46288473cc4a4c6a2dc60fd7fe6020d77"
+  integrity sha1-HA5y5GKIRzzEpMai3GD9f+YCDXc=
+  dependencies:
+    string.prototype.codepointat "^0.2.1"
+    tiny-inflate "^1.0.3"
+
 optionator@^0.9.1:
   version "0.9.1"
   resolved "https://registry.yarnpkg.com/optionator/-/optionator-0.9.1.tgz#4f236a6373dae0566a6d43e1326674f50c291499"
@@ -2632,6 +2835,11 @@ postcss@8.2.15:
     nanoid "^3.1.23"
     source-map "^0.6.1"
 
+potpack@^1.0.1:
+  version "1.0.2"
+  resolved "https://artifactory6.grabcad.net:443/artifactory/api/npm/npm-repo/potpack/-/potpack-1.0.2.tgz#23b99e64eb74f5741ffe7656b5b5c4ddce8dfc14"
+  integrity sha1-I7meZOt09XQf/nZWtbXE3c6N/BQ=
+
 prelude-ls@^1.2.1:
   version "1.2.1"
   resolved "https://registry.yarnpkg.com/prelude-ls/-/prelude-ls-1.2.1.tgz#debc6489d7a6e6b0e7611888cec880337d316396"
@@ -2647,7 +2855,7 @@ progress@^2.0.0:
   resolved "https://registry.yarnpkg.com/progress/-/progress-2.0.3.tgz#7e8cf8d8f5b8f239c1bc68beb4eb78567d572ef8"
   integrity sha512-7PiHtLll5LdnKIMw100I+8xJXR5gW2QwWYkT6iJva0bXitZKa/XMrSbdmg3r2Xnaidz9Qumd0VPaMrZlF9V9sA==
 
-prop-types@^15.6.2, prop-types@^15.7.2:
+prop-types@^15.6.0, prop-types@^15.6.2, prop-types@^15.7.2:
   version "15.7.2"
   resolved "https://registry.yarnpkg.com/prop-types/-/prop-types-15.7.2.tgz#52c41e75b8c87e72b9d9360e0206b99dcbffa6c5"
   integrity sha512-8QQikdH7//R2vurIJSutZ1smHYTcLpRWEOlHnzcWHmBYrOGUysKwSsrC89BCiFj3CbrfJ/nXFdJepOVrY1GCHQ==
@@ -2715,6 +2923,13 @@ raw-body@2.4.1:
     iconv-lite "0.4.24"
     unpipe "1.0.0"
 
+react-composer@^5.0.2:
+  version "5.0.2"
+  resolved "https://artifactory6.grabcad.net:443/artifactory/api/npm/npm-repo/react-composer/-/react-composer-5.0.2.tgz#131cb53326abb07363795ad3abb0dc4a3005ee05"
+  integrity sha1-Exy1MyarsHNjeVrTq7DcSjAF7gU=
+  dependencies:
+    prop-types "^15.6.0"
+
 react-dom@17.0.2:
   version "17.0.2"
   resolved "https://registry.yarnpkg.com/react-dom/-/react-dom-17.0.2.tgz#ecffb6845e3ad8dbfcdc498f0d0a939736502c23"
@@ -2734,6 +2949,20 @@ react-is@^16.7.0, react-is@^16.8.1:
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-16.13.1.tgz#789729a4dc36de2999dc156dd6c1d9c18cea56a4"
   integrity sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==
 
+react-merge-refs@^1.1.0:
+  version "1.1.0"
+  resolved "https://artifactory6.grabcad.net:443/artifactory/api/npm/npm-repo/react-merge-refs/-/react-merge-refs-1.1.0.tgz#73d88b892c6c68cbb7a66e0800faa374f4c38b06"
+  integrity sha1-c9iLiSxsaMu3pm4IAPqjdPTDiwY=
+
+react-reconciler@^0.26.2:
+  version "0.26.2"
+  resolved "https://artifactory6.grabcad.net:443/artifactory/api/npm/npm-repo/react-reconciler/-/react-reconciler-0.26.2.tgz#bbad0e2d1309423f76cf3c3309ac6c96e05e9d91"
+  integrity sha1-u60OLRMJQj92zzwzCaxsluBenZE=
+  dependencies:
+    loose-envify "^1.1.0"
+    object-assign "^4.1.1"
+    scheduler "^0.20.2"
+
 react-redux@^7.2.6:
   version "7.2.6"
   resolved "https://registry.yarnpkg.com/react-redux/-/react-redux-7.2.6.tgz#49633a24fe552b5f9caf58feb8a138936ddfe9aa"
@@ -2751,6 +2980,11 @@ react-refresh@0.8.3:
   resolved "https://registry.yarnpkg.com/react-refresh/-/react-refresh-0.8.3.tgz#721d4657672d400c5e3c75d063c4a85fb2d5d68f"
   integrity sha512-X8jZHc7nCMjaCqoU+V2I0cOhNW+QMBwSUkeXnTi8IPe6zaRWfn60ZzvFDZqWPfmSJfjub7dDW1SP0jaHWLu/hg==
 
+react-three-fiber@0.0.0-deprecated:
+  version "0.0.0-deprecated"
+  resolved "https://artifactory6.grabcad.net:443/artifactory/api/npm/npm-repo/react-three-fiber/-/react-three-fiber-0.0.0-deprecated.tgz#c737242487d824cf9520307308b7e4c4071a278f"
+  integrity sha1-xzckJIfYJM+VIDBzCLfkxAcaJ48=
+
 react-transition-group@^4.4.2:
   version "4.4.2"
   resolved "https://registry.yarnpkg.com/react-transition-group/-/react-transition-group-4.4.2.tgz#8b59a56f09ced7b55cbd53c36768b922890d5470"
@@ -2760,6 +2994,13 @@ react-transition-group@^4.4.2:
     dom-helpers "^5.0.1"
     loose-envify "^1.4.0"
     prop-types "^15.6.2"
+
+react-use-measure@^2.1.1:
+  version "2.1.1"
+  resolved "https://artifactory6.grabcad.net:443/artifactory/api/npm/npm-repo/react-use-measure/-/react-use-measure-2.1.1.tgz#5824537f4ee01c9469c45d5f7a8446177c6cc4ba"
+  integrity sha1-WCRTf07gHJRpxF1feoRGF3xsxLo=
+  dependencies:
+    debounce "^1.2.1"
 
 react@17.0.2:
   version "17.0.2"
@@ -2814,6 +3055,11 @@ regenerator-runtime@^0.13.4:
   resolved "https://registry.yarnpkg.com/regenerator-runtime/-/regenerator-runtime-0.13.9.tgz#8925742a98ffd90814988d7566ad30ca3b263b52"
   integrity sha512-p3VT+cOEgxFsRRA9X4lkI1E+k2/CtnKtU4gcxyaCUreilL/vqI6CdZ3wxVUx3UOUg+gnUOQQcRI7BmSI656MYA==
 
+regexp-to-ast@0.5.0:
+  version "0.5.0"
+  resolved "https://artifactory6.grabcad.net:443/artifactory/api/npm/npm-repo/regexp-to-ast/-/regexp-to-ast-0.5.0.tgz#56c73856bee5e1fef7f73a00f1473452ab712a24"
+  integrity sha1-Vsc4Vr7l4f739zoA8Uc0UqtxKiQ=
+
 regexp.prototype.flags@^1.3.1:
   version "1.3.1"
   resolved "https://registry.yarnpkg.com/regexp.prototype.flags/-/regexp.prototype.flags-1.3.1.tgz#7ef352ae8d159e758c0eadca6f8fcb4eef07be26"
@@ -2826,6 +3072,16 @@ regexpp@^3.2.0:
   version "3.2.0"
   resolved "https://registry.yarnpkg.com/regexpp/-/regexpp-3.2.0.tgz#0425a2768d8f23bad70ca4b90461fa2f1213e1b2"
   integrity sha512-pq2bWo9mVD43nbts2wGv17XLiNLya+GklZ8kaDLV2Z08gDCsGpnKn9BFMepvWuHCbyVvY7J5o5+BVvoQbmlJLg==
+
+require-from-string@^2.0.2:
+  version "2.0.2"
+  resolved "https://artifactory6.grabcad.net:443/artifactory/api/npm/npm-repo/require-from-string/-/require-from-string-2.0.2.tgz#89a7fdd938261267318eafe14f9c32e598c36909"
+  integrity sha1-iaf92TgmEmcxjq/hT5wy5ZjDaQk=
+
+resize-observer-polyfill@^1.5.1:
+  version "1.5.1"
+  resolved "https://artifactory6.grabcad.net:443/artifactory/api/npm/npm-repo/resize-observer-polyfill/-/resize-observer-polyfill-1.5.1.tgz#0e9020dd3d21024458d4ebd27e23e40269810464"
+  integrity sha1-DpAg3T0hAkRY1OvSfiPkAmmBBGQ=
 
 resolve-from@^4.0.0:
   version "4.0.0"
@@ -3002,6 +3258,11 @@ stacktrace-parser@0.1.10:
   dependencies:
     type-fest "^0.7.1"
 
+stats.js@^0.17.0:
+  version "0.17.0"
+  resolved "https://artifactory6.grabcad.net:443/artifactory/api/npm/npm-repo/stats.js/-/stats.js-0.17.0.tgz#b1c3dc46d94498b578b7fd3985b81ace7131cc7d"
+  integrity sha1-scPcRtlEmLV4t/05hbgaznExzH0=
+
 "statuses@>= 1.5.0 < 2":
   version "1.5.0"
   resolved "https://registry.yarnpkg.com/statuses/-/statuses-1.5.0.tgz#161c7dac177659fd9811f43771fa99381478628c"
@@ -3036,6 +3297,11 @@ string-hash@1.1.3:
   version "1.1.3"
   resolved "https://registry.yarnpkg.com/string-hash/-/string-hash-1.1.3.tgz#e8aafc0ac1855b4666929ed7dd1275df5d6c811b"
   integrity sha1-6Kr8CsGFW0Zmkp7X3RJ1311sgRs=
+
+string.prototype.codepointat@^0.2.1:
+  version "0.2.1"
+  resolved "https://artifactory6.grabcad.net:443/artifactory/api/npm/npm-repo/string.prototype.codepointat/-/string.prototype.codepointat-0.2.1.tgz#004ad44c8afc727527b108cd462b4d971cd469bc"
+  integrity sha1-AErUTIr8cnUnsQjNRitNlxzUabw=
 
 string.prototype.matchall@^4.0.6:
   version "4.0.6"
@@ -3146,12 +3412,44 @@ text-table@^0.2.0:
   resolved "https://registry.yarnpkg.com/text-table/-/text-table-0.2.0.tgz#7f5ee823ae805207c00af2df4a84ec3fcfa570b4"
   integrity sha1-f17oI66AUgfACvLfSoTsP8+lcLQ=
 
+three-mesh-bvh@^0.5.2:
+  version "0.5.2"
+  resolved "https://artifactory6.grabcad.net:443/artifactory/api/npm/npm-repo/three-mesh-bvh/-/three-mesh-bvh-0.5.2.tgz#6d435330e4aa686dcdbf70330c8eb5dd42b12737"
+  integrity sha1-bUNTMOSqaG3Nv3AzDI613UKxJzc=
+
+three-stdlib@^2.6.1:
+  version "2.6.1"
+  resolved "https://artifactory6.grabcad.net:443/artifactory/api/npm/npm-repo/three-stdlib/-/three-stdlib-2.6.1.tgz#905834f7ea00ebeb8a8927a462f65d710d1ba2cb"
+  integrity sha1-kFg09+oA6+uKiSekYvZdcQ0boss=
+  dependencies:
+    "@babel/runtime" "^7.14.6"
+    "@webgpu/glslang" "^0.0.15"
+    "@webxr-input-profiles/motion-controllers" "^1.0.0"
+    chevrotain "^9.0.2"
+    draco3d "^1.4.1"
+    fflate "^0.6.9"
+    ktx-parse "^0.2.1"
+    mmd-parser "^1.0.4"
+    opentype.js "^1.3.3"
+    potpack "^1.0.1"
+    zstddec "^0.0.2"
+
+three@^0.135.0:
+  version "0.135.0"
+  resolved "https://artifactory6.grabcad.net:443/artifactory/api/npm/npm-repo/three/-/three-0.135.0.tgz#cff4ec8edd3c51ce9bc7e88d13e8eafed4d0ddfc"
+  integrity sha1-z/Tsjt08Uc6bx+iNE+jq/tTQ3fw=
+
 timers-browserify@2.0.12:
   version "2.0.12"
   resolved "https://registry.yarnpkg.com/timers-browserify/-/timers-browserify-2.0.12.tgz#44a45c11fbf407f34f97bccd1577c652361b00ee"
   integrity sha512-9phl76Cqm6FhSX9Xe1ZUAMLtm1BLkKj2Qd5ApyWkXzsMRaA7dgr81kf4wJmQf/hAvg8EEyJxDo3du/0KlhPiKQ==
   dependencies:
     setimmediate "^1.0.4"
+
+tiny-inflate@^1.0.3:
+  version "1.0.3"
+  resolved "https://artifactory6.grabcad.net:443/artifactory/api/npm/npm-repo/tiny-inflate/-/tiny-inflate-1.0.3.tgz#122715494913a1805166aaf7c93467933eea26c4"
+  integrity sha1-EicVSUkToYBRZqr3yTRnkz7qJsQ=
 
 to-fast-properties@^2.0.0:
   version "2.0.0"
@@ -3176,6 +3474,25 @@ tr46@^1.0.1:
   integrity sha1-qLE/1r/SSJUZZ0zN5VujaTtwbQk=
   dependencies:
     punycode "^2.1.0"
+
+troika-three-text@^0.44.0:
+  version "0.44.0"
+  resolved "https://artifactory6.grabcad.net:443/artifactory/api/npm/npm-repo/troika-three-text/-/troika-three-text-0.44.0.tgz#7c1a785c1aea9acc7631651acac97f2dbed2f26f"
+  integrity sha1-fBp4XBrqmsx2MWUaysl/Lb7S8m8=
+  dependencies:
+    bidi-js "^1.0.2"
+    troika-three-utils "^0.44.0"
+    troika-worker-utils "^0.44.0"
+
+troika-three-utils@^0.44.0:
+  version "0.44.0"
+  resolved "https://artifactory6.grabcad.net:443/artifactory/api/npm/npm-repo/troika-three-utils/-/troika-three-utils-0.44.0.tgz#c19bcbedb08bff96b8a38cf8b4a60da3b12bb44b"
+  integrity sha1-wZvL7bCL/5a4o4z4tKYNo7ErtEs=
+
+troika-worker-utils@^0.44.0:
+  version "0.44.0"
+  resolved "https://artifactory6.grabcad.net:443/artifactory/api/npm/npm-repo/troika-worker-utils/-/troika-worker-utils-0.44.0.tgz#a236dc004b7a3c187ae8f14a6b497e54661e12c8"
+  integrity sha1-ojbcAEt6PBh66PFKa0l+VGYeEsg=
 
 tsconfig-paths@^3.11.0, tsconfig-paths@^3.9.0:
   version "3.12.0"
@@ -3248,6 +3565,13 @@ uri-js@^4.2.2:
   dependencies:
     punycode "^2.1.0"
 
+use-asset@^1.0.4:
+  version "1.0.4"
+  resolved "https://artifactory6.grabcad.net:443/artifactory/api/npm/npm-repo/use-asset/-/use-asset-1.0.4.tgz#506caafc29f602890593799e58b577b70293a6e2"
+  integrity sha1-UGyq/Cn2AokFk3meWLV3twKTpuI=
+  dependencies:
+    fast-deep-equal "^3.1.3"
+
 use-subscription@1.5.1:
   version "1.5.1"
   resolved "https://registry.yarnpkg.com/use-subscription/-/use-subscription-1.5.1.tgz#73501107f02fad84c6dd57965beb0b75c68c42d1"
@@ -3272,6 +3596,16 @@ util@0.12.4, util@^0.12.0:
     safe-buffer "^5.1.2"
     which-typed-array "^1.1.2"
 
+utility-types@^3.10.0:
+  version "3.10.0"
+  resolved "https://artifactory6.grabcad.net:443/artifactory/api/npm/npm-repo/utility-types/-/utility-types-3.10.0.tgz#ea4148f9a741015f05ed74fd615e1d20e6bed82b"
+  integrity sha1-6kFI+adBAV8F7XT9YV4dIOa+2Cs=
+
+uuid@^8.3.2:
+  version "8.3.2"
+  resolved "https://artifactory6.grabcad.net:443/artifactory/api/npm/npm-repo/uuid/-/uuid-8.3.2.tgz#80d5b5ced271bb9af6c445f21a1a04c606cefbe2"
+  integrity sha1-gNW1ztJxu5r2xEXyGhoExgbO++I=
+
 v8-compile-cache@^2.0.3:
   version "2.3.0"
   resolved "https://registry.yarnpkg.com/v8-compile-cache/-/v8-compile-cache-2.3.0.tgz#2de19618c66dc247dcfb6f99338035d8245a2cee"
@@ -3289,6 +3623,11 @@ watchpack@2.3.0:
   dependencies:
     glob-to-regexp "^0.4.1"
     graceful-fs "^4.1.2"
+
+webgl-constants@^1.1.1:
+  version "1.1.1"
+  resolved "https://artifactory6.grabcad.net:443/artifactory/api/npm/npm-repo/webgl-constants/-/webgl-constants-1.1.1.tgz#f9633ee87fea56647a60b9ce735cbdfb891c6855"
+  integrity sha1-+WM+6H/qVmR6YLnOc1y9+4kcaFU=
 
 webidl-conversions@^4.0.2:
   version "4.0.2"
@@ -3363,3 +3702,13 @@ yocto-queue@^0.1.0:
   version "0.1.0"
   resolved "https://registry.yarnpkg.com/yocto-queue/-/yocto-queue-0.1.0.tgz#0294eb3dee05028d31ee1a5fa2c556a6aaf10a1b"
   integrity sha512-rVksvsnNCdJ/ohGc6xgPwyN8eheCxsiLM8mxuE/t/mOVqJewPuO1miLpTHQiRgTKCLexL4MeAFVagts7HmNZ2Q==
+
+zstddec@^0.0.2:
+  version "0.0.2"
+  resolved "https://artifactory6.grabcad.net:443/artifactory/api/npm/npm-repo/zstddec/-/zstddec-0.0.2.tgz#57e2f28dd1ff56b750e07d158a43f0611ad9eeb4"
+  integrity sha1-V+LyjdH/VrdQ4H0VikPwYRrZ7rQ=
+
+zustand@^3.5.1, zustand@^3.5.13:
+  version "3.6.7"
+  resolved "https://artifactory6.grabcad.net:443/artifactory/api/npm/npm-repo/zustand/-/zustand-3.6.7.tgz#aab5ac0a9d6d21dce752aecd390f373ed9c9d70a"
+  integrity sha1-qrWsCp1tIdznUq7NOQ83PtnJ1wo=
