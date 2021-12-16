@@ -31,7 +31,7 @@ export default function UploadCard() {
     if (filesContent.length > 0) {
       router.push({
         pathname: "/printing/upload",
-        query: { file: filesContent[0].content },
+        // query: { file: filesContent[0].content },
       });
     }
   }, [filesContent, router]);
@@ -39,16 +39,16 @@ export default function UploadCard() {
   return (
     <Card sx={{ display: "flex", ...css }} onClick={onClick}>
       {fileSelected ? (
-        <Box sx={{ width: "80%", margin: "auto" }}>
+        <Box component="div" sx={{ width: "80%", margin: "auto" }}>
           <LinearProgress />
         </Box>
       ) : (
         <>
-          <Box sx={{ flexGrow: 0.5 }} />
-          <Box sx={{ display: "flex", margin: "auto" }}>
+          <Box component="div" sx={{ flexGrow: 0.5 }} />
+          <Box component="div" sx={{ display: "flex", margin: "auto" }}>
             <UploadIcon fontSize="large" />
           </Box>
-          <Box sx={{ flexGrow: 0.5 }} />
+          <Box component="div" sx={{ flexGrow: 0.5 }} />
         </>
       )}
     </Card>

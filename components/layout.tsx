@@ -1,8 +1,7 @@
-import { createTheme, ThemeProvider } from "@mui/material/styles";
+import { ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import Header from "./header";
-
-const theme = createTheme();
+import { theme } from "../pages/_theme";
 
 export interface ILayoutProps {
   children: React.ReactElement;
