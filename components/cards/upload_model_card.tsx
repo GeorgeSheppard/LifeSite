@@ -6,51 +6,45 @@ import { useFilePicker } from "use-file-picker";
 import LinearProgress from "@mui/material/LinearProgress";
 import { useEffect, useCallback, useState } from "react";
 import { useRouter } from "next/router";
+import useUpload from "../hooks/upload_to_server";
 
 export default function UploadCard() {
-  const [openFileSelector, { filesContent, loading }] = useFilePicker({
-    readAs: "BinaryString",
-    accept: ".3mf",
-  });
   const router = useRouter();
-  const [fileSelected, setFileSelected] = useState(false);
 
-  const onClick = useCallback(() => {
-    if (!fileSelected) {
-      openFileSelector();
-    }
-  }, [openFileSelector, fileSelected]);
+  const onLoad = useCallback(() => {
+    router.push("/printing/upload");
+  }, [router]);
+  const onError = useCallback((statusText: string) => {
+    console.log(statusText);
+  }, []);
 
-  useEffect(() => {
-    if (loading) {
-      setFileSelected(true);
-    }
-  }, [loading]);
-
-  useEffect(() => {
-    if (filesContent.length > 0) {
-      router.push({
-        pathname: "/printing/upload",
-        // query: { file: filesContent[0].content },
-      });
-    }
-  }, [filesContent, router]);
+  const { fullUpload, uploading } = useUpload({ onLoad, onError });
 
   return (
-    <Card sx={{ display: "flex", ...css }} onClick={onClick}>
-      {fileSelected ? (
-        <Box component="div" sx={{ width: "80%", margin: "auto" }}>
-          <LinearProgress />
-        </Box>
-      ) : (
-        <>
-          <Box component="div" sx={{ flexGrow: 0.5 }} />
-          <Box component="div" sx={{ display: "flex", margin: "auto" }}>
-            <UploadIcon fontSize="large" />
-          </Box>
-          <Box component="div" sx={{ flexGrow: 0.5 }} />
-        </>
-      )}
-    </Card>
+    <>
+      <input
+        type="file"
+        id="upload-input"
+        style={{ display: "none" }}
+        onChange={fullUpload}
+      />
+      <label htmlFor="upload-input">
+        <Card sx={{ display: "flex", ...css }}>
+          {uploading ? (
+            <Box component="div" sx={{ width: "80%", margin: "auto" }}>
+              <LinearProgress />
+            </Box>
+          ) : (
+            <>
+              <Box component="div" sx={{ flexGrow: 0.5 }} />
+              <Box component="div" sx={{ display: "flex", margin: "auto" }}>
+                <UploadIcon fontSize="large" />
+              </Box>
+              <Box component="div" sx={{ flexGrow: 0.5 }} />
+            </>
+          )}
+        </Card>
+      </label>
+    </>
   );
 }
