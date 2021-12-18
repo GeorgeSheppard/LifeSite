@@ -33,7 +33,13 @@ export default function Home(props: any) {
         {/* End hero unit */}
         <Grid container spacing={4}>
           {navigatorCards.map((card) => (
-            <Grid item key={card.title} xs={12} sm={6} md={4}>
+            <Grid
+              item
+              key={card.title + card.description}
+              xs={12}
+              sm={6}
+              md={4}
+            >
               <NavigatorCard {...card} />
             </Grid>
           ))}

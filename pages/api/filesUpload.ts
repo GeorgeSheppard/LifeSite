@@ -1,7 +1,6 @@
 import formidable from "formidable";
 import fs from "fs";
 import { NextApiRequest, NextApiResponse } from "next";
-import { v4 as uuidv4 } from "uuid";
 
 export const config = {
   api: {
@@ -13,23 +12,26 @@ export const config = {
 const post = async (req: NextApiRequest, res: NextApiResponse) => {
   const form = new formidable.IncomingForm();
   form.parse(req, async function (err, fields, files) {
-    if (Array.isArray(files.file)) {
-      // TODO: Need to do more work to return a map from old filename to new one so
-      // it can be dumped to user json correctly
-      throw new Error("Multiple files uploading isn't implemented yet");
+    if (err) {
+      res.writeHead(err.httpCode || 400, { "Content-Type": "text/plain" });
+      res.end(String(err));
+      return;
     }
+    const filesToSave = Array.isArray(files.files)
+      ? files.files
+      : [files.files];
+    const promises = filesToSave.map((file: formidable.File) => saveFile(file));
+    const filenames = await Promise.all(promises);
 
-    const id = saveFile(files.file);
-    return res.status(201).send(id);
+    return res.status(201).send(filenames.join(","));
   });
 };
 
 const saveFile = async (file: formidable.File) => {
-  const id = uuidv4();
   const data = fs.readFileSync(file.filepath);
-  fs.writeFileSync(`./public/${id}.${file.mimetype}`, data);
+  fs.writeFileSync(`./public/${file.originalFilename}`, data);
   await fs.unlinkSync(file.filepath);
-  return id;
+  return file.originalFilename;
 };
 
 const apiHandler = (req: NextApiRequest, res: NextApiResponse) =>

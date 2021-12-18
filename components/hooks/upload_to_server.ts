@@ -2,51 +2,71 @@ import { ChangeEvent, ChangeEventHandler } from "react";
 import { useState, useCallback } from "react";
 
 export interface IUploadProps {
-  onLoad?: () => void;
-  onError?: (error: string) => void;
+  onSaveToClient?: (file: File) => void;
+  onUploadError?: (error: string) => void;
+  onUploadFinished?: (response: any) => void;
 }
 
-export default function useUpload(props: IUploadProps) {
-  const { onLoad, onError } = props;
+const getTargetFile = (event: ChangeEvent<HTMLInputElement>) => {
+  if (event.target.files?.[0]) {
+    return event.target.files[0];
+  }
+};
 
-  const [file, setFile] = useState<File | null>(null);
-  const [uploading, setUploading] = useState(false);
+export default function useUpload(props: IUploadProps) {
+  const { onSaveToClient, onUploadFinished, onUploadError } = props;
+
+  const [file, setFile] = useState<File | undefined>(undefined);
 
   const uploadToClient = useCallback(
     (event: ChangeEvent<HTMLInputElement>) => {
-      if (event.target.files?.[0]) {
-        setFile(event.target.files[0]);
+      const targetFile = getTargetFile(event);
+      if (targetFile) {
+        setFile(targetFile);
+        onSaveToClient?.(targetFile);
+        return targetFile;
       }
     },
-    [setFile]
+    [setFile, onSaveToClient]
   );
 
-  const uploadToServer = useCallback(async () => {
-    if (file) {
-      setUploading(true);
+  const sendFile = useCallback(
+    async (file: File) => {
       const body = new FormData();
-      body.append("file", file);
-      const response = await fetch("/api/file", {
+      body.append("files", file);
+
+      const response = await fetch("/api/filesUpload", {
         method: "POST",
         body,
       });
 
       if (response.ok) {
-        onLoad?.();
-        setUploading(false);
+        setFile(undefined);
+        onUploadFinished?.(response);
       } else {
-        onError?.(response.statusText);
+        onUploadError?.(response.statusText);
       }
-    }
-  }, [file, onLoad, onError]);
+    },
+    [onUploadFinished, onUploadError]
+  );
+
+  const uploadToServer = useCallback(
+    async (fileToUpload?: File) => {
+      fileToUpload = fileToUpload ?? file;
+      if (fileToUpload) {
+        sendFile(fileToUpload);
+      }
+    },
+    [file, sendFile]
+  );
 
   const fullUpload = useCallback(
     async (event: ChangeEvent<HTMLInputElement>) => {
-      uploadToClient(event);
-      await uploadToServer();
+      const fileToUpload = uploadToClient(event);
+      await uploadToServer(fileToUpload);
     },
     [uploadToClient, uploadToServer]
   );
 
-  return { uploadToClient, uploadToServer, fullUpload, uploading };
+  return { uploadToClient, uploadToServer, fullUpload };
 }

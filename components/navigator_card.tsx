@@ -77,7 +77,7 @@ export const navigatorCards: INavigatorCardProps[] = [
     title: "Path Finder",
     description: "Visualization of path finding algorithms.",
     imageSrc: "/images/path-finder.jpg",
-    href: "path_finder",
+    href: "/path_finder",
   },
   fillerCard,
   fillerCard,
