@@ -31,6 +31,7 @@ export default function UploadCard() {
     onUploadFinished,
     onUploadError,
     onSaveToClient,
+    folder: "images",
   });
 
   return (

@@ -5,6 +5,7 @@ export interface IUploadProps {
   onSaveToClient?: (file: File) => void;
   onUploadError?: (error: string) => void;
   onUploadFinished?: (response: any) => void;
+  folder: string;
 }
 
 const getTargetFile = (event: ChangeEvent<HTMLInputElement>) => {
@@ -31,7 +32,7 @@ export default function useUpload(props: IUploadProps) {
   );
 
   const sendFile = useCallback(
-    async (file: File) => {
+    async (file: File, folder: string) => {
       const body = new FormData();
       body.append("files", file);
 
@@ -54,10 +55,10 @@ export default function useUpload(props: IUploadProps) {
     async (fileToUpload?: File) => {
       fileToUpload = fileToUpload ?? file;
       if (fileToUpload) {
-        sendFile(fileToUpload);
+        sendFile(fileToUpload, props.folder);
       }
     },
-    [file, sendFile]
+    [file, sendFile, props.folder]
   );
 
   const fullUpload = useCallback(
