@@ -38,7 +38,7 @@ export default function UploadCard() {
         style={{ display: "none" }}
         onChange={uploadFile}
         multiple={false}
-        accept=".stl"
+        accept=".stl,.3mf,.obj"
       />
       <label htmlFor="upload-input">
         <Card sx={{ display: "flex", ...css }}>
