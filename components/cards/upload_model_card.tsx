@@ -8,18 +8,20 @@ import { useRouter } from "next/router";
 import useUpload from "../hooks/upload_to_server";
 import { IErrorUploadResponse } from "../../pages/api/filesUpload";
 import { useAppDispatch } from "../../store/hooks/hooks";
-import { previewPath } from "../../store/reducers/printing";
 
 export default function UploadCard() {
   const router = useRouter();
-  const dispatch = useAppDispatch();
-
   const [uploading, setUploading] = useState(false);
 
   const { uploadFile } = useUpload({
     onUploadFinished: (response) => {
-      dispatch(previewPath(response.writePath));
-      router.push("/printing/upload");
+      router.push(
+        {
+          pathname: `/printing/preview`,
+          query: { writePath: response.writePath },
+        },
+        "/printing/preview"
+      );
     },
     onUploadError: (response: IErrorUploadResponse) => {
       // TODO: Make this a user notification
@@ -38,7 +40,7 @@ export default function UploadCard() {
         style={{ display: "none" }}
         onChange={uploadFile}
         multiple={false}
-        accept=".stl,.3mf,.obj"
+        accept=".stl"
       />
       <label htmlFor="upload-input">
         <Card sx={{ display: "flex", ...css }}>

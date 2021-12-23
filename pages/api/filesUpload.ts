@@ -26,10 +26,12 @@ export interface IUploadResponse
   extends IValidUploadResponse,
     IErrorUploadResponse {}
 
+// TODO: Apparently this is resolving without sending a response (despite the fact I am reading the response...)
 const post = async (req: NextApiRequest, res: NextApiResponse) => {
   const session = (await getSession({ req })) as CustomSession;
   if (!session.id) {
-    return res.status(401).json({ error: "Unauthorized" });
+    res.json({ error: "Unauthorized" });
+    return res.status(401).end();
   }
 
   const form = new formidable.IncomingForm({
@@ -72,7 +74,13 @@ const saveFile = async (
   return `/${relativeFolder}/${newFilename}`;
 };
 
-const apiHandler = (req: NextApiRequest, res: NextApiResponse) =>
-  req.method === "POST" ? post(req, res) : res.status(404).json({});
+const apiHandler = (req: NextApiRequest, res: NextApiResponse) => {
+  if (req.method === "POST") {
+    post(req, res);
+  } else {
+    res.json({ error: "Page not found" });
+    res.status(404).end();
+  }
+};
 
 export default apiHandler;
