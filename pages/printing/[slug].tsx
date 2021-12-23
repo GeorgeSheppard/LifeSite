@@ -2,33 +2,31 @@ import Container from "@mui/material/Container";
 import { useRouter } from "next/router";
 import Box from "@mui/material/Box";
 import { headerHeight } from "../../components/header";
-import { Canvas } from "@react-three/fiber";
+import { Canvas, useFrame } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
-import { STLLoader } from "three/examples/jsm/loaders/STLLoader";
-import { BufferGeometry } from "three/src/Three";
-import { useState, useEffect, useCallback, createRef } from "react";
+import {
+  useState,
+  useEffect,
+  useLayoutEffect,
+  useCallback,
+  createRef,
+  useRef,
+} from "react";
 import Button from "@mui/material/Button";
 import {
   CanvasScreenshotter,
   ICanvasScreenshotterRef,
 } from "../../components/canvas_screenshotter";
+import { useAppSelector } from "../../store/hooks/hooks";
+import { BufferGeometry, Group, Loader, Vector3 } from "three";
+import Model from "./model";
 
 export default function DisplayModel() {
   const router = useRouter();
-  const [geometry, setGeometry] = useState<BufferGeometry>();
+  const pathToFile = useAppSelector((store) => store.printing.previewPath);
+
   const screenshotRef = createRef<ICanvasScreenshotterRef>();
   const [screenshot, setScreenshot] = useState<string>();
-
-  const slug = router.query.slug;
-  const fileContent = JSON.stringify(router.query.file);
-  console.log(fileContent);
-
-  useEffect(() => {
-    const stlLoader = new STLLoader();
-    stlLoader.load("/Support_casques.stl", (geo) => {
-      setGeometry(geo);
-    });
-  }, []);
 
   // TODO: Remove this awful hack, 48px is two times the padding on either side
   const canvasSideLength = `min(calc(100vh - ${headerHeight}px), 100vw - 48px)`;
@@ -63,21 +61,14 @@ export default function DisplayModel() {
             scroll: false,
           }}
           gl={{ preserveDrawingBuffer: true }}
+          camera={{ position: [0.5, 0.5, 4], fov: 50 }}
+          dpr={window.devicePixelRatio}
         >
           <CanvasScreenshotter ref={screenshotRef} />
-          <OrbitControls enablePan={false} />
+          <OrbitControls />
           <ambientLight />
           <pointLight position={[10, 10, 10]} />
-          {geometry ? (
-            <mesh geometry={geometry}>
-              <meshStandardMaterial color="#cccccc" />
-            </mesh>
-          ) : (
-            <mesh>
-              <boxGeometry args={[1, 1, 1]} />
-              <meshStandardMaterial color={"orange"} />
-            </mesh>
-          )}
+          <Model pathToFile={pathToFile} />
         </Canvas>
       </Box>
     </Container>

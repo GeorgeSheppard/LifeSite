@@ -3,35 +3,31 @@ import { css } from "./styling";
 import UploadIcon from "@mui/icons-material/Upload";
 import Box from "@mui/material/Box";
 import LinearProgress from "@mui/material/LinearProgress";
-import { useCallback, useState } from "react";
+import { useState } from "react";
 import { useRouter } from "next/router";
 import useUpload from "../hooks/upload_to_server";
+import { IErrorUploadResponse } from "../../pages/api/filesUpload";
+import { useAppDispatch } from "../../store/hooks/hooks";
+import { previewPath } from "../../store/reducers/printing";
 
 export default function UploadCard() {
   const router = useRouter();
+  const dispatch = useAppDispatch();
 
   const [uploading, setUploading] = useState(false);
 
-  const onUploadFinished = useCallback(() => {
-    router.push("/printing/upload");
-  }, [router]);
-
-  const onUploadError = useCallback((statusText: string) => {
-    console.log(statusText);
-  }, []);
-
-  const onSaveToClient = useCallback(
-    (file: File) => {
-      setUploading(true);
+  const { uploadFile } = useUpload({
+    onUploadFinished: (response) => {
+      dispatch(previewPath(response.writePath));
+      router.push("/printing/upload");
     },
-    [setUploading]
-  );
-
-  const { fullUpload } = useUpload({
-    onUploadFinished,
-    onUploadError,
-    onSaveToClient,
-    folder: "images",
+    onUploadError: (response: IErrorUploadResponse) => {
+      // TODO: Make this a user notification
+      console.log(response.error);
+      setUploading(false);
+    },
+    onStartUpload: () => setUploading(true),
+    folder: "models",
   });
 
   return (
@@ -40,7 +36,9 @@ export default function UploadCard() {
         type="file"
         id="upload-input"
         style={{ display: "none" }}
-        onChange={fullUpload}
+        onChange={uploadFile}
+        multiple={false}
+        accept=".stl"
       />
       <label htmlFor="upload-input">
         <Card sx={{ display: "flex", ...css }}>

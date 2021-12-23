@@ -1,73 +1,74 @@
 import { ChangeEvent, ChangeEventHandler } from "react";
 import { useState, useCallback } from "react";
+import { v4 as uuidv4 } from "uuid";
+import {
+  IErrorUploadResponse,
+  IUploadResponse,
+  IValidUploadResponse,
+} from "../../pages/api/filesUpload";
 
 export interface IUploadProps {
-  onSaveToClient?: (file: File) => void;
-  onUploadError?: (error: string) => void;
-  onUploadFinished?: (response: any) => void;
+  onStartUpload?: (file: File) => void;
+  onUploadError?: (response: IErrorUploadResponse) => void;
+  onUploadFinished?: (response: IValidUploadResponse) => void;
   folder: string;
 }
 
-const getTargetFile = (event: ChangeEvent<HTMLInputElement>) => {
-  if (event.target.files?.[0]) {
-    return event.target.files[0];
-  }
-};
+export interface IFileUploadProps {
+  file: File;
+  /**
+   * Inside the user folder, what folder name to save it under
+   */
+  folder: string;
+  /**
+   * Filename to store inside the folder
+   */
+  newFilename: string;
+}
+
+export interface ICustomForm extends FormData, IFileUploadProps {}
 
 export default function useUpload(props: IUploadProps) {
-  const { onSaveToClient, onUploadFinished, onUploadError } = props;
+  const { onStartUpload, onUploadFinished, onUploadError } = props;
 
-  const [file, setFile] = useState<File | undefined>(undefined);
-
-  const uploadToClient = useCallback(
-    (event: ChangeEvent<HTMLInputElement>) => {
-      const targetFile = getTargetFile(event);
-      if (targetFile) {
-        setFile(targetFile);
-        onSaveToClient?.(targetFile);
-        return targetFile;
-      }
+  const createFileData = useCallback(
+    (file: File) => {
+      return {
+        file,
+        folder: props.folder,
+        newFilename: uuidv4() + "_" + file.name,
+      };
     },
-    [setFile, onSaveToClient]
+    [props.folder]
   );
 
-  const sendFile = useCallback(
-    async (file: File, folder: string) => {
-      const body = new FormData();
-      body.append("files", file);
-
-      const response = await fetch("/api/filesUpload", {
-        method: "POST",
-        body,
-      });
-
-      if (response.ok) {
-        setFile(undefined);
-        onUploadFinished?.(response);
-      } else {
-        onUploadError?.(response.statusText);
-      }
-    },
-    [onUploadFinished, onUploadError]
-  );
-
-  const uploadToServer = useCallback(
-    async (fileToUpload?: File) => {
-      fileToUpload = fileToUpload ?? file;
-      if (fileToUpload) {
-        sendFile(fileToUpload, props.folder);
-      }
-    },
-    [file, sendFile, props.folder]
-  );
-
-  const fullUpload = useCallback(
+  const uploadFile = useCallback(
     async (event: ChangeEvent<HTMLInputElement>) => {
-      const fileToUpload = uploadToClient(event);
-      await uploadToServer(fileToUpload);
+      const targetFile = event.target.files?.[0];
+      if (targetFile) {
+        onStartUpload?.(targetFile);
+        const fileData = createFileData(targetFile);
+
+        const body = new FormData();
+        body.set("folder", fileData.folder);
+        body.set("file", fileData.file);
+        body.set("newFilename", fileData.newFilename);
+
+        const response = await fetch("/api/filesUpload", {
+          method: "POST",
+          body: body as ICustomForm,
+        });
+
+        const json: IUploadResponse = await response.json();
+        if (response.ok) {
+          onUploadFinished?.(json as IValidUploadResponse);
+        } else {
+          onUploadError?.(json as IErrorUploadResponse);
+        }
+      }
     },
-    [uploadToClient, uploadToServer]
+    [createFileData, onStartUpload, onUploadFinished, onUploadError]
   );
 
-  return { uploadToClient, uploadToServer, fullUpload };
+  return { uploadFile };
 }

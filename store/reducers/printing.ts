@@ -2,12 +2,16 @@ import { createSlice } from "@reduxjs/toolkit";
 
 export const printingSlice = createSlice({
   name: "printing",
-  initialState: {},
+  initialState: {
+    previewPath: "",
+  },
   reducers: {
-    increment: (state) => state,
+    previewPath: (state, action) => {
+      state.previewPath = action.payload;
+    },
   },
 });
 
-export const { increment } = printingSlice.actions;
+export const { previewPath } = printingSlice.actions;
 
 export default printingSlice.reducer;
