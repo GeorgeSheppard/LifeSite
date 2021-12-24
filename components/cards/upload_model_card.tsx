@@ -7,7 +7,6 @@ import { useState } from "react";
 import { useRouter } from "next/router";
 import useUpload from "../hooks/upload_to_server";
 import { IErrorUploadResponse } from "../../pages/api/filesUpload";
-import { useAppDispatch } from "../../store/hooks/hooks";
 
 export default function UploadCard() {
   const router = useRouter();

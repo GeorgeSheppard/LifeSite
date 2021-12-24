@@ -1,22 +1,25 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { IPrintingState } from "./printing";
 
-interface IUserState {
-  id?: string;
+interface IUserState {}
+
+export interface IFullStoreState {
+  user: IUserState;
+  printing: IPrintingState;
 }
 
 export const userSlice = createSlice({
   name: "user",
-  initialState: {
-    userId: undefined,
-  } as IUserState,
+  initialState: {} as IUserState,
   reducers: {
-    login: (state, action: PayloadAction<string>) => {
-      state.id = action.payload;
+    login: (state, action: PayloadAction<IFullStoreState>) => {
+      console.log("log in user slice");
+      state = action.payload.user;
     },
-    logout: (state) => (state.id = undefined),
+    logout: (state) => {},
   },
 });
 
-export const { login } = userSlice.actions;
+export const { login, logout } = userSlice.actions;
 
 export default userSlice.reducer;
