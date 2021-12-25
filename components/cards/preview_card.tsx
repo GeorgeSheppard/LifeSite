@@ -5,62 +5,59 @@ import Typography from "@mui/material/Typography";
 import * as React from "react";
 import Box from "@mui/material/Box";
 import { css } from "./styling";
-import { v4 as uuidv4 } from "uuid";
-import Link from "next/link";
+import { navigateToPreview } from "../printing/navigate_to_preview";
+import { useRouter } from "next/router";
+import { useAppSelector } from "../../store/hooks/hooks";
 
 export interface IPreviewCardProps {
-  filename: string;
-  description: string;
-  imageSrc: string;
   uuid: string;
 }
 
-export default function PreviewCard(props: IPreviewCardProps) {
-  return (
-    <Link href={`/printing/${props.uuid}`} passHref>
-      <Card sx={{ display: "flex", ...css }}>
-        <Box component="div" sx={{ display: "flex", flexDirection: "column" }}>
-          <CardContent sx={{ flex: "1 0 auto" }}>
-            <Typography component="div" variant="h5">
-              {props.filename}
-            </Typography>
-            <Typography
-              variant="subtitle1"
-              color="text.secondary"
-              component="div"
-            >
-              {props.description}
-            </Typography>
-          </CardContent>
-        </Box>
-        <Box component="div" sx={{ flexGrow: 1 }} />
-        <Box
-          component="div"
-          sx={{
-            display: "flex",
-            overflow: "hidden",
-            width: 150,
-            minWidth: 150,
-          }}
-        >
-          <CardMedia component="img" src={props.imageSrc} />
-        </Box>
-      </Card>
-    </Link>
-  );
+export interface IPreviewCardStylingProps {
+  sx?: any;
 }
 
-export const previewCards: IPreviewCardProps[] = [
-  {
-    filename: "Ash Pot",
-    description: "A pot to hold a small succulent.",
-    imageSrc: "/images/ash_pot_preview.png",
-    uuid: "id1sdlkfjas;ldkfjals;djf;laskdjf;l",
-  },
-  {
-    filename: "Stand",
-    description: "A stand to hold a globe.",
-    imageSrc: "/images/stand_preview.jpg",
-    uuid: "id2sdhfalksjdhflkasjhdfkljashdflkjashl",
-  },
-];
+export default function PreviewCard(
+  props: IPreviewCardProps & IPreviewCardStylingProps
+) {
+  const router = useRouter();
+  const { sx, uuid } = props;
+
+  const cardData = useAppSelector((store) => store.printing.models[uuid]);
+
+  return (
+    <Card
+      sx={{ ...sx, display: "flex", ...css }}
+      onClick={() => navigateToPreview(router, cardData.modelSrc, uuid)}
+    >
+      <Box component="div" sx={{ display: "flex", flexDirection: "column" }}>
+        <CardContent sx={{ flex: "1 0 auto" }}>
+          <Typography component="div" variant="h5">
+            {cardData.filename}
+          </Typography>
+          <Typography
+            variant="subtitle1"
+            color="text.secondary"
+            component="div"
+          >
+            {cardData.description}
+          </Typography>
+        </CardContent>
+      </Box>
+      <Box component="div" sx={{ flexGrow: 1 }} />
+      <Box
+        component="div"
+        sx={{
+          display: "flex",
+          overflow: "hidden",
+          width: 150,
+          minWidth: 150,
+        }}
+      >
+        {cardData?.imageSrc && (
+          <CardMedia component="img" src={cardData.imageSrc} />
+        )}
+      </Box>
+    </Card>
+  );
+}

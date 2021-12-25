@@ -1,10 +1,9 @@
 import Container from "@mui/material/Container";
 import Box from "@mui/material/Box";
 import { headerHeight } from "../../components/header";
-import { Canvas, useFrame } from "@react-three/fiber";
+import { Canvas } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
-import { useState, useCallback, createRef } from "react";
-import Button from "@mui/material/Button";
+import { useState, useCallback, createRef, MouseEvent } from "react";
 import {
   CanvasScreenshotter,
   ICanvasScreenshotterRef,
@@ -12,15 +11,26 @@ import {
 import Model from "../../components/printing/model";
 import { GetServerSideProps } from "next";
 import { loadModel } from "../../components/printing/model_loader";
+import { KeyboardArrowDown } from "@mui/icons-material";
+import { PreviewPopper } from "../../components/printing/preview_popper";
+import { IPreviewCardProps } from "../../components/cards/preview_card";
 
 export interface IPreview {
-  // Group is passed through props as json
+  /**
+   * Group is passed through props as json
+   */
   model: any;
+  /**
+   * UUID corresponding to the model entry, will be empty if it's new
+   */
+  uuid: string;
 }
 
 export default function Preview(props: IPreview) {
   const screenshotRef = createRef<ICanvasScreenshotterRef>();
-  const [screenshot, setScreenshot] = useState<string>();
+  const [screenshot, setScreenshot] = useState<string | null>(null);
+  const [popperOpen, setPopperOpen] = useState(false);
+  const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
 
   // TODO: Remove this awful hack, 48px is two times the padding on either side
   const canvasSideLength = `min(calc(100vh - ${headerHeight}px), 100vw - 48px)`;
@@ -31,6 +41,17 @@ export default function Preview(props: IPreview) {
       setScreenshot(screenshot);
     }
   }, [screenshotRef, setScreenshot]);
+
+  // Really moans if you put the actual event type of MouseEvent<SVGSVGElement>
+  const handlePopperClick = (event: MouseEvent<any>) => {
+    if (event.currentTarget) {
+      setAnchorEl(event.currentTarget);
+      if (!popperOpen) {
+        takeCanvasScreenshot();
+      }
+      setPopperOpen((prevState) => !prevState);
+    }
+  };
 
   return (
     <Container maxWidth={false}>
@@ -43,12 +64,22 @@ export default function Preview(props: IPreview) {
           margin: "auto",
         }}
       >
-        <Button component="div" onClick={takeCanvasScreenshot}>
-          Screenshot
-        </Button>
-        {/* just for temporarily displaying image will be removed */}
-        {/* eslint-disable-next-line*/}
-        {screenshot && <img src={screenshot} />}
+        <KeyboardArrowDown
+          component="svg"
+          sx={{
+            position: "relative",
+            left: `calc(${canvasSideLength} / 2 - 12px)`,
+          }}
+          onClick={handlePopperClick}
+        />
+        {anchorEl && screenshot && (
+          <PreviewPopper
+            open={popperOpen}
+            anchorEl={anchorEl}
+            screenshot={screenshot}
+            uuid={props.uuid}
+          />
+        )}
         <Canvas
           resize={{
             debounce: 0,
@@ -69,7 +100,9 @@ export default function Preview(props: IPreview) {
   );
 }
 
-export const getServerSideProps: GetServerSideProps = async (context) => {
+export const getServerSideProps: GetServerSideProps<IPreview> = async (
+  context
+) => {
   const path = context.query.writePath;
 
   if (!path || path instanceof Array) {
@@ -95,6 +128,10 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   }
 
   return {
-    props: { model: model.toJSON() },
+    props: {
+      model: model.toJSON(),
+      // I would prefer to return possibly undefined, but this crashes if you do that
+      uuid: context.query.uuid as any as string,
+    },
   };
 };

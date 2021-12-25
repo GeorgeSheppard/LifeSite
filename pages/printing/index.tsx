@@ -4,10 +4,13 @@
 
 import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid";
-import PreviewCard, { previewCards } from "../../components/cards/preview_card";
+import PreviewCard from "../../components/cards/preview_card";
 import UploadCard from "../../components/cards/upload_model_card";
+import { useAppSelector } from "../../store/hooks/hooks";
 
 export default function Printing() {
+  const cardUuids = useAppSelector((store) => store.printing.cards);
+
   return (
     <main>
       <Container sx={{ py: 8 }} maxWidth="md">
@@ -15,9 +18,9 @@ export default function Printing() {
           <Grid item key="upload" xs={12} sm={10} md={2}>
             <UploadCard />
           </Grid>
-          {previewCards.map((card) => (
-            <Grid item key={card.filename} xs={12} sm={10} md={2}>
-              <PreviewCard {...card} />
+          {cardUuids.map((uuid) => (
+            <Grid item key={uuid} xs={12} sm={10} md={2}>
+              <PreviewCard uuid={uuid} />
             </Grid>
           ))}
         </Grid>
