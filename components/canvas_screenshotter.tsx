@@ -5,6 +5,7 @@ export interface ICanvasScreenshotter {}
 
 export interface ICanvasScreenshotterRef {
   takeScreenshot(): string;
+  getBlob(callback: BlobCallback): void;
 }
 
 export const CanvasScreenshotter = forwardRef(function CanvasScreenshot(
@@ -17,12 +18,20 @@ export const CanvasScreenshotter = forwardRef(function CanvasScreenshot(
     return gl.domElement.toDataURL();
   }, [gl]);
 
+  const getCanvasBlob = useCallback(
+    (callback: BlobCallback) => {
+      gl.domElement.toBlob(callback);
+    },
+    [gl]
+  );
+
   useImperativeHandle(
     ref,
     () => ({
       takeScreenshot: takeCanvasScreenshot,
+      getBlob: (callback: BlobCallback) => getCanvasBlob(callback),
     }),
-    [takeCanvasScreenshot]
+    [takeCanvasScreenshot, getCanvasBlob]
   );
 
   return null;

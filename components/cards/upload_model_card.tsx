@@ -3,7 +3,7 @@ import { css } from "./styling";
 import UploadIcon from "@mui/icons-material/Upload";
 import Box from "@mui/material/Box";
 import LinearProgress from "@mui/material/LinearProgress";
-import { useState } from "react";
+import { useState, useCallback, ChangeEvent } from "react";
 import { useRouter } from "next/router";
 import useUpload from "../hooks/upload_to_server";
 import {
@@ -28,13 +28,23 @@ export default function UploadCard() {
     folder: "models",
   });
 
+  const getAndUploadFile = useCallback(
+    (event: ChangeEvent<HTMLInputElement>) => {
+      const file = event.target.files?.[0];
+      if (file) {
+        uploadFile(file);
+      }
+    },
+    [uploadFile]
+  );
+
   return (
     <>
       <input
         type="file"
         id="upload-input"
         style={{ display: "none" }}
-        onChange={uploadFile}
+        onChange={getAndUploadFile}
         multiple={false}
         accept=".stl"
       />

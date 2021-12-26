@@ -1,5 +1,4 @@
-import { ChangeEvent, ChangeEventHandler } from "react";
-import { useState, useCallback } from "react";
+import { useCallback } from "react";
 import { v4 as uuidv4 } from "uuid";
 import {
   IErrorUploadResponse,
@@ -8,7 +7,7 @@ import {
 } from "../../pages/api/filesUpload";
 
 export interface IUploadProps {
-  onStartUpload?: (file: File) => void;
+  onStartUpload?: (file: File | string) => void;
   onUploadError?: (response: IErrorUploadResponse) => void;
   onUploadFinished?: (response: IValidUploadResponse) => void;
   folder: string;
@@ -32,19 +31,23 @@ export default function useUpload(props: IUploadProps) {
   const { onStartUpload, onUploadFinished, onUploadError } = props;
 
   const createFileData = useCallback(
-    (file: File) => {
+    (file: File | string) => {
+      let name = "";
+      if (file instanceof File) {
+        name = file.name;
+      }
+
       return {
-        file,
+        file: file,
         folder: props.folder,
-        newFilename: uuidv4() + "_" + file.name,
+        newFilename: uuidv4() + "_" + name,
       };
     },
     [props.folder]
   );
 
   const uploadFile = useCallback(
-    async (event: ChangeEvent<HTMLInputElement>) => {
-      const targetFile = event.target.files?.[0];
+    async (targetFile: File | string, newFilename?: string) => {
       if (targetFile) {
         onStartUpload?.(targetFile);
         const fileData = createFileData(targetFile);
@@ -52,7 +55,7 @@ export default function useUpload(props: IUploadProps) {
         const body = new FormData();
         body.set("folder", fileData.folder);
         body.set("file", fileData.file);
-        body.set("newFilename", fileData.newFilename);
+        body.set("newFilename", newFilename ?? fileData.newFilename);
 
         const response = await fetch("/api/filesUpload", {
           method: "POST",

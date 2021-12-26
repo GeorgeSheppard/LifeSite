@@ -29,7 +29,7 @@ export interface IUploadResponse
 // TODO: Apparently this is resolving without sending a response (despite the fact I am reading the response...)
 const post = async (req: NextApiRequest, res: NextApiResponse) => {
   const session = (await getSession({ req })) as CustomSession;
-  if (!session.id) {
+  if (!session?.id) {
     res.json({ error: "Unauthorized" });
     return res.status(401).end();
   }
@@ -45,7 +45,7 @@ const post = async (req: NextApiRequest, res: NextApiResponse) => {
     }
 
     // TODO: Why does formidable still have the type as [] when I am uploading singular files
-    const file = files.file as formidable.File;
+    const file = (files.file ?? fields.file) as formidable.File;
     const folder = fields.folder as string;
     const newFilename = fields.newFilename as string;
     const writePath = await saveFile(file, session.id, folder, newFilename);
@@ -60,6 +60,7 @@ const saveFile = async (
   newFilename: string
 ) => {
   const data = fs.readFileSync(file.filepath);
+  await fs.unlinkSync(file.filepath);
 
   const relativeFolder = `${userFolder}/${subFolder}`;
   const folderPath = `./public/${relativeFolder}`;
@@ -69,7 +70,6 @@ const saveFile = async (
 
   const writePath = `${folderPath}/${newFilename}`;
   fs.writeFileSync(writePath, data);
-  await fs.unlinkSync(file.filepath);
   // NB: When loading assets only care relative to "public"
   return `/${relativeFolder}/${newFilename}`;
 };

@@ -3,7 +3,7 @@ import Box from "@mui/material/Box";
 import { headerHeight } from "../../components/header";
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
-import { useState, useCallback, createRef, MouseEvent } from "react";
+import { useState, createRef, MouseEvent } from "react";
 import {
   CanvasScreenshotter,
   ICanvasScreenshotterRef,
@@ -13,7 +13,6 @@ import { GetServerSideProps } from "next";
 import { loadModel } from "../../components/printing/model_loader";
 import { KeyboardArrowDown } from "@mui/icons-material";
 import { PreviewPopper } from "../../components/printing/preview_popper";
-import { IPreviewCardProps } from "../../components/cards/preview_card";
 
 export interface IPreview {
   /**
@@ -28,27 +27,16 @@ export interface IPreview {
 
 export default function Preview(props: IPreview) {
   const screenshotRef = createRef<ICanvasScreenshotterRef>();
-  const [screenshot, setScreenshot] = useState<string | null>(null);
   const [popperOpen, setPopperOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
 
   // TODO: Remove this awful hack, 48px is two times the padding on either side
   const canvasSideLength = `min(calc(100vh - ${headerHeight}px), 100vw - 48px)`;
 
-  const takeCanvasScreenshot = useCallback(() => {
-    if (screenshotRef.current) {
-      const screenshot = screenshotRef.current.takeScreenshot();
-      setScreenshot(screenshot);
-    }
-  }, [screenshotRef, setScreenshot]);
-
   // Really moans if you put the actual event type of MouseEvent<SVGSVGElement>
   const handlePopperClick = (event: MouseEvent<any>) => {
     if (event.currentTarget) {
       setAnchorEl(event.currentTarget);
-      if (!popperOpen) {
-        takeCanvasScreenshot();
-      }
       setPopperOpen((prevState) => !prevState);
     }
   };
@@ -72,11 +60,12 @@ export default function Preview(props: IPreview) {
           }}
           onClick={handlePopperClick}
         />
-        {anchorEl && screenshot && (
+        {/* Want to remount component when it opens */}
+        {anchorEl && popperOpen && screenshotRef && (
           <PreviewPopper
-            open={popperOpen}
+            open={true}
             anchorEl={anchorEl}
-            screenshot={screenshot}
+            screenshotRef={screenshotRef}
             uuid={props.uuid}
           />
         )}

@@ -9,21 +9,58 @@ import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
 import TextField from "@mui/material/TextField";
 import { useRouter } from "next/router";
-import { ChangeEvent, useCallback, useState } from "react";
+import {
+  ChangeEvent,
+  RefObject,
+  useCallback,
+  useState,
+  useEffect,
+} from "react";
 import { useAppDispatch, useAppSelector } from "../../store/hooks/hooks";
 import { addModel } from "../../store/reducers/printing";
 import { v4 as uuidv4 } from "uuid";
+import useUpload from "../hooks/upload_to_server";
+import { IValidUploadResponse } from "../../pages/api/filesUpload";
+import { ICanvasScreenshotterRef } from "../canvas_screenshotter";
 
 export interface IPreviewPopperProps {
   open: boolean;
   anchorEl: HTMLElement;
-  screenshot: string;
+  screenshotRef: RefObject<ICanvasScreenshotterRef>;
   uuid: string;
 }
 
 export const PreviewPopper = (props: IPreviewPopperProps) => {
+  const { screenshotRef } = props;
+
+  const [screenshot, setScreenshot] = useState<string | undefined>();
+
+  useEffect(() => {
+    if (screenshotRef.current) {
+      setScreenshot(screenshotRef.current.takeScreenshot());
+    }
+  }, [screenshotRef, setScreenshot]);
+
   const router = useRouter();
   const dispatch = useAppDispatch();
+  const { uploadFile } = useUpload({
+    folder: "images",
+    onUploadFinished: (response: IValidUploadResponse) => {
+      dispatch(
+        addModel({
+          filename: name,
+          description,
+          imageSrc: response.writePath,
+          // TODO: Better way of managing types with nextjs, seems to be very hard
+          // to work with, need custom type definitions for the pages
+          modelSrc: router.query.writePath as any as string,
+          uuid,
+        })
+      );
+      onExit();
+    },
+    onUploadError: (err) => console.log(err),
+  });
 
   const existingData = useAppSelector((store) => {
     if (props.uuid.length > 0) {
@@ -35,44 +72,40 @@ export const PreviewPopper = (props: IPreviewPopperProps) => {
   const [description, setDescription] = useState<string>(
     existingData?.description ?? ""
   );
+  const [uuid] = useState(existingData?.uuid ?? uuidv4());
 
   const onExit = useCallback(() => {
     router.push("/printing");
   }, [router]);
 
-  const onSave = useCallback(() => {
-    dispatch(
-      addModel({
-        filename: name,
-        description,
-        imageSrc: props.screenshot,
-        // TODO: Better way of managing types with nextjs, seems to be very hard
-        // to work with, need custom type definitions for the pages
-        modelSrc: router.query.writePath as any as string,
-        uuid: props.uuid.length > 0 ? props.uuid : uuidv4(),
-      })
-    );
-    onExit();
-  }, [
-    dispatch,
-    props.screenshot,
-    name,
-    description,
-    router.query.writePath,
-    onExit,
-    props.uuid,
-  ]);
+  const onSave = useCallback(
+    (blob: Blob | null) => {
+      const filename = `${uuid}_preview.png`;
+      if (blob) {
+        uploadFile(new File([blob], filename), filename);
+      }
+    },
+    [uploadFile, uuid]
+  );
 
   return (
     <Popper id="preview-popper" open={props.open} anchorEl={props.anchorEl}>
-      <Paper elevation={3} sx={{ width: "60vw" }}>
+      <Paper elevation={3} sx={{ width: "60vw", maxWidth: "550px" }}>
         <Card component="div">
-          <Box component="div" sx={{ display: "flex", height: 150 }}>
+          <Box
+            component="div"
+            sx={{
+              display: "flex",
+              flexGrow: 1,
+              height: 150,
+              justifyContent: "space-between",
+            }}
+          >
             <Box
               component="div"
               sx={{ display: "flex", flexDirection: "column" }}
             >
-              <CardContent sx={{ flex: "1 0 auto" }}>
+              <CardContent sx={{ flexGrow: 1, flexShrink: 0 }}>
                 <TextField
                   id="standard-basic"
                   label="Name"
@@ -102,12 +135,13 @@ export const PreviewPopper = (props: IPreviewPopperProps) => {
               component="div"
               sx={{
                 display: "flex",
+                flexShrink: 1,
                 overflow: "hidden",
                 width: 150,
                 minWidth: 150,
               }}
             >
-              <CardMedia component="img" src={props.screenshot} />
+              <CardMedia component="img" src={screenshot} />
             </Box>
           </Box>
           <Box
@@ -115,6 +149,7 @@ export const PreviewPopper = (props: IPreviewPopperProps) => {
             sx={{
               display: "flex",
               justifyContent: "space-between",
+              paddingTop: "10px",
               paddingBottom: "16px",
               paddingLeft: "16px",
               paddingRight: "16px",
@@ -126,6 +161,7 @@ export const PreviewPopper = (props: IPreviewPopperProps) => {
               startIcon={<CancelIcon />}
               sx={{
                 width: "25vw",
+                maxWidth: 240,
               }}
               onClick={onExit}
             >
@@ -137,8 +173,9 @@ export const PreviewPopper = (props: IPreviewPopperProps) => {
               endIcon={<SaveIcon />}
               sx={{
                 width: "25vw",
+                maxWidth: 240,
               }}
-              onClick={onSave}
+              onClick={() => screenshotRef.current?.getBlob(onSave)}
               disabled={name.length === 0}
             >
               Save
