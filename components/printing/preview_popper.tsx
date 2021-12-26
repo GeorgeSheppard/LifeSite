@@ -17,7 +17,7 @@ import {
   useEffect,
 } from "react";
 import { useAppDispatch, useAppSelector } from "../../store/hooks/hooks";
-import { addModel } from "../../store/reducers/printing";
+import { addModel, IModelProps } from "../../store/reducers/printing";
 import { v4 as uuidv4 } from "uuid";
 import useUpload from "../hooks/upload_to_server";
 import { IValidUploadResponse } from "../../pages/api/filesUpload";
@@ -28,10 +28,11 @@ export interface IPreviewPopperProps {
   anchorEl: HTMLElement;
   screenshotRef: RefObject<ICanvasScreenshotterRef>;
   uuid: string;
+  existingData?: IModelProps;
 }
 
 export const PreviewPopper = (props: IPreviewPopperProps) => {
-  const { screenshotRef } = props;
+  const { screenshotRef, existingData } = props;
 
   const [screenshot, setScreenshot] = useState<string | undefined>();
 
@@ -55,17 +56,12 @@ export const PreviewPopper = (props: IPreviewPopperProps) => {
           // to work with, need custom type definitions for the pages
           modelSrc: router.query.writePath as any as string,
           uuid,
+          cameraParams: screenshotRef.current?.getCameraParams(),
         })
       );
       onExit();
     },
     onUploadError: (err) => console.log(err),
-  });
-
-  const existingData = useAppSelector((store) => {
-    if (props.uuid.length > 0) {
-      return store.printing.models[props.uuid];
-    }
   });
 
   const [name, setName] = useState<string>(existingData?.filename ?? "");

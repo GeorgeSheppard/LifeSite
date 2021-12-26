@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { IPreviewCardProps } from "../../components/cards/preview_card";
+import { ICameraParams } from "../../components/canvas_screenshotter";
 import { IFullStoreState } from "./user";
 
 export interface IModelProps {
@@ -11,6 +11,7 @@ export interface IModelProps {
   imageSrc?: string;
   modelSrc: string;
   uuid: string;
+  cameraParams?: ICameraParams;
 }
 
 export interface IPrintingState {

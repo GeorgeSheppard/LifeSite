@@ -6,13 +6,20 @@ export interface ICanvasScreenshotter {}
 export interface ICanvasScreenshotterRef {
   takeScreenshot(): string;
   getBlob(callback: BlobCallback): void;
+  getCameraParams(): ICameraParams;
+}
+
+export interface ICameraParams {
+  zoom: number;
+  position: [x: number, y: number, z: number];
+  quaternion: [x: number, y: number, z: number, w: number];
 }
 
 export const CanvasScreenshotter = forwardRef(function CanvasScreenshot(
   props: ICanvasScreenshotter,
   ref: Ref<ICanvasScreenshotterRef>
 ) {
-  const { gl } = useThree();
+  const { gl, camera } = useThree();
 
   const takeCanvasScreenshot = useCallback(() => {
     return gl.domElement.toDataURL();
@@ -30,8 +37,26 @@ export const CanvasScreenshotter = forwardRef(function CanvasScreenshot(
     () => ({
       takeScreenshot: takeCanvasScreenshot,
       getBlob: (callback: BlobCallback) => getCanvasBlob(callback),
+      getCameraParams: (): ICameraParams => {
+        return {
+          zoom: camera.zoom,
+          position: camera.position.toArray(),
+          quaternion: camera.quaternion.toArray() as [
+            x: number,
+            y: number,
+            z: number,
+            w: number
+          ],
+        };
+      },
     }),
-    [takeCanvasScreenshot, getCanvasBlob]
+    [
+      takeCanvasScreenshot,
+      getCanvasBlob,
+      camera.position,
+      camera.quaternion,
+      camera.zoom,
+    ]
   );
 
   return null;

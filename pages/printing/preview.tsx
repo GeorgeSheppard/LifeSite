@@ -6,6 +6,7 @@ import { OrbitControls } from "@react-three/drei";
 import { useState, createRef, MouseEvent } from "react";
 import {
   CanvasScreenshotter,
+  ICameraParams,
   ICanvasScreenshotterRef,
 } from "../../components/canvas_screenshotter";
 import Model from "../../components/printing/model";
@@ -13,6 +14,8 @@ import { GetServerSideProps } from "next";
 import { loadModel } from "../../components/printing/model_loader";
 import { KeyboardArrowDown } from "@mui/icons-material";
 import { PreviewPopper } from "../../components/printing/preview_popper";
+import { useAppSelector } from "../../store/hooks/hooks";
+import { Quaternion, Vector3 } from "three";
 
 export interface IPreview {
   /**
@@ -29,6 +32,20 @@ export default function Preview(props: IPreview) {
   const screenshotRef = createRef<ICanvasScreenshotterRef>();
   const [popperOpen, setPopperOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
+  const existingData = useAppSelector((store) => {
+    if (props.uuid.length > 0) {
+      return store.printing.models[props.uuid];
+    }
+  });
+  const [cameraParams] = useState<ICameraParams>(() => {
+    return (
+      existingData?.cameraParams ?? {
+        position: [0.5, 0.5, 4],
+        quaternion: [0, 0, 0, 1],
+        zoom: 1,
+      }
+    );
+  });
 
   // TODO: Remove this awful hack, 48px is two times the padding on either side
   const canvasSideLength = `min(calc(100vh - ${headerHeight}px), 100vw - 48px)`;
@@ -66,6 +83,7 @@ export default function Preview(props: IPreview) {
             open={true}
             anchorEl={anchorEl}
             screenshotRef={screenshotRef}
+            existingData={existingData}
             uuid={props.uuid}
           />
         )}
@@ -75,7 +93,12 @@ export default function Preview(props: IPreview) {
             scroll: false,
           }}
           gl={{ preserveDrawingBuffer: true }}
-          camera={{ position: [0.5, 0.5, 4], fov: 50 }}
+          camera={{
+            position: cameraParams.position,
+            zoom: cameraParams.zoom,
+            quaternion: cameraParams.quaternion,
+            fov: 50,
+          }}
           dpr={window.devicePixelRatio}
         >
           <CanvasScreenshotter ref={screenshotRef} />
