@@ -40,11 +40,23 @@ export default function PreviewCard(
     [router, cardData.modelSrc, uuid]
   );
   const deleteModelDispatch = useCallback(
-    (event: MouseEvent<SVGElement>) => {
+    async (event: MouseEvent<SVGElement>) => {
       dispatch(deleteModel(uuid));
       event.stopPropagation();
+
+      const toDelete = [cardData.modelSrc];
+      if (cardData.imageSrc) {
+        toDelete.push(cardData.imageSrc);
+      }
+      const response = await fetch("/api/filesDelete", {
+        method: "DELETE",
+        body: JSON.stringify(toDelete),
+      });
+      if (!response.ok) {
+        console.error(await response.json());
+      }
     },
-    [dispatch, uuid]
+    [dispatch, uuid, cardData.modelSrc, cardData.imageSrc]
   );
   const onDownload = useCallback(
     (event: MouseEvent<SVGElement>) => {
