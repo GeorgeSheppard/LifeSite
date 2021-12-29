@@ -2,6 +2,8 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { ICameraParams } from "../../components/canvas_screenshotter";
 import { IFullStoreState } from "./user";
 
+export type ModelUUID = string;
+
 export interface IModelProps {
   filename: string;
   description: string;
@@ -10,7 +12,7 @@ export interface IModelProps {
    */
   imageSrc?: string;
   modelSrc: string;
-  uuid: string;
+  uuid: ModelUUID;
   cameraParams?: ICameraParams;
 }
 
@@ -25,7 +27,7 @@ export interface IPrintingState {
    * a uuid needs to be passed around, and when updating state don't have to find the index
    * of the existing card in the cards list
    */
-  models: { [key: string]: IModelProps };
+  models: { [key: ModelUUID]: IModelProps };
 }
 
 const initialState: IPrintingState = {
@@ -45,6 +47,11 @@ export const printingSlice = createSlice({
         state.cards.unshift(action.payload.uuid);
       }
     },
+    deleteModel: (state, action: PayloadAction<ModelUUID>) => {
+      const uuid = action.payload;
+      delete state.models[uuid];
+      state.cards = state.cards.filter((cardUuid) => cardUuid !== uuid);
+    },
   },
   extraReducers: {
     "user/login": (state, action: PayloadAction<IFullStoreState>) => {
@@ -56,6 +63,6 @@ export const printingSlice = createSlice({
   },
 });
 
-export const { addModel } = printingSlice.actions;
+export const { addModel, deleteModel } = printingSlice.actions;
 
 export default printingSlice.reducer;
