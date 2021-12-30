@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { ICameraParams } from "../../components/canvas_screenshotter";
-import { IFullStoreState } from "./user";
+import { IFullStoreState } from "../store";
 
 export type ModelUUID = string;
 

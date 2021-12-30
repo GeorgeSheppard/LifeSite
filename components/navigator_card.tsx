@@ -41,13 +41,6 @@ export default function NavigatorCard(props: INavigatorCardProps) {
   );
 }
 
-const fillerCard: INavigatorCardProps = {
-  title: "Title",
-  description: "Here is a reasonable length description",
-  imageSrc: "/images/landscape.jfif",
-  href: "/",
-};
-
 export const navigatorCards: INavigatorCardProps[] = [
   {
     title: "Plants",
@@ -79,8 +72,4 @@ export const navigatorCards: INavigatorCardProps[] = [
     imageSrc: "/images/path-finder.jpg",
     href: "/path_finder",
   },
-  fillerCard,
-  fillerCard,
-  fillerCard,
-  fillerCard,
 ];
