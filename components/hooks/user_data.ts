@@ -2,9 +2,9 @@ import { CustomSession } from "../../pages/api/auth/[...nextauth]";
 import { useAppDispatch } from "../../store/hooks/hooks";
 import { useState, useEffect, useCallback } from "react";
 import { useSession } from "next-auth/react";
-import { IFullStoreState, login } from "../../store/reducers/user";
+import { login } from "../../store/reducers/user";
 import { useRouter } from "next/router";
-import { store } from "../../store/store";
+import { IFullStoreState, store } from "../../store/store";
 import useUpload from "./upload_to_server";
 
 export const useUserData = () => {
@@ -24,21 +24,26 @@ export const useUserData = () => {
       let data;
       try {
         data = await fetch(`${session.id}/profile/profile.json`);
-        if (!data.ok) {
-          console.log("using default profile");
-          data = await fetch("defaultProfile.json");
-        }
       } catch (err) {
         console.error(err);
         return;
       }
 
-      if (data.ok) {
+      if (data.ok && !gotUserData) {
         const json: IFullStoreState = await data.json();
-        setGotUserData(true);
-        dispatch(login(json));
+        if (json) {
+          setGotUserData(true);
+          dispatch(login(json));
+        }
+      } else if (!data.ok && !gotUserData) {
+        setTimeout(() => fetchUserData(), 500);
       }
     };
+
+    if (!session?.id && gotUserData) {
+      // NB: No session id, user has logged out
+      setGotUserData(false);
+    }
 
     if (session?.id && !gotUserData) {
       fetchUserData();
@@ -47,15 +52,18 @@ export const useUserData = () => {
 
   const storeUserData = useCallback(() => {
     // Only need to save if a user is logged in
-    if (session?.id) {
+    if (session?.id && gotUserData) {
       const data = store.getState();
-      const blob = new Blob([JSON.stringify(data)], {
+      const blob = new Blob([JSON.stringify(data, null, 2)], {
         type: "application/json",
       });
       const file = new File([blob], "profile.json");
       uploadFile(file, "profile.json");
     }
-  }, [uploadFile, session?.id]);
+    // NB: From experience session.id does not guarantee everything has gone through
+    // make sure we have successfully retrieved the data otherwise it will override
+    // the properties
+  }, [uploadFile, session?.id, gotUserData]);
 
   // Save the user data everytime the route changes
   // And if the user closes the webpage

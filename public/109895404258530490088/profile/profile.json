@@ -1,1 +1,58 @@
-{"printing":{"cards":[],"models":{}},"user":{},"plants":{"cards":[],"plants":[]}}
+{
+  "printing": {
+    "cards": [
+      "0d17f029-75a7-44a9-9969-67bc8a050764"
+    ],
+    "models": {
+      "0d17f029-75a7-44a9-9969-67bc8a050764": {
+        "filename": "Anenometer mount",
+        "description": "Mount for attaching anenometer to balcony",
+        "imageSrc": "/109895404258530490088/images/0d17f029-75a7-44a9-9969-67bc8a050764_preview.png",
+        "modelSrc": "/109895404258530490088/models/b2955091-be9b-4d55-b6c9-172a1f00cb1b_adad.stl",
+        "uuid": "0d17f029-75a7-44a9-9969-67bc8a050764",
+        "cameraParams": {
+          "zoom": 1,
+          "position": [
+            2.3758176760780647,
+            -2.1941841892789133,
+            2.457853965058456
+          ],
+          "quaternion": [
+            0.2609439185408523,
+            0.35967674682697504,
+            -0.1055015113615818,
+            0.8896124663407833
+          ]
+        }
+      }
+    }
+  },
+  "user": {
+    "theme": "dark"
+  },
+  "plants": {
+    "cards": [
+      "1f7b7489-49cb-4994-9d04-660f513f331a"
+    ],
+    "plants": {
+      "1f7b7489-49cb-4994-9d04-660f513f331a": {
+        "uuid": "1f7b7489-49cb-4994-9d04-660f513f331a",
+        "name": "Lego bonsai",
+        "description": "",
+        "lightLevelKey": "INDIRECT_SUN",
+        "wateringKey": "LITTLE",
+        "temperatureRange": [
+          0,
+          35
+        ],
+        "images": [
+          {
+            "image": "/109895404258530490088/images/6f67eff3-22cc-403b-9b0a-594cc36a9d2e_IMG_20211228_165920_BURST001_COVER.jpg",
+            "timestamp": 1641420514200
+          }
+        ],
+        "reminders": []
+      }
+    }
+  }
+}

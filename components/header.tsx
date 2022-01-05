@@ -11,7 +11,10 @@ import { signIn, signOut, useSession } from "next-auth/react";
 import { Avatar, Menu, MenuItem } from "@mui/material";
 import { useState, useCallback } from "react";
 import { useRouter } from "next/router";
-import Link from "next/link";
+import LightModeIcon from "@mui/icons-material/LightMode";
+import DarkModeIcon from "@mui/icons-material/DarkMode";
+import { useAppDispatch, useAppSelector } from "../store/hooks/hooks";
+import { toggleTheme, ThemeKey } from "../store/reducers/user";
 
 // TODO: Min height in MUI is set to 64 so don't go lower than this, make it so I can though
 export const headerHeight = 65;
@@ -19,6 +22,8 @@ export const headerHeight = 65;
 export default function Header() {
   const session = useSession();
   const router = useRouter();
+  const dispatch = useAppDispatch();
+  const theme = useAppSelector((store) => store.user.theme);
 
   const userImage = session.data?.user?.image;
 
@@ -36,11 +41,13 @@ export default function Header() {
     closeDropdown();
     signOut();
   }, [closeDropdown]);
-
   const profile = useCallback(() => {
     closeDropdown();
     router.push("/profile");
   }, [closeDropdown, router]);
+  const onToggleTheme = useCallback(() => {
+    dispatch(toggleTheme());
+  }, [dispatch]);
 
   return (
     <AppBar position="relative">
@@ -59,6 +66,9 @@ export default function Header() {
         </Typography>
         <Box component="div" sx={{ flexGrow: 1 }} />
         <Box component="div" sx={{ display: "flex" }}>
+          <IconButton size="large" color="inherit" onClick={onToggleTheme}>
+            {theme === ThemeKey.LIGHT ? <LightModeIcon /> : <DarkModeIcon />}
+          </IconButton>
           <IconButton size="large" color="inherit">
             <Badge badgeContent={17} color="error">
               <NotificationsIcon />

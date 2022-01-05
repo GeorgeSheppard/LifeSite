@@ -44,7 +44,7 @@ export default function Plants() {
               sx={{
                 ...css,
                 height: "100%",
-                minHeight: "30vw",
+                minHeight: plantUuids.length === 0 ? "30vw" : "100%",
                 display: "flex",
               }}
               onClick={() => setPlantSelected(uuidv4())}

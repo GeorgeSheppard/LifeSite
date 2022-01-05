@@ -1,10 +1,9 @@
-import { ThemeProvider } from "@mui/material/styles";
 import { Session } from "next-auth";
 import { SessionProvider } from "next-auth/react";
 import { Provider } from "react-redux";
 import Layout, { ILayoutProps } from "../components/layout";
-import { theme } from "./_theme";
 import { store } from "../store/store";
+import { ThemeController } from "./_theme";
 
 export interface IMyLifeProps {
   Component: React.JSXElementConstructor<ILayoutProps>;
@@ -17,13 +16,13 @@ export default function MyLife(props: IMyLifeProps) {
 
   return (
     <Provider store={store}>
-      <ThemeProvider theme={theme}>
+      <ThemeController>
         <SessionProvider session={session}>
           <Layout>
             <Component {...pageProps} />
           </Layout>
         </SessionProvider>
-      </ThemeProvider>
+      </ThemeController>
     </Provider>
   );
 }
