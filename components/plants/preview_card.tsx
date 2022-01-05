@@ -62,33 +62,29 @@ export const PlantPreview = (props: IPlantPreview) => {
     <Card sx={{ ...css, height: "100%" }} onClick={() => props.select?.()}>
       <CardActionArea>
         <CardHeader title={plant.name} />
-        {plant.images.length > 0 ? (
-          <div style={{ position: "relative" }}>
-            <CardMedia
-              src={plant.images[imageIndex].image}
-              component="img"
-              height="300px"
-            />
-            <IconButton
-              onClick={changeIndex(-1)}
-              sx={{ position: "absolute", top: "50%" }}
-            >
-              <KeyboardArrowLeftIcon component="svg" />
-            </IconButton>
-            <IconButton
-              onClick={changeIndex(1)}
-              sx={{ position: "absolute", top: "50%", right: 0 }}
-            >
-              <KeyboardArrowRightIcon component="svg" />
-            </IconButton>
-          </div>
-        ) : (
+        <div style={{ position: "relative" }}>
           <CardMedia
-            src={"/images/plants.jpg"}
+            src={plant.images[imageIndex].image}
             component="img"
             height="300px"
           />
-        )}
+          {plant.images.length > 1 && (
+            <>
+              <IconButton
+                onClick={changeIndex(-1)}
+                sx={{ position: "absolute", top: "50%" }}
+              >
+                <KeyboardArrowLeftIcon component="svg" />
+              </IconButton>
+              <IconButton
+                onClick={changeIndex(1)}
+                sx={{ position: "absolute", top: "50%", right: 0 }}
+              >
+                <KeyboardArrowRightIcon component="svg" />
+              </IconButton>
+            </>
+          )}
+        </div>
         <Box
           component="div"
           sx={{
