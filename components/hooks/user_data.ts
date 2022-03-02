@@ -19,6 +19,12 @@ export const useUserData = () => {
   });
   const [gotUserData, setGotUserData] = useState(false);
 
+  // TODO: Use session id to trigger collection of data
+  // then use redux store as source of truth
+  // dump the response into redux then replace useSession hooks
+  // This will avoid bugs with the project.json being overridden,
+  // I believe this happens when the session timings and redux timing are slightly
+  // out of sync so best to stick to one
   useEffect(() => {
     const fetchUserData = async () => {
       let data;

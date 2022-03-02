@@ -2,11 +2,13 @@ import { configureStore } from "@reduxjs/toolkit";
 import printing, { IPrintingState } from "./reducers/printing";
 import user, { IUserState } from "./reducers/user";
 import plants, { IPlantsState } from "./reducers/plants";
+import recipes, { IRecipesState } from "./reducers/food/recipes";
 
 export interface IFullStoreState {
   user: IUserState;
   printing: IPrintingState;
   plants: IPlantsState;
+  recipes: IRecipesState;
 }
 
 // TODO: Write some checks to make sure defaultProfile and any profiles conform
@@ -17,6 +19,7 @@ export const store = configureStore({
     printing,
     user,
     plants,
+    recipes,
   },
 });
 

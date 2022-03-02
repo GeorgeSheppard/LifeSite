@@ -1,5 +1,7 @@
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { ImagePath } from "../types";
 import { Quantity, Unit } from "./units";
+import { IFullStoreState } from "../../store";
 
 export type IIngredientName = string;
 
@@ -30,7 +32,10 @@ export interface IMethodStep {
   instruction: string;
 }
 
+export type RecipeUuid = string;
+
 export interface IDisplayRecipe {
+  uuid: RecipeUuid;
   /**
    * Recipes can be composed of multiple parts, e.g. the sauce for a dish
    * It is useful to seperate so that if something is batched cooked we can
@@ -42,6 +47,7 @@ export interface IDisplayRecipe {
 }
 
 export const exampleDisplayRecipe: IDisplayRecipe = {
+  uuid: "12345",
   recipeAspects: [
     {
       title: "Sauce",
@@ -73,3 +79,41 @@ export const exampleDisplayRecipe: IDisplayRecipe = {
   images: [{ image: "photo_of_dish.png" }, { image: "photo_of_sauce.png" }],
   method: [{ instruction: "Cook the dish" }, { instruction: "Enjoy" }],
 };
+
+export interface IRecipesState {
+  cards: RecipeUuid[];
+  recipes: { [key: RecipeUuid]: IDisplayRecipe };
+}
+
+const initialState: IRecipesState = {
+  cards: [exampleDisplayRecipe.uuid],
+  recipes: { [exampleDisplayRecipe.uuid]: exampleDisplayRecipe },
+};
+
+export const foodSlice = createSlice({
+  name: "food",
+  initialState,
+  reducers: {
+    addOrUpdateRecipe: (state, action: PayloadAction<IDisplayRecipe>) => {
+      const recipe = action.payload;
+      const { uuid } = recipe;
+      const existsAlready = uuid in state.recipes;
+      state.recipes[uuid] = recipe;
+      if (!existsAlready) {
+        state.cards.unshift(uuid);
+      }
+    },
+  },
+  extraReducers: {
+    "user/login": (state, action: PayloadAction<IFullStoreState>) => {
+      return action.payload.recipes ?? initialState;
+    },
+    "user/logout": (state) => {
+      return initialState;
+    },
+  },
+});
+
+export const { addOrUpdateRecipe } = foodSlice.actions;
+
+export default foodSlice.reducer;
