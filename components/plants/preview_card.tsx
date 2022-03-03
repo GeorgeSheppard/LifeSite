@@ -25,6 +25,7 @@ import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import WbSunnyIcon from "@mui/icons-material/WbSunny";
 
 import Image from "next/image";
+import { WrappedCardMedia } from "../cards/wrapped_card_media";
 
 export interface IPlantPreview {
   uuid: PlantUuid;
@@ -33,21 +34,6 @@ export interface IPlantPreview {
 
 export const PlantPreview = (props: IPlantPreview) => {
   const plant = useAppSelector((store) => store.plants.plants[props.uuid]);
-  const [imageIndex, setImageIndex] = useState(0);
-  const setImageIndexWrapped = useCallback(
-    (index: number) => {
-      const numImages = plant.images.length;
-      setImageIndex(((index % numImages) + numImages) % numImages);
-    },
-    [setImageIndex, plant.images.length]
-  );
-  const changeIndex = useCallback(
-    (step: number) => (event: MouseEvent<HTMLElement>) => {
-      setImageIndexWrapped(imageIndex + step);
-      event.stopPropagation();
-    },
-    [setImageIndexWrapped, imageIndex]
-  );
 
   const lightLevel = useMemo(
     () => LightLevel[plant.lightLevelKey],
@@ -62,29 +48,7 @@ export const PlantPreview = (props: IPlantPreview) => {
     <Card sx={{ ...css, height: "100%" }} onClick={() => props.select?.()}>
       <CardActionArea>
         <CardHeader title={plant.name} />
-        <div style={{ position: "relative" }}>
-          <CardMedia
-            src={plant.images[imageIndex].image}
-            component="img"
-            height="300px"
-          />
-          {plant.images.length > 1 && (
-            <>
-              <IconButton
-                onClick={changeIndex(-1)}
-                sx={{ position: "absolute", top: "50%" }}
-              >
-                <KeyboardArrowLeftIcon component="svg" />
-              </IconButton>
-              <IconButton
-                onClick={changeIndex(1)}
-                sx={{ position: "absolute", top: "50%", right: 0 }}
-              >
-                <KeyboardArrowRightIcon component="svg" />
-              </IconButton>
-            </>
-          )}
-        </div>
+        <WrappedCardMedia images={plant.images} />
         <Box
           component="div"
           sx={{

@@ -2,6 +2,7 @@ import { Box, Card, Container, Grid } from "@mui/material";
 import { useAppSelector } from "../../store/hooks/hooks";
 import AddIcon from "@mui/icons-material/Add";
 import { css } from "../../components/cards/styling";
+import { RecipeCard } from "../../components/recipes/content_card";
 
 const Food = () => {
   const recipeUuids = useAppSelector((store) => store.recipes.cards);
@@ -27,7 +28,7 @@ const Food = () => {
         </Grid>
         {recipeUuids.map((uuid) => (
           <Grid item key={uuid} xs={12} sm={6} md={4}>
-            <div>{uuid}</div>
+            <RecipeCard uuid={uuid} />
           </Grid>
         ))}
       </Grid>

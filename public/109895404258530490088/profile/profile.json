@@ -7,7 +7,10 @@
       "0d17f029-75a7-44a9-9969-67bc8a050764": {
         "filename": "Anenometer mount",
         "description": "Mount for attaching anenometer to balcony",
-        "imageSrc": "/109895404258530490088/images/0d17f029-75a7-44a9-9969-67bc8a050764_preview.png",
+        "image": {
+          "path": "/109895404258530490088/images/0d17f029-75a7-44a9-9969-67bc8a050764_preview.png",
+          "timestamp": 3
+        },
         "modelSrc": "/109895404258530490088/models/b2955091-be9b-4d55-b6c9-172a1f00cb1b_adad.stl",
         "uuid": "0d17f029-75a7-44a9-9969-67bc8a050764",
         "cameraParams": {
@@ -47,11 +50,80 @@
         ],
         "images": [
           {
-            "image": "/109895404258530490088/images/6f67eff3-22cc-403b-9b0a-594cc36a9d2e_IMG_20211228_165920_BURST001_COVER.jpg",
+            "path": "/109895404258530490088/images/6f67eff3-22cc-403b-9b0a-594cc36a9d2e_IMG_20211228_165920_BURST001_COVER.jpg",
             "timestamp": 1641420514200
+          },
+          {
+            "path": "/109895404258530490088/images/1d71586b-482e-418a-b4bf-f4cd985a135f_IMG_20211126_110405.jpg",
+            "timestamp": 1646342737869
           }
         ],
         "reminders": []
+      }
+    }
+  },
+  "recipes": {
+    "cards": [
+      "12345"
+    ],
+    "recipes": {
+      "12345": {
+        "uuid": "12345",
+        "recipeAspects": [
+          {
+            "title": "Sauce",
+            "ingredients": [
+              {
+                "name": "Star Anise",
+                "quantity": {
+                  "_unit": "number",
+                  "_quantity": 3
+                }
+              },
+              {
+                "name": "Beef Broth",
+                "quantity": {
+                  "_unit": "mL",
+                  "_quantity": 800
+                }
+              }
+            ],
+            "storeable": true
+          },
+          {
+            "title": "Main Dish",
+            "ingredients": [
+              {
+                "name": "Noodles",
+                "quantity": {
+                  "_unit": "g",
+                  "_quantity": 200
+                }
+              },
+              {
+                "name": "Spring Onion"
+              }
+            ]
+          }
+        ],
+        "images": [
+          {
+            "timestamp": 1,
+            "path": "photo_of_dish.png"
+          },
+          {
+            "timestamp": 2,
+            "path": "photo_of_sauce.png"
+          }
+        ],
+        "method": [
+          {
+            "instruction": "Cook the dish"
+          },
+          {
+            "instruction": "Enjoy"
+          }
+        ]
       }
     }
   }

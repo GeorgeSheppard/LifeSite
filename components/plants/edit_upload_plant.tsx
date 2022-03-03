@@ -88,7 +88,7 @@ export const EditUploadPlant = (props: IEditUploadPlant) => {
   const { uploadFile } = useUpload({
     onUploadFinished: (response: IValidUploadResponse) => {
       setImages((images) =>
-        images.concat({ image: response.writePath, timestamp: Date.now() })
+        images.concat({ path: response.writePath, timestamp: Date.now() })
       );
       setUploading(false);
     },
@@ -216,7 +216,7 @@ export const EditUploadPlant = (props: IEditUploadPlant) => {
                         }}
                       >
                         <CardMedia
-                          src={image.image}
+                          src={image.path}
                           component="img"
                           height={100}
                         />

@@ -45,8 +45,8 @@ export default function PreviewCard(
       event.stopPropagation();
 
       const toDelete = [cardData.modelSrc];
-      if (cardData.imageSrc) {
-        toDelete.push(cardData.imageSrc);
+      if (cardData.image?.path) {
+        toDelete.push(cardData.image.path);
       }
       const response = await fetch("/api/filesDelete", {
         method: "DELETE",
@@ -56,7 +56,7 @@ export default function PreviewCard(
         console.error(await response.json());
       }
     },
-    [dispatch, uuid, cardData.modelSrc, cardData.imageSrc]
+    [dispatch, uuid, cardData.modelSrc, cardData.image?.path]
   );
   const onDownload = useCallback(
     (event: MouseEvent<SVGElement>) => {
@@ -116,8 +116,8 @@ export default function PreviewCard(
           minWidth: 150,
         }}
       >
-        {cardData?.imageSrc && (
-          <CardMedia component="img" src={cardData.imageSrc} />
+        {cardData?.image?.path && (
+          <CardMedia component="img" src={cardData.image.path} />
         )}
       </Box>
     </Card>

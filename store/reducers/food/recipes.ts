@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { ImagePath } from "../types";
+import { Image } from "../types";
 import { Quantity, Unit } from "./units";
 import { IFullStoreState } from "../../store";
 
@@ -8,10 +8,6 @@ export type IIngredientName = string;
 export interface IIngredient {
   name: IIngredientName;
   quantity?: Quantity;
-}
-
-export interface IRecipeImage {
-  image: ImagePath;
 }
 
 export interface IRecipe {
@@ -42,7 +38,7 @@ export interface IDisplayRecipe {
    * specify which aspect we need to get from the shop
    */
   recipeAspects: IRecipe[];
-  images?: IRecipeImage[];
+  images?: Image[];
   method?: IMethodStep[];
 }
 
@@ -76,7 +72,10 @@ export const exampleDisplayRecipe: IDisplayRecipe = {
       ],
     },
   ],
-  images: [{ image: "photo_of_dish.png" }, { image: "photo_of_sauce.png" }],
+  images: [
+    { timestamp: 1, path: "photo_of_dish.png" },
+    { timestamp: 2, path: "photo_of_sauce.png" },
+  ],
   method: [{ instruction: "Cook the dish" }, { instruction: "Enjoy" }],
 };
 

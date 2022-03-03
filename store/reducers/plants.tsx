@@ -1,7 +1,7 @@
 import { Brightness4, Brightness5, Brightness6 } from "@mui/icons-material";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { IFullStoreState } from "../store";
-import { ImagePath } from "./types";
+import { Image } from "./types";
 import LittleWater from "../../public/images/little_water.svg";
 import NormalWater from "../../public/images/normal_water.svg";
 import LotsWater from "../../public/images/lots_water.svg";
@@ -65,11 +65,6 @@ export type TemperatureRange = [low: number, high: number];
 
 export type PlantUuid = string;
 
-export interface PlantImage {
-  timestamp: number;
-  image: ImagePath;
-}
-
 export interface IPlant {
   uuid: PlantUuid;
   name: string;
@@ -77,7 +72,7 @@ export interface IPlant {
   lightLevelKey: LightLevelKeys;
   wateringKey: WateringAmountKeys;
   temperatureRange: TemperatureRange;
-  images: PlantImage[];
+  images: Image[];
   reminders: IReminder[];
 }
 
