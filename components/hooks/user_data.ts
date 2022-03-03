@@ -2,7 +2,7 @@ import { CustomSession } from "../../pages/api/auth/[...nextauth]";
 import { useAppDispatch } from "../../store/hooks/hooks";
 import { useState, useEffect, useCallback } from "react";
 import { useSession } from "next-auth/react";
-import { login } from "../../store/reducers/user";
+import { login, logout } from "../../store/reducers/user";
 import { useRouter } from "next/router";
 import { IFullStoreState, store } from "../../store/store";
 import useUpload from "./upload_to_server";
@@ -19,12 +19,6 @@ export const useUserData = () => {
   });
   const [gotUserData, setGotUserData] = useState(false);
 
-  // TODO: Use session id to trigger collection of data
-  // then use redux store as source of truth
-  // dump the response into redux then replace useSession hooks
-  // This will avoid bugs with the project.json being overridden,
-  // I believe this happens when the session timings and redux timing are slightly
-  // out of sync so best to stick to one
   useEffect(() => {
     const fetchUserData = async () => {
       let data;
@@ -49,6 +43,7 @@ export const useUserData = () => {
     if (!session?.id && gotUserData) {
       // NB: No session id, user has logged out
       setGotUserData(false);
+      dispatch(logout());
     }
 
     if (session?.id && !gotUserData) {

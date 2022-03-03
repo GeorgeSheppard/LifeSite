@@ -37,6 +37,10 @@ export const WrappedCardMedia = (props: ICardMediaProps) => {
   const onClickUp = useMemo(() => changeIndex(1), [changeIndex]);
   const onClickDown = useMemo(() => changeIndex(-1), [changeIndex]);
 
+  if (images.length === 0) {
+    return null;
+  }
+
   return (
     <div style={{ position: "relative" }}>
       <CardMedia src={images[imageIndex].path} component="img" height="300px" />
