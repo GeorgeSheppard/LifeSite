@@ -1,6 +1,6 @@
 import Container from "@mui/material/Container";
 import Box from "@mui/material/Box";
-import { headerHeight } from "../../components/header";
+import { headerHeight } from "../../components/core/header";
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
 import { useState, createRef, MouseEvent } from "react";
@@ -8,14 +8,13 @@ import {
   CanvasScreenshotter,
   ICameraParams,
   ICanvasScreenshotterRef,
-} from "../../components/canvas_screenshotter";
+} from "../../components/printing/canvas_screenshotter";
 import Model from "../../components/printing/model";
 import { GetServerSideProps } from "next";
 import { loadModel } from "../../components/printing/model_loader";
 import { KeyboardArrowDown } from "@mui/icons-material";
 import { PreviewPopper } from "../../components/printing/preview_popper";
 import { useAppSelector } from "../../store/hooks/hooks";
-import { Quaternion, Vector3 } from "three";
 
 export interface IPreview {
   /**

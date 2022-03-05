@@ -1,7 +1,7 @@
 import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid";
-import PreviewCard from "../../components/cards/preview_card";
-import UploadCard from "../../components/cards/upload_model_card";
+import PreviewCard from "../../components/printing/preview_card";
+import UploadCard from "../../components/printing/upload_model_card";
 import { useAppSelector } from "../../store/hooks/hooks";
 
 export default function Printing() {

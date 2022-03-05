@@ -17,7 +17,6 @@ import {
   PlantUuid,
   WateringAmount,
 } from "../../store/reducers/plants";
-import { css } from "../cards/styling";
 import { useMemo, useState, useCallback, MouseEvent } from "react";
 import AcUnitIcon from "@mui/icons-material/AcUnit";
 import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
@@ -45,7 +44,11 @@ export const PlantPreview = (props: IPlantPreview) => {
   );
 
   return (
-    <Card sx={{ ...css, height: "100%" }} onClick={() => props.select?.()}>
+    <Card
+      sx={{ height: "100%" }}
+      className="card"
+      onClick={() => props.select?.()}
+    >
       <CardActionArea>
         <CardHeader title={plant.name} />
         <WrappedCardMedia images={plant.images} />

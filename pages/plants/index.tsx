@@ -11,7 +11,6 @@ import AddIcon from "@mui/icons-material/Add";
 import Box from "@mui/material/Box";
 import Card from "@mui/material/Card";
 import { v4 as uuidv4 } from "uuid";
-import { css } from "../../components/cards/styling";
 
 export default function Plants() {
   const plantUuids = useAppSelector((store) => store.plants.cards);
@@ -42,11 +41,11 @@ export default function Plants() {
           <Grid item key={"CreatePlant"} xs={12} sm={6} md={4}>
             <Card
               sx={{
-                ...css,
                 height: "100%",
                 minHeight: plantUuids.length === 0 ? "30vw" : "100%",
                 display: "flex",
               }}
+              className="card"
               onClick={() => setPlantSelected(uuidv4())}
             >
               <Box component="div" sx={{ flexGrow: 0.5 }} />

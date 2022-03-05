@@ -16,12 +16,12 @@ import {
   useState,
   useEffect,
 } from "react";
-import { useAppDispatch, useAppSelector } from "../../store/hooks/hooks";
+import { useAppDispatch } from "../../store/hooks/hooks";
 import { addModel, IModelProps } from "../../store/reducers/printing";
 import { v4 as uuidv4 } from "uuid";
 import useUpload from "../hooks/upload_to_server";
 import { IValidUploadResponse } from "../../pages/api/filesUpload";
-import { ICanvasScreenshotterRef } from "../canvas_screenshotter";
+import { ICanvasScreenshotterRef } from "./canvas_screenshotter";
 
 export interface IPreviewPopperProps {
   open: boolean;
@@ -51,7 +51,10 @@ export const PreviewPopper = (props: IPreviewPopperProps) => {
         addModel({
           filename: name,
           description,
-          imageSrc: response.writePath,
+          image: {
+            path: response.writePath,
+            timestamp: Date.now(),
+          },
           // TODO: Better way of managing types with nextjs, seems to be very hard
           // to work with, need custom type definitions for the pages
           modelSrc: router.query.writePath as any as string,

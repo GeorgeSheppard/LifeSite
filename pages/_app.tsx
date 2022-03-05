@@ -1,9 +1,10 @@
 import { Session } from "next-auth";
 import { SessionProvider } from "next-auth/react";
 import { Provider } from "react-redux";
-import Layout, { ILayoutProps } from "../components/layout";
+import Layout, { ILayoutProps } from "../components/core/layout";
 import { store } from "../store/store";
 import { ThemeController } from "./_theme";
+import "../styles/global_card.scss";
 
 export interface IMyLifeProps {
   Component: React.JSXElementConstructor<ILayoutProps>;

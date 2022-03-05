@@ -8,7 +8,6 @@ import NavigatorCard, { navigatorCards } from "../components/navigator_card";
 export default function Home(props: any) {
   return (
     <main>
-      {/* Hero unit */}
       <Box
         component="div"
         sx={{
@@ -30,7 +29,6 @@ export default function Home(props: any) {
         </Container>
       </Box>
       <Container sx={{ py: 8 }} maxWidth="md">
-        {/* End hero unit */}
         <Grid container spacing={4}>
           {navigatorCards.map((card) => (
             <Grid

@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { ICameraParams } from "../../components/canvas_screenshotter";
+import { ICameraParams } from "../../components/printing/canvas_screenshotter";
 import { IFullStoreState } from "../store";
 import { Image } from "./types";
 

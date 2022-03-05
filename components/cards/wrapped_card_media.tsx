@@ -1,10 +1,4 @@
-import {
-  Box,
-  CircularProgress,
-  Icon,
-  IconButton,
-  Tooltip,
-} from "@mui/material";
+import { IconButton } from "@mui/material";
 import { useMemo, useState, useCallback, MouseEvent } from "react";
 import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";

@@ -1,5 +1,4 @@
 import Card from "@mui/material/Card";
-import { css } from "./styling";
 import UploadIcon from "@mui/icons-material/Upload";
 import Box from "@mui/material/Box";
 import LinearProgress from "@mui/material/LinearProgress";
@@ -10,7 +9,7 @@ import {
   IErrorUploadResponse,
   IValidUploadResponse,
 } from "../../pages/api/filesUpload";
-import { navigateToPreview } from "../printing/navigate_to_preview";
+import { navigateToPreview } from "./navigate_to_preview";
 
 export default function UploadCard() {
   const router = useRouter();
@@ -49,7 +48,7 @@ export default function UploadCard() {
         accept=".stl"
       />
       <label htmlFor="upload-input">
-        <Card sx={{ display: "flex", ...css }}>
+        <Card sx={{ display: "flex", height: 150 }} className="card">
           {uploading ? (
             <Box component="div" sx={{ width: "80%", margin: "auto" }}>
               <LinearProgress />

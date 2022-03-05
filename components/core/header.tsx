@@ -13,8 +13,8 @@ import { useState, useCallback } from "react";
 import { useRouter } from "next/router";
 import LightModeIcon from "@mui/icons-material/LightMode";
 import DarkModeIcon from "@mui/icons-material/DarkMode";
-import { useAppDispatch, useAppSelector } from "../store/hooks/hooks";
-import { toggleTheme, ThemeKey } from "../store/reducers/user";
+import { useAppDispatch, useAppSelector } from "../../store/hooks/hooks";
+import { toggleTheme, ThemeKey } from "../../store/reducers/user";
 import CircularProgress from "@mui/material/CircularProgress";
 import SaveIcon from "@mui/icons-material/Save";
 

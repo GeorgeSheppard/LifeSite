@@ -1,5 +1,4 @@
 import { NextRouter } from "next/router";
-import { IPreviewCardProps } from "../cards/preview_card";
 
 export const navigateToPreview = (
   router: NextRouter,

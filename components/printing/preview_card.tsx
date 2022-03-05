@@ -4,8 +4,7 @@ import CardMedia from "@mui/material/CardMedia";
 import Typography from "@mui/material/Typography";
 import * as React from "react";
 import Box from "@mui/material/Box";
-import { css } from "./styling";
-import { navigateToPreview } from "../printing/navigate_to_preview";
+import { navigateToPreview } from "./navigate_to_preview";
 import { useRouter } from "next/router";
 import { useAppDispatch, useAppSelector } from "../../store/hooks/hooks";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -19,16 +18,10 @@ export interface IPreviewCardProps {
   uuid: string;
 }
 
-export interface IPreviewCardStylingProps {
-  sx?: any;
-}
-
-export default function PreviewCard(
-  props: IPreviewCardProps & IPreviewCardStylingProps
-) {
+export default function PreviewCard(props: IPreviewCardProps) {
   const router = useRouter();
   const dispatch = useAppDispatch();
-  const { sx, uuid } = props;
+  const { uuid } = props;
 
   const cardData = useAppSelector((store) => store.printing.models[uuid]);
 
@@ -71,7 +64,7 @@ export default function PreviewCard(
   );
 
   return (
-    <Card sx={{ ...sx, display: "flex", ...css }} onClick={onClickToPreview}>
+    <Card className="card" sx={{ display: "flex" }} onClick={onClickToPreview}>
       <Box component="div" sx={{ display: "flex", flexDirection: "column" }}>
         <CardContent sx={{ flex: "1 0 auto" }}>
           <Typography component="div" variant="h5">
