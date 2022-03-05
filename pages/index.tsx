@@ -3,7 +3,9 @@ import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
 import * as React from "react";
-import NavigatorCard, { navigatorCards } from "../components/navigator_card";
+import NavigatorCard, {
+  navigatorCards,
+} from "../components/index/navigator_card";
 
 export default function Home(props: any) {
   return (

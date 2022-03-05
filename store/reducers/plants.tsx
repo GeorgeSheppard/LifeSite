@@ -1,7 +1,7 @@
 import { Brightness4, Brightness5, Brightness6 } from "@mui/icons-material";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { IFullStoreState } from "../store";
-import { Image } from "./types";
+import { Checkboxes, Image } from "./types";
 import LittleWater from "../../public/images/little_water.svg";
 import NormalWater from "../../public/images/normal_water.svg";
 import LotsWater from "../../public/images/lots_water.svg";
@@ -20,9 +20,7 @@ export enum LightLevelKeys {
   DIRECT_SUN = "DIRECT_SUN",
 }
 
-export const LightLevel: {
-  [key in LightLevelKeys]: { tooltip: string; icon: any };
-} = {
+export const LightLevel: Checkboxes<LightLevelKeys> = {
   [LightLevelKeys.INDIRECT_SUN]: {
     tooltip: "Prefers to be slightly shaded with sun",
     icon: <Brightness4 />,
@@ -44,9 +42,7 @@ export enum WateringAmountKeys {
   LOTS = "LOTS",
 }
 
-export const WateringAmount: {
-  [key in WateringAmountKeys]: { tooltip: string; icon: any };
-} = {
+export const WateringAmount: Checkboxes<WateringAmountKeys> = {
   [WateringAmountKeys.LITTLE]: {
     tooltip: "Likes small amounts of water",
     icon: LittleWater,

@@ -22,6 +22,7 @@ import { v4 as uuidv4 } from "uuid";
 import useUpload from "../hooks/upload_to_server";
 import { IValidUploadResponse } from "../../pages/api/filesUpload";
 import { ICanvasScreenshotterRef } from "./canvas_screenshotter";
+import { ExitSaveButtons } from "../cards/exit_save_buttons";
 
 export interface IPreviewPopperProps {
   open: boolean;
@@ -143,9 +144,15 @@ export const PreviewPopper = (props: IPreviewPopperProps) => {
               <CardMedia component="img" src={screenshot} />
             </Box>
           </Box>
-          <Box
-            component="div"
-            sx={{
+          <ExitSaveButtons
+            exitOnClick={onExit}
+            saveOnClick={() => screenshotRef.current?.getBlob(onSave)}
+            saveDisabled={name.length === 0}
+            buttonSx={{
+              width: "25vw",
+              maxWidth: 240,
+            }}
+            boxSx={{
               display: "flex",
               justifyContent: "space-between",
               paddingTop: "10px",
@@ -153,33 +160,7 @@ export const PreviewPopper = (props: IPreviewPopperProps) => {
               paddingLeft: "16px",
               paddingRight: "16px",
             }}
-          >
-            <Button
-              component="button"
-              variant="outlined"
-              startIcon={<CancelIcon />}
-              sx={{
-                width: "25vw",
-                maxWidth: 240,
-              }}
-              onClick={onExit}
-            >
-              Exit
-            </Button>
-            <Button
-              component="button"
-              variant="contained"
-              endIcon={<SaveIcon />}
-              sx={{
-                width: "25vw",
-                maxWidth: 240,
-              }}
-              onClick={() => screenshotRef.current?.getBlob(onSave)}
-              disabled={name.length === 0}
-            >
-              Save
-            </Button>
-          </Box>
+          />
         </Card>
       </Paper>
     </Popper>

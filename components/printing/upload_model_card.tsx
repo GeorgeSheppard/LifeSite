@@ -2,68 +2,49 @@ import Card from "@mui/material/Card";
 import UploadIcon from "@mui/icons-material/Upload";
 import Box from "@mui/material/Box";
 import LinearProgress from "@mui/material/LinearProgress";
-import { useState, useCallback, ChangeEvent } from "react";
 import { useRouter } from "next/router";
-import useUpload from "../hooks/upload_to_server";
 import {
   IErrorUploadResponse,
   IValidUploadResponse,
 } from "../../pages/api/filesUpload";
 import { navigateToPreview } from "./navigate_to_preview";
+import { ClickToUpload } from "../core/click_to_upload";
+import { useBoolean } from "../hooks/use_boolean";
 
 export default function UploadCard() {
   const router = useRouter();
-  const [uploading, setUploading] = useState(false);
-
-  const { uploadFile } = useUpload({
-    onUploadFinished: (response: IValidUploadResponse) =>
-      navigateToPreview(router, response.writePath),
-    onUploadError: (response: IErrorUploadResponse) => {
-      // TODO: Make this a user notification
-      console.log(response.error);
-      setUploading(false);
-    },
-    onStartUpload: () => setUploading(true),
-    folder: "models",
-  });
-
-  const getAndUploadFile = useCallback(
-    (event: ChangeEvent<HTMLInputElement>) => {
-      const file = event.target.files?.[0];
-      if (file) {
-        uploadFile(file);
-      }
-    },
-    [uploadFile]
-  );
+  const [uploading, setters] = useBoolean(false);
 
   return (
-    <>
-      <input
-        type="file"
-        id="upload-input"
-        style={{ display: "none" }}
-        onChange={getAndUploadFile}
-        multiple={false}
-        accept=".stl"
-      />
-      <label htmlFor="upload-input">
-        <Card sx={{ display: "flex", height: 150 }} className="card">
-          {uploading ? (
-            <Box component="div" sx={{ width: "80%", margin: "auto" }}>
-              <LinearProgress />
+    <ClickToUpload
+      folder="models"
+      fileFormatsAccepted={["stl"]}
+      onStartUpload={setters.turnOn}
+      onUploadError={(response: IErrorUploadResponse) => {
+        // TODO: Make this a user notification
+        console.log(response.error);
+        setters.turnOff();
+      }}
+      onUploadFinished={(response: IValidUploadResponse) => {
+        setters.turnOff();
+        navigateToPreview(router, response.writePath);
+      }}
+    >
+      <Card sx={{ display: "flex", height: 150 }} className="card">
+        {uploading ? (
+          <Box component="div" sx={{ width: "80%", margin: "auto" }}>
+            <LinearProgress />
+          </Box>
+        ) : (
+          <>
+            <Box component="div" sx={{ flexGrow: 0.5 }} />
+            <Box component="div" sx={{ display: "flex", margin: "auto" }}>
+              <UploadIcon fontSize="large" />
             </Box>
-          ) : (
-            <>
-              <Box component="div" sx={{ flexGrow: 0.5 }} />
-              <Box component="div" sx={{ display: "flex", margin: "auto" }}>
-                <UploadIcon fontSize="large" />
-              </Box>
-              <Box component="div" sx={{ flexGrow: 0.5 }} />
-            </>
-          )}
-        </Card>
-      </label>
-    </>
+            <Box component="div" sx={{ flexGrow: 0.5 }} />
+          </>
+        )}
+      </Card>
+    </ClickToUpload>
   );
 }

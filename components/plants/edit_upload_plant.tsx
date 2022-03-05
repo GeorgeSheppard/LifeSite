@@ -5,7 +5,6 @@ import { useState, MouseEvent, ChangeEvent, useCallback } from "react";
 import Button from "@mui/material/Button";
 import CancelIcon from "@mui/icons-material/Cancel";
 import SaveIcon from "@mui/icons-material/Save";
-import { v4 as uuidv4 } from "uuid";
 import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
@@ -16,24 +15,26 @@ import {
   IPlant,
   WateringAmountKeys,
   LightLevelKeys,
-  TemperatureRange,
   LightLevel,
   WateringAmount,
   addOrUpdatePlant,
 } from "../../store/reducers/plants";
 import UploadIcon from "@mui/icons-material/Upload";
 import CardMedia from "@mui/material/CardMedia";
-import Slider from "@mui/material/Slider";
 import Checkbox from "@mui/material/Checkbox";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Tooltip from "@mui/material/Tooltip";
 import Image from "next/image";
-import useUpload from "../hooks/upload_to_server";
 import CircularProgress from "@mui/material/CircularProgress";
 import {
   IErrorUploadResponse,
   IValidUploadResponse,
 } from "../../pages/api/filesUpload";
+import { ClickToUpload } from "../core/click_to_upload";
+import { TemperatureSlider } from "./temperature_slider";
+import { useBoolean } from "../hooks/use_boolean";
+import { ExitSaveButtons } from "../cards/exit_save_buttons";
+import { CheckboxChoice } from "./checkbox_choice";
 
 export interface IEditUploadPlant {
   /**
@@ -49,8 +50,8 @@ const stopPropagation = (event: MouseEvent<HTMLElement>) => {
 
 export const EditUploadPlant = (props: IEditUploadPlant) => {
   const dispatch = useAppDispatch();
-  const [uploading, setUploading] = useState(false);
   const [uuid] = useState<PlantUuid>(props.uuid);
+  const [uploading, setters] = useBoolean(false);
   // Return either the existing plant data, or a default form
   // Much easier to work with fully defined properties
   const plantData: IPlant = useAppSelector((store) => {
@@ -77,39 +78,6 @@ export const EditUploadPlant = (props: IEditUploadPlant) => {
   );
   const [wateringLevel, setWateringLevel] = useState(plantData.wateringKey);
   const [lightLevel, setLightLevel] = useState(plantData.lightLevelKey);
-
-  const handleSliderChange = useCallback(
-    (event: Event, newValue: number | number[]) => {
-      setTemperatureRange(newValue as TemperatureRange);
-    },
-    [setTemperatureRange]
-  );
-
-  const { uploadFile } = useUpload({
-    onUploadFinished: (response: IValidUploadResponse) => {
-      setImages((images) =>
-        images.concat({ path: response.writePath, timestamp: Date.now() })
-      );
-      setUploading(false);
-    },
-    onUploadError: (response: IErrorUploadResponse) => {
-      // TODO: Make this a user notification
-      console.log(response.error);
-      setUploading(false);
-    },
-    onStartUpload: () => setUploading(true),
-    folder: "images",
-  });
-
-  const getAndUploadFile = useCallback(
-    (event: ChangeEvent<HTMLInputElement>) => {
-      const file = event.target.files?.[0];
-      if (file) {
-        uploadFile(file);
-      }
-    },
-    [uploadFile]
-  );
 
   const dispatchPlant = useCallback(() => {
     const close = props.closeBackdrop;
@@ -166,15 +134,25 @@ export const EditUploadPlant = (props: IEditUploadPlant) => {
                 paddingBottom: 20,
               }}
             >
-              <input
-                type="file"
-                id="upload-image-input"
-                style={{ display: "none" }}
-                multiple={false}
-                onChange={getAndUploadFile}
-                accept=".png,.jpg"
-              />
-              <label htmlFor="upload-image-input">
+              <ClickToUpload
+                folder="images"
+                fileFormatsAccepted={["png", "jpg"]}
+                onStartUpload={setters.turnOn}
+                onUploadError={(response: IErrorUploadResponse) => {
+                  // TODO: Make this a user notification
+                  console.log(response.error);
+                  setters.turnOff();
+                }}
+                onUploadFinished={(response: IValidUploadResponse) => {
+                  setImages((images) =>
+                    images.concat({
+                      path: response.writePath,
+                      timestamp: Date.now(),
+                    })
+                  );
+                  setters.turnOff();
+                }}
+              >
                 <div style={{ paddingTop: 15 }}>
                   <Paper
                     elevation={1}
@@ -194,7 +172,7 @@ export const EditUploadPlant = (props: IEditUploadPlant) => {
                     <Box component="div" sx={{ flexGrow: 0.5 }} />
                   </Paper>
                 </div>
-              </label>
+              </ClickToUpload>
               {images.map((image) => {
                 return (
                   <div style={{ paddingTop: 15 }} key={image.timestamp}>
@@ -227,82 +205,31 @@ export const EditUploadPlant = (props: IEditUploadPlant) => {
                 );
               })}
             </div>
-            <Slider
-              key="TemperatureSlider"
-              value={temperatureRange}
-              onChange={handleSliderChange}
-              valueLabelDisplay="auto"
-              getAriaValueText={(value: number) => `${value}°C`}
-              min={0}
-              max={35}
-              marks={[
-                { label: "0°C", value: 0 },
-                { label: "25°C", value: 25 },
-                { label: "35°C", value: 35 },
-              ]}
+            <TemperatureSlider
+              temperatureRange={temperatureRange}
+              setTemperatureRange={setTemperatureRange}
             />
-            <div
-              key="LightLevelCheckboxes"
+            <CheckboxChoice
+              currentChecked={lightLevel}
+              checkboxes={LightLevel}
+              setCurrentChecked={setLightLevel}
               style={{
                 display: "flex",
                 justifyContent: "space-between",
                 paddingTop: 15,
               }}
-            >
-              {Object.entries(LightLevel).map(
-                ([key, data]: [string, { tooltip: string; icon: any }]) => {
-                  return (
-                    <FormControlLabel
-                      key={data.tooltip}
-                      value="top"
-                      control={<Checkbox checked={key === lightLevel} />}
-                      label={
-                        <Tooltip title={data.tooltip}>{data.icon}</Tooltip>
-                      }
-                      labelPlacement="top"
-                      onClick={() => setLightLevel(key as LightLevelKeys)}
-                    />
-                  );
-                }
-              )}
-            </div>
-            <div
-              key="WateringAmountCheckboxes"
+            />
+            <CheckboxChoice
+              currentChecked={wateringLevel}
+              checkboxes={WateringAmount}
+              setCurrentChecked={setWateringLevel}
               style={{
                 display: "flex",
                 justifyContent: "space-between",
                 paddingTop: 15,
                 paddingBottom: 15,
               }}
-            >
-              {Object.entries(WateringAmount).map(
-                ([key, data]: [string, { tooltip: string; icon: any }]) => {
-                  return (
-                    <FormControlLabel
-                      key={data.tooltip}
-                      value="top"
-                      control={<Checkbox checked={key === wateringLevel} />}
-                      label={
-                        <Tooltip title={data.tooltip}>
-                          <Icon>
-                            <Image
-                              src={data.icon.src}
-                              width={data.icon.width}
-                              height={data.icon.height}
-                              alt="watering level"
-                            />
-                          </Icon>
-                        </Tooltip>
-                      }
-                      labelPlacement="top"
-                      onClick={() =>
-                        setWateringLevel(key as WateringAmountKeys)
-                      }
-                    />
-                  );
-                }
-              )}
-            </div>
+            />
             <TextField
               key="DescriptionTextBox"
               fullWidth
@@ -317,35 +244,17 @@ export const EditUploadPlant = (props: IEditUploadPlant) => {
                 setDescription(event.target.value)
               }
             />
-            <Box
-              key="BottomButtonsCancelSave"
-              component="div"
-              sx={{
+            <ExitSaveButtons
+              exitOnClick={props.closeBackdrop}
+              saveOnClick={dispatchPlant}
+              saveDisabled={name.length === 0}
+              buttonSx={{ flexGrow: 0.4 }}
+              boxSx={{
                 display: "flex",
                 justifyContent: "space-between",
                 paddingTop: "10px",
               }}
-            >
-              <Button
-                component="button"
-                variant="outlined"
-                startIcon={<CancelIcon />}
-                sx={{ flexGrow: 0.4 }}
-                onClick={props.closeBackdrop}
-              >
-                Exit
-              </Button>
-              <Button
-                component="button"
-                variant="contained"
-                endIcon={<SaveIcon />}
-                sx={{ flexGrow: 0.4 }}
-                onClick={dispatchPlant}
-                disabled={name.length === 0}
-              >
-                Save
-              </Button>
-            </Box>
+            />
           </Card>
         </Grid>
       </Grid>

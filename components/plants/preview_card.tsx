@@ -1,15 +1,8 @@
-import {
-  Box,
-  CircularProgress,
-  Icon,
-  IconButton,
-  Tooltip,
-} from "@mui/material";
+import { Box, Icon, Tooltip } from "@mui/material";
 import Card from "@mui/material/Card";
 import CardActionArea from "@mui/material/CardActionArea";
 import CardContent from "@mui/material/CardContent";
 import CardHeader from "@mui/material/CardHeader";
-import CardMedia from "@mui/material/CardMedia";
 import Typography from "@mui/material/Typography";
 import { useAppSelector } from "../../store/hooks/hooks";
 import {
@@ -17,10 +10,8 @@ import {
   PlantUuid,
   WateringAmount,
 } from "../../store/reducers/plants";
-import { useMemo, useState, useCallback, MouseEvent } from "react";
+import { useMemo } from "react";
 import AcUnitIcon from "@mui/icons-material/AcUnit";
-import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
-import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import WbSunnyIcon from "@mui/icons-material/WbSunny";
 
 import Image from "next/image";
@@ -30,6 +21,8 @@ export interface IPlantPreview {
   uuid: PlantUuid;
   select?: () => void;
 }
+
+const degreesC = "\xB0C";
 
 export const PlantPreview = (props: IPlantPreview) => {
   const plant = useAppSelector((store) => store.plants.plants[props.uuid]);
@@ -77,7 +70,7 @@ export const PlantPreview = (props: IPlantPreview) => {
             <div>
               <AcUnitIcon />
               <Typography align="center">
-                {plant.temperatureRange[0] + "\xB0C"}
+                {plant.temperatureRange[0] + degreesC}
               </Typography>
             </div>
           </Tooltip>
@@ -85,7 +78,7 @@ export const PlantPreview = (props: IPlantPreview) => {
             <div>
               <WbSunnyIcon />
               <Typography align="center">
-                {plant.temperatureRange[1] + "\xB0C"}
+                {plant.temperatureRange[1] + degreesC}
               </Typography>
             </div>
           </Tooltip>
