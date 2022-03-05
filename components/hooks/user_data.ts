@@ -7,17 +7,30 @@ import { useRouter } from "next/router";
 import { IFullStoreState, store } from "../../store/store";
 import useUpload from "./upload_to_server";
 
-export const useUserData = () => {
+export interface IUserDataReturn {
+  uploading: boolean;
+  upload: () => void;
+}
+
+export const useUserData = (): IUserDataReturn => {
   const session = useSession().data as CustomSession;
   const router = useRouter();
   const dispatch = useAppDispatch();
   const { uploadFile } = useUpload({
-    onStartUpload: () => console.log("start upload"),
-    onUploadFinished: () => console.log("user data saved"),
-    onUploadError: (err) => console.log(err),
+    onStartUpload: () => {
+      setUploading(true);
+      // We could use onUploadFinished to setUploading to false, but users don't actually
+      // care how long it's taking they just want to know it has been triggered
+      setTimeout(() => setUploading(false), 1000);
+    },
+    onUploadError: (err) => {
+      setUploading(false);
+      console.log(`Error uploading profile data ${err}`);
+    },
     folder: "profile",
   });
   const [gotUserData, setGotUserData] = useState(false);
+  const [uploading, setUploading] = useState(false);
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -76,4 +89,6 @@ export const useUserData = () => {
       window.removeEventListener("beforeunload", storeUserData);
     };
   }, [storeUserData, router.events]);
+
+  return { upload: storeUserData, uploading };
 };

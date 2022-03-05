@@ -15,11 +15,18 @@ import LightModeIcon from "@mui/icons-material/LightMode";
 import DarkModeIcon from "@mui/icons-material/DarkMode";
 import { useAppDispatch, useAppSelector } from "../store/hooks/hooks";
 import { toggleTheme, ThemeKey } from "../store/reducers/user";
+import CircularProgress from "@mui/material/CircularProgress";
+import SaveIcon from "@mui/icons-material/Save";
 
 // TODO: Min height in MUI is set to 64 so don't go lower than this, make it so I can though
 export const headerHeight = 65;
 
-export default function Header() {
+export interface IHeaderProps {
+  uploading: boolean;
+  upload: () => void;
+}
+
+export default function Header(props: IHeaderProps) {
   const session = useSession();
   const router = useRouter();
   const dispatch = useAppDispatch();
@@ -66,17 +73,25 @@ export default function Header() {
         </Typography>
         <Box component="div" sx={{ flexGrow: 1 }} />
         <Box component="div" sx={{ display: "flex" }}>
+          <div style={{ margin: "auto" }}>
+            <IconButton
+              color="inherit"
+              size="large"
+              onClick={() => !props.uploading && props.upload()}
+            >
+              {props.uploading ? (
+                // For some reason, circular progress takes a number size prop, but icon button takes a string
+                <CircularProgress color="inherit" size={24} />
+              ) : (
+                <SaveIcon />
+              )}
+            </IconButton>
+          </div>
           <IconButton size="large" color="inherit" onClick={onToggleTheme}>
             {theme === ThemeKey.LIGHT ? <LightModeIcon /> : <DarkModeIcon />}
           </IconButton>
-          <IconButton size="large" color="inherit">
-            <Badge badgeContent={17} color="error">
-              <NotificationsIcon />
-            </Badge>
-          </IconButton>
           <IconButton
-            size="medium"
-            edge="end"
+            size="large"
             color="inherit"
             onClick={
               session.status === "authenticated" ? openDropdown : () => signIn()
