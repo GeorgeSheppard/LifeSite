@@ -5,8 +5,9 @@ export interface Image {
   path: ImagePath;
 }
 
-// TODO: I did try using a generic here for the keys in the checkbox,
-// but it didn't work
 export interface Checkboxes {
+  /**
+   * Note: Icon is any, watering passes the imported component, sun is the react element
+   */
   [key: string]: { tooltip: string; icon: any };
 }

@@ -63,68 +63,7 @@
     }
   },
   "recipes": {
-    "cards": [
-      "12345"
-    ],
-    "recipes": {
-      "12345": {
-        "uuid": "12345",
-        "recipeAspects": [
-          {
-            "title": "Sauce",
-            "ingredients": [
-              {
-                "name": "Star Anise",
-                "quantity": {
-                  "_unit": "number",
-                  "_quantity": 3
-                }
-              },
-              {
-                "name": "Beef Broth",
-                "quantity": {
-                  "_unit": "mL",
-                  "_quantity": 800
-                }
-              }
-            ],
-            "storeable": true
-          },
-          {
-            "title": "Main Dish",
-            "ingredients": [
-              {
-                "name": "Noodles",
-                "quantity": {
-                  "_unit": "g",
-                  "_quantity": 200
-                }
-              },
-              {
-                "name": "Spring Onion"
-              }
-            ]
-          }
-        ],
-        "images": [
-          {
-            "timestamp": 1,
-            "path": "photo_of_dish.png"
-          },
-          {
-            "timestamp": 2,
-            "path": "photo_of_sauce.png"
-          }
-        ],
-        "method": [
-          {
-            "instruction": "Cook the dish"
-          },
-          {
-            "instruction": "Enjoy"
-          }
-        ]
-      }
-    }
+    "cards": [],
+    "recipes": {}
   }
 }

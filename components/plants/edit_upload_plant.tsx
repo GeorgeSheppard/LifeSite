@@ -1,52 +1,45 @@
-import Card from "@mui/material/Card";
-import Paper from "@mui/material/Paper";
-import TextField from "@mui/material/TextField";
-import { useState, MouseEvent, ChangeEvent, useCallback } from "react";
-import Button from "@mui/material/Button";
-import CancelIcon from "@mui/icons-material/Cancel";
-import SaveIcon from "@mui/icons-material/Save";
-import Container from "@mui/material/Container";
-import Grid from "@mui/material/Grid";
-import Box from "@mui/material/Box";
-import Icon from "@mui/material/Icon";
-import { useAppDispatch, useAppSelector } from "../../store/hooks/hooks";
-import {
-  PlantUuid,
-  IPlant,
-  WateringAmountKeys,
-  LightLevelKeys,
-  LightLevel,
-  WateringAmount,
-  addOrUpdatePlant,
-} from "../../store/reducers/plants";
 import UploadIcon from "@mui/icons-material/Upload";
+import Box from "@mui/material/Box";
+import Card from "@mui/material/Card";
 import CardMedia from "@mui/material/CardMedia";
 import Checkbox from "@mui/material/Checkbox";
+import CircularProgress from "@mui/material/CircularProgress";
+import Container from "@mui/material/Container";
 import FormControlLabel from "@mui/material/FormControlLabel";
+import Grid from "@mui/material/Grid";
+import Icon from "@mui/material/Icon";
+import Paper from "@mui/material/Paper";
+import TextField from "@mui/material/TextField";
 import Tooltip from "@mui/material/Tooltip";
 import Image from "next/image";
-import CircularProgress from "@mui/material/CircularProgress";
+import { ChangeEvent, useCallback, useState } from "react";
 import {
   IErrorUploadResponse,
   IValidUploadResponse,
 } from "../../pages/api/filesUpload";
-import { ClickToUpload } from "../core/click_to_upload";
-import { TemperatureSlider } from "./temperature_slider";
-import { useBoolean } from "../hooks/use_boolean";
+import { useAppDispatch, useAppSelector } from "../../store/hooks/hooks";
+import {
+  addOrUpdatePlant,
+  IPlant,
+  LightLevel,
+  LightLevelKeys,
+  PlantUuid,
+  WateringAmount,
+  WateringAmountKeys,
+} from "../../store/reducers/plants";
 import { ExitSaveButtons } from "../cards/exit_save_buttons";
-import { CheckboxChoice } from "./checkbox_choice";
+import { ClickToUpload } from "../core/click_to_upload";
+import { useBoolean } from "../hooks/use_boolean";
+import { TemperatureSlider } from "./temperature_slider";
+import { stopPropagation } from "../cards/utilities";
 
 export interface IEditUploadPlant {
   /**
    * New plant will have a uuid but no data in store
    */
-  uuid: string;
+  uuid: PlantUuid;
   closeBackdrop: () => void;
 }
-
-const stopPropagation = (event: MouseEvent<HTMLElement>) => {
-  event.stopPropagation();
-};
 
 export const EditUploadPlant = (props: IEditUploadPlant) => {
   const dispatch = useAppDispatch();
@@ -77,11 +70,8 @@ export const EditUploadPlant = (props: IEditUploadPlant) => {
     plantData.temperatureRange
   );
 
-  // TODO: Have to use string here as the checkboxes component cannot handle the generic types
-  const [wateringLevel, setWateringLevel] = useState<string>(
-    plantData.wateringKey
-  );
-  const [lightLevel, setLightLevel] = useState<string>(plantData.lightLevelKey);
+  const [wateringLevel, setWateringLevel] = useState(plantData.wateringKey);
+  const [lightLevel, setLightLevel] = useState(plantData.lightLevelKey);
 
   const dispatchPlant = useCallback(() => {
     const close = props.closeBackdrop;
@@ -91,8 +81,8 @@ export const EditUploadPlant = (props: IEditUploadPlant) => {
         uuid,
         name,
         description,
-        lightLevelKey: lightLevel as LightLevelKeys,
-        wateringKey: wateringLevel as WateringAmountKeys,
+        lightLevelKey: lightLevel,
+        wateringKey: wateringLevel,
         temperatureRange,
         images,
         // TODO: No reminders UI yet
@@ -213,27 +203,68 @@ export const EditUploadPlant = (props: IEditUploadPlant) => {
               temperatureRange={temperatureRange}
               setTemperatureRange={setTemperatureRange}
             />
-            <CheckboxChoice
-              currentChecked={lightLevel}
-              checkboxes={LightLevel}
-              setCurrentChecked={setLightLevel}
+            <div
+              key="LightLevelCheckboxes"
               style={{
                 display: "flex",
                 justifyContent: "space-between",
                 paddingTop: 15,
               }}
-            />
-            <CheckboxChoice
-              currentChecked={wateringLevel}
-              checkboxes={WateringAmount}
-              setCurrentChecked={setWateringLevel}
+            >
+              {Object.entries(LightLevel).map(
+                ([key, data]: [string, { tooltip: string; icon: any }]) => {
+                  return (
+                    <FormControlLabel
+                      key={data.tooltip}
+                      value="top"
+                      control={<Checkbox checked={key === lightLevel} />}
+                      label={
+                        <Tooltip title={data.tooltip}>{data.icon}</Tooltip>
+                      }
+                      labelPlacement="top"
+                      onClick={() => setLightLevel(key as LightLevelKeys)}
+                    />
+                  );
+                }
+              )}
+            </div>
+            <div
+              key="WateringAmountCheckboxes"
               style={{
                 display: "flex",
                 justifyContent: "space-between",
                 paddingTop: 15,
                 paddingBottom: 15,
               }}
-            />
+            >
+              {Object.entries(WateringAmount).map(
+                ([key, data]: [string, { tooltip: string; icon: any }]) => {
+                  return (
+                    <FormControlLabel
+                      key={data.tooltip}
+                      value="top"
+                      control={<Checkbox checked={key === wateringLevel} />}
+                      label={
+                        <Tooltip title={data.tooltip}>
+                          <Icon>
+                            <Image
+                              src={data.icon.src}
+                              width={data.icon.width}
+                              height={data.icon.height}
+                              alt="watering level"
+                            />
+                          </Icon>
+                        </Tooltip>
+                      }
+                      labelPlacement="top"
+                      onClick={() =>
+                        setWateringLevel(key as WateringAmountKeys)
+                      }
+                    />
+                  );
+                }
+              )}
+            </div>
             <TextField
               key="DescriptionTextBox"
               fullWidth

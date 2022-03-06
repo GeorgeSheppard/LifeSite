@@ -3,3 +3,4 @@
 - System for adding keyboard shortcuts
 - Animations
 - Use food database to get macros for recipes (https://developer.edamam.com/food-database-api-docs)
+- Better fallback loading for card media

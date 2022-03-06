@@ -1,31 +1,44 @@
-import { RecipeUuid } from "../../store/reducers/food/recipes";
-import { useAppSelector } from "../../store/hooks/hooks";
-import Accordion from "@mui/material/Accordion";
-import AccordionSummary from "@mui/material/AccordionSummary";
-import Typography from "@mui/material/Typography";
-import AccordionDetails from "@mui/material/AccordionDetails";
+import EditIcon from "@mui/icons-material/Edit";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import InventoryIcon from "@mui/icons-material/Inventory";
+import Accordion from "@mui/material/Accordion";
+import AccordionDetails from "@mui/material/AccordionDetails";
+import AccordionSummary from "@mui/material/AccordionSummary";
+import Card from "@mui/material/Card";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
-import { WrappedCardMedia } from "../cards/wrapped_card_media";
-import InventoryIcon from "@mui/icons-material/Inventory";
 import Tooltip from "@mui/material/Tooltip";
-import CardHeader from "@mui/material/CardHeader";
+import Typography from "@mui/material/Typography";
+import { useAppSelector } from "../../store/hooks/hooks";
+import { RecipeUuid } from "../../store/reducers/food/recipes";
+import { WrappedCardMedia } from "../cards/wrapped_card_media";
 
 export interface IRecipeCardProps {
   uuid: RecipeUuid;
+  onEdit: () => void;
 }
 
 export const RecipeCard = (props: IRecipeCardProps) => {
   const recipe = useAppSelector((store) => store.recipes.recipes[props.uuid]);
 
   return (
-    <>
+    <Card className="card">
       {recipe.images && <WrappedCardMedia images={recipe.images} />}
       <Accordion key="ingredients">
-        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-          <CardHeader title={recipe.name} />
+        <AccordionSummary
+          expandIcon={<ExpandMoreIcon />}
+          sx={{ display: "flex" }}
+        >
+          <Typography fontSize={24}>{recipe.name}</Typography>
+          <div style={{ flexGrow: 1 }} />
+          <EditIcon
+            sx={{ paddingRight: 1, alignSelf: "center" }}
+            onClick={(event) => {
+              event?.stopPropagation();
+              props.onEdit();
+            }}
+          />
         </AccordionSummary>
         <AccordionDetails>{recipe.description}</AccordionDetails>
       </Accordion>
@@ -93,6 +106,6 @@ export const RecipeCard = (props: IRecipeCardProps) => {
           })}
         </AccordionDetails>
       </Accordion>
-    </>
+    </Card>
   );
 };
