@@ -32,6 +32,7 @@ import { ClickToUpload } from "../core/click_to_upload";
 import { useBoolean } from "../hooks/use_boolean";
 import { TemperatureSlider } from "./temperature_slider";
 import { stopPropagation } from "../cards/utilities";
+import { UploadDisplayImages } from "../cards/upload_and_display_images";
 
 export interface IEditUploadPlant {
   /**
@@ -119,86 +120,7 @@ export const EditUploadPlant = (props: IEditUploadPlant) => {
                 setName(event.target.value)
               }
             />
-            <div
-              key="UploadAndImages"
-              style={{
-                display: "flex",
-                flexWrap: "wrap",
-                justifyContent: "space-between",
-                paddingBottom: 20,
-              }}
-            >
-              <ClickToUpload
-                folder="images"
-                fileFormatsAccepted={["png", "jpg"]}
-                onStartUpload={setters.turnOn}
-                onUploadError={(response: IErrorUploadResponse) => {
-                  // TODO: Make this a user notification
-                  console.log(response.error);
-                  setters.turnOff();
-                }}
-                onUploadFinished={(response: IValidUploadResponse) => {
-                  setImages((images) =>
-                    images.concat({
-                      path: response.writePath,
-                      timestamp: Date.now(),
-                    })
-                  );
-                  setters.turnOff();
-                }}
-              >
-                <div style={{ paddingTop: 15 }}>
-                  <Paper
-                    elevation={1}
-                    sx={{ width: 100, height: 100, display: "flex" }}
-                  >
-                    <Box component="div" sx={{ flexGrow: 0.5 }} />
-                    <Box
-                      component="div"
-                      sx={{ display: "flex", margin: "auto" }}
-                    >
-                      {uploading ? (
-                        <CircularProgress />
-                      ) : (
-                        <UploadIcon fontSize="large" />
-                      )}
-                    </Box>
-                    <Box component="div" sx={{ flexGrow: 0.5 }} />
-                  </Paper>
-                </div>
-              </ClickToUpload>
-              {images.map((image) => {
-                return (
-                  <div style={{ paddingTop: 15 }} key={image.timestamp}>
-                    <Paper
-                      elevation={1}
-                      sx={{
-                        width: 100,
-                        height: 100,
-                        minWidth: 100,
-                        display: "flex",
-                      }}
-                    >
-                      <Box component="div" sx={{ flexGrow: 0.5 }} />
-                      <Box
-                        component="div"
-                        sx={{
-                          display: "flex",
-                          margin: "auto",
-                        }}
-                      >
-                        <CardMedia
-                          src={image.path}
-                          component="img"
-                          height={100}
-                        />
-                      </Box>
-                      <Box component="div" sx={{ flexGrow: 0.5 }} />
-                    </Paper>
-                  </div>
-                );
-              })}
-            </div>
+            <UploadDisplayImages images={images} setImages={setImages} />
             <TemperatureSlider
               temperatureRange={temperatureRange}
               setTemperatureRange={setTemperatureRange}

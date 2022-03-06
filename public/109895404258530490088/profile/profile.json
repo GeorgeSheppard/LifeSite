@@ -35,6 +35,7 @@
   },
   "plants": {
     "cards": [
+      "e27ac5df-0d3a-4a26-a6b1-a2d9e2939c7d",
       "1f7b7489-49cb-4994-9d04-660f513f331a"
     ],
     "plants": {
@@ -56,6 +57,24 @@
           {
             "path": "/109895404258530490088/images/1d71586b-482e-418a-b4bf-f4cd985a135f_IMG_20211126_110405.jpg",
             "timestamp": 1646342737869
+          }
+        ],
+        "reminders": []
+      },
+      "e27ac5df-0d3a-4a26-a6b1-a2d9e2939c7d": {
+        "uuid": "e27ac5df-0d3a-4a26-a6b1-a2d9e2939c7d",
+        "name": "Not a plant",
+        "description": "",
+        "lightLevelKey": "INDIRECT_SUN",
+        "wateringKey": "NORMAL",
+        "temperatureRange": [
+          12,
+          25
+        ],
+        "images": [
+          {
+            "path": "/109895404258530490088/images/616eea51-58a6-47ce-adab-3a2fd9facb57_lukasz-szmigiel-8AdYB7M4OHY-unsplash.jpg",
+            "timestamp": 1646588503582
           }
         ],
         "reminders": []

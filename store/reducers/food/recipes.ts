@@ -10,7 +10,13 @@ export interface IIngredient {
   quantity?: Quantity;
 }
 
-export interface IRecipe {
+export interface IMethodStage {
+  /**
+   * If the recipe is split into multiple parts, e.g. sauce, main then
+   * the method can be split as well
+   */
+  name?: string;
+  instructions: string[];
   ingredients: IIngredient[];
   /**
    * Whether this recipe can be stored long term, e.g. frozen or
@@ -20,24 +26,14 @@ export interface IRecipe {
   storeable?: boolean;
 }
 
-export interface IMethodStage {
-  /**
-   * If the recipe is split into multiple parts, e.g. sauce, main then
-   * the method can be split as well
-   */
-  name?: string;
-  instructions: string[];
-  recipe: IRecipe;
-}
-
 export type RecipeUuid = string;
 
 export interface IDisplayRecipe {
   uuid: RecipeUuid;
   name: string;
   description: string;
-  images?: Image[];
-  method?: IMethodStage[];
+  images: Image[];
+  method: IMethodStage[];
 }
 
 export const exampleDisplayRecipe: IDisplayRecipe = {
@@ -58,41 +54,35 @@ export const exampleDisplayRecipe: IDisplayRecipe = {
         "Add beef broth",
         "Simmer",
       ],
-      recipe: {
-        ingredients: [
-          {
-            name: "Star Anise",
-            quantity: new Quantity(Unit.NUMBER, 3),
-          },
-          {
-            name: "Beef Broth",
-            quantity: new Quantity(Unit.MILLILITER, 800),
-          },
-        ],
-        storeable: true,
-      },
+      ingredients: [
+        {
+          name: "Star Anise",
+          quantity: new Quantity(Unit.NUMBER, 3),
+        },
+        {
+          name: "Beef Broth",
+          quantity: new Quantity(Unit.MILLILITER, 800),
+        },
+      ],
+      storeable: true,
     },
     {
       name: "Main Dish",
       instructions: ["Enjoy"],
-      recipe: {
-        ingredients: [
-          {
-            name: "Noodles",
-            quantity: new Quantity(Unit.GRAM, 200),
-          },
-          {
-            name: "Spring Onion",
-            quantity: new Quantity(Unit.NO_UNIT),
-          },
-        ],
-      },
+      ingredients: [
+        {
+          name: "Noodles",
+          quantity: new Quantity(Unit.GRAM, 200),
+        },
+        {
+          name: "Spring Onion",
+          quantity: new Quantity(Unit.NO_UNIT),
+        },
+      ],
     },
     {
       instructions: ["More instructions"],
-      recipe: {
-        ingredients: [],
-      },
+      ingredients: [],
     },
   ],
 };
@@ -120,6 +110,11 @@ export const foodSlice = createSlice({
         state.cards.unshift(uuid);
       }
     },
+    deleteRecipe: (state, action: PayloadAction<RecipeUuid>) => {
+      const uuid = action.payload;
+      delete state.recipes[uuid];
+      state.cards = state.cards.filter((cardUuid) => cardUuid !== uuid);
+    },
   },
   extraReducers: {
     "user/login": (state, action: PayloadAction<IFullStoreState>) => {
@@ -131,6 +126,6 @@ export const foodSlice = createSlice({
   },
 });
 
-export const { addOrUpdateRecipe } = foodSlice.actions;
+export const { addOrUpdateRecipe, deleteRecipe } = foodSlice.actions;
 
 export default foodSlice.reducer;
