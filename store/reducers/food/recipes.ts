@@ -83,6 +83,7 @@ export const exampleDisplayRecipe: IDisplayRecipe = {
           },
           {
             name: "Spring Onion",
+            quantity: new Quantity(Unit.NO_UNIT),
           },
         ],
       },

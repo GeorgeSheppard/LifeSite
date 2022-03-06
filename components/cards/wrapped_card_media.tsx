@@ -11,7 +11,6 @@ import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import { Image } from "../../store/reducers/types";
 import CardMedia from "@mui/material/CardMedia";
-import FALLBACK_IMAGE from "../../public/images/fallback_image_not_found.png";
 
 export interface ICardMediaProps {
   images: Image[];

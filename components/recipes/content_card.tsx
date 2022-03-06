@@ -41,7 +41,14 @@ export const RecipeCard = (props: IRecipeCardProps) => {
               </ListItem>,
               method.recipe.ingredients.flatMap((ingredient) => (
                 <ListItem key={ingredient.name}>
-                  <ListItemText primary={"- " + ingredient.name} />
+                  <ListItemText
+                    primary={
+                      "- " +
+                      ingredient.quantity?.toStringWithIngredient(
+                        ingredient.name
+                      )
+                    }
+                  />
                 </ListItem>
               )),
             ])}
