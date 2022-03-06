@@ -11,10 +11,6 @@ export interface IIngredient {
 }
 
 export interface IRecipe {
-  /**
-   * e.g. Sauce, Toppings, Optional
-   */
-  title?: string;
   ingredients: IIngredient[];
   /**
    * Whether this recipe can be stored long term, e.g. frozen or
@@ -24,59 +20,80 @@ export interface IRecipe {
   storeable?: boolean;
 }
 
-export interface IMethodStep {
-  instruction: string;
+export interface IMethodStage {
+  /**
+   * If the recipe is split into multiple parts, e.g. sauce, main then
+   * the method can be split as well
+   */
+  name?: string;
+  instructions: string[];
+  recipe: IRecipe;
 }
 
 export type RecipeUuid = string;
 
 export interface IDisplayRecipe {
   uuid: RecipeUuid;
-  /**
-   * Recipes can be composed of multiple parts, e.g. the sauce for a dish
-   * It is useful to seperate so that if something is batched cooked we can
-   * specify which aspect we need to get from the shop
-   */
-  recipeAspects: IRecipe[];
+  name: string;
+  description: string;
   images?: Image[];
-  method?: IMethodStep[];
+  method?: IMethodStage[];
 }
 
 export const exampleDisplayRecipe: IDisplayRecipe = {
   uuid: "12345",
-  recipeAspects: [
-    {
-      title: "Sauce",
-      ingredients: [
-        {
-          name: "Star Anise",
-          quantity: new Quantity(Unit.NUMBER, 3),
-        },
-        {
-          name: "Beef Broth",
-          quantity: new Quantity(Unit.MILLILITER, 800),
-        },
-      ],
-      storeable: true,
-    },
-    {
-      title: "Main Dish",
-      ingredients: [
-        {
-          name: "Noodles",
-          quantity: new Quantity(Unit.GRAM, 200),
-        },
-        {
-          name: "Spring Onion",
-        },
-      ],
-    },
-  ],
+  name: "Pho",
+  description:
+    "Vietnamese dish, broth and noodles with some meat and vegetables.",
   images: [
     { timestamp: 1, path: "photo_of_dish.png" },
     { timestamp: 2, path: "photo_of_sauce.png" },
   ],
-  method: [{ instruction: "Cook the dish" }, { instruction: "Enjoy" }],
+  method: [
+    {
+      name: "Sauce",
+      instructions: [
+        "Heat spices",
+        "Char onion and ginger",
+        "Add beef broth",
+        "Simmer",
+      ],
+      recipe: {
+        ingredients: [
+          {
+            name: "Star Anise",
+            quantity: new Quantity(Unit.NUMBER, 3),
+          },
+          {
+            name: "Beef Broth",
+            quantity: new Quantity(Unit.MILLILITER, 800),
+          },
+        ],
+        storeable: true,
+      },
+    },
+    {
+      name: "Main Dish",
+      instructions: ["Enjoy"],
+      recipe: {
+        ingredients: [
+          {
+            name: "Noodles",
+            quantity: new Quantity(Unit.GRAM, 200),
+          },
+          {
+            name: "Spring Onion",
+          },
+        ],
+      },
+    },
+    {
+      instructions: ["More instructions"],
+      recipe: {
+        ingredients: [],
+      },
+    },
+  ],
 };
 
 export interface IRecipesState {

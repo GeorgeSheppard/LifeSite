@@ -76,8 +76,12 @@ export const EditUploadPlant = (props: IEditUploadPlant) => {
   const [temperatureRange, setTemperatureRange] = useState(
     plantData.temperatureRange
   );
-  const [wateringLevel, setWateringLevel] = useState(plantData.wateringKey);
-  const [lightLevel, setLightLevel] = useState(plantData.lightLevelKey);
+
+  // TODO: Have to use string here as the checkboxes component cannot handle the generic types
+  const [wateringLevel, setWateringLevel] = useState<string>(
+    plantData.wateringKey
+  );
+  const [lightLevel, setLightLevel] = useState<string>(plantData.lightLevelKey);
 
   const dispatchPlant = useCallback(() => {
     const close = props.closeBackdrop;
@@ -87,8 +91,8 @@ export const EditUploadPlant = (props: IEditUploadPlant) => {
         uuid,
         name,
         description,
-        lightLevelKey: lightLevel,
-        wateringKey: wateringLevel,
+        lightLevelKey: lightLevel as LightLevelKeys,
+        wateringKey: wateringLevel as WateringAmountKeys,
         temperatureRange,
         images,
         // TODO: No reminders UI yet

@@ -1,9 +1,17 @@
 import { IconButton } from "@mui/material";
-import { useMemo, useState, useCallback, MouseEvent } from "react";
+import {
+  useMemo,
+  useState,
+  useCallback,
+  MouseEvent,
+  SyntheticEvent,
+  ReactEventHandler,
+} from "react";
 import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import { Image } from "../../store/reducers/types";
 import CardMedia from "@mui/material/CardMedia";
+import FALLBACK_IMAGE from "../../public/images/fallback_image_not_found.png";
 
 export interface ICardMediaProps {
   images: Image[];
@@ -17,6 +25,11 @@ export const WrappedCardMedia = (props: ICardMediaProps) => {
   const { images } = props;
 
   const [imageIndex, setImageIndex] = useState(0);
+  const [foundImage, setFoundImage] = useState(true);
+
+  const onMediaFallback: ReactEventHandler<HTMLImageElement> = (
+    event: SyntheticEvent<HTMLImageElement, Event>
+  ) => setFoundImage(false);
 
   const setImageIndexWrapped = useCallback(
     (index: number) => {
@@ -35,13 +48,18 @@ export const WrappedCardMedia = (props: ICardMediaProps) => {
   const onClickUp = useMemo(() => changeIndex(1), [changeIndex]);
   const onClickDown = useMemo(() => changeIndex(-1), [changeIndex]);
 
-  if (images.length === 0) {
+  if (images.length === 0 || !foundImage) {
     return null;
   }
 
   return (
     <div style={{ position: "relative" }}>
-      <CardMedia src={images[imageIndex].path} component="img" height="300px" />
+      <CardMedia
+        src={images[imageIndex].path}
+        component="img"
+        height="300px"
+        onError={onMediaFallback}
+      />
       {images.length > 1 && (
         <>
           <IconButton

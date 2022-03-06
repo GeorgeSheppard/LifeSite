@@ -1,0 +1,5 @@
+- Move data storage to S3
+- Add notification service to inform of errors
+- System for adding keyboard shortcuts
+- Animations
+- Use food database to get macros for recipes (https://developer.edamam.com/food-database-api-docs)
