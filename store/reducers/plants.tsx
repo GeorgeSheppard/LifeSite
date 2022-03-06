@@ -20,7 +20,7 @@ export enum LightLevelKeys {
   DIRECT_SUN = "DIRECT_SUN",
 }
 
-export const LightLevel: Checkboxes<LightLevelKeys> = {
+export const LightLevel: Checkboxes = {
   [LightLevelKeys.INDIRECT_SUN]: {
     tooltip: "Prefers to be slightly shaded with sun",
     icon: <Brightness4 />,
@@ -42,7 +42,7 @@ export enum WateringAmountKeys {
   LOTS = "LOTS",
 }
 
-export const WateringAmount: Checkboxes<WateringAmountKeys> = {
+export const WateringAmount: Checkboxes = {
   [WateringAmountKeys.LITTLE]: {
     tooltip: "Likes small amounts of water",
     icon: LittleWater,

@@ -9,6 +9,10 @@ export interface ICardMediaProps {
   images: Image[];
 }
 
+/**
+ * Displays image(s) and adds buttons to go left and right to see the
+ * other images if they exist
+ */
 export const WrappedCardMedia = (props: ICardMediaProps) => {
   const { images } = props;
 

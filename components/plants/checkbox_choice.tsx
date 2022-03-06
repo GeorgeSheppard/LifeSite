@@ -6,16 +6,14 @@ import Image from "next/image";
 import { Checkboxes } from "../../store/reducers/types";
 import { CSSProperties } from "react";
 
-export interface ICheckboxChoiceProps<T> {
+export interface ICheckboxChoiceProps {
   currentChecked: string;
-  checkboxes: Checkboxes<T>;
-  setCurrentChecked: (key: T) => void;
+  checkboxes: Checkboxes;
+  setCurrentChecked: (key: string) => void;
   style?: CSSProperties | undefined;
 }
 
-export const CheckboxChoice: <T>(
-  props: ICheckboxChoiceProps<T>
-) => React.ReactElement = (props) => {
+export const CheckboxChoice = (props: ICheckboxChoiceProps) => {
   return (
     <div key="Checkboxes" style={props.style}>
       {Object.entries(props.checkboxes).map(

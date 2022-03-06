@@ -1,12 +1,4 @@
-import {
-  useCallback,
-  ChangeEvent,
-  useMemo,
-  useState,
-  cloneElement,
-  ReactElement,
-  Children,
-} from "react";
+import { useCallback, ChangeEvent, useMemo, ReactElement } from "react";
 import useUpload from "../hooks/upload_to_server";
 import {
   IErrorUploadResponse,

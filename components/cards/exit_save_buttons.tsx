@@ -12,6 +12,9 @@ export interface IExitSaveButtonsProps {
   boxSx: SxProps<Theme> | undefined;
 }
 
+/**
+ * Exit and save button on one line
+ */
 export const ExitSaveButtons = (props: IExitSaveButtonsProps) => {
   const { exitOnClick, saveOnClick, saveDisabled, buttonSx, boxSx } = props;
 

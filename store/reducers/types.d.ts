@@ -5,6 +5,8 @@ export interface Image {
   path: ImagePath;
 }
 
-export interface Checkboxes<T> {
-  [key in T]: { tooltip: string; icon: any };
+// TODO: I did try using a generic here for the keys in the checkbox,
+// but it didn't work
+export interface Checkboxes {
+  [key: string]: { tooltip: string; icon: any };
 }

@@ -7,6 +7,7 @@ import Typography from "@mui/material/Typography";
 import { useAppSelector } from "../../store/hooks/hooks";
 import {
   LightLevel,
+  LightLevelKeys,
   PlantUuid,
   WateringAmount,
 } from "../../store/reducers/plants";
