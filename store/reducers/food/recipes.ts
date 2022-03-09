@@ -3,40 +3,48 @@ import { Image } from "../types";
 import { Quantity, Unit } from "./units";
 import { IFullStoreState } from "../../store";
 
+export type RecipeUuid = string;
+export type IngredientUuid = string;
 export type IIngredientName = string;
 
+export interface INutritionData {}
+
 export interface IIngredient {
+  /**
+   * Name acts as uuid
+   */
   name: IIngredientName;
-  quantity?: Quantity;
+  nutritionData?: INutritionData;
 }
 
-export interface IMethodStage {
+export interface IInstruction {
+  text: string;
   /**
-   * If the recipe is split into multiple parts, e.g. sauce, main then
-   * the method can be split as well
+   * Assumed false
    */
-  name?: string;
-  instructions: string[];
-  ingredients: IIngredient[];
-  /**
-   * Whether this recipe can be stored long term, e.g. frozen or
-   * placed in pantry
-   * Default is false if it doesn't exist
-   */
+  optional?: boolean;
+}
+
+export interface IRecipeComponent {
+  name: string;
+  ingredients: { name: IIngredientName; quantity: Quantity }[];
+  instructions: IInstruction[];
   storeable?: boolean;
 }
 
-export type RecipeUuid = string;
-
-export interface IDisplayRecipe {
+export interface IRecipe {
   uuid: RecipeUuid;
   name: string;
   description: string;
-  images: Image[];
-  method: IMethodStage[];
+  images?: Image[];
+  components: IRecipeComponent[];
 }
 
-export const exampleDisplayRecipe: IDisplayRecipe = {
+export type IIngredientsDatabase = {
+  [index: IIngredientName]: IIngredient;
+};
+
+export const exampleDisplayRecipe: IRecipe = {
   uuid: "12345",
   name: "Pho",
   description:
@@ -45,14 +53,22 @@ export const exampleDisplayRecipe: IDisplayRecipe = {
     { timestamp: 1, path: "photo_of_dish.png" },
     { timestamp: 2, path: "photo_of_sauce.png" },
   ],
-  method: [
+  components: [
     {
       name: "Sauce",
       instructions: [
-        "Heat spices",
-        "Char onion and ginger",
-        "Add beef broth",
-        "Simmer",
+        {
+          text: "Heat spices",
+        },
+        {
+          text: "Char onion and ginger",
+        },
+        {
+          text: "Add beef broth",
+        },
+        {
+          text: "Simmer",
+        },
       ],
       ingredients: [
         {
@@ -68,7 +84,7 @@ export const exampleDisplayRecipe: IDisplayRecipe = {
     },
     {
       name: "Main Dish",
-      instructions: ["Enjoy"],
+      instructions: [{ text: "Enjoy" }],
       ingredients: [
         {
           name: "Noodles",
@@ -81,27 +97,50 @@ export const exampleDisplayRecipe: IDisplayRecipe = {
       ],
     },
     {
-      instructions: ["More instructions"],
+      name: "Extra",
+      instructions: [{ text: "More instructions", optional: true }],
       ingredients: [],
+    },
+  ],
+};
+
+export const secondExampleRecipe: IRecipe = {
+  uuid: "11111",
+  name: "Chilli",
+  description: "Chilli",
+  components: [
+    {
+      name: "Everything",
+      ingredients: [{ name: "Beef", quantity: new Quantity(Unit.GRAM, 300) }],
+      instructions: [
+        {
+          text: "Cook beef",
+        },
+      ],
     },
   ],
 };
 
 export interface IRecipesState {
   cards: RecipeUuid[];
-  recipes: { [key: RecipeUuid]: IDisplayRecipe };
+  recipes: { [key: RecipeUuid]: IRecipe };
+  ingredients: IIngredientsDatabase;
 }
 
 const initialState: IRecipesState = {
-  cards: [exampleDisplayRecipe.uuid],
-  recipes: { [exampleDisplayRecipe.uuid]: exampleDisplayRecipe },
+  cards: [exampleDisplayRecipe.uuid, secondExampleRecipe.uuid],
+  recipes: {
+    [exampleDisplayRecipe.uuid]: exampleDisplayRecipe,
+    [secondExampleRecipe.uuid]: secondExampleRecipe,
+  },
+  ingredients: {},
 };
 
 export const foodSlice = createSlice({
   name: "food",
   initialState,
   reducers: {
-    addOrUpdateRecipe: (state, action: PayloadAction<IDisplayRecipe>) => {
+    addOrUpdateRecipe: (state, action: PayloadAction<IRecipe>) => {
       const recipe = action.payload;
       const { uuid } = recipe;
       const existsAlready = uuid in state.recipes;

@@ -1,7 +1,7 @@
 import EditIcon from "@mui/icons-material/Edit";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import InventoryIcon from "@mui/icons-material/Inventory";
-import { IconButton } from "@mui/material";
+import { IconButton, SxProps, Theme } from "@mui/material";
 import Accordion from "@mui/material/Accordion";
 import AccordionDetails from "@mui/material/AccordionDetails";
 import AccordionSummary from "@mui/material/AccordionSummary";
@@ -13,7 +13,11 @@ import ListItemText from "@mui/material/ListItemText";
 import Tooltip from "@mui/material/Tooltip";
 import Typography from "@mui/material/Typography";
 import { useAppSelector } from "../../store/hooks/hooks";
-import { deleteRecipe, RecipeUuid } from "../../store/reducers/food/recipes";
+import {
+  deleteRecipe,
+  IRecipeComponent,
+  RecipeUuid,
+} from "../../store/reducers/food/recipes";
 import { WrappedCardMedia } from "../cards/wrapped_card_media";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
@@ -24,7 +28,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import { useBoolean } from "../hooks/use_boolean";
 import AcUnitIcon from "@mui/icons-material/AcUnit";
 import { useDispatch } from "react-redux";
-import { useCallback } from "react";
+import { PropsWithChildren, useCallback, useMemo } from "react";
 
 export interface IRecipeCardProps {
   uuid: RecipeUuid;
@@ -39,6 +43,38 @@ export const RecipeCard = (props: IRecipeCardProps) => {
   const deleteRecipeOnClick = useCallback(() => {
     dispatch(deleteRecipe(props.uuid));
   }, [dispatch, props.uuid]);
+
+  const headerChildren = useMemo(() => {
+    const onEdit = props.onEdit;
+    const turnOn = setters.turnOn;
+
+    return (
+      <>
+        <Typography fontSize={24}>{recipe.name}</Typography>
+        <div style={{ flexGrow: 1 }} />
+        <IconButton
+          onClick={(event) => {
+            event?.stopPropagation();
+            turnOn();
+          }}
+          size="small"
+          sx={{ alignSelf: "center" }}
+        >
+          <DeleteIcon fontSize="small" />
+        </IconButton>
+        <IconButton
+          onClick={(event) => {
+            event?.stopPropagation();
+            onEdit();
+          }}
+          size="small"
+          sx={{ alignSelf: "center" }}
+        >
+          <EditIcon fontSize="small" />
+        </IconButton>
+      </>
+    );
+  }, [recipe.name, props.onEdit, setters.turnOn]);
 
   return (
     <>
@@ -64,84 +100,109 @@ export const RecipeCard = (props: IRecipeCardProps) => {
             expandIcon={<ExpandMoreIcon />}
             sx={{ display: "flex" }}
           >
-            <Typography fontSize={24}>{recipe.name}</Typography>
-            <div style={{ flexGrow: 1 }} />
-            <IconButton
-              onClick={(event) => {
-                event?.stopPropagation();
-                setters.turnOn();
-              }}
-              size="small"
-              sx={{ alignSelf: "center" }}
-            >
-              <DeleteIcon fontSize="small" />
-            </IconButton>
-            <IconButton
-              onClick={(event) => {
-                event?.stopPropagation();
-                props.onEdit();
-              }}
-              size="small"
-              sx={{ alignSelf: "center" }}
-            >
-              <EditIcon fontSize="small" />
-            </IconButton>
+            {headerChildren}
           </AccordionSummary>
-          <AccordionDetails>{recipe.description}</AccordionDetails>
+          <AccordionDetails>
+            <Typography>{recipe.description}</Typography>
+          </AccordionDetails>
         </Accordion>
-        {recipe.method.map((method) => {
-          return (
-            <Accordion key={method.name}>
-              <AccordionSummary
-                expandIcon={<ExpandMoreIcon />}
-                sx={{ display: "flex" }}
-              >
-                <Typography>{method.name ?? "Optional"}</Typography>
-                {method.storeable && (
-                  <>
-                    <div style={{ flexGrow: 1 }} />
-                    <Tooltip title="Can be stored">
-                      <InventoryIcon sx={{ paddingRight: 1 }} />
-                    </Tooltip>
-                  </>
-                )}
-              </AccordionSummary>
-              <AccordionDetails>
-                <List dense>
-                  <ListItem key="ingredients">
-                    <ListItemText primary="Ingredients" />
-                  </ListItem>
-                  {method.ingredients.map((ingredient) => (
-                    <ListItem key={ingredient.name}>
-                      <ListItemText
-                        primary={
-                          "- " +
-                          ingredient.quantity?.toStringWithIngredient(
-                            ingredient.name
-                          )
-                        }
-                      />
+        {recipe.components.length === 1 ? (
+          <AccordionDetails>
+            <List dense>
+              <ListItem key="ingredients">
+                <ListItemText primary="Ingredients" />
+              </ListItem>
+              {recipe.components[0].ingredients.map(({ name, quantity }) => (
+                <ListItem key={name}>
+                  <ListItemText
+                    primary={"- " + quantity.toStringWithIngredient(name)}
+                  />
+                </ListItem>
+              ))}
+              <div style={{ height: 20 }} />
+              <ListItem key="method">
+                <ListItemText primary="Method" />
+              </ListItem>
+              {recipe.components[0].instructions.map(
+                ({ text, optional }, index) => {
+                  let visibleText = `${index + 1}. `;
+                  if (optional) {
+                    visibleText += "(Optional) ";
+                  }
+                  visibleText += text;
+                  return (
+                    <ListItem key={text}>
+                      <ListItemText primary={visibleText} />
                     </ListItem>
-                  ))}
-                  <div style={{ height: 20 }} />
-                  <ListItem key="method">
-                    <ListItemText primary="Method" />
-                  </ListItem>
-                  {method.instructions.map((instruction, index) => {
-                    return (
-                      <ListItem key={instruction}>
-                        <ListItemText
-                          primary={`${index + 1}. ${instruction}`}
-                        />
-                      </ListItem>
-                    );
-                  })}
-                </List>
-              </AccordionDetails>
-            </Accordion>
-          );
-        })}
+                  );
+                }
+              )}
+            </List>
+          </AccordionDetails>
+        ) : (
+          <>
+            {recipe.components.map((component) => (
+              <ComponentContent key={component.name} component={component} />
+            ))}
+          </>
+        )}
       </Card>
     </>
+  );
+};
+
+export interface IComponentContentProps {
+  component: IRecipeComponent;
+}
+
+const ComponentContent = (props: IComponentContentProps) => {
+  const { component } = props;
+  return (
+    <Accordion key={component.name}>
+      <AccordionSummary
+        expandIcon={<ExpandMoreIcon />}
+        sx={{ display: "flex" }}
+      >
+        <Typography>{component.name ?? "Optional"}</Typography>
+        {component.storeable && (
+          <>
+            <div style={{ flexGrow: 1 }} />
+            <Tooltip title="Can be stored">
+              <InventoryIcon sx={{ paddingRight: 1 }} />
+            </Tooltip>
+          </>
+        )}
+      </AccordionSummary>
+      <AccordionDetails>
+        <List dense>
+          <ListItem key="ingredients">
+            <ListItemText primary="Ingredients" />
+          </ListItem>
+          {component.ingredients.map(({ name, quantity }) => (
+            <ListItem key={name}>
+              <ListItemText
+                primary={"- " + quantity.toStringWithIngredient(name)}
+              />
+            </ListItem>
+          ))}
+          <div style={{ height: 20 }} />
+          <ListItem key="method">
+            <ListItemText primary="Method" />
+          </ListItem>
+          {component.instructions.map(({ text, optional }, index) => {
+            let visibleText = `${index + 1}. `;
+            if (optional) {
+              visibleText += "(Optional) ";
+            }
+            visibleText += text;
+            return (
+              <ListItem key={text}>
+                <ListItemText primary={visibleText} />
+              </ListItem>
+            );
+          })}
+        </List>
+      </AccordionDetails>
+    </Accordion>
   );
 };
