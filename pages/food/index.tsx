@@ -9,7 +9,7 @@ import { useAppSelector } from "../../store/hooks/hooks";
 import { RecipeUuid } from "../../store/reducers/food/recipes";
 
 const Food = () => {
-  const recipeUuids = useAppSelector((store) => store.recipes.cards);
+  const recipeUuids = useAppSelector((store) => store.food.cards);
   const [recipeSelected, setRecipeSelected] = useState<RecipeUuid | null>(null);
 
   return (

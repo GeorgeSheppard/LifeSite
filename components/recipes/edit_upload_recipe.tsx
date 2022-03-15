@@ -1,7 +1,11 @@
 import Container from "@mui/material/Container";
 import Card from "@mui/material/Card";
-import { RecipeUuid } from "../../store/reducers/food/recipes";
-import { useAppSelector } from "../../store/hooks/hooks";
+import {
+  addOrUpdateRecipe,
+  IRecipeComponent,
+  RecipeUuid,
+} from "../../store/reducers/food/recipes";
+import { useAppDispatch, useAppSelector } from "../../store/hooks/hooks";
 import {
   ChangeEvent,
   createRef,
@@ -9,6 +13,11 @@ import {
   useState,
   RefObject,
   Ref,
+  forwardRef,
+  useCallback,
+  useEffect,
+  useMemo,
+  memo,
 } from "react";
 import Grid from "@mui/material/Grid";
 import { stopPropagation } from "../cards/utilities";
@@ -28,6 +37,17 @@ import AccordionSummary from "@mui/material/AccordionSummary";
 import CloseIcon from "@mui/icons-material/Close";
 import { v4 as uuidv4 } from "uuid";
 import { ExitSaveButtons } from "../cards/exit_save_buttons";
+import { useCardsWithIds } from "../hooks/use_cards";
+import { Quantity, Unit } from "../../store/reducers/food/units";
+import { useBoolean } from "../hooks/use_boolean";
+import FormGroup from "@mui/material/FormGroup";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import Checkbox from "@mui/material/Checkbox";
+import DeleteIcon from "@mui/icons-material/Delete";
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import Select, { SelectChangeEvent } from '@mui/material/Select';
 
 export interface IEditUploadRecipeProps {
   /**
@@ -37,213 +57,339 @@ export interface IEditUploadRecipeProps {
   closeBackdrop: () => void;
 }
 
-export const EditUploadRecipe = () => <></>;
+export const EditUploadRecipe = (props: IEditUploadRecipeProps) => {
+  const [uuid] = useState<RecipeUuid>(props.uuid);
+  const dispatch = useAppDispatch();
+  const recipeData = useAppSelector((store) => {
+    if (uuid in store.food.recipes) {
+      return store.food.recipes[uuid];
+    } else {
+      return {
+        uuid,
+        name: "",
+        description: "",
+        images: [],
+        components: [
+          {
+            name: "",
+            ingredients: [],
+            instructions: [],
+            storeable: false,
+          },
+        ],
+      };
+    }
+  });
 
-// export const EditUploadRecipe = (props: IEditUploadRecipeProps) => {
-//   const [uuid] = useState<RecipeUuid>(props.uuid);
-//   const recipeData: IDisplayRecipe = useAppSelector((store) => {
-//     if (uuid in store.recipes.recipes) {
-//       return store.recipes.recipes[uuid];
-//     } else {
-//       return {
-//         uuid,
-//         name: "",
-//         description: "",
-//         images: [],
-//         method: [
-//           {
-//             name: "",
-//             instructions: [""],
-//             ingredients: [
-//               {
-//                 name: "",
-//               },
-//             ],
-//           },
-//         ],
-//       };
-//     }
-//   });
+  const {
+    deleteIndex,
+    insertIndex,
+    replaceIndex,
+    cards: components,
+  } = useCardsWithIds({
+    initialCards: recipeData.components,
+    generateValue: () => ({
+      name: "",
+      ingredients: [],
+      instructions: [],
+      storeable: false,
+    }),
+  });
 
-//   const [recipeName, setRecipeName] = useState(recipeData.name);
-//   const [description, setDescription] = useState(recipeData.description);
-//   const [images, setImages] = useState(recipeData.images);
-//   const [method, setMethod] = useState(recipeData.method);
+  const [recipeName, setRecipeName] = useState(recipeData.name);
+  const [description, setDescription] = useState(recipeData.description);
+  const [images, setImages] = useState(recipeData.images);
 
-//   return (
-//     <Container sx={{ py: 8 }} maxWidth="lg">
-//       <Grid container alignItems="center" justifyContent="center">
-//         <Grid item key="edit_upload" xs={12} sm={6} md={4}>
-//           <Card sx={{ padding: 4 }} onClick={stopPropagation}>
-//             <TextField
-//               key="NameTextField"
-//               fullWidth
-//               label={"Name"}
-//               value={recipeName}
-//               id="name"
-//               variant="standard"
-//               margin="none"
-//               onChange={(event: ChangeEvent<HTMLTextAreaElement>) =>
-//                 setRecipeName(event.target.value)
-//               }
-//             />
-//             <TextField
-//               key="DescriptionTextField"
-//               fullWidth
-//               label={"Description"}
-//               value={description}
-//               id="name"
-//               variant="standard"
-//               margin="none"
-//               onChange={(event: ChangeEvent<HTMLTextAreaElement>) =>
-//                 setDescription(event.target.value)
-//               }
-//             />
-//             <UploadDisplayImages images={images} setImages={setImages} />
-//             {method.map((individualMethod, index) => (
-//               <MethodForm
-//                 key={index}
-//                 method={individualMethod}
-//                 noName={method.length === 1}
-//               />
-//             ))}
-//             <div style={{ display: "flex" }}>
-//               <div style={{ flexGrow: 0.5 }} />
-//               <IconButton
-//                 onClick={() => {
-//                   if (method[method.length - 1])
-//                     setMethod((method) =>
-//                       method.concat([
-//                         {
-//                           name: "",
-//                           instructions: [],
-//                           ingredients: [],
-//                         },
-//                       ])
-//                     );
-//                 }}
-//               >
-//                 <AddIcon />
-//               </IconButton>
-//               <div style={{ flexGrow: 0.5 }} />
-//             </div>
-//             {/* <ExitSaveButtons /> */}
-//           </Card>
-//         </Grid>
-//       </Grid>
-//     </Container>
-//   );
-// };
+  const dispatchRecipe = useCallback(() => {
+    const close = props.closeBackdrop;
 
-// export interface IMethodFormProps {
-//   method: IMethodStage;
-//   noName: boolean;
-// }
+    dispatch(
+      addOrUpdateRecipe({
+        uuid: recipeData.uuid,
+        name: recipeName,
+        description,
+        images,
+        components: components.map((component) => component.value),
+      })
+    );
+    close();
+  }, [
+    props.closeBackdrop,
+    recipeData.uuid,
+    recipeName,
+    description,
+    images,
+    components,
+    dispatch,
+  ]);
 
-// export const MethodForm = (props: IMethodFormProps) => {
-//   const { method } = props;
+  return (
+    <Container sx={{ py: 8 }} maxWidth="lg">
+      <Grid container alignItems="center" justifyContent="center">
+        <Grid item key="edit_upload" xs={12} sm={6} md={8}>
+          <Card sx={{ padding: 4 }} onClick={stopPropagation}>
+            <TextField
+              key="NameTextField"
+              fullWidth
+              label={"Name"}
+              value={recipeName}
+              id="name"
+              variant="standard"
+              margin="none"
+              onChange={(event: ChangeEvent<HTMLTextAreaElement>) =>
+                setRecipeName(event.target.value)
+              }
+            />
+            <TextField
+              key="DescriptionTextField"
+              fullWidth
+              label={"Description"}
+              value={description}
+              id="name"
+              variant="standard"
+              margin="none"
+              onChange={(event: ChangeEvent<HTMLTextAreaElement>) =>
+                setDescription(event.target.value)
+              }
+            />
+            <UploadDisplayImages images={images} setImages={setImages} />
+            {components.map(({ uuid, value: component }, index) => (
+              <ComponentForm
+                key={uuid}
+                component={component}
+                index={index}
+                save={replaceIndex}
+                delete={deleteIndex}
+                noName={components.length === 1}
+              />
+            ))}
+            <div style={{ display: "flex" }}>
+              <div style={{ flexGrow: 0.5 }} />
+              <IconButton onClick={() => insertIndex()}>
+                <AddIcon />
+              </IconButton>
+              <div style={{ flexGrow: 0.5 }} />
+            </div>
+            <ExitSaveButtons
+              saveOnClick={dispatchRecipe}
+              exitOnClick={props.closeBackdrop}
+              saveDisabled={false}
+              buttonSx={{ flexGrow: 0.4 }}
+              boxSx={{
+                display: "flex",
+                justifyContent: "space-between",
+                paddingTop: "10px",
+              }}
+            />
+          </Card>
+        </Grid>
+      </Grid>
+    </Container>
+  );
+};
 
-//   const focusRef = useRef<Ref<any>>(null);
-//   const [name, setName] = useState(method.name);
-//   const [instructionsWithId, setInstructionsWithId] = useState(() => {
-//     return method.instructions.map((mtd) => ({
-//       id: uuidv4(),
-//       instruction: mtd,
-//     }));
-//   });
-//   const [ingredientsWithId];
+export interface IComponentFormProps {
+  component: IRecipeComponent;
+  noName: boolean;
+  save: (index: number, component: IRecipeComponent) => void;
+  index: number;
+  delete: (index: number) => void;
+}
 
-//   const nameTextField = (
-//     <TextField
-//       key="MethodTextField"
-//       fullWidth
-//       value={name}
-//       id="name"
-//       variant="standard"
-//       margin="none"
-//       onClick={stopPropagation}
-//       onChange={(event: ChangeEvent<HTMLTextAreaElement>) =>
-//         setName(event.target.value)
-//       }
-//     />
-//   );
+export const ComponentForm = (props: IComponentFormProps) => {
+  const { component, save, index } = props;
 
-//   const inputs = (
-//     <List>
-//       {instructionsWithId.map((instructionWithId, index) => (
-//         <ListItem key={instructionWithId.id} disablePadding>
-//           <ListItemText primary={`${index + 1}.`} sx={{ paddingRight: 1 }} />
-//           <TextField
-//             inputRef={
-//               index === instructionsWithId.length - 1 ? focusRef : undefined
-//             }
-//             fullWidth
-//             value={instructionWithId.instruction}
-//             id="instruction"
-//             variant="standard"
-//             margin="none"
-//             multiline
-//             onChange={(event: ChangeEvent<HTMLTextAreaElement>) => {
-//               setInstructionsWithId((prevInstructions) => {
-//                 const copyInstructions = [...prevInstructions];
-//                 const prevId = copyInstructions[index].id;
-//                 copyInstructions[index] = {
-//                   instruction: event.target.value,
-//                   id: prevId,
-//                 };
-//                 return copyInstructions;
-//               });
-//             }}
-//           />
-//           <IconButton
-//             onClick={(event) => {
-//               setInstructionsWithId((prevInstructions) => {
-//                 const copyInstructions = [...prevInstructions];
-//                 copyInstructions.splice(index, 1);
-//                 return copyInstructions;
-//               });
-//             }}
-//             size="small"
-//             sx={{ alignSelf: "center" }}
-//           >
-//             <CloseIcon fontSize="small" />
-//           </IconButton>
-//         </ListItem>
-//       ))}
-//       <div style={{ display: "flex" }}>
-//         <div style={{ flexGrow: 0.5 }} />
-//         <IconButton
-//           onClick={() => {
-//             if (
-//               instructionsWithId[instructionsWithId.length - 1].instruction !==
-//               ""
-//             ) {
-//               setInstructionsWithId((prevInstructions) =>
-//                 prevInstructions.concat([{ instruction: "", id: uuidv4() }])
-//               );
-//             } else {
-//               // TODO: Fix this
-//               focusRef?.current?.focus();
-//             }
-//           }}
-//         >
-//           <AddIcon />
-//         </IconButton>
-//         <div style={{ flexGrow: 0.5 }} />
-//       </div>
-//     </List>
-//   );
+  const [name, setName] = useState(component.name);
+  const {
+    deleteIndex: deleteIndexInstruction,
+    insertIndex: insertIndexInstruction,
+    replaceIndex: replaceIndexInstruction,
+    cards: instructions,
+  } = useCardsWithIds({
+    initialCards: component.instructions,
+    generateValue: () => ({
+      text: "",
+      optional: false,
+    }),
+  });
+  const {
+    deleteIndex: deleteIndexIngredient,
+    insertIndex: insertIndexIngredient,
+    replaceIndex: replaceIndexIngredient,
+    cards: ingredients,
+  } = useCardsWithIds({
+    initialCards: component.ingredients.map((ingredient) => ({
+      name: ingredient.name,
+      quantity: Quantity.fromJSON(ingredient.quantity),
+    })),
+    generateValue: () => ({
+      name: "",
+      quantity: new Quantity(Unit.NO_UNIT),
+    }),
+  });
+  const [storeable, setters] = useBoolean(component.storeable ?? false);
 
-//   if (props.noName) {
-//     return inputs;
-//   }
+  const saveData = useCallback(() => {
+    const componentState = {
+      name,
+      ingredients: ingredients
+        .map((ingredient) => ingredient.value)
+        .map((ingredient) => ({
+          name: ingredient.name,
+          quantity: ingredient.quantity.toJSON(),
+        })),
+      instructions: instructions.map((instruction) => instruction.value),
+      storeable,
+    };
+    save(index, componentState);
+  }, [name, ingredients, instructions, storeable, save, index]);
 
-//   return (
-//     <Accordion>
-//       <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-//         {nameTextField}
-//       </AccordionSummary>
-//       <AccordionDetails>{inputs}</AccordionDetails>
-//     </Accordion>
-//   );
-// };
+  const nameTextField = (
+    <>
+      <TextField
+        key="MethodTextField"
+        fullWidth
+        value={name}
+        id="name"
+        variant="standard"
+        margin="none"
+        onClick={stopPropagation}
+        onChange={(event: ChangeEvent<HTMLTextAreaElement>) =>
+          setName(event.target.value)
+        }
+      />
+      <div style={{ flexGrow: 1 }} />
+      <IconButton
+        onClick={(event) => { 
+          event.stopPropagation();
+          props.delete(index);
+        }}
+        size="small"
+        sx={{ alignSelf: "center" }}
+      >
+        <DeleteIcon fontSize="small" />
+      </IconButton>
+    </>
+  );
+
+  const inputs = (
+    <List>
+      {ingredients.map(({ value: ingredient, uuid }, index) => (
+        <ListItem key={uuid} disablePadding>
+          <ListItemText primary={`${index + 1}.`} sx={{ paddingRight: 1 }} />
+          <TextField
+            fullWidth
+            value={ingredient.name}
+            id="ingredient"
+            variant="standard"
+            margin="none"
+            multiline
+            onChange={(event: ChangeEvent<HTMLTextAreaElement>) => {
+              replaceIndexIngredient(index, { name: event.target.value });
+            }}
+          />
+                <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
+        <InputLabel id="demo-simple-select-standard-label">Unit</InputLabel>
+        <Select
+          labelId="demo-simple-select-standard-label"
+          id="demo-simple-select-standard"
+          value={ingredient.quantity.getUnit()}
+          onChange={(event: SelectChangeEvent) => {
+            replaceIndexIngredient(index, { quantity: new Quantity(event.target.value as Unit) })
+          }}
+          label="Unit"
+        >
+          {Object.entries(Unit).map(value => {
+            return <MenuItem key={value[0]} value={value[1]}>{value[1]}</MenuItem>
+          })}
+        </Select>
+        <TextField
+            fullWidth
+            value={ingredient.quantity.getQuantity()}
+            id="ingredient quantity"
+            variant="standard"
+            margin="none"
+            multiline
+            // TODO: Quantity should just be a json, so much faff with implementing as a class
+            onChange={(event: ChangeEvent<HTMLTextAreaElement>) => {
+              // replaceIndexIngredient(index, { quantity:  });
+            }}
+          />
+      </FormControl>
+          <IconButton
+            onClick={() => deleteIndexIngredient(index)}
+            size="small"
+            sx={{ alignSelf: "center" }}
+          >
+            <CloseIcon fontSize="small" />
+          </IconButton>
+        </ListItem>
+      ))}
+      <FormGroup>
+        <FormControlLabel
+          control={
+            <Checkbox
+              checked={storeable}
+              onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
+                setters.setState(event.target.checked)
+              }
+            />
+          }
+          label="Storeable"
+        />
+      </FormGroup>
+      {instructions.map(({ value: instruction, uuid }, index) => (
+        <ListItem key={uuid} disablePadding>
+          <ListItemText primary={`${index + 1}.`} sx={{ paddingRight: 1 }} />
+          <TextField
+            fullWidth
+            value={instruction.text}
+            id="instruction"
+            variant="standard"
+            margin="none"
+            multiline
+            onChange={(event: ChangeEvent<HTMLTextAreaElement>) => {
+              replaceIndexInstruction(index, { text: event.target.value });
+            }}
+          />
+          <IconButton
+            onClick={() => deleteIndexInstruction(index)}
+            size="small"
+            sx={{ alignSelf: "center" }}
+          >
+            <CloseIcon fontSize="small" />
+          </IconButton>
+        </ListItem>
+      ))}
+      <div style={{ display: "flex" }}>
+        <div style={{ flexGrow: 0.5 }} />
+        <IconButton
+          onClick={() => {
+            if (
+              instructions.length === 0 ||
+              instructions[instructions.length - 1].value.text !== ""
+            ) {
+              insertIndexInstruction();
+            }
+          }}
+        >
+          <AddIcon />
+        </IconButton>
+        <div style={{ flexGrow: 0.5 }} />
+      </div>
+    </List>
+  );
+
+  if (props.noName) {
+    return inputs;
+  }
+
+  return (
+    <Accordion onBlur={saveData}>
+      <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+        {nameTextField}
+      </AccordionSummary>
+      <AccordionDetails>{inputs}</AccordionDetails>
+    </Accordion>
+  );
+};

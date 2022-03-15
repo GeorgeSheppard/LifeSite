@@ -8,8 +8,8 @@ export interface IExitSaveButtonsProps {
   exitOnClick: () => void;
   saveOnClick: () => void;
   saveDisabled: boolean;
-  buttonSx: SxProps<Theme> | undefined;
-  boxSx: SxProps<Theme> | undefined;
+  buttonSx?: SxProps<Theme> | undefined;
+  boxSx?: SxProps<Theme> | undefined;
 }
 
 /**

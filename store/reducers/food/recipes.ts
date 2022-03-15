@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { Image } from "../types";
-import { Quantity, Unit } from "./units";
+import { Quantity, QuantityJSON, Unit } from "./units";
 import { IFullStoreState } from "../../store";
 
 export type RecipeUuid = string;
@@ -27,7 +27,7 @@ export interface IInstruction {
 
 export interface IRecipeComponent {
   name: string;
-  ingredients: { name: IIngredientName; quantity: Quantity }[];
+  ingredients: { name: IIngredientName; quantity: QuantityJSON }[];
   instructions: IInstruction[];
   storeable?: boolean;
 }
@@ -36,7 +36,7 @@ export interface IRecipe {
   uuid: RecipeUuid;
   name: string;
   description: string;
-  images?: Image[];
+  images: Image[];
   components: IRecipeComponent[];
 }
 
@@ -73,11 +73,11 @@ export const exampleDisplayRecipe: IRecipe = {
       ingredients: [
         {
           name: "Star Anise",
-          quantity: new Quantity(Unit.NUMBER, 3),
+          quantity: new Quantity(Unit.NUMBER, 3).toJSON(),
         },
         {
           name: "Beef Broth",
-          quantity: new Quantity(Unit.MILLILITER, 800),
+          quantity: new Quantity(Unit.MILLILITER, 800).toJSON(),
         },
       ],
       storeable: true,
@@ -88,11 +88,11 @@ export const exampleDisplayRecipe: IRecipe = {
       ingredients: [
         {
           name: "Noodles",
-          quantity: new Quantity(Unit.GRAM, 200),
+          quantity: new Quantity(Unit.GRAM, 200).toJSON(),
         },
         {
           name: "Spring Onion",
-          quantity: new Quantity(Unit.NO_UNIT),
+          quantity: new Quantity(Unit.NO_UNIT).toJSON(),
         },
       ],
     },
@@ -108,10 +108,11 @@ export const secondExampleRecipe: IRecipe = {
   uuid: "11111",
   name: "Chilli",
   description: "Chilli",
+  images: [],
   components: [
     {
       name: "Everything",
-      ingredients: [{ name: "Beef", quantity: new Quantity(Unit.GRAM, 300) }],
+      ingredients: [{ name: "Beef", quantity: new Quantity(Unit.GRAM, 300).toJSON() }],
       instructions: [
         {
           text: "Cook beef",
@@ -157,7 +158,7 @@ export const foodSlice = createSlice({
   },
   extraReducers: {
     "user/login": (state, action: PayloadAction<IFullStoreState>) => {
-      return action.payload.recipes ?? initialState;
+      return action.payload.food ?? initialState;
     },
     "user/logout": (state) => {
       return initialState;

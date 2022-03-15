@@ -1,4 +1,5 @@
 export enum Unit {
+  NO_UNIT = "none",
   MILLILITER = "mL",
   LITER = "L",
   GRAM = "g",
@@ -6,8 +7,7 @@ export enum Unit {
   CUP = "cup",
   TEASPOON = "tsp",
   TABLESPOON = "tbsp",
-  NUMBER = "number",
-  NO_UNIT = "no_unit",
+  NUMBER = "quantity",
 }
 
 export interface QuantityJSON {
@@ -38,6 +38,14 @@ export class Quantity {
     }
 
     return `${this._quantity}${this._unit}`;
+  }
+
+  public getUnit(): Unit {
+    return this._unit;
+  }
+
+  public getQuantity(): number {
+    return this._quantity;
   }
 
   public toStringWithIngredient(ingredient: string): string {

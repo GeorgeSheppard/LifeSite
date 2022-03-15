@@ -29,6 +29,7 @@ import { useBoolean } from "../hooks/use_boolean";
 import AcUnitIcon from "@mui/icons-material/AcUnit";
 import { useDispatch } from "react-redux";
 import { PropsWithChildren, useCallback, useMemo } from "react";
+import { Quantity } from "../../store/reducers/food/units";
 
 export interface IRecipeCardProps {
   uuid: RecipeUuid;
@@ -37,7 +38,7 @@ export interface IRecipeCardProps {
 
 export const RecipeCard = (props: IRecipeCardProps) => {
   const dispatch = useDispatch();
-  const recipe = useAppSelector((store) => store.recipes.recipes[props.uuid]);
+  const recipe = useAppSelector((store) => store.food.recipes[props.uuid]);
   const [dialogOpen, setters] = useBoolean(false);
 
   const deleteRecipeOnClick = useCallback(() => {
@@ -115,7 +116,7 @@ export const RecipeCard = (props: IRecipeCardProps) => {
               {recipe.components[0].ingredients.map(({ name, quantity }) => (
                 <ListItem key={name}>
                   <ListItemText
-                    primary={"- " + quantity.toStringWithIngredient(name)}
+                    primary={"- " + Quantity.fromJSON(quantity).toStringWithIngredient(name)}
                   />
                 </ListItem>
               ))}
@@ -181,7 +182,7 @@ const ComponentContent = (props: IComponentContentProps) => {
           {component.ingredients.map(({ name, quantity }) => (
             <ListItem key={name}>
               <ListItemText
-                primary={"- " + quantity.toStringWithIngredient(name)}
+                primary={"- " + Quantity.fromJSON(quantity).toStringWithIngredient(name)}
               />
             </ListItem>
           ))}
