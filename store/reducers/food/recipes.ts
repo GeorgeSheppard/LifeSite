@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { Image } from "../types";
-import { Quantity, QuantityJSON, Unit } from "./units";
+import { IQuantity, Unit } from "./units";
 import { IFullStoreState } from "../../store";
 
 export type RecipeUuid = string;
@@ -25,11 +25,17 @@ export interface IInstruction {
   optional?: boolean;
 }
 
+export interface IRecipeIngredient {
+  name: IIngredientName;
+  quantity: IQuantity;
+}
+
 export interface IRecipeComponent {
   name: string;
-  ingredients: { name: IIngredientName; quantity: QuantityJSON }[];
+  ingredients: IRecipeIngredient[];
   instructions: IInstruction[];
   storeable?: boolean;
+  servings?: number;
 }
 
 export interface IRecipe {
@@ -52,6 +58,7 @@ export const exampleDisplayRecipe: IRecipe = {
   images: [
     { timestamp: 1, path: "photo_of_dish.png" },
     { timestamp: 2, path: "photo_of_sauce.png" },
+    { timestamp: 3, path: "/images/food.jpg" }
   ],
   components: [
     {
@@ -73,14 +80,21 @@ export const exampleDisplayRecipe: IRecipe = {
       ingredients: [
         {
           name: "Star Anise",
-          quantity: new Quantity(Unit.NUMBER, 3).toJSON(),
+          quantity: {
+            unit: Unit.NUMBER,
+            value: 3,
+          },
         },
         {
           name: "Beef Broth",
-          quantity: new Quantity(Unit.MILLILITER, 800).toJSON(),
+          quantity: {
+            unit: Unit.MILLILITER,
+            value: 800,
+          },
         },
       ],
       storeable: true,
+      servings: 3
     },
     {
       name: "Main Dish",
@@ -88,11 +102,14 @@ export const exampleDisplayRecipe: IRecipe = {
       ingredients: [
         {
           name: "Noodles",
-          quantity: new Quantity(Unit.GRAM, 200).toJSON(),
+          quantity: {
+            value: 200,
+            unit: Unit.GRAM,
+          },
         },
         {
           name: "Spring Onion",
-          quantity: new Quantity(Unit.NO_UNIT).toJSON(),
+          quantity: {}
         },
       ],
     },
@@ -112,7 +129,9 @@ export const secondExampleRecipe: IRecipe = {
   components: [
     {
       name: "Everything",
-      ingredients: [{ name: "Beef", quantity: new Quantity(Unit.GRAM, 300).toJSON() }],
+      ingredients: [
+        { name: "Beef", quantity: { value: 300, unit: Unit.GRAM } },
+      ],
       instructions: [
         {
           text: "Cook beef",

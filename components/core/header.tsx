@@ -23,6 +23,7 @@ export const headerHeight = 65;
 
 export interface IHeaderProps {
   uploading: boolean;
+  canUpload: boolean;
   upload: () => void;
 }
 
@@ -73,7 +74,7 @@ export default function Header(props: IHeaderProps) {
         </Typography>
         <Box component="div" sx={{ flexGrow: 1 }} />
         <Box component="div" sx={{ display: "flex" }}>
-          <div style={{ margin: "auto" }}>
+          {props.canUpload && <div style={{ margin: "auto" }}>
             <IconButton
               color="inherit"
               size="large"
@@ -86,7 +87,7 @@ export default function Header(props: IHeaderProps) {
                 <SaveIcon />
               )}
             </IconButton>
-          </div>
+          </div>}
           <IconButton size="large" color="inherit" onClick={onToggleTheme}>
             {theme === ThemeKey.LIGHT ? <LightModeIcon /> : <DarkModeIcon />}
           </IconButton>

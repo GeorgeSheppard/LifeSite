@@ -2,7 +2,9 @@ import Container from "@mui/material/Container";
 import Card from "@mui/material/Card";
 import {
   addOrUpdateRecipe,
+  IIngredient,
   IRecipeComponent,
+  IRecipeIngredient,
   RecipeUuid,
 } from "../../store/reducers/food/recipes";
 import { useAppDispatch, useAppSelector } from "../../store/hooks/hooks";
@@ -38,16 +40,17 @@ import CloseIcon from "@mui/icons-material/Close";
 import { v4 as uuidv4 } from "uuid";
 import { ExitSaveButtons } from "../cards/exit_save_buttons";
 import { useCardsWithIds } from "../hooks/use_cards";
-import { Quantity, Unit } from "../../store/reducers/food/units";
+import { Unit } from "../../store/reducers/food/units";
 import { useBoolean } from "../hooks/use_boolean";
 import FormGroup from "@mui/material/FormGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
 import DeleteIcon from "@mui/icons-material/Delete";
-import InputLabel from '@mui/material/InputLabel';
-import MenuItem from '@mui/material/MenuItem';
-import FormControl from '@mui/material/FormControl';
-import Select, { SelectChangeEvent } from '@mui/material/Select';
+import InputLabel from "@mui/material/InputLabel";
+import MenuItem from "@mui/material/MenuItem";
+import FormControl from "@mui/material/FormControl";
+import Select, { SelectChangeEvent } from "@mui/material/Select";
+import { Quantities } from "../../store/reducers/food/units";
 
 export interface IEditUploadRecipeProps {
   /**
@@ -218,31 +221,27 @@ export const ComponentForm = (props: IComponentFormProps) => {
     replaceIndex: replaceIndexIngredient,
     cards: ingredients,
   } = useCardsWithIds({
-    initialCards: component.ingredients.map((ingredient) => ({
-      name: ingredient.name,
-      quantity: Quantity.fromJSON(ingredient.quantity),
-    })),
-    generateValue: () => ({
+    initialCards: component.ingredients,
+    generateValue: (): IRecipeIngredient => ({
       name: "",
-      quantity: new Quantity(Unit.NO_UNIT),
+      quantity: {},
     }),
   });
   const [storeable, setters] = useBoolean(component.storeable ?? false);
+  const [servings, setServings] = useState(!!component.servings ? `${component.servings}` : "1");
 
   const saveData = useCallback(() => {
+    const intServings = parseInt(servings, 10);
+
     const componentState = {
       name,
-      ingredients: ingredients
-        .map((ingredient) => ingredient.value)
-        .map((ingredient) => ({
-          name: ingredient.name,
-          quantity: ingredient.quantity.toJSON(),
-        })),
+      ingredients: ingredients.map((ingredient) => ingredient.value),
       instructions: instructions.map((instruction) => instruction.value),
       storeable,
+      servings: isNaN(intServings) ? 1 : intServings
     };
     save(index, componentState);
-  }, [name, ingredients, instructions, storeable, save, index]);
+  }, [name, ingredients, instructions, storeable, save, index, servings]);
 
   const nameTextField = (
     <>
@@ -260,7 +259,7 @@ export const ComponentForm = (props: IComponentFormProps) => {
       />
       <div style={{ flexGrow: 1 }} />
       <IconButton
-        onClick={(event) => { 
+        onClick={(event) => {
           event.stopPropagation();
           props.delete(index);
         }}
@@ -288,34 +287,50 @@ export const ComponentForm = (props: IComponentFormProps) => {
               replaceIndexIngredient(index, { name: event.target.value });
             }}
           />
-                <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
-        <InputLabel id="demo-simple-select-standard-label">Unit</InputLabel>
-        <Select
-          labelId="demo-simple-select-standard-label"
-          id="demo-simple-select-standard"
-          value={ingredient.quantity.getUnit()}
-          onChange={(event: SelectChangeEvent) => {
-            replaceIndexIngredient(index, { quantity: new Quantity(event.target.value as Unit) })
-          }}
-          label="Unit"
-        >
-          {Object.entries(Unit).map(value => {
-            return <MenuItem key={value[0]} value={value[1]}>{value[1]}</MenuItem>
-          })}
-        </Select>
-        <TextField
-            fullWidth
-            value={ingredient.quantity.getQuantity()}
-            id="ingredient quantity"
-            variant="standard"
-            margin="none"
-            multiline
-            // TODO: Quantity should just be a json, so much faff with implementing as a class
-            onChange={(event: ChangeEvent<HTMLTextAreaElement>) => {
-              // replaceIndexIngredient(index, { quantity:  });
-            }}
-          />
-      </FormControl>
+          <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
+            <InputLabel id="demo-simple-select-standard-label">Unit</InputLabel>
+            <Select
+              labelId="demo-simple-select-standard-label"
+              id="demo-simple-select-standard"
+              value={ingredient.quantity.unit}
+              onChange={(event: SelectChangeEvent) => {
+                replaceIndexIngredient(index, {
+                  quantity: {
+                    unit: event.target.value as Unit,
+                    value: ingredient.quantity.value,
+                  },
+                });
+              }}
+              label="Unit"
+            >
+              {Object.entries(Unit).map((value) => {
+                return (
+                  <MenuItem key={value[0]} value={value[1]}>
+                    {value[1]}
+                  </MenuItem>
+                );
+              })}
+            </Select>
+            {ingredient.quantity.unit &&
+              ingredient.quantity.unit !== Unit.NO_UNIT && (
+                <TextField
+                  fullWidth
+                  value={ingredient.quantity.value}
+                  id="ingredient quantity"
+                  variant="standard"
+                  margin="none"
+                  multiline
+                  onChange={(event: ChangeEvent<HTMLTextAreaElement>) => {
+                    replaceIndexIngredient(index, {
+                      quantity: {
+                        unit: ingredient.quantity.unit,
+                        value: parseFloat(event.target.value),
+                      },
+                    });
+                  }}
+                />
+              )}
+          </FormControl>
           <IconButton
             onClick={() => deleteIndexIngredient(index)}
             size="small"
@@ -325,6 +340,22 @@ export const ComponentForm = (props: IComponentFormProps) => {
           </IconButton>
         </ListItem>
       ))}
+            <div style={{ display: "flex" }}>
+        <div style={{ flexGrow: 0.5 }} />
+        <IconButton
+          onClick={() => {
+            if (
+              ingredients.length === 0 ||
+              ingredients[ingredients.length - 1].value.name !== ""
+            ) {
+              insertIndexIngredient();
+            }
+          }}
+        >
+          <AddIcon />
+        </IconButton>
+        <div style={{ flexGrow: 0.5 }} />
+      </div>
       <FormGroup>
         <FormControlLabel
           control={
@@ -338,6 +369,19 @@ export const ComponentForm = (props: IComponentFormProps) => {
           label="Storeable"
         />
       </FormGroup>
+      <TextField
+        fullWidth
+        label="Servings"
+        value={servings}
+        id="instruction"
+        variant="standard"
+        type="number"
+        margin="none"
+        multiline
+        onChange={(event: ChangeEvent<HTMLTextAreaElement>) => {
+          setServings(event.target.value)
+        }}
+      />
       {instructions.map(({ value: instruction, uuid }, index) => (
         <ListItem key={uuid} disablePadding>
           <ListItemText primary={`${index + 1}.`} sx={{ paddingRight: 1 }} />

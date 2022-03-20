@@ -1,3 +1,5 @@
+import { IIngredientName } from "./recipes";
+
 export enum Unit {
   NO_UNIT = "none",
   MILLILITER = "mL",
@@ -10,58 +12,37 @@ export enum Unit {
   NUMBER = "quantity",
 }
 
-export interface QuantityJSON {
-  unit: Unit;
-  quantity: number;
+export interface IQuantity {
+  unit?: Unit;
+  value?: number;
 }
 
-export class Quantity {
-  private _unit: Unit;
-  private _quantity: number;
-
-  public static fromJSON(json: QuantityJSON): Quantity {
-    return new Quantity(json.unit, json.quantity);
-  }
-
-  constructor(unit: Unit, quantity: number = 0) {
-    this._unit = unit;
-    this._quantity = quantity;
-  }
-
-  public toString(): string | undefined {
-    if (this._unit === Unit.NO_UNIT) {
+export const Quantities = {
+  toString: (quantity?: IQuantity) => {
+    if (!quantity) {
       return;
     }
 
-    if (this._unit === Unit.NUMBER) {
-      return `${this._quantity}`;
+    const unit = quantity.unit;
+    if (!unit || unit === Unit.NO_UNIT) {
+      return;
     }
 
-    return `${this._quantity}${this._unit}`;
-  }
+    if (unit === Unit.NUMBER) {
+      return `${quantity.value}`;
+    }
 
-  public getUnit(): Unit {
-    return this._unit;
-  }
-
-  public getQuantity(): number {
-    return this._quantity;
-  }
-
-  public toStringWithIngredient(ingredient: string): string {
-    const quantity = this.toString();
-
-    if (!quantity) {
-      return ingredient;
-    } else {
-      return quantity + " " + ingredient;
+    return `${quantity.value}${unit}`;
+  },
+  toStringWithIngredient: (ingredientName: IIngredientName, quantity?: IQuantity) => {
+    {
+      const quantityString = Quantities.toString(quantity);
+  
+      if (!quantityString) {
+        return ingredientName;
+      } else {
+        return quantityString + " " + ingredientName;
+      }
     }
   }
-
-  public toJSON(): QuantityJSON {
-    return {
-      unit: this._unit,
-      quantity: this._quantity,
-    };
-  }
-}
+} 

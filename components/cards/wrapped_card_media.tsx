@@ -24,11 +24,6 @@ export const WrappedCardMedia = (props: ICardMediaProps) => {
   const { images } = props;
 
   const [imageIndex, setImageIndex] = useState(0);
-  const [foundImage, setFoundImage] = useState(true);
-
-  const onMediaFallback: ReactEventHandler<HTMLImageElement> = (
-    event: SyntheticEvent<HTMLImageElement, Event>
-  ) => setFoundImage(false);
 
   const setImageIndexWrapped = useCallback(
     (index: number) => {
@@ -47,7 +42,7 @@ export const WrappedCardMedia = (props: ICardMediaProps) => {
   const onClickUp = useMemo(() => changeIndex(1), [changeIndex]);
   const onClickDown = useMemo(() => changeIndex(-1), [changeIndex]);
 
-  if (images.length === 0 || !foundImage) {
+  if (images.length === 0) {
     return null;
   }
 
@@ -57,7 +52,6 @@ export const WrappedCardMedia = (props: ICardMediaProps) => {
         src={images[imageIndex].path}
         component="img"
         height="300px"
-        onError={onMediaFallback}
       />
       {images.length > 1 && (
         <>

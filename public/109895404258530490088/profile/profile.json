@@ -81,8 +81,57 @@
       }
     }
   },
-  "recipes": {
-    "cards": [],
-    "recipes": {}
+  "food": {
+    "cards": [
+      "ff52317d-6cc6-48b4-bb15-b53fe798c76f"
+    ],
+    "recipes": {
+      "ff52317d-6cc6-48b4-bb15-b53fe798c76f": {
+        "uuid": "ff52317d-6cc6-48b4-bb15-b53fe798c76f",
+        "name": "Pho",
+        "description": "Vietnamese dish centered around a broth",
+        "images": [
+          {
+            "path": "/109895404258530490088/images/2e5b3b95-d482-4e1f-9dc0-96621213ddbf_food.jpg",
+            "timestamp": 1647813825179
+          }
+        ],
+        "components": [
+          {
+            "name": "Sauce",
+            "ingredients": [],
+            "instructions": [
+              {
+                "text": "Get the ingredients for the broth",
+                "optional": false
+              },
+              {
+                "text": "Put them together",
+                "optional": false
+              }
+            ],
+            "storeable": true,
+            "servings": 6
+          },
+          {
+            "name": "Main Dish",
+            "ingredients": [],
+            "instructions": [
+              {
+                "text": "Get spring onion",
+                "optional": false
+              },
+              {
+                "text": "Done",
+                "optional": false
+              }
+            ],
+            "storeable": false,
+            "servings": 1
+          }
+        ]
+      }
+    },
+    "ingredients": {}
   }
 }

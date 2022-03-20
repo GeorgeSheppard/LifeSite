@@ -8,12 +8,12 @@ export interface ILayoutProps {
 }
 
 export default function Layout(props: ILayoutProps) {
-  const { upload, uploading } = useUserData();
+  const { upload, uploading, canUpload } = useUserData();
 
   return (
     <>
       <CssBaseline />
-      <Header upload={upload} uploading={uploading} />
+      <Header upload={upload} uploading={uploading} canUpload={canUpload} />
       {props.children}
     </>
   );

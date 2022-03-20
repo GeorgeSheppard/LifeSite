@@ -1,6 +1,6 @@
 import { CustomSession } from "../../pages/api/auth/[...nextauth]";
 import { useAppDispatch } from "../../store/hooks/hooks";
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import { useSession } from "next-auth/react";
 import { login, logout } from "../../store/reducers/user";
 import { useRouter } from "next/router";
@@ -9,6 +9,7 @@ import useUpload from "./upload_to_server";
 
 export interface IUserDataReturn {
   uploading: boolean;
+  canUpload: boolean;
   upload: () => void;
 }
 
@@ -31,6 +32,11 @@ export const useUserData = (): IUserDataReturn => {
   });
   const [gotUserData, setGotUserData] = useState(false);
   const [uploading, setUploading] = useState(false);
+
+  const canUpload = useMemo(() => {
+    // Only need to save if a user is logged in
+    return !!session?.id && gotUserData
+  }, [session?.id, gotUserData]);
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -65,8 +71,7 @@ export const useUserData = (): IUserDataReturn => {
   }, [session?.id, gotUserData, dispatch]);
 
   const storeUserData = useCallback(() => {
-    // Only need to save if a user is logged in
-    if (session?.id && gotUserData) {
+    if (canUpload) {
       const data = store.getState();
       const blob = new Blob([JSON.stringify(data, null, 2)], {
         type: "application/json",
@@ -77,7 +82,7 @@ export const useUserData = (): IUserDataReturn => {
     // NB: From experience session.id does not guarantee everything has gone through
     // make sure we have successfully retrieved the data otherwise it will override
     // the properties
-  }, [uploadFile, session?.id, gotUserData]);
+  }, [uploadFile, canUpload]);
 
   // Save the user data everytime the route changes
   // And if the user closes the webpage
@@ -90,5 +95,5 @@ export const useUserData = (): IUserDataReturn => {
     };
   }, [storeUserData, router.events]);
 
-  return { upload: storeUserData, uploading };
+  return { upload: storeUserData, uploading, canUpload };
 };

@@ -29,7 +29,8 @@ import { useBoolean } from "../hooks/use_boolean";
 import AcUnitIcon from "@mui/icons-material/AcUnit";
 import { useDispatch } from "react-redux";
 import { PropsWithChildren, useCallback, useMemo } from "react";
-import { Quantity } from "../../store/reducers/food/units";
+import { Quantities } from "../../store/reducers/food/units";
+import PersonIcon from "@mui/icons-material/Person";
 
 export interface IRecipeCardProps {
   uuid: RecipeUuid;
@@ -110,16 +111,25 @@ export const RecipeCard = (props: IRecipeCardProps) => {
         {recipe.components.length === 1 ? (
           <AccordionDetails>
             <List dense>
-              <ListItem key="ingredients">
-                <ListItemText primary="Ingredients" />
-              </ListItem>
-              {recipe.components[0].ingredients.map(({ name, quantity }) => (
-                <ListItem key={name}>
-                  <ListItemText
-                    primary={"- " + Quantity.fromJSON(quantity).toStringWithIngredient(name)}
-                  />
-                </ListItem>
-              ))}
+              {recipe.components.length > 0 && (
+                <>
+                  <ListItem key="ingredients">
+                    <ListItemText primary="Ingredients" />
+                  </ListItem>
+                  {recipe.components[0].ingredients.map(
+                    ({ name, quantity }) => (
+                      <ListItem key={name}>
+                        <ListItemText
+                          primary={
+                            "- " +
+                            Quantities.toStringWithIngredient(name, quantity)
+                          }
+                        />
+                      </ListItem>
+                    )
+                  )}
+                </>
+              )}
               <div style={{ height: 20 }} />
               <ListItem key="method">
                 <ListItemText primary="Method" />
@@ -165,13 +175,20 @@ const ComponentContent = (props: IComponentContentProps) => {
         sx={{ display: "flex" }}
       >
         <Typography>{component.name ?? "Optional"}</Typography>
+        <div style={{ flexGrow: 1 }} />
+        {component.servings && component.servings > 1 && (
+          <Tooltip title={`Serves ${component.servings}`}>
+            {/* div instead of fragment as tooltip doesn't work with fragment */}
+            <div style={{display: "flex", alignItems: "center"}}>
+              <Typography>{component.servings}</Typography>
+              <PersonIcon sx={{ paddingRight: 1 }} />
+            </div>
+          </Tooltip>
+        )}
         {component.storeable && (
-          <>
-            <div style={{ flexGrow: 1 }} />
-            <Tooltip title="Can be stored">
-              <InventoryIcon sx={{ paddingRight: 1 }} />
-            </Tooltip>
-          </>
+          <Tooltip title="Can be stored">
+            <InventoryIcon sx={{ paddingRight: 1 }} />
+          </Tooltip>
         )}
       </AccordionSummary>
       <AccordionDetails>
@@ -182,7 +199,9 @@ const ComponentContent = (props: IComponentContentProps) => {
           {component.ingredients.map(({ name, quantity }) => (
             <ListItem key={name}>
               <ListItemText
-                primary={"- " + Quantity.fromJSON(quantity).toStringWithIngredient(name)}
+                primary={
+                  "- " + Quantities.toStringWithIngredient(name, quantity)
+                }
               />
             </ListItem>
           ))}
