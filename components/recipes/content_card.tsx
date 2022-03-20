@@ -111,43 +111,9 @@ export const RecipeCard = (props: IRecipeCardProps) => {
         {recipe.components.length === 1 ? (
           <AccordionDetails>
             <List dense>
-              {recipe.components.length > 0 && (
-                <>
-                  <ListItem key="ingredients">
-                    <ListItemText primary="Ingredients" />
-                  </ListItem>
-                  {recipe.components[0].ingredients.map(
-                    ({ name, quantity }) => (
-                      <ListItem key={name}>
-                        <ListItemText
-                          primary={
-                            "- " +
-                            Quantities.toStringWithIngredient(name, quantity)
-                          }
-                        />
-                      </ListItem>
-                    )
-                  )}
-                </>
-              )}
-              <div style={{ height: 20 }} />
-              <ListItem key="method">
-                <ListItemText primary="Method" />
-              </ListItem>
-              {recipe.components[0].instructions.map(
-                ({ text, optional }, index) => {
-                  let visibleText = `${index + 1}. `;
-                  if (optional) {
-                    visibleText += "(Optional) ";
-                  }
-                  visibleText += text;
-                  return (
-                    <ListItem key={text}>
-                      <ListItemText primary={visibleText} />
-                    </ListItem>
-                  );
-                }
-              )}
+              <ComponentContentInstructionsMethod
+                component={recipe.components[0]}
+              />
             </List>
           </AccordionDetails>
         ) : (
@@ -158,6 +124,56 @@ export const RecipeCard = (props: IRecipeCardProps) => {
           </>
         )}
       </Card>
+    </>
+  );
+};
+
+export interface IComponentContentInstructionsMethod {
+  component: IRecipeComponent;
+}
+
+const ComponentContentInstructionsMethod = (
+  props: IComponentContentInstructionsMethod
+) => {
+  const { component } = props;
+
+  return (
+    <>
+      {component.ingredients.length > 0 && (
+        <>
+          <ListItem key="ingredients">
+            <ListItemText primary="Ingredients" />
+          </ListItem>
+          {component.ingredients.map(({ name, quantity }) => (
+            <ListItem key={name}>
+              <ListItemText
+                primary={
+                  "- " + Quantities.toStringWithIngredient(name, quantity)
+                }
+              />
+            </ListItem>
+          ))}
+        </>
+      )}
+      {component.instructions.length > 0 && (
+        <>
+          <ListItem key="method">
+            <ListItemText primary="Method" />
+          </ListItem>
+          {component.instructions.map(({ text, optional }, index) => {
+            let visibleText = `${index + 1}. `;
+            if (optional) {
+              visibleText += "(Optional) ";
+            }
+            visibleText += text;
+            return (
+              <ListItem key={text}>
+                <ListItemText primary={visibleText} />
+              </ListItem>
+            );
+          })}
+        </>
+      )}
     </>
   );
 };
@@ -179,7 +195,7 @@ const ComponentContent = (props: IComponentContentProps) => {
         {component.servings && component.servings > 1 && (
           <Tooltip title={`Serves ${component.servings}`}>
             {/* div instead of fragment as tooltip doesn't work with fragment */}
-            <div style={{display: "flex", alignItems: "center"}}>
+            <div style={{ display: "flex", alignItems: "center" }}>
               <Typography>{component.servings}</Typography>
               <PersonIcon sx={{ paddingRight: 1 }} />
             </div>
@@ -193,34 +209,7 @@ const ComponentContent = (props: IComponentContentProps) => {
       </AccordionSummary>
       <AccordionDetails>
         <List dense>
-          <ListItem key="ingredients">
-            <ListItemText primary="Ingredients" />
-          </ListItem>
-          {component.ingredients.map(({ name, quantity }) => (
-            <ListItem key={name}>
-              <ListItemText
-                primary={
-                  "- " + Quantities.toStringWithIngredient(name, quantity)
-                }
-              />
-            </ListItem>
-          ))}
-          <div style={{ height: 20 }} />
-          <ListItem key="method">
-            <ListItemText primary="Method" />
-          </ListItem>
-          {component.instructions.map(({ text, optional }, index) => {
-            let visibleText = `${index + 1}. `;
-            if (optional) {
-              visibleText += "(Optional) ";
-            }
-            visibleText += text;
-            return (
-              <ListItem key={text}>
-                <ListItemText primary={visibleText} />
-              </ListItem>
-            );
-          })}
+          <ComponentContentInstructionsMethod component={component} />
         </List>
       </AccordionDetails>
     </Accordion>
