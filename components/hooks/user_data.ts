@@ -55,7 +55,7 @@ export const useUserData = (): IUserDataReturn => {
           dispatch(login(json));
         }
       } else if (!data.ok && !gotUserData) {
-        setTimeout(() => fetchUserData(), 500);
+        setTimeout(() => fetchUserData(), 3000);
       }
     };
 
