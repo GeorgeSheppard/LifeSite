@@ -34,7 +34,7 @@ import PersonIcon from "@mui/icons-material/Person";
 
 export interface IRecipeCardProps {
   uuid: RecipeUuid;
-  onEdit: () => void;
+  onEdit: (uuid: RecipeUuid) => void;
 }
 
 export const RecipeCard = (props: IRecipeCardProps) => {
@@ -67,7 +67,7 @@ export const RecipeCard = (props: IRecipeCardProps) => {
         <IconButton
           onClick={(event) => {
             event?.stopPropagation();
-            onEdit();
+            onEdit(props.uuid);
           }}
           size="small"
           sx={{ alignSelf: "center" }}
@@ -76,7 +76,7 @@ export const RecipeCard = (props: IRecipeCardProps) => {
         </IconButton>
       </>
     );
-  }, [recipe.name, props.onEdit, setters.turnOn]);
+  }, [recipe.name, props.onEdit, setters.turnOn, props.uuid]);
 
   return (
     <>
