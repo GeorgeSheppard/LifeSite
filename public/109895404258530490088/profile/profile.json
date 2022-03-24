@@ -31,7 +31,8 @@
     }
   },
   "user": {
-    "theme": "dark"
+    "theme": "dark",
+    "version": 1
   },
   "plants": {
     "cards": [

@@ -1,8 +1,8 @@
 import { ThemeProvider } from "@mui/material/styles";
 import { useMemo } from "react";
-import { useAppSelector } from "../store/hooks/hooks";
+import { useAppSelector } from "../../store/hooks/hooks";
 import { createTheme } from "@mui/material/styles";
-import { ThemeKey } from "../store/reducers/user";
+import { ThemeKey } from "../../store/reducers/user";
 
 export const createThemeFromThemeKey = (themeKey: ThemeKey) => {
   return createTheme({

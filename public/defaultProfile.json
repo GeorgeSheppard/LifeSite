@@ -1,7 +1,19 @@
 {
-    "user": {},
+    "user": {
+        "theme": "light",
+        "version": 1
+    },
     "printing": {
         "cards": [],
         "models": {}
+    },
+    "plants": {
+        "cards": [],
+        "plants": {}
+    },
+    "food": {
+        "cards": [],
+        "recipes": {},
+        "ingredients": {}
     }
 }

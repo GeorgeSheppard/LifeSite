@@ -9,10 +9,12 @@ export enum ThemeKey {
 export interface IUserState {
   id?: string;
   theme: ThemeKey;
+  version: number;
 }
 
 const initialState: IUserState = {
   theme: ThemeKey.LIGHT,
+  version: 1
 };
 
 export const userSlice = createSlice({
