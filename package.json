@@ -6,7 +6,11 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "husky-install": "husky install"
+    "husky-install": "husky install",
+    "cdk": "cdk"
+  },
+  "bin": {
+    "hello-cdk": "aws/bin/hello-cdk.js"
   },
   "husky": {
     "hooks": {
@@ -15,6 +19,9 @@
     }
   },
   "dependencies": {
+    "@aws-cdk/aws-s3": "^1.150.0",
+    "@aws-cdk/core": "^1.150.0",
+    "@aws-sdk/types": "^3.55.0",
     "@emotion/react": "^11.7.1",
     "@emotion/styled": "^11.6.0",
     "@mui/icons-material": "^5.2.1",
@@ -23,6 +30,9 @@
     "@react-three/fiber": "^7.0.24",
     "@reduxjs/toolkit": "^1.7.1",
     "@types/react-beautiful-dnd": "^13.1.2",
+    "aws-cdk": "^2.17.0",
+    "aws-cdk-lib": "^2.17.0",
+    "aws-sdk": "^2.1101.0",
     "eslint-plugin-unused-imports": "^2.0.0",
     "formidable": "^2.0.1",
     "fuse.js": "^6.5.3",

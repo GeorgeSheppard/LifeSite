@@ -4,6 +4,7 @@ import {
   IErrorUploadResponse,
   IValidUploadResponse,
 } from "../../pages/api/filesUpload";
+import useUploadToS3 from "../hooks/upload_to_s3";
 
 export interface IClickToUploadProps {
   onUploadFinished?: (response: IValidUploadResponse) => void;
@@ -29,11 +30,10 @@ export interface IClickToUploadProps {
  * to upload.
  */
 export const ClickToUpload = (props: IClickToUploadProps) => {
-  const { uploadFile } = useUpload({
+  const { uploadFile } = useUploadToS3({
     onUploadFinished: props.onUploadFinished,
     onUploadError: props.onUploadError,
     onStartUpload: props.onStartUpload,
-    folder: props.folder,
   });
 
   const getAndUploadFile = useCallback(
