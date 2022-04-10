@@ -1,0 +1,17 @@
+{
+  "name": "aws",
+  "version": "1.0.0",
+  "main": "index.js",
+  "dependencies": {
+    "@aws-sdk/client-cognito-identity": "^3.58.0",
+    "@aws-sdk/client-cognito-identity-provider": "^3.58.0",
+    "@aws-sdk/client-s3": "^3.58.0",
+    "dotenv": "^16.0.0",
+    "dotenv-flow": "^3.2.0"
+  },
+  "devDependencies": {},
+  "type": "module",
+  "scripts": {
+    "createUserPool": "node scripts/createCognitoUserPool.js"
+  }
+}

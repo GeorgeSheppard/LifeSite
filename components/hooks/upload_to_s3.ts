@@ -21,7 +21,7 @@ export default function useUploadToS3(props: IUseUploadToS3Props) {
 
     onStartUpload?.();
     const filename = encodeURIComponent(file.name);
-    const res = await fetch(`/api/awsS3Upload?file=${filename}`);
+    const res = await fetch(`/api/awsS3Upload?file=${filename}`, { mode: "cors" });
     const { url, fields } = (await res.json() as aws.S3.PresignedPost);
     const formData = new FormData();
 
