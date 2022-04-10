@@ -12,3 +12,9 @@
 
 Note: If you ever get in a bad state (can happen if you manually delete a resource) then use `npx cdk destroy`
 You can look in `CloudFormation` to see what is there.
+
+
+
+## Cognito  
+
+There is a deploy script in the `aws` folder to create a cognito user pool, the script should output the keys required to update in the `.env.local`. Make sure to update the google developer console with any redirect uri if the domain of the cognito changes.

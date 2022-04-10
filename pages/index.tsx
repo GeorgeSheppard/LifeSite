@@ -2,6 +2,7 @@ import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
+import Head from "next/head";
 import * as React from "react";
 import NavigatorCard, {
   navigatorCards,
@@ -10,6 +11,10 @@ import NavigatorCard, {
 export default function Home(props: any) {
   return (
     <main>
+      <Head>
+        <title>MyLife</title>
+        <meta name="viewport" content="initial-scale=1.0, width=device-width" />
+      </Head>
       <Box
         component="div"
         sx={{

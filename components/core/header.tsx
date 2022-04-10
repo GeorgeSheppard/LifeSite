@@ -17,6 +17,7 @@ import { useAppDispatch, useAppSelector } from "../../store/hooks/hooks";
 import { toggleTheme, ThemeKey } from "../../store/reducers/user";
 import CircularProgress from "@mui/material/CircularProgress";
 import SaveIcon from "@mui/icons-material/Save";
+import SettingsIcon from "@mui/icons-material/Settings";
 
 // TODO: Min height in MUI is set to 64 so don't go lower than this, make it so I can though
 export const headerHeight = 65;
@@ -33,8 +34,6 @@ export default function Header(props: IHeaderProps) {
   const dispatch = useAppDispatch();
   const theme = useAppSelector((store) => store.user.theme);
 
-  const userImage = session.data?.user?.image;
-
   const [anchorEl, setAnchorEl] = useState(null);
   const openDropdown = useCallback(
     (event: any) => {
@@ -47,7 +46,7 @@ export default function Header(props: IHeaderProps) {
   }, [setAnchorEl]);
   const logout = useCallback(() => {
     closeDropdown();
-    signOut();
+    signOut({ callbackUrl: `http://localhost:3000/api/auth/logout` });
   }, [closeDropdown]);
   const profile = useCallback(() => {
     closeDropdown();
@@ -74,20 +73,22 @@ export default function Header(props: IHeaderProps) {
         </Typography>
         <Box component="div" sx={{ flexGrow: 1 }} />
         <Box component="div" sx={{ display: "flex" }}>
-          {props.canUpload && <div style={{ margin: "auto" }}>
-            <IconButton
-              color="inherit"
-              size="large"
-              onClick={() => !props.uploading && props.upload()}
-            >
-              {props.uploading ? (
-                // For some reason, circular progress takes a number size prop, but icon button takes a string
-                <CircularProgress color="inherit" size={24} />
-              ) : (
-                <SaveIcon />
-              )}
-            </IconButton>
-          </div>}
+          {props.canUpload && (
+            <div style={{ margin: "auto" }}>
+              <IconButton
+                color="inherit"
+                size="large"
+                onClick={() => !props.uploading && props.upload()}
+              >
+                {props.uploading ? (
+                  // For some reason, circular progress takes a number size prop, but icon button takes a string
+                  <CircularProgress color="inherit" size={24} />
+                ) : (
+                  <SaveIcon />
+                )}
+              </IconButton>
+            </div>
+          )}
           <IconButton size="large" color="inherit" onClick={onToggleTheme}>
             {theme === ThemeKey.LIGHT ? <LightModeIcon /> : <DarkModeIcon />}
           </IconButton>
@@ -95,11 +96,13 @@ export default function Header(props: IHeaderProps) {
             size="large"
             color="inherit"
             onClick={
-              session.status === "authenticated" ? openDropdown : () => signIn()
+              session.status === "authenticated"
+                ? openDropdown
+                : () => signIn("cognito")
             }
           >
-            {userImage ? (
-              <Avatar src={userImage} sx={{ width: 24, height: 24 }} />
+            {session.status === "authenticated" ? (
+              <SettingsIcon />
             ) : (
               <AccountCircle />
             )}
