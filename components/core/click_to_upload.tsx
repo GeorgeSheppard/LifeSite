@@ -29,6 +29,7 @@ export const ClickToUpload = (props: IClickToUploadProps) => {
     onUploadFinished: props.onUploadFinished,
     onUploadError: props.onUploadError,
     onStartUpload: props.onStartUpload,
+    folder: props.folder
   });
 
   const getAndUploadFile = useCallback(

@@ -7,15 +7,21 @@ export enum ThemeKey {
 }
 
 export interface IUserState {
-  id?: string;
   theme: ThemeKey;
   version: number;
 }
 
+export const currentSchemaVersion = 1;
+
 const initialState: IUserState = {
   theme: ThemeKey.LIGHT,
-  version: 1
+  version: currentSchemaVersion
 };
+
+export const userEmptyState: IUserState = {
+  theme: ThemeKey.LIGHT,
+  version: currentSchemaVersion
+}
 
 export const userSlice = createSlice({
   name: "user",

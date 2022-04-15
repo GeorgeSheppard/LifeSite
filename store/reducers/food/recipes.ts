@@ -152,6 +152,12 @@ const initialState: IRecipesState = {
   ingredients: {},
 };
 
+export const foodEmptyState = {
+  cards: [],
+  recipes: {},
+  ingredients: {}
+}
+
 export const foodSlice = createSlice({
   name: "food",
   initialState,

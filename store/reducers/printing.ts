@@ -36,6 +36,11 @@ const initialState: IPrintingState = {
   models: {},
 };
 
+export const printingEmptyState: IPrintingState = {
+  cards: [],
+  models: {}
+}
+
 export const printingSlice = createSlice({
   name: "printing",
   initialState,

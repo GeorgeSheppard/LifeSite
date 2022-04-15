@@ -1,7 +1,4 @@
 import Card from "@mui/material/Card";
-import Button from "@mui/material/Button";
-import CancelIcon from "@mui/icons-material/Cancel";
-import SaveIcon from "@mui/icons-material/Save";
 import Box from "@mui/material/Box";
 import Paper from "@mui/material/Paper";
 import Popper from "@mui/material/Popper";
@@ -19,10 +16,10 @@ import {
 import { useAppDispatch } from "../../store/hooks/hooks";
 import { addModel, IModelProps } from "../../store/reducers/printing";
 import { v4 as uuidv4 } from "uuid";
-import useUpload from "../hooks/upload_to_server";
-import { IValidUploadResponse } from "../../pages/api/filesUpload";
 import { ICanvasScreenshotterRef } from "./canvas_screenshotter";
 import { ExitSaveButtons } from "../cards/exit_save_buttons";
+import useUploadToS3 from "../hooks/upload_to_s3";
+import { IS3ValidUploadResponse } from "../hooks/upload_to_s3";
 
 export interface IPreviewPopperProps {
   open: boolean;
@@ -45,15 +42,15 @@ export const PreviewPopper = (props: IPreviewPopperProps) => {
 
   const router = useRouter();
   const dispatch = useAppDispatch();
-  const { uploadFile } = useUpload({
+  const { uploadFile } = useUploadToS3({
     folder: "images",
-    onUploadFinished: (response: IValidUploadResponse) => {
+    onUploadFinished: (response: IS3ValidUploadResponse) => {
       dispatch(
         addModel({
           filename: name,
           description,
           image: {
-            path: response.writePath,
+            key: response.key,
             timestamp: Date.now(),
           },
           // TODO: Better way of managing types with nextjs, seems to be very hard
@@ -82,7 +79,7 @@ export const PreviewPopper = (props: IPreviewPopperProps) => {
     (blob: Blob | null) => {
       const filename = `${uuid}_preview.png`;
       if (blob) {
-        uploadFile(new File([blob], filename), filename);
+        uploadFile(new File([blob], filename));
       }
     },
     [uploadFile, uuid]

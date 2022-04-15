@@ -18,6 +18,8 @@ import { toggleTheme, ThemeKey } from "../../store/reducers/user";
 import CircularProgress from "@mui/material/CircularProgress";
 import SaveIcon from "@mui/icons-material/Save";
 import SettingsIcon from "@mui/icons-material/Settings";
+import SignalWifiConnectedNoInternet4Icon from "@mui/icons-material/SignalWifiConnectedNoInternet4";
+import Tooltip from "@mui/material/Tooltip";
 
 // TODO: Min height in MUI is set to 64 so don't go lower than this, make it so I can though
 export const headerHeight = 65;
@@ -26,6 +28,7 @@ export interface IHeaderProps {
   uploading: boolean;
   canUpload: boolean;
   upload: () => void;
+  offline: boolean;
 }
 
 export default function Header(props: IHeaderProps) {
@@ -73,6 +76,14 @@ export default function Header(props: IHeaderProps) {
         </Typography>
         <Box component="div" sx={{ flexGrow: 1 }} />
         <Box component="div" sx={{ display: "flex" }}>
+          {props.offline && (
+            <Tooltip
+              title="We are having trouble connecting right now, you are able to navigate but if you leave MyLife your updates may not be saved"
+              sx={{ margin: "auto", marginRight: 2 }}
+            >
+              <SignalWifiConnectedNoInternet4Icon />
+            </Tooltip>
+          )}
           {props.canUpload && (
             <div style={{ margin: "auto" }}>
               <IconButton

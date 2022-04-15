@@ -82,6 +82,11 @@ const initialState: IPlantsState = {
   plants: {},
 };
 
+export const plantsEmptyState: IPlantsState = {
+  cards: [],
+  plants: {}
+}
+
 export const plantsSlice = createSlice({
   name: "plants",
   initialState,
