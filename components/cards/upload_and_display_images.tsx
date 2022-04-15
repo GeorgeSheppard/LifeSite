@@ -1,16 +1,13 @@
-import {
-  IErrorUploadResponse,
-  IValidUploadResponse,
-} from "../../pages/api/filesUpload";
 import CircularProgress from "@mui/material/CircularProgress";
 import Box from "@mui/material/Box";
 import Paper from "@mui/material/Paper";
 import UploadIcon from "@mui/icons-material/Upload";
-import CardMedia from "@mui/material/CardMedia";
 import { ClickToUpload } from "../core/click_to_upload";
 import { useBoolean } from "../hooks/use_boolean";
 import { Image } from "../../store/reducers/types";
 import { SetStateAction, Dispatch } from "react";
+import { IS3ErrorUploadResponse, IS3ValidUploadResponse } from "../hooks/upload_to_s3";
+import { S3CardMedia } from "./s3_card_media";
 
 export interface IUploadDisplayImagesProps {
   images: Image[];
@@ -34,15 +31,15 @@ export const UploadDisplayImages = (props: IUploadDisplayImagesProps) => {
         folder="images"
         fileFormatsAccepted={["png", "jpg"]}
         onStartUpload={setters.turnOn}
-        onUploadError={(response: IErrorUploadResponse) => {
+        onUploadError={(response: IS3ErrorUploadResponse) => {
           // TODO: Make this a user notification
           console.log(response.error);
           setters.turnOff();
         }}
-        onUploadFinished={(response: IValidUploadResponse) => {
+        onUploadFinished={async (response: IS3ValidUploadResponse) => {
           props.setImages((images) =>
             images.concat({
-              path: response.writePath,
+              key: response.key,
               timestamp: Date.now(),
             })
           );
@@ -86,7 +83,7 @@ export const UploadDisplayImages = (props: IUploadDisplayImagesProps) => {
                   margin: "auto",
                 }}
               >
-                <CardMedia src={image.path} component="img" height={100} />
+                <S3CardMedia s3Key={image.key} height="100px" />
               </Box>
               <Box component="div" sx={{ flexGrow: 0.5 }} />
             </Paper>

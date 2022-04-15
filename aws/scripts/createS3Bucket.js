@@ -1,5 +1,4 @@
-import { CreateBucketCommand } from "@aws-sdk/client-s3";
-import { S3Client } from "@aws-sdk/client-s3";
+import { S3Client, CreateBucketCommand, PutBucketCorsCommand } from "@aws-sdk/client-s3";
 import * as DotEnv from "dotenv";
 DotEnv.config({ path: "../.env.local"});
 
@@ -14,6 +13,32 @@ async function createBucket(params) {
     const data = await s3Client.send(new CreateBucketCommand(params));
     console.log(data);
     console.log("Successfully created a bucket called ", data.Location);
+
+    await s3Client.send(new PutBucketCorsCommand({
+      Bucket: data.Bucket,
+      CORSConfiguration: [
+        {
+            AllowedHeaders: [
+                "*"
+            ],
+            AllowedMethods: [
+                "HEAD",
+                "GET",
+                "PUT",
+                "POST",
+                "DELETE"
+            ],
+            AllowedOrigins: [
+                "*"
+            ],
+            ExposeHeaders: [
+                "ETag"
+            ]
+        }
+    ]
+    }))
+
+    console.log("Successfully added CORS configuration")
   } catch (err) {
     console.log("Error ", err);
   }

@@ -1,10 +1,20 @@
 import { useCallback } from "react";
-import aws from 'aws-sdk';
-import { IErrorUploadResponse, IValidUploadResponse } from '../../pages/api/filesUpload';
+import { PutObjectCommand } from "@aws-sdk/client-s3"
+import { v4 as uuidv4 } from 'uuid';
+import { AwsS3Client } from '../aws/s3_client';
+import { S3Key } from "../../store/reducers/types";
+
+export interface IS3ValidUploadResponse {
+  key: S3Key;
+}
+
+export interface IS3ErrorUploadResponse {
+  error: string;
+}
 
 export interface IUseUploadToS3Props {
-  onUploadFinished?: (response: IValidUploadResponse) => void;
-  onUploadError?: (response: IErrorUploadResponse) => void;
+  onUploadFinished?: (response: IS3ValidUploadResponse) => void;
+  onUploadError?: (response: IS3ErrorUploadResponse) => void;
   onStartUpload?: () => void;
 }
 
@@ -20,24 +30,14 @@ export default function useUploadToS3(props: IUseUploadToS3Props) {
     }
 
     onStartUpload?.();
-    const filename = encodeURIComponent(file.name);
-    const res = await fetch(`/api/awsS3Upload?file=${filename}`, { mode: "cors" });
-    const { url, fields } = (await res.json() as aws.S3.PresignedPost);
-    const formData = new FormData();
 
-    Object.entries({ ...fields, file }).forEach(([key, value]) => {
-      formData.append(key, value);
-    });
+    const fileKey = uuidv4() + "_" + file.name;
 
-    const upload = await fetch(url, {
-      method: 'POST',
-      body: formData,
-    });
-
-    if (upload.ok) {
-      onUploadFinished?.({ writePath: upload.url });
+    const upload = await AwsS3Client.send(new PutObjectCommand({ Body: file, Bucket: process.env.AWS_S3_BUCKET_NAME, Key: fileKey }))
+    if (upload.$metadata.httpStatusCode === 200) {
+      onUploadFinished?.({ key: fileKey });
     } else {
-      onUploadError?.({ error: upload.statusText });
+      onUploadError?.({ error: "unknown" });
     }
   }, [props.onStartUpload, props.onUploadError, props.onUploadFinished]);
 

@@ -28,7 +28,6 @@ import {
   WateringAmountKeys,
 } from "../../store/reducers/plants";
 import { ExitSaveButtons } from "../cards/exit_save_buttons";
-import { ClickToUpload } from "../core/click_to_upload";
 import { useBoolean } from "../hooks/use_boolean";
 import { TemperatureSlider } from "./temperature_slider";
 import { stopPropagation } from "../cards/utilities";

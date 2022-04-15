@@ -12,6 +12,7 @@
   "devDependencies": {},
   "type": "module",
   "scripts": {
-    "createUserPool": "node scripts/createCognitoUserPool.js"
+    "createUserPool": "node scripts/createCognitoUserPool.js",
+    "createS3Bucket": "node scripts/createS3Bucket.js"
   }
 }

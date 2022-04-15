@@ -7,7 +7,7 @@ export type RecipeUuid = string;
 export type IngredientUuid = string;
 export type IIngredientName = string;
 
-export interface INutritionData {}
+export interface INutritionData { }
 
 export interface IIngredient {
   /**
@@ -55,11 +55,7 @@ export const exampleDisplayRecipe: IRecipe = {
   name: "Pho",
   description:
     "Vietnamese dish, broth and noodles with some meat and vegetables.",
-  images: [
-    { timestamp: 1, path: "photo_of_dish.png" },
-    { timestamp: 2, path: "photo_of_sauce.png" },
-    { timestamp: 3, path: "/images/food.jpg" }
-  ],
+  images: [],
   components: [
     {
       name: "Sauce",

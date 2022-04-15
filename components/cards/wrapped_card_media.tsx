@@ -4,13 +4,11 @@ import {
   useState,
   useCallback,
   MouseEvent,
-  SyntheticEvent,
-  ReactEventHandler,
 } from "react";
 import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import { Image } from "../../store/reducers/types";
-import CardMedia from "@mui/material/CardMedia";
+import { S3CardMedia } from "./s3_card_media";
 
 export interface ICardMediaProps {
   images: Image[];
@@ -48,11 +46,7 @@ export const WrappedCardMedia = (props: ICardMediaProps) => {
 
   return (
     <div style={{ position: "relative" }}>
-      <CardMedia
-        src={images[imageIndex].path}
-        component="img"
-        height="300px"
-      />
+      <S3CardMedia s3Key={images[imageIndex].key} height={300} />
       {images.length > 1 && (
         <>
           <IconButton

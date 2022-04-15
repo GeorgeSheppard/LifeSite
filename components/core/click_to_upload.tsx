@@ -1,14 +1,9 @@
 import { useCallback, ChangeEvent, useMemo, ReactElement } from "react";
-import useUpload from "../hooks/upload_to_server";
-import {
-  IErrorUploadResponse,
-  IValidUploadResponse,
-} from "../../pages/api/filesUpload";
-import useUploadToS3 from "../hooks/upload_to_s3";
+import useUploadToS3, { IS3ErrorUploadResponse, IS3ValidUploadResponse } from "../hooks/upload_to_s3";
 
 export interface IClickToUploadProps {
-  onUploadFinished?: (response: IValidUploadResponse) => void;
-  onUploadError?: (response: IErrorUploadResponse) => void;
+  onUploadFinished?: (response: IS3ValidUploadResponse) => void;
+  onUploadError?: (response: IS3ErrorUploadResponse) => void;
   onStartUpload?: () => void;
   /**
    * The folder the images should be stored in
