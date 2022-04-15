@@ -114,9 +114,9 @@ export default function Preview(props: IPreview) {
 export const getServerSideProps: GetServerSideProps<IPreview> = async (
   context
 ) => {
-  const path = context.query.writePath;
+  const key = context.query.key;
 
-  if (!path || path instanceof Array) {
+  if (!key || key instanceof Array) {
     return {
       redirect: {
         destination: "/printing",
@@ -127,7 +127,7 @@ export const getServerSideProps: GetServerSideProps<IPreview> = async (
 
   let model;
   try {
-    model = await loadModel(path);
+    model = await loadModel(key);
   } catch (err) {
     console.error(err);
     return {

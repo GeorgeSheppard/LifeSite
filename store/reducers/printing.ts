@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { ICameraParams } from "../../components/printing/canvas_screenshotter";
 import { IFullStoreState } from "../store";
-import { Image } from "./types";
+import { Image, S3Key } from "./types";
 
 export type ModelUUID = string;
 
@@ -12,7 +12,7 @@ export interface IModelProps {
    * Not all models can be loaded and previewed
    */
   image?: Image;
-  modelSrc: string;
+  key: S3Key;
   uuid: ModelUUID;
   cameraParams?: ICameraParams;
 }

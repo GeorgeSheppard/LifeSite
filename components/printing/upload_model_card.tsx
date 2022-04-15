@@ -3,13 +3,10 @@ import UploadIcon from "@mui/icons-material/Upload";
 import Box from "@mui/material/Box";
 import LinearProgress from "@mui/material/LinearProgress";
 import { useRouter } from "next/router";
-import {
-  IErrorUploadResponse,
-  IValidUploadResponse,
-} from "../../pages/api/filesUpload";
 import { navigateToPreview } from "./navigate_to_preview";
 import { ClickToUpload } from "../core/click_to_upload";
 import { useBoolean } from "../hooks/use_boolean";
+import { IS3ErrorUploadResponse, IS3ValidUploadResponse } from '../hooks/upload_to_s3';
 
 export default function UploadCard() {
   const router = useRouter();
@@ -20,14 +17,14 @@ export default function UploadCard() {
       folder="models"
       fileFormatsAccepted={["stl"]}
       onStartUpload={setters.turnOn}
-      onUploadError={(response: IErrorUploadResponse) => {
+      onUploadError={(response: IS3ErrorUploadResponse) => {
         // TODO: Make this a user notification
         console.log(response.error);
         setters.turnOff();
       }}
-      onUploadFinished={(response: IValidUploadResponse) => {
+      onUploadFinished={(response: IS3ValidUploadResponse) => {
         setters.turnOff();
-        navigateToPreview(router, response.writePath);
+        navigateToPreview(router, response.key);
       }}
     >
       <Card sx={{ display: "flex", height: 150 }} className="card">

@@ -1,6 +1,5 @@
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
-import CardMedia from "@mui/material/CardMedia";
 import Typography from "@mui/material/Typography";
 import * as React from "react";
 import Box from "@mui/material/Box";
@@ -13,6 +12,8 @@ import DownloadIcon from "@mui/icons-material/Download";
 import Tooltip from "@mui/material/Tooltip";
 import { useCallback, MouseEvent } from "react";
 import { deleteModel } from "../../store/reducers/printing";
+import { getS3SignedUrl } from "../aws/s3_utilities";
+import { S3CardMedia } from '../cards/s3_card_media';
 
 export interface IPreviewCardProps {
   uuid: string;
@@ -27,19 +28,19 @@ export default function PreviewCard(props: IPreviewCardProps) {
 
   const onClickToPreview = useCallback(
     (event: MouseEvent) => {
-      navigateToPreview(router, cardData.modelSrc, uuid);
+      navigateToPreview(router, cardData.key, uuid);
       event.stopPropagation();
     },
-    [router, cardData.modelSrc, uuid]
+    [router, cardData.key, uuid]
   );
   const deleteModelDispatch = useCallback(
     async (event: MouseEvent<SVGElement>) => {
       dispatch(deleteModel(uuid));
       event.stopPropagation();
 
-      const toDelete = [cardData.modelSrc];
-      if (cardData.image?.path) {
-        toDelete.push(cardData.image.path);
+      const toDelete = [cardData.key];
+      if (cardData.image?.key) {
+        toDelete.push(cardData.image.key);
       }
       const response = await fetch("/api/filesDelete", {
         method: "DELETE",
@@ -49,14 +50,14 @@ export default function PreviewCard(props: IPreviewCardProps) {
         console.error(await response.json());
       }
     },
-    [dispatch, uuid, cardData.modelSrc, cardData.image?.path]
+    [dispatch, uuid, cardData.key, cardData.image?.key]
   );
   const onDownload = useCallback(
-    (event: MouseEvent<SVGElement>) => {
+    async (event: MouseEvent<SVGElement>) => {
       const link = document.createElement("a");
       link.download =
-        cardData.filename + "." + cardData.modelSrc.split(".").pop();
-      link.href = cardData.modelSrc;
+        cardData.filename + "." + cardData.filename.split(".").pop();
+      link.href = await getS3SignedUrl(cardData.key);
       link.click();
       event.stopPropagation();
     },
@@ -109,8 +110,8 @@ export default function PreviewCard(props: IPreviewCardProps) {
           minWidth: 150,
         }}
       >
-        {cardData?.image?.path && (
-          <CardMedia component="img" src={cardData.image.path} />
+        {cardData?.image?.key && (
+          <S3CardMedia s3Key={cardData.image.key} />
         )}
       </Box>
     </Card>

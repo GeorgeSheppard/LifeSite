@@ -6,7 +6,10 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "husky-install": "husky install"
+    "husky-install": "husky install",
+    "dev:ts": "yarn dev & yarn ts:watch",
+    "ts": "tsc --noEmit --incremental",
+    "ts:watch": "yarn ts --watch"
   },
   "husky": {
     "hooks": {

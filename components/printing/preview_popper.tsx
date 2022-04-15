@@ -55,7 +55,7 @@ export const PreviewPopper = (props: IPreviewPopperProps) => {
           },
           // TODO: Better way of managing types with nextjs, seems to be very hard
           // to work with, need custom type definitions for the pages
-          modelSrc: router.query.writePath as any as string,
+          key: router.query.key as any as string,
           uuid,
           cameraParams: screenshotRef.current?.getCameraParams(),
         })

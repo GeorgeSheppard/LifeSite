@@ -11,6 +11,8 @@ import { STLLoader } from "three/examples/jsm/loaders/STLLoader";
 import { ThreeMFLoader } from "three/examples/jsm/loaders/3MFLoader";
 import { join } from "path";
 import fs from "fs";
+import { getS3SignedUrl } from "../aws/s3_utilities";
+import { S3Key } from "../../store/reducers/types";
 
 interface IModelLoader extends Loader {
   parse: (arrayBuffer: ArrayBuffer) => Group | BufferGeometry;
@@ -51,20 +53,21 @@ export class Loaders {
 
 const modelLoader = new Loaders();
 
-export const loadModel = async (path: string): Promise<Group> => {
-  const extension = path.split(".").pop();
+export const loadModel = async (key: S3Key): Promise<Group> => {
+  const extension = key.split(".").pop()?.toLowerCase();
 
   if (!extension) {
     throw Error("No extension");
   }
 
   const loader = modelLoader.getLoader(extension);
-  const pathToFile = join(process.cwd(), `/public${path}`);
+  const url = await getS3SignedUrl(key)
+  const data = await fetch(url);
 
   // ThreeJs refuses to load the file itself, instead have to use the parse method
   // on it and give it the ArrayBuffer
   // https://stackoverflow.com/questions/8609289/convert-a-binary-nodejs-buffer-to-javascript-arraybuffer
-  const buffer = fs.readFileSync(pathToFile);
+  const buffer = Buffer.from(new Uint8Array(await data.arrayBuffer()));
   const arrayBuffer = buffer.buffer.slice(
     buffer.byteOffset,
     buffer.byteOffset + buffer.byteLength
