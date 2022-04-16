@@ -6,3 +6,4 @@
 - If there is a new user who has logged in for the first time after modifying the default profile then their progress shouldn't be wiped.
 - Switch to Chakra UI and work on core theme
 - Make core theme better so that dark theme isn't needed
+- Files that are no longer needed should be deleted.

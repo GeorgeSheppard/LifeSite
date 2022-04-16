@@ -8,8 +8,6 @@
 
 5. Visit the deployed bucket and copy the name and region into `.env.local`
 
-6. Add the bucket domain into `next.config.js`
-
 Note: If you ever get in a bad state (can happen if you manually delete a resource) then use `npx cdk destroy`
 You can look in `CloudFormation` to see what is there.
 

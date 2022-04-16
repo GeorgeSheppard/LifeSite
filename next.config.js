@@ -18,7 +18,7 @@ module.exports = (phase) => {
 
   if (phase !== PHASE_DEVELOPMENT_SERVER) {
     envVariables.ENV_LOGIN_LOGOUT_REDIRECT_URL =
-      process.env.VERCEL_URL;
+      process.env.ENV_LOGIN_LOGOUT_REDIRECT_URL_PROD;
     envVariables.ENV_AWS_S3_BUCKET_NAME =
       process.env.ENV_AWS_S3_BUCKET_NAME_PROD;
     envVariables.ENV_AWS_COGNITO_CLIENT_ID =
