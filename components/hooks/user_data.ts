@@ -58,7 +58,7 @@ export const useUserData = (): IUserDataReturn => {
     const fetchUserData = async () => {
       let json: IFullStoreState | undefined = undefined;
       try {
-        const profileResults = await AwsS3Client.send(new ListObjectsCommand({ Bucket: process.env.AWS_S3_BUCKET_NAME, Prefix: `${session.id}/profile.json`, MaxKeys: 1 }))
+        const profileResults = await AwsS3Client.send(new ListObjectsCommand({ Bucket: process.env.ENV_AWS_S3_BUCKET_NAME, Prefix: `${session.id}/profile.json`, MaxKeys: 1 }))
 
         if (profileResults.$metadata.httpStatusCode !== 200) {
           setOffline(true);

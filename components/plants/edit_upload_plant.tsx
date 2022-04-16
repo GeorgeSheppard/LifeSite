@@ -1,22 +1,13 @@
-import UploadIcon from "@mui/icons-material/Upload";
-import Box from "@mui/material/Box";
 import Card from "@mui/material/Card";
-import CardMedia from "@mui/material/CardMedia";
 import Checkbox from "@mui/material/Checkbox";
-import CircularProgress from "@mui/material/CircularProgress";
 import Container from "@mui/material/Container";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Grid from "@mui/material/Grid";
 import Icon from "@mui/material/Icon";
-import Paper from "@mui/material/Paper";
 import TextField from "@mui/material/TextField";
 import Tooltip from "@mui/material/Tooltip";
 import Image from "next/image";
 import { ChangeEvent, useCallback, useState } from "react";
-import {
-  IErrorUploadResponse,
-  IValidUploadResponse,
-} from "../../pages/api/filesUpload";
 import { useAppDispatch, useAppSelector } from "../../store/hooks/hooks";
 import {
   addOrUpdatePlant,
@@ -25,13 +16,13 @@ import {
   LightLevelKeys,
   PlantUuid,
   WateringAmount,
-  WateringAmountKeys,
+  WateringAmountKeys
 } from "../../store/reducers/plants";
 import { ExitSaveButtons } from "../cards/exit_save_buttons";
+import { UploadDisplayImages } from "../cards/upload_and_display_images";
+import { stopPropagation } from "../cards/utilities";
 import { useBoolean } from "../hooks/use_boolean";
 import { TemperatureSlider } from "./temperature_slider";
-import { stopPropagation } from "../cards/utilities";
-import { UploadDisplayImages } from "../cards/upload_and_display_images";
 
 export interface IEditUploadPlant {
   /**

@@ -6,9 +6,9 @@ export type CustomSession = Session & { id: string };
 export default NextAuth({
   providers: [
     CognitoProvider({
-      clientId: process.env.COGNITO_CLIENT_ID ?? "",
-      clientSecret: process.env.COGNITO_CLIENT_SECRET ?? "",
-      issuer: process.env.COGNITO_CLIENT_ISSUER,
+      clientId: process.env.ENV_AWS_COGNITO_CLIENT_ID ?? "",
+      clientSecret: process.env.ENV_AWS_COGNITO_CLIENT_SECRET ?? "",
+      issuer: process.env.ENV_AWS_COGNITO_CLIENT_ISSUER,
     }),
   ],
   callbacks: {

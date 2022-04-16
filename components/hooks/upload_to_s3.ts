@@ -61,7 +61,7 @@ export default function useUploadToS3(props: IUseUploadToS3Props) {
     
     let upload;
     try {
-      upload = await AwsS3Client.send(new PutObjectCommand({ Body: file, Bucket: process.env.AWS_S3_BUCKET_NAME, Key: pathToFile }))
+      upload = await AwsS3Client.send(new PutObjectCommand({ Body: file, Bucket: process.env.ENV_AWS_S3_BUCKET_NAME, Key: pathToFile }))
     } catch (err) {
       onUploadError?.({ error: "unknown" })
     }
