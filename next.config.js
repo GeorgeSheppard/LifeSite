@@ -25,9 +25,9 @@ module.exports = (phase) => {
       process.env.ENV_AWS_COGNITO_CLIENT_ID_PROD;
     envVariables.ENV_AWS_COGNITO_CLIENT_SECRET =
       process.env.ENV_AWS_COGNITO_CLIENT_SECRET_PROD;
-    envVariables.ENV_COGNITO_CLIENT_ISSUER =
+    envVariables.ENV_AWS_COGNITO_CLIENT_ISSUER =
       process.env.ENV_AWS_COGNITO_CLIENT_ISSUER_PROD;
-    envVariables.ENV_COGNITO_DOMAIN_URL =
+    envVariables.ENV_AWS_COGNITO_DOMAIN_URL =
       process.env.ENV_AWS_COGNITO_DOMAIN_URL_PROD;
   }
 
