@@ -14,7 +14,7 @@ export enum Unit {
 
 export interface IQuantity {
   unit?: Unit;
-  value?: number;
+  value?: number | string;
 }
 
 export const Quantities = {

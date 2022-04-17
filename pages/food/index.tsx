@@ -2,14 +2,13 @@ import Container from "@mui/material/Container";
 import NavigatorCard, {
   INavigatorCardProps,
 } from "../../components/index/navigator_card";
-import Recipes from "./recipes";
 import Grid from "@mui/material/Grid";
 
 const foodNavigatorCards: INavigatorCardProps[] = [
   {
     title: "Recipes",
     description: "List of recipes, with pictures, ingredients, and method.",
-    imageSrc: "/images/food.jpg",
+    imageSrc: "/images/ChilliConCarne.jpg",
     href: "/food/recipes",
   },
   {

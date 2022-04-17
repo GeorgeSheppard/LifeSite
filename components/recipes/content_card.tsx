@@ -108,21 +108,9 @@ export const RecipeCard = (props: IRecipeCardProps) => {
             <Typography>{recipe.description}</Typography>
           </AccordionDetails>
         </Accordion>
-        {recipe.components.length === 1 ? (
-          <AccordionDetails>
-            <List dense>
-              <ComponentContentInstructionsMethod
-                component={recipe.components[0]}
-              />
-            </List>
-          </AccordionDetails>
-        ) : (
-          <>
-            {recipe.components.map((component) => (
-              <ComponentContent key={component.name} component={component} />
-            ))}
-          </>
-        )}
+        {recipe.components.map((component) => (
+          <ComponentContent key={component.name} component={component} />
+        ))}
       </Card>
     </>
   );
@@ -142,7 +130,10 @@ const ComponentContentInstructionsMethod = (
       {component.ingredients.length > 0 && (
         <>
           <ListItem key="ingredients">
-            <ListItemText primary="Ingredients" />
+            <ListItemText
+              primary="Ingredients"
+              primaryTypographyProps={{ fontSize: "16px", fontWeight: "bold" }}
+            />
           </ListItem>
           {component.ingredients.map(({ name, quantity }) => (
             <ListItem key={name}>
@@ -158,7 +149,10 @@ const ComponentContentInstructionsMethod = (
       {component.instructions.length > 0 && (
         <>
           <ListItem key="method">
-            <ListItemText primary="Method" />
+            <ListItemText
+              primary="Method"
+              primaryTypographyProps={{ fontSize: "16px", fontWeight: "bold" }}
+            />
           </ListItem>
           {component.instructions.map(({ text, optional }, index) => {
             let visibleText = `${index + 1}. `;

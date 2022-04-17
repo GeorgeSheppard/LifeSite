@@ -2,12 +2,15 @@ import CircularProgress from "@mui/material/CircularProgress";
 import Box from "@mui/material/Box";
 import Paper from "@mui/material/Paper";
 import UploadIcon from "@mui/icons-material/Upload";
+import IconButton from "@mui/material/IconButton";
+
 import { ClickToUpload } from "../core/click_to_upload";
 import { useBoolean } from "../hooks/use_boolean";
 import { Image } from "../../store/reducers/types";
-import { SetStateAction, Dispatch } from "react";
+import { SetStateAction, Dispatch, useCallback } from "react";
 import { IS3ErrorUploadResponse, IS3ValidUploadResponse } from "../hooks/upload_to_s3";
 import { S3CardMedia } from "./s3_card_media";
+import { Delete } from "@mui/icons-material";
 
 export interface IUploadDisplayImagesProps {
   images: Image[];
@@ -16,6 +19,15 @@ export interface IUploadDisplayImagesProps {
 
 export const UploadDisplayImages = (props: IUploadDisplayImagesProps) => {
   const [uploading, setters] = useBoolean(false);
+
+  const deleteImage = useCallback((index) => {
+    const setImages = props.setImages;
+    setImages(prevImages => {
+      const newImages = [...prevImages];
+      newImages.splice(index, 1);
+      return newImages;
+    })
+  }, [props.setImages])
 
   return (
     <div
@@ -63,7 +75,7 @@ export const UploadDisplayImages = (props: IUploadDisplayImagesProps) => {
           </Paper>
         </div>
       </ClickToUpload>
-      {props.images.map((image) => {
+      {props.images.map((image, index) => {
         return (
           <div style={{ paddingTop: 15 }} key={image.timestamp}>
             <Paper
@@ -81,9 +93,13 @@ export const UploadDisplayImages = (props: IUploadDisplayImagesProps) => {
                 sx={{
                   display: "flex",
                   margin: "auto",
+                  position: "relative"
                 }}
               >
                 <S3CardMedia s3Key={image.key} height="100px" />
+                <IconButton sx={{ position: "absolute", top: "0%", right: "0%"}} onClick={() => deleteImage(index)}>
+                  <Delete htmlColor="white" />
+                </IconButton>
               </Box>
               <Box component="div" sx={{ flexGrow: 0.5 }} />
             </Paper>

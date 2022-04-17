@@ -2,6 +2,7 @@ import {
   S3Client,
   CreateBucketCommand,
   PutBucketCorsCommand,
+  PutBucketVersioningCommand
 } from "@aws-sdk/client-s3";
 import * as DotEnv from "dotenv";
 DotEnv.config({ path: "../.env.local" });
@@ -22,6 +23,20 @@ async function createBucket() {
     );
     console.log(data);
     console.log("Successfully created a bucket called ", data.Location);
+
+    if (isProduction) {
+      const versioning = await s3Client.send(
+        new PutBucketVersioningCommand({
+          Bucket: bucket,
+          VersioningConfiguration: {
+            Status: "Enabled"
+          }
+        })
+      )
+
+      console.log(versioning);
+      console.log("Successfully turned on versioning for bucket")
+    }
 
     const corsData = await s3Client.send(
       new PutBucketCorsCommand({

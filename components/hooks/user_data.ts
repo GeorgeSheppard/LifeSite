@@ -7,7 +7,6 @@ import { useRouter } from "next/router";
 import { IFullStoreState, store } from '../../store/store';
 import useUploadToS3 from "./upload_to_s3";
 import { getS3SignedUrl } from "../aws/s3_utilities";
-import { clearTimeout } from "timers";
 import { ListObjectsCommand } from "@aws-sdk/client-s3";
 import { AwsS3Client } from "../aws/s3_client";
 import { printingEmptyState } from "../../store/reducers/printing";
@@ -71,7 +70,7 @@ export const useUserData = (): IUserDataReturn => {
 
           // User doesn't have a profile, in this case we should stop trying to fetch a profile
           // and create a new one by dispatching an empty profile
-          if (profileResults.Contents?.length === 0) {
+          if (!profileResults?.Contents || profileResults.Contents?.length === 0) {
             json = {
               user: userEmptyState,
               printing: printingEmptyState,

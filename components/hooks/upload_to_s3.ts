@@ -49,7 +49,7 @@ export default function useUploadToS3(props: IUseUploadToS3Props) {
     onStartUpload?.();
 
     let fileKey = file.name;
-    if (props.makeKeyUnique) {
+    if (props.makeKeyUnique ?? true) {
       fileKey = uuidv4() + "_" + fileKey
     }
 

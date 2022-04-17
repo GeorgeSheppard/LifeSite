@@ -1,28 +1,19 @@
 import AddIcon from "@mui/icons-material/Add";
 import { Box, Card, Container, Grid } from "@mui/material";
-import Backdrop from "@mui/material/Backdrop";
 import { useCallback } from "react";
 import { v4 as uuidv4 } from "uuid";
 import { RecipeCard } from "../../components/recipes/content_card";
-import { EditUploadRecipe } from "../../components/recipes/edit_upload_recipe";
 import { RecipeUuid } from "../../store/reducers/food/recipes";
 import OutlinedInput from "@mui/material/OutlinedInput";
 import { useRecipeSearch } from "../../components/recipes/search_bar";
-import { CustomBackdrop, useCustomBackdrop } from "../../components/core/backdrop";
+import { useRouter } from "next/router";
 
 const Recipes = () => {
-  const { removeSelected, setSelected, selected } = useCustomBackdrop<RecipeUuid>();
+  const router = useRouter();
   const { searchInput, setSearchInput, searchResults }  = useRecipeSearch();
 
   return (
     <main>
-      <CustomBackdrop selected={selected} removeSelected={removeSelected}>
-        {selected && <EditUploadRecipe
-          key={selected + "selected"}
-          uuid={selected}
-          closeBackdrop={removeSelected}
-        />}
-      </CustomBackdrop>
       <Container sx={{ py: 8 }} maxWidth="md">
         <Grid item key={"Search"}>
           <OutlinedInput
@@ -36,10 +27,10 @@ const Recipes = () => {
           />
         </Grid>
         <Grid container spacing={4}>
-          <CreateNewRecipeCard onClick={setSelected} />
+          <CreateNewRecipeCard onClick={() => router.push(`/food/${uuidv4()}`)} />
           {searchResults.map((uuid) => (
             <Grid item key={uuid} xs={12} sm={6} md={4}>
-              <RecipeCard uuid={uuid} onEdit={setSelected} />
+              <RecipeCard uuid={uuid} onEdit={() => router.push(`/food/${uuid}`)} />
             </Grid>
           ))}
         </Grid>
