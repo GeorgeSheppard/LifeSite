@@ -14,7 +14,7 @@ export enum Unit {
 
 export interface IQuantity {
   unit?: Unit;
-  value?: number | string;
+  value?: number;
 }
 
 export const Quantities = {
@@ -44,5 +44,5 @@ export const Quantities = {
         return quantityString + " " + ingredientName;
       }
     }
-  }
+  },
 } 

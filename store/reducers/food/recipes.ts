@@ -68,105 +68,105 @@ export const exampleDisplayRecipe: IRecipe = {
           name: "Minced beef",
           quantity: {
             unit: Unit.GRAM,
-            value: "500"
+            value: 500
           }
         },
         {
           name: "Medium onion",
           quantity: {
             unit: Unit.NUMBER,
-            value: "2"
+            value: 2
           }
         },
         {
           name: "Garlic cloves",
           quantity: {
             unit: Unit.NUMBER,
-            value: "3"
+            value: 3
           }
         },
         {
           name: "Hot chilli powder",
           quantity: {
             unit: Unit.TEASPOON,
-            value: "2"
+            value: 2
           }
         },
         {
           name: "Ground cumin",
           quantity: {
             unit: Unit.TEASPOON,
-            value: "2"
+            value: 2
           }
         },
         {
           name: "Ground coriander",
           quantity: {
             unit: Unit.TEASPOON,
-            value: "2"
+            value: 2
           }
         },
         {
           name: "Plain flour",
           quantity: {
             unit: Unit.TABLESPOON,
-            value: "2"
+            value: 2
           }
         },
         {
           name: "Beef stock",
           quantity: {
             unit: Unit.MILLILITER,
-            value: "300"
+            value: 300
           }
         },
         {
           name: "Red wine or extra beef stock",
           quantity: {
             unit: Unit.MILLILITER,
-            value: "150"
+            value: 150
           }
         },
         {
           name: "Chopped tomatoes",
           quantity: {
             unit: Unit.GRAM,
-            value: "400"
+            value: 400
           }
         },
         {
           name: "Red kidney beans",
           quantity: {
             unit: Unit.GRAM,
-            value: "400"
+            value: 400
           }
         },
         {
           name: "Tomato puree",
           quantity: {
             unit: Unit.TABLESPOON,
-            value: "3"
+            value: 3
           }
         },
         {
           name: "Caster sugar",
           quantity: {
             unit: Unit.TEASPOON,
-            value: "1"
+            value: 1
           }
         },
         {
           name: "Dried oregano",
           quantity: {
             unit: Unit.TEASPOON,
-            value: "1"
+            value: 1
           }
         },
         {
           name: "Bay leaf",
           quantity: {
             unit: Unit.NUMBER,
-            value: "1"
+            value: 1
           }
         },
         {
