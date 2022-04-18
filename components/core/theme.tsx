@@ -1,13 +1,10 @@
 import { ThemeProvider } from "@mui/material/styles";
 import { useMemo } from "react";
-import { useAppSelector } from "../../store/hooks/hooks";
 import { createTheme } from "@mui/material/styles";
-import { ThemeKey } from "../../store/reducers/user";
 
-export const createThemeFromThemeKey = (themeKey: ThemeKey) => {
+export const createThemeFromThemeKey = () => {
   return createTheme({
     palette: {
-      mode: themeKey,
       primary: {
         main: "#207d39",
         light: "#207d39"
@@ -21,8 +18,7 @@ export interface IThemeControllerProps {
 }
 
 export const ThemeController = (props: IThemeControllerProps) => {
-  const themeKey = useAppSelector((store) => store.user.theme);
-  const theme = useMemo(() => createThemeFromThemeKey(themeKey), [themeKey]);
+  const theme = useMemo(() => createThemeFromThemeKey(), []);
 
   return <ThemeProvider theme={theme}>{props.children}</ThemeProvider>;
 };
