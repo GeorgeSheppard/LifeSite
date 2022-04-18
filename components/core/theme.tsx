@@ -8,6 +8,10 @@ export const createThemeFromThemeKey = (themeKey: ThemeKey) => {
   return createTheme({
     palette: {
       mode: themeKey,
+      primary: {
+        main: "#207d39",
+        light: "#207d39"
+      }
     },
   });
 };

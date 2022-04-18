@@ -41,7 +41,7 @@ export const Quantities = {
       if (!quantityString) {
         return ingredientName;
       } else {
-        return quantityString + " " + ingredientName;
+        return quantityString + " " + ingredientName.toLowerCase();
       }
     }
   },

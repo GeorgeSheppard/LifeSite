@@ -14,22 +14,12 @@ export interface INavigatorCardProps {
   href: string;
 }
 
-const css = {
-  maxWidth: 300,
-  margin: "auto",
-  transition: "0.3s",
-  boxShadow: "0 0 40px -12px rgba(0,0,0,0.3)",
-  "&:hover": {
-    boxShadow: "0 0 70px -12.125px rgba(0,0,0,0.3)",
-  },
-};
-
 export default function NavigatorCard(props: INavigatorCardProps) {
   return (
     <Link href={props.href} passHref>
       <Card className="card" sx={{ maxWidth: 300 }}>
         <CardActionArea focusRipple href={props.href}>
-          <CardHeader title={props.title} />
+          <CardHeader title={props.title} sx={{fontWeight: 500}} />
           <CardMedia src={props.imageSrc} component="img" height="300px" />
           {/* TODO: All cards expand to be the size of the maximum card on that row */}
           <CardContent className={"content"}>

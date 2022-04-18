@@ -3,13 +3,28 @@ import { useAppSelector } from "../../store/hooks/hooks";
 import { RecipeUuid } from "../../store/reducers/food/recipes";
 import { useQuerySearch } from "./search";
 
-export const useRecipeSearch = (): {
+export const useRecipeSearch = (keys: Set<string>): {
   searchResults: RecipeUuid[];
   setSearchInput: (event: ChangeEvent<HTMLInputElement>) => void;
   searchInput: string;
 } => {
   const recipes = useAppSelector((store) => store.food.recipes);
-  const { search } = useQuerySearch(recipes);
+  const searchableRecipes = useMemo(() => {
+    // Note: Fuse.js had trouble searching the nested structure for ingredients
+    // so I flatten out the recipes here
+    return Object.values(recipes).map((recipe) => ({
+      uuid: recipe.uuid,
+      name: recipe.name,
+      description: recipe.description,
+      ingredients: recipe.components.flatMap((component) =>
+        component.ingredients.map((ingredient) => ingredient.name)
+      ),
+    }));
+  }, [recipes]);
+  const options = useMemo(() => ({
+    keys: Array.from(keys),
+  }), [keys])
+  const { search } = useQuerySearch(searchableRecipes, options);
   const [searchInput, setSearchInput] = useState("");
 
   const searchResults = useMemo(() => {

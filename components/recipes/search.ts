@@ -1,17 +1,23 @@
 import Fuse from "fuse.js";
-import { IRecipe, RecipeUuid } from "../../store/reducers/food/recipes";
+import { IIngredientName, IRecipe, RecipeUuid } from '../../store/reducers/food/recipes';
 import { useMemo, useCallback } from "react";
 
+export interface SearchableRecipe {
+  uuid: RecipeUuid;
+  name: string;
+  description: string;
+  ingredients: IIngredientName[];
+}
 
 const createFuseSearch = (
-  data: IRecipe[],
-  options?: Fuse.IFuseOptions<IRecipe>
+  data: SearchableRecipe[],
+  options?: Fuse.IFuseOptions<SearchableRecipe>
 ) => {
   const defaultOptions = {
     includeScore: true,
-    keys: ["name", "description"],
     findAllMatches: true,
     ignoreLocation: true,
+    threshold: 0.2
   };
   return new Fuse(data, {
     ...defaultOptions,
@@ -20,11 +26,11 @@ const createFuseSearch = (
 };
 
 export const useQuerySearch = (
-  queries: { [key: RecipeUuid]: IRecipe },
-  options?: Fuse.IFuseOptions<IRecipe>
+  queries: SearchableRecipe[],
+  options?: Fuse.IFuseOptions<SearchableRecipe>
 ) => {
   const fuseSearch = useMemo(() => {
-    return createFuseSearch(Object.values(queries), options);
+    return createFuseSearch(queries, options);
   }, [options, queries]);
 
   const query = useCallback(

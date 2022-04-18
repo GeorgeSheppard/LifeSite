@@ -1,7 +1,7 @@
 import EditIcon from "@mui/icons-material/Edit";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import InventoryIcon from "@mui/icons-material/Inventory";
-import { IconButton, SxProps, Theme } from "@mui/material";
+import { Divider, IconButton, SxProps, Theme } from "@mui/material";
 import Accordion from "@mui/material/Accordion";
 import AccordionDetails from "@mui/material/AccordionDetails";
 import AccordionSummary from "@mui/material/AccordionSummary";
@@ -52,7 +52,7 @@ export const RecipeCard = (props: IRecipeCardProps) => {
 
     return (
       <>
-        <Typography fontSize={24}>{recipe.name}</Typography>
+        <Typography fontSize={24} fontWeight={400}>{recipe.name}</Typography>
         <div style={{ flexGrow: 1 }} />
         <IconButton
           onClick={(event) => {
@@ -60,9 +60,9 @@ export const RecipeCard = (props: IRecipeCardProps) => {
             turnOn();
           }}
           size="small"
-          sx={{ alignSelf: "center" }}
-        >
-          <DeleteIcon fontSize="small" />
+          sx={{ alignSelf: "center", pr: 1 }}
+          >
+          <DeleteIcon fontSize="small" htmlColor="#7d2020" />
         </IconButton>
         <IconButton
           onClick={(event) => {
@@ -70,9 +70,9 @@ export const RecipeCard = (props: IRecipeCardProps) => {
             onEdit(props.uuid);
           }}
           size="small"
-          sx={{ alignSelf: "center" }}
-        >
-          <EditIcon fontSize="small" />
+          sx={{ alignSelf: "center", pr: 1 }}
+          >
+          <EditIcon fontSize="small" htmlColor="#212121" />
         </IconButton>
       </>
     );
@@ -99,7 +99,7 @@ export const RecipeCard = (props: IRecipeCardProps) => {
         {recipe.images && <WrappedCardMedia images={recipe.images} />}
         <Accordion key="name">
           <AccordionSummary
-            expandIcon={<ExpandMoreIcon />}
+            expandIcon={<ExpandMoreIcon htmlColor="#212121" />}
             sx={{ display: "flex" }}
           >
             {headerChildren}
@@ -129,29 +129,31 @@ const ComponentContentInstructionsMethod = (
     <>
       {component.ingredients.length > 0 && (
         <>
-          <ListItem key="ingredients">
+          <ListItem key="ingredients" sx={{pb: 2, pl: 1}}>
             <ListItemText
               primary="Ingredients"
-              primaryTypographyProps={{ fontSize: "16px", fontWeight: "bold" }}
+              primaryTypographyProps={{ fontSize: "16px", fontWeight: 550 }}
             />
           </ListItem>
-          {component.ingredients.map(({ name, quantity }) => (
-            <ListItem key={name}>
+          {component.ingredients.map(({ name, quantity }) => {
+            return (
+            <ListItem key={name} sx={{p: 0, pl: 3}}>
               <ListItemText
                 primary={
                   "- " + Quantities.toStringWithIngredient(name, quantity)
                 }
               />
             </ListItem>
-          ))}
+          )})}
+        {component.instructions.length > 0 && <Divider sx={{pt: 5}} />}
         </>
       )}
       {component.instructions.length > 0 && (
         <>
-          <ListItem key="method">
+          <ListItem key="method" sx={{pb: 2, pl: 1, pt: 5}}>
             <ListItemText
               primary="Method"
-              primaryTypographyProps={{ fontSize: "16px", fontWeight: "bold" }}
+              primaryTypographyProps={{ fontSize: "16px", fontWeight: 550 }}
             />
           </ListItem>
           {component.instructions.map(({ text, optional }, index) => {
@@ -161,7 +163,7 @@ const ComponentContentInstructionsMethod = (
             }
             visibleText += text;
             return (
-              <ListItem key={text}>
+              <ListItem key={text} sx={{p: 0, pl: 3}}>
                 <ListItemText primary={visibleText} />
               </ListItem>
             );
@@ -181,7 +183,7 @@ const ComponentContent = (props: IComponentContentProps) => {
   return (
     <Accordion key={component.name}>
       <AccordionSummary
-        expandIcon={<ExpandMoreIcon />}
+        expandIcon={<ExpandMoreIcon htmlColor="#212121" />}
         sx={{ display: "flex" }}
       >
         <Typography>{component.name ?? "Optional"}</Typography>
@@ -189,15 +191,15 @@ const ComponentContent = (props: IComponentContentProps) => {
         {component.servings && component.servings > 1 && (
           <Tooltip title={`Serves ${component.servings}`}>
             {/* div instead of fragment as tooltip doesn't work with fragment */}
-            <div style={{ display: "flex", alignItems: "center" }}>
+            <div style={{ display: "flex", alignItems: "center", paddingRight: 6.5 }}>
               <Typography>{component.servings}</Typography>
-              <PersonIcon sx={{ paddingRight: 1 }} />
+              <PersonIcon sx={{ paddingRight: 0.5 }} />
             </div>
           </Tooltip>
         )}
         {component.storeable && (
           <Tooltip title="Can be stored">
-            <InventoryIcon sx={{ paddingRight: 1 }} />
+            <InventoryIcon sx={{ paddingRight: 1, marginRight: 0.3 }} />
           </Tooltip>
         )}
       </AccordionSummary>

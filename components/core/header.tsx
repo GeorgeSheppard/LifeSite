@@ -1,25 +1,20 @@
-import AppBar from "@mui/material/AppBar";
-import Toolbar from "@mui/material/Toolbar";
-import Typography from "@mui/material/Typography";
-import EmojiPeopleIcon from "@mui/icons-material/EmojiPeople";
-import Box from "@mui/material/Box";
-import IconButton from "@mui/material/IconButton";
-import Badge from "@mui/material/Badge";
 import AccountCircle from "@mui/icons-material/AccountCircle";
-import NotificationsIcon from "@mui/icons-material/Notifications";
-import { signIn, signOut, useSession } from "next-auth/react";
-import { Avatar, Menu, MenuItem } from "@mui/material";
-import { useState, useCallback } from "react";
-import { useRouter } from "next/router";
-import LightModeIcon from "@mui/icons-material/LightMode";
-import DarkModeIcon from "@mui/icons-material/DarkMode";
-import { useAppDispatch, useAppSelector } from "../../store/hooks/hooks";
-import { toggleTheme, ThemeKey } from "../../store/reducers/user";
-import CircularProgress from "@mui/material/CircularProgress";
+import EmojiPeopleIcon from "@mui/icons-material/EmojiPeople";
 import SaveIcon from "@mui/icons-material/Save";
 import SettingsIcon from "@mui/icons-material/Settings";
 import SignalWifiConnectedNoInternet4Icon from "@mui/icons-material/SignalWifiConnectedNoInternet4";
+import { Menu, MenuItem } from "@mui/material";
+import AppBar from "@mui/material/AppBar";
+import Box from "@mui/material/Box";
+import CircularProgress from "@mui/material/CircularProgress";
+import IconButton from "@mui/material/IconButton";
+import Toolbar from "@mui/material/Toolbar";
 import Tooltip from "@mui/material/Tooltip";
+import Typography from "@mui/material/Typography";
+import { signIn, signOut, useSession } from "next-auth/react";
+import { useRouter } from "next/router";
+import { useCallback, useState } from "react";
+import { useAppDispatch, useAppSelector } from "../../store/hooks/hooks";
 
 // TODO: Min height in MUI is set to 64 so don't go lower than this, make it so I can though
 export const headerHeight = 65;
@@ -35,7 +30,6 @@ export default function Header(props: IHeaderProps) {
   const session = useSession();
   const router = useRouter();
   const dispatch = useAppDispatch();
-  const theme = useAppSelector((store) => store.user.theme);
 
   const [anchorEl, setAnchorEl] = useState(null);
   const openDropdown = useCallback(
@@ -55,9 +49,6 @@ export default function Header(props: IHeaderProps) {
     closeDropdown();
     router.push("/profile");
   }, [closeDropdown, router]);
-  const onToggleTheme = useCallback(() => {
-    dispatch(toggleTheme());
-  }, [dispatch]);
 
   return (
     <AppBar position="relative">
@@ -100,9 +91,6 @@ export default function Header(props: IHeaderProps) {
               </IconButton>
             </div>
           )}
-          <IconButton size="large" color="inherit" onClick={onToggleTheme}>
-            {theme === ThemeKey.LIGHT ? <LightModeIcon /> : <DarkModeIcon />}
-          </IconButton>
           <IconButton
             size="large"
             color="inherit"
