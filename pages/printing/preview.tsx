@@ -3,37 +3,32 @@ import Box from "@mui/material/Box";
 import { headerHeight } from "../../components/core/header";
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
-import { useState, createRef, MouseEvent } from "react";
+import { useState, createRef, MouseEvent, useEffect } from "react";
 import {
   CanvasScreenshotter,
   ICameraParams,
   ICanvasScreenshotterRef,
 } from "../../components/printing/canvas_screenshotter";
 import Model from "../../components/printing/model";
-import { GetServerSideProps } from "next";
 import { loadModel } from "../../components/printing/model_loader";
 import { KeyboardArrowDown } from "@mui/icons-material";
 import { PreviewPopper } from "../../components/printing/preview_popper";
 import { useAppSelector } from "../../store/hooks/hooks";
+import { useRouter } from "next/router";
+import LinearProgress from '@mui/material/LinearProgress';
 
 export interface IPreview {
-  /**
-   * Group is passed through props as json
-   */
-  model: any;
-  /**
-   * UUID corresponding to the model entry, will be empty if it's new
-   */
-  uuid: string;
 }
 
 export default function Preview(props: IPreview) {
+  const router = useRouter();
+  const uuid = router.query.uuid as any as string;
   const screenshotRef = createRef<ICanvasScreenshotterRef>();
   const [popperOpen, setPopperOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
   const existingData = useAppSelector((store) => {
-    if (props.uuid.length > 0) {
-      return store.printing.models[props.uuid];
+    if (uuid.length > 0) {
+      return store.printing.models[uuid];
     }
   });
   const [cameraParams] = useState<ICameraParams>(() => {
@@ -45,6 +40,29 @@ export default function Preview(props: IPreview) {
       }
     );
   });
+  const [modelJSON, setModelJSON] = useState(null);
+
+  useEffect(() => {
+    const load = async () => {
+      try {
+        const model = await loadModel(router.query.key as any as string);
+        setModelJSON(model.toJSON())
+      } catch (err) {
+        console.error(err);
+        return {
+          redirect: {
+            destination: "/printing",
+            permanent: false,
+          },
+        };
+      }
+    }
+
+    load();
+    // Only run on mount
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
 
   // TODO: Remove this awful hack, 48px is two times the padding on either side
   const canvasSideLength = `min(calc(100vh - ${headerHeight}px), 100vw - 48px)`;
@@ -56,6 +74,10 @@ export default function Preview(props: IPreview) {
       setPopperOpen((prevState) => !prevState);
     }
   };
+
+  if (!modelJSON) {
+    return <LinearProgress sx={{width: "100vw"}} />;
+  }
 
   return (
     <Container maxWidth={false}>
@@ -83,7 +105,7 @@ export default function Preview(props: IPreview) {
             anchorEl={anchorEl}
             screenshotRef={screenshotRef}
             existingData={existingData}
-            uuid={props.uuid}
+            uuid={uuid}
           />
         )}
         <Canvas
@@ -99,50 +121,15 @@ export default function Preview(props: IPreview) {
             fov: 50,
           }}
           dpr={window.devicePixelRatio}
+          shadows={true}
         >
           <CanvasScreenshotter ref={screenshotRef} />
           <OrbitControls />
           <ambientLight />
-          <pointLight position={[10, 10, 10]} />
-          <Model model={props.model} />
+          <pointLight position={[10, 3, 10]} intensity={100} />
+          <Model model={modelJSON} />
         </Canvas>
       </Box>
     </Container>
   );
 }
-
-export const getServerSideProps: GetServerSideProps<IPreview> = async (
-  context
-) => {
-  const key = context.query.key;
-
-  if (!key || key instanceof Array) {
-    return {
-      redirect: {
-        destination: "/printing",
-        permanent: false,
-      },
-    };
-  }
-
-  let model;
-  try {
-    model = await loadModel(key);
-  } catch (err) {
-    console.error(err);
-    return {
-      redirect: {
-        destination: "/printing",
-        permanent: false,
-      },
-    };
-  }
-
-  return {
-    props: {
-      model: model.toJSON(),
-      // I would prefer to return possibly undefined, but this crashes if you do that
-      uuid: context.query.uuid as any as string,
-    },
-  };
-};

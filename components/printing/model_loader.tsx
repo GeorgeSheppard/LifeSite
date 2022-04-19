@@ -6,6 +6,7 @@ import {
   Box3,
   Sphere,
   Mesh,
+  MeshBasicMaterial,
 } from "three";
 import { STLLoader } from "three/examples/jsm/loaders/STLLoader";
 import { ThreeMFLoader } from "three/examples/jsm/loaders/3MFLoader";
@@ -30,7 +31,7 @@ export class Loaders {
     // instead of storing on the server in the native file format could just create a Group
     // (like the code that is working) and dump it as json. It is already passed as json
     // through the prop tree so wouldn't make any difference there.
-    // "3mf": ThreeMFLoader,
+    "3mf": ThreeMFLoader,
   };
 
   private loaders: { [index: string]: IModelLoader } = {};
@@ -76,6 +77,7 @@ export const loadModel = async (key: S3Key): Promise<Group> => {
   let object: Group | BufferGeometry = await loader.parse(arrayBuffer);
 
   let geometry;
+  const material = new MeshBasicMaterial({ color: 0x207d39 });
 
   /**
    * Different loaders return different objects so need to be handled separately (thanks ThreeJS)
@@ -91,7 +93,7 @@ export const loadModel = async (key: S3Key): Promise<Group> => {
     // Note: To scale to full width of canvas use 2 / radius, want slightly smaller than that
     const reductionScale = radius ? 1.5 / radius : 1;
     geometry.scale(reductionScale, reductionScale, reductionScale);
-    const mesh = new Mesh(geometry);
+    const mesh = new Mesh(geometry, material);
     const group = new Group();
     group.add(mesh);
     return group;

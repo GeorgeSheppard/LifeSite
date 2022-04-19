@@ -54,12 +54,15 @@ export default function PreviewCard(props: IPreviewCardProps) {
   );
   const onDownload = useCallback(
     async (event: MouseEvent<SVGElement>) => {
+      event.stopPropagation();
       const link = document.createElement("a");
       link.download =
-        cardData.filename + "." + cardData.filename.split(".").pop();
-      link.href = await getS3SignedUrl(cardData.key);
+      cardData.filename + "." + cardData.key.split(".").pop();
+      const response = await fetch(await getS3SignedUrl(cardData.key))
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      link.href = url;
       link.click();
-      event.stopPropagation();
     },
     [cardData]
   );
