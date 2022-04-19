@@ -15,6 +15,7 @@ import { signIn, signOut, useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import { useCallback, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../store/hooks/hooks";
+import { CenteredComponent } from "./centered_component";
 
 // TODO: Min height in MUI is set to 64 so don't go lower than this, make it so I can though
 export const headerHeight = 65;
@@ -52,9 +53,12 @@ export default function Header(props: IHeaderProps) {
 
   return (
     <AppBar position="relative">
-      <Toolbar id="toolbar" sx={{ height: headerHeight }}>
+      <CenteredComponent>
+
+      <Toolbar id="toolbar" sx={{ height: headerHeight, maxWidth: "lg", minWidth: "sm", flexGrow: 1 }}>
         {/* TODO: Make it obvious both of these are clickable */}
         {/* TODO: Better icon */}
+
         <EmojiPeopleIcon sx={{ mr: 2 }} onClick={() => router.push("/")} />
         {/* TODO: Better name */}
         <Typography
@@ -118,8 +122,11 @@ export default function Header(props: IHeaderProps) {
             <MenuItem onClick={profile}>Profile</MenuItem>
             <MenuItem onClick={logout}>Logout</MenuItem>
           </Menu>
+
         </Box>
       </Toolbar>
+      </CenteredComponent>
+
     </AppBar>
   );
 }
