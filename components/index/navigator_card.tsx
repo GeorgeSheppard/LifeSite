@@ -78,20 +78,20 @@ export default function NavigatorCard(props: INavigatorCardProps) {
 
 export const navigatorCards: INavigatorCardProps[] = [
   {
-    title: "Plants",
-    description: "Plant management, info on my plants, and watering reminders.",
-    imageSrc: "/images/plants.jpg",
-    href: "/plants",
-  },
-  {
     title: "Recipes",
-    description: "List of recipes, with pictures, ingredients, and method.",
+    description: "My regular recipes, with ingredients, method, and search functionality.",
     imageSrc: "/images/ChilliConCarne.jpg",
     href: "/food",
   },
   {
+    title: "Plants",
+    description: "My plants, images and optimal conditions.",
+    imageSrc: "/images/plants.jpg",
+    href: "/plants",
+  },
+  {
     title: "3D Printing",
-    description: "Things I would like to print at some point.",
+    description: "Some models I have printed.",
     imageSrc: "/images/printing.jpg",
     href: "/printing",
   },
@@ -112,7 +112,7 @@ export const navigatorCards: INavigatorCardProps[] = [
 
   {
     title: "Meal Planner",
-    description: "Calendar to plan meals with, can also create shopping lists.",
+    description: "Calendar to plan meals with, and also to create shopping lists.",
     imageSrc: "/images/food.jpg",
     href: "/food/planner",
     disabled: true

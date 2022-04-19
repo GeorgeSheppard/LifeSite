@@ -30,8 +30,9 @@ export default function Home(props: any) {
             color="text.secondary"
             paragraph
           >
-            My personal website, with my projects. Some help me with my everyday
-            life, and some are just ideas that I wanted to make.
+            My work in progress personal website, with some of my projects. Some help me with my everyday
+            life, and some are just ideas that I wanted to try. The data you see are a default profile, which will be wiped
+            if you log in.
           </Typography>
         </Container>
       </Box>

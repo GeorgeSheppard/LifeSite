@@ -46,10 +46,10 @@ export default function Header(props: IHeaderProps) {
     closeDropdown();
     signOut({ callbackUrl: `http://localhost:3000/api/auth/logout` });
   }, [closeDropdown]);
-  const profile = useCallback(() => {
-    closeDropdown();
-    router.push("/profile");
-  }, [closeDropdown, router]);
+  // const profile = useCallback(() => {
+  //   closeDropdown();
+  //   router.push("/profile");
+  // }, [closeDropdown, router]);
 
   return (
     <AppBar position="relative">
@@ -57,9 +57,6 @@ export default function Header(props: IHeaderProps) {
 
       <Toolbar id="toolbar" sx={{ height: headerHeight, maxWidth: "lg", minWidth: "sm", flexGrow: 1 }}>
         {/* TODO: Make it obvious both of these are clickable */}
-        {/* TODO: Better icon */}
-
-        <EmojiPeopleIcon sx={{ mr: 2 }} onClick={() => router.push("/")} />
         {/* TODO: Better name */}
         <Typography
           variant="h6"
@@ -119,7 +116,7 @@ export default function Header(props: IHeaderProps) {
               "aria-labelledby": "basic-button",
             }}
           >
-            <MenuItem onClick={profile}>Profile</MenuItem>
+            {/* <MenuItem onClick={profile}>Profile</MenuItem> */}
             <MenuItem onClick={logout}>Logout</MenuItem>
           </Menu>
 
