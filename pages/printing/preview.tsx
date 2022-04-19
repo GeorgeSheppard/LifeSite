@@ -27,7 +27,7 @@ export default function Preview(props: IPreview) {
   const [popperOpen, setPopperOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
   const existingData = useAppSelector((store) => {
-    if (uuid.length > 0) {
+    if (uuid?.length > 0) {
       return store.printing.models[uuid];
     }
   });
