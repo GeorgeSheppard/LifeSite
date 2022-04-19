@@ -86,7 +86,7 @@ const EditUploadRecipe = () => {
         components: Object.values(componentFormData.components),
       })
     );
-    router.push("/food/recipes");
+    router.push("/food");
   }, [router, recipeData.uuid, recipeName, description, images, dispatch, componentFormData.components]);
 
   return (
@@ -144,7 +144,7 @@ const EditUploadRecipe = () => {
         </CenteredComponent>
         <ExitSaveButtons
           saveOnClick={dispatchRecipe}
-          exitOnClick={() => router.push("/food/recipes")}
+          exitOnClick={() => router.push("/food")}
           saveDisabled={false}
           buttonSx={{ flexGrow: 0.4 }}
           boxSx={{
