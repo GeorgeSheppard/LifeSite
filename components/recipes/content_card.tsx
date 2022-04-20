@@ -95,7 +95,7 @@ export const RecipeCard = (props: IRecipeCardProps) => {
           </Button>
         </DialogActions>
       </Dialog>
-      <Card className="card">
+      <Card className="cardWithHover">
         {recipe.images && <WrappedCardMedia images={recipe.images} />}
         <Accordion key="name">
           <AccordionSummary

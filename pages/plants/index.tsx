@@ -45,7 +45,7 @@ export default function Plants() {
                 minHeight: plantUuids.length === 0 ? "30vw" : "100%",
                 display: "flex",
               }}
-              className="card"
+              className="cardWithHover"
               onClick={() => setPlantSelected(uuidv4())}
             >
               <Box component="div" sx={{ flexGrow: 0.5 }} />

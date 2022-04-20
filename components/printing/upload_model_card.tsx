@@ -27,7 +27,7 @@ export default function UploadCard() {
         navigateToPreview(router, response.key);
       }}
     >
-      <Card sx={{ display: "flex", height: 150 }} className="card">
+      <Card sx={{ display: "flex", height: 150 }} className="cardWithHover">
         {uploading ? (
           <Box component="div" sx={{ width: "80%", margin: "auto" }}>
             <LinearProgress />

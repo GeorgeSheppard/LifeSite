@@ -68,7 +68,7 @@ export default function PreviewCard(props: IPreviewCardProps) {
   );
 
   return (
-    <Card className="card" sx={{ display: "flex" }} onClick={onClickToPreview}>
+    <Card className="cardWithHover" sx={{ display: "flex" }} onClick={onClickToPreview}>
       <Box component="div" sx={{ display: "flex", flexDirection: "column" }}>
         <CardContent sx={{ flex: "1 0 auto" }}>
           <Typography component="div" variant="h5">

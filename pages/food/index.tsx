@@ -98,7 +98,7 @@ const CreateNewRecipeCard = (props: ICreateNewRecipeCard) => {
           minHeight: "10vw",
           display: "flex",
         }}
-        className="card"
+        className="cardWithHover"
         onClick={uuidOnClick}
       >
         <Box component="div" sx={{ flexGrow: 0.5 }} />

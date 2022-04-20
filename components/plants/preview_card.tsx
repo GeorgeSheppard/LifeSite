@@ -40,7 +40,7 @@ export const PlantPreview = (props: IPlantPreview) => {
   return (
     <Card
       sx={{ height: "100%" }}
-      className="card"
+      className="cardWithHover"
       onClick={() => props.select?.()}
     >
       <CardActionArea>
