@@ -55,7 +55,7 @@ export const PlantPreview = (props: IPlantPreview) => {
   return (
     <>
       <Dialog open={dialogOpen} onClose={setters.turnOff}>
-        <DialogTitle>{"Delete this recipe?"}</DialogTitle>
+        <DialogTitle>{"Delete this plant?"}</DialogTitle>
         <DialogContent>
           <DialogContentText>
             Are you sure you want to delete this plant? This action cannot be

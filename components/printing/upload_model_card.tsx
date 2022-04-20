@@ -15,7 +15,7 @@ export default function UploadCard() {
   return (
     <ClickToUpload
       folder="models"
-      fileFormatsAccepted={["stl", "3mf"]}
+      fileFormatsAccepted={["stl"]}
       onStartUpload={setters.turnOn}
       onUploadError={(response: IS3ErrorUploadResponse) => {
         // TODO: Make this a user notification

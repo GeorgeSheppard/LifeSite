@@ -31,7 +31,7 @@ export class Loaders {
     // instead of storing on the server in the native file format could just create a Group
     // (like the code that is working) and dump it as json. It is already passed as json
     // through the prop tree so wouldn't make any difference there.
-    "3mf": ThreeMFLoader,
+    // "3mf": ThreeMFLoader,
   };
 
   private loaders: { [index: string]: IModelLoader } = {};
@@ -94,6 +94,8 @@ export const loadModel = async (key: S3Key): Promise<Group> => {
     const reductionScale = radius ? 1.5 / radius : 1;
     geometry.scale(reductionScale, reductionScale, reductionScale);
     const mesh = new Mesh(geometry, material);
+    const wireframeMaterial = new MeshBasicMaterial( { color: 0x000000, wireframe: true, transparent: true } );
+    mesh.add(new Mesh(geometry, wireframeMaterial))
     const group = new Group();
     group.add(mesh);
     return group;
