@@ -1,14 +1,13 @@
 import AddIcon from "@mui/icons-material/Add";
 import { Box, Card, Container, Grid } from "@mui/material";
+import OutlinedInput from "@mui/material/OutlinedInput";
+import { AnimatePresence, motion } from "framer-motion";
+import { NextRouter, useRouter } from "next/router";
 import { useCallback, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import { RecipeCard } from "../../components/recipes/content_card";
-import { RecipeUuid } from "../../store/reducers/food/recipes";
-import OutlinedInput from "@mui/material/OutlinedInput";
 import { useRecipeSearch } from "../../components/recipes/search_bar";
-import { useRouter } from "next/router";
 import { SearchChip } from "../../components/recipes/search_chip";
-import Typography from "@mui/material/Typography"
 
 const Recipes = () => {
   const router = useRouter();
@@ -31,29 +30,28 @@ const Recipes = () => {
     <main>
       <Container sx={{ py: 8 }} maxWidth="md">
         <Grid item key={"Search"}>
-          <div style={{justifyContent: "end", display: "flex"}}>
-          <SearchChip
-            label="Name"
-            keys={keys}
-            removeOrAddKey={removeOrAddKey}
-            property="name"
-          />
-          <SearchChip
-            label="Description"
-            keys={keys}
-            removeOrAddKey={removeOrAddKey}
-            property="description"
-            sx={{ ml: 1 }}
-          />
-          <SearchChip
-            label="Ingredient"
-            keys={keys}
-            removeOrAddKey={removeOrAddKey}
-            property="ingredients"
-            sx={{ ml: 1 }}
-          />
+          <div style={{ justifyContent: "end", display: "flex" }}>
+            <SearchChip
+              label="Name"
+              keys={keys}
+              removeOrAddKey={removeOrAddKey}
+              property="name"
+            />
+            <SearchChip
+              label="Description"
+              keys={keys}
+              removeOrAddKey={removeOrAddKey}
+              property="description"
+              sx={{ ml: 1 }}
+            />
+            <SearchChip
+              label="Ingredient"
+              keys={keys}
+              removeOrAddKey={removeOrAddKey}
+              property="ingredients"
+              sx={{ ml: 1 }}
+            />
           </div>
-
           <OutlinedInput
             value={searchInput}
             onChange={setSearchInput}
@@ -62,17 +60,28 @@ const Recipes = () => {
             fullWidth
           />
         </Grid>
-        <Grid container spacing={4}>
-          <CreateNewRecipeCard
-            onClick={() => router.push(`/food/${uuidv4()}`)}
-          />
+        <Grid container spacing={4} 
+        component={motion.div} layout
+        >
+          <CreateNewRecipeCard router={router} />
           {searchResults.map((uuid) => (
-            <Grid item key={uuid} xs={12} sm={6} md={4}>
-              <RecipeCard
-                uuid={uuid}
-                onEdit={() => router.push(`/food/${uuid}`)}
-              />
-            </Grid>
+            <AnimatePresence key={uuid}>
+              <Grid
+                key={uuid}
+                item
+                xs={12}
+                sm={6}
+                md={4}
+                component={motion.div}
+                animate={{ opacity: 1 }}
+                initial={{ opacity: 0 }}
+                exit={{ opacity: 0 }}
+                transition={{delay: 0.1}}
+                layout
+              >
+                <RecipeCard uuid={uuid} router={router} />
+              </Grid>
+            </AnimatePresence>
           ))}
         </Grid>
       </Container>
@@ -81,21 +90,21 @@ const Recipes = () => {
 };
 
 interface ICreateNewRecipeCard {
-  onClick: (uuid: RecipeUuid) => void;
+  router: NextRouter;
 }
 
 const CreateNewRecipeCard = (props: ICreateNewRecipeCard) => {
+  const { router } = props;
+
   const uuidOnClick = useCallback(() => {
-    const onClick = props.onClick;
-    onClick(uuidv4());
-  }, [props.onClick]);
+    router.push(`/food/${uuidv4()}`);
+  }, [router]);
 
   return (
     <Grid item key={"CreateRecipe"} xs={12} sm={6} md={4}>
       <Card
         sx={{
-          height: "100%",
-          minHeight: "10vw",
+          height: "35vw",
           display: "flex",
         }}
         className="cardWithHover"

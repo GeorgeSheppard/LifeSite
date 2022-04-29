@@ -1,58 +1,65 @@
+import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import InventoryIcon from "@mui/icons-material/Inventory";
-import { Divider, IconButton, SxProps, Theme } from "@mui/material";
+import PersonIcon from "@mui/icons-material/Person";
+import { Divider, IconButton } from "@mui/material";
 import Accordion from "@mui/material/Accordion";
 import AccordionDetails from "@mui/material/AccordionDetails";
 import AccordionSummary from "@mui/material/AccordionSummary";
 import Button from "@mui/material/Button";
 import Card from "@mui/material/Card";
-import List from "@mui/material/List";
-import ListItem from "@mui/material/ListItem";
-import ListItemText from "@mui/material/ListItemText";
-import Tooltip from "@mui/material/Tooltip";
-import Typography from "@mui/material/Typography";
-import { useAppSelector } from "../../store/hooks/hooks";
-import {
-  deleteRecipe,
-  IRecipeComponent,
-  RecipeUuid,
-} from "../../store/reducers/food/recipes";
-import { WrappedCardMedia } from "../cards/wrapped_card_media";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
-import DeleteIcon from "@mui/icons-material/Delete";
-import { useBoolean } from "../hooks/use_boolean";
-import AcUnitIcon from "@mui/icons-material/AcUnit";
+import List from "@mui/material/List";
+import ListItem from "@mui/material/ListItem";
+import ListItemText from "@mui/material/ListItemText";
+import Tooltip from "@mui/material/Tooltip";
+import Typography from "@mui/material/Typography";
+import { NextRouter } from "next/router";
+import { useCallback, useMemo } from "react";
 import { useDispatch } from "react-redux";
-import { PropsWithChildren, useCallback, useMemo } from "react";
+import { useAppSelector } from "../../store/hooks/hooks";
+import {
+  deleteRecipe,
+  IRecipeComponent,
+  RecipeUuid
+} from "../../store/reducers/food/recipes";
 import { Quantities } from "../../store/reducers/food/units";
-import PersonIcon from "@mui/icons-material/Person";
+import { WrappedCardMedia } from "../cards/wrapped_card_media";
+import { useBoolean } from "../hooks/use_boolean";
 
 export interface IRecipeCardProps {
   uuid: RecipeUuid;
-  onEdit: (uuid: RecipeUuid) => void;
+  router: NextRouter;
 }
 
 export const RecipeCard = (props: IRecipeCardProps) => {
+  const {uuid, router} = props;
+
   const dispatch = useDispatch();
-  const recipe = useAppSelector((store) => store.food.recipes[props.uuid]);
+  const recipe = useAppSelector((store) => store.food.recipes[uuid]);
   const [dialogOpen, setters] = useBoolean(false);
 
+  const onEdit = useCallback(() => {
+    router.push(`/food/${uuid}`)
+  }, [router, uuid])
+
   const deleteRecipeOnClick = useCallback(() => {
-    dispatch(deleteRecipe(props.uuid));
-  }, [dispatch, props.uuid]);
+    dispatch(deleteRecipe(uuid));
+  }, [dispatch, uuid]);
 
   const headerChildren = useMemo(() => {
-    const onEdit = props.onEdit;
     const turnOn = setters.turnOn;
 
     return (
       <>
-        <Typography fontSize={24} fontWeight={400}>{recipe.name}</Typography>
+        <Typography fontSize={24} fontWeight={400}>
+          {recipe.name}
+        </Typography>
         <div style={{ flexGrow: 1 }} />
         <IconButton
           onClick={(event) => {
@@ -60,23 +67,23 @@ export const RecipeCard = (props: IRecipeCardProps) => {
             turnOn();
           }}
           size="small"
-          sx={{ alignSelf: "center", pr: 1 }}
-          >
+          sx={{ alignSelf: "center", pr: 1, pl: 2 }}
+        >
           <DeleteIcon fontSize="small" htmlColor="#7d2020" />
         </IconButton>
         <IconButton
           onClick={(event) => {
             event?.stopPropagation();
-            onEdit(props.uuid);
+            onEdit();
           }}
           size="small"
           sx={{ alignSelf: "center", pr: 1 }}
-          >
+        >
           <EditIcon fontSize="small" htmlColor="#212121" />
         </IconButton>
       </>
     );
-  }, [recipe.name, props.onEdit, setters.turnOn, props.uuid]);
+  }, [recipe.name, onEdit, setters.turnOn]);
 
   return (
     <>
@@ -99,14 +106,20 @@ export const RecipeCard = (props: IRecipeCardProps) => {
         {recipe.images && <WrappedCardMedia images={recipe.images} />}
         <Accordion key="name">
           <AccordionSummary
-            expandIcon={<ExpandMoreIcon htmlColor="#212121" />}
+            expandIcon={
+              recipe.description?.length > 0 && (
+                <ExpandMoreIcon htmlColor="#212121" />
+              )
+            }
             sx={{ display: "flex" }}
           >
             {headerChildren}
           </AccordionSummary>
-          <AccordionDetails>
-            <Typography>{recipe.description}</Typography>
-          </AccordionDetails>
+          {recipe.description?.length > 0 && (
+            <AccordionDetails>
+              <Typography>{recipe.description}</Typography>
+            </AccordionDetails>
+          )}
         </Accordion>
         {recipe.components.map((component) => (
           <ComponentContent key={component.name} component={component} />
@@ -129,7 +142,7 @@ const ComponentContentInstructionsMethod = (
     <>
       {component.ingredients.length > 0 && (
         <>
-          <ListItem key="ingredients" sx={{pb: 2, pl: 1}}>
+          <ListItem key="ingredients" sx={{ pb: 2, pl: 1 }}>
             <ListItemText
               primary="Ingredients"
               primaryTypographyProps={{ fontSize: "16px", fontWeight: 550 }}
@@ -137,20 +150,21 @@ const ComponentContentInstructionsMethod = (
           </ListItem>
           {component.ingredients.map(({ name, quantity }) => {
             return (
-            <ListItem key={name} sx={{p: 0, pl: 3}}>
-              <ListItemText
-                primary={
-                  "- " + Quantities.toStringWithIngredient(name, quantity)
-                }
-              />
-            </ListItem>
-          )})}
-        {component.instructions.length > 0 && <Divider sx={{pt: 5}} />}
+              <ListItem key={name} sx={{ p: 0, pl: 3 }}>
+                <ListItemText
+                  primary={
+                    "- " + Quantities.toStringWithIngredient(name, quantity)
+                  }
+                />
+              </ListItem>
+            );
+          })}
+          {component.instructions.length > 0 && <Divider sx={{ pt: 5 }} />}
         </>
       )}
       {component.instructions.length > 0 && (
         <>
-          <ListItem key="method" sx={{pb: 2, pl: 1, pt: 5}}>
+          <ListItem key="method" sx={{ pb: 2, pl: 1, pt: 5 }}>
             <ListItemText
               primary="Method"
               primaryTypographyProps={{ fontSize: "16px", fontWeight: 550 }}
@@ -163,7 +177,7 @@ const ComponentContentInstructionsMethod = (
             }
             visibleText += text;
             return (
-              <ListItem key={text} sx={{p: 0, pl: 3}}>
+              <ListItem key={text} sx={{ p: 0, pl: 3 }}>
                 <ListItemText primary={visibleText} />
               </ListItem>
             );
@@ -191,7 +205,13 @@ const ComponentContent = (props: IComponentContentProps) => {
         {component.servings && component.servings > 1 && (
           <Tooltip title={`Serves ${component.servings}`}>
             {/* div instead of fragment as tooltip doesn't work with fragment */}
-            <div style={{ display: "flex", alignItems: "center", paddingRight: 6.5 }}>
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                paddingRight: 6.5,
+              }}
+            >
               <Typography>{component.servings}</Typography>
               <PersonIcon sx={{ paddingRight: 0.5 }} />
             </div>

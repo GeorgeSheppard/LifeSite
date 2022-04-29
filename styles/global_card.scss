@@ -12,3 +12,14 @@
     box-shadow: 0 0 70px -12.125px rgba(0, 0, 0, 0.3), 0 0 0 3px rgba(32, 125, 57, 0.3);
   }
 }
+
+html {
+  overflow-y: scroll;
+}
+
+@supports (overflow-y: overlay) {
+  html {
+    overflow-y: overlay;
+    scrollbar-gutter: auto;
+  }
+}
