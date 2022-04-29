@@ -60,17 +60,18 @@ export const RecipeCard = (props: IRecipeCardProps) => {
         <Typography fontSize={24} fontWeight={400}>
           {recipe.name}
         </Typography>
-        <div style={{ flexGrow: 1 }} />
+        <div style={{ flexGrow: 1, paddingRight: 2 }} />
         <IconButton
           onClick={(event) => {
             event?.stopPropagation();
             turnOn();
           }}
           size="small"
-          sx={{ alignSelf: "center", pr: 1, pl: 2 }}
+          sx={{ alignSelf: "center" }}
         >
           <DeleteIcon fontSize="small" htmlColor="#7d2020" />
         </IconButton>
+        <div style={{ paddingLeft: 2 }} />
         <IconButton
           onClick={(event) => {
             event?.stopPropagation();

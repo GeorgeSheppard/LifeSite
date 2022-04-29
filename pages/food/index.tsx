@@ -36,20 +36,21 @@ const Recipes = () => {
               keys={keys}
               removeOrAddKey={removeOrAddKey}
               property="name"
+              sx={{ boxSizing: "border-box", width: 60 }}
             />
             <SearchChip
               label="Description"
               keys={keys}
               removeOrAddKey={removeOrAddKey}
               property="description"
-              sx={{ ml: 1 }}
+              sx={{ ml: 1, boxSizing: "border-box", width: 90 }}
             />
             <SearchChip
               label="Ingredient"
               keys={keys}
               removeOrAddKey={removeOrAddKey}
               property="ingredients"
-              sx={{ ml: 1 }}
+              sx={{ ml: 1, boxSizing: "border-box", width: 90 }}
             />
           </div>
           <OutlinedInput
@@ -76,7 +77,7 @@ const Recipes = () => {
                 animate={{ opacity: 1 }}
                 initial={{ opacity: 0 }}
                 exit={{ opacity: 0 }}
-                transition={{delay: 0.1}}
+                transition={{ delay: 0.1, duration: 0.5 }}
                 layout
               >
                 <RecipeCard uuid={uuid} router={router} />
@@ -104,7 +105,7 @@ const CreateNewRecipeCard = (props: ICreateNewRecipeCard) => {
     <Grid item key={"CreateRecipe"} xs={12} sm={6} md={4}>
       <Card
         sx={{
-          height: "35vw",
+          height: "15vw",
           display: "flex",
         }}
         className="cardWithHover"
