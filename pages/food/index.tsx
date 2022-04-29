@@ -105,7 +105,9 @@ const CreateNewRecipeCard = (props: ICreateNewRecipeCard) => {
     <Grid item key={"CreateRecipe"} xs={12} sm={6} md={4}>
       <Card
         sx={{
-          height: "15vw",
+          height: "100%",
+          minHeight: "30vh",
+          maxHeight: "70vh",
           display: "flex",
         }}
         className="cardWithHover"
