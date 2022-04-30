@@ -1,10 +1,21 @@
-import { useMemo, useState, useCallback, ChangeEvent } from "react";
+import { useMemo, useState, useCallback, ChangeEvent, useEffect } from "react";
 import { useAppSelector } from "../../store/hooks/hooks";
 import { RecipeUuid } from "../../store/reducers/food/recipes";
 import { useQuerySearch } from "./search";
 
+export function useDebounce<T>(initialState: T, callback: () => T, time: number) {
+  const [debouncedValue, setDebouncedValue] = useState<T>(initialState)
+
+  useEffect(() => {
+    const timer = setTimeout(() => setDebouncedValue(callback()), time)
+    return () => clearTimeout(timer);
+  }, [callback, time])
+
+  return debouncedValue;
+}
+
 export const useRecipeSearch = (keys: Set<string>): {
-  searchResults: RecipeUuid[];
+  searchResults: {uuid: RecipeUuid, visible: boolean}[];
   setSearchInput: (event: ChangeEvent<HTMLInputElement>) => void;
   searchInput: string;
 } => {
@@ -26,15 +37,18 @@ export const useRecipeSearch = (keys: Set<string>): {
   }), [keys])
   const { search } = useQuerySearch(searchableRecipes, options);
   const [searchInput, setSearchInput] = useState("");
+  const [defaultSearchResults] = useState(() => new Set(Object.keys(recipes)))
 
-  const searchResults = useMemo(() => {
+  const getSearchResults = useCallback(() => {
     if (searchInput.length === 0) {
-      return Object.keys(recipes);
+      return defaultSearchResults;
     }
 
     const results = search(searchInput);
-    return results.map((result) => result.item.uuid);
-  }, [search, searchInput, recipes]);
+    return new Set(results.map((result) => result.item.uuid));
+  }, [search, searchInput, defaultSearchResults]);
+
+  const searchResults = useDebounce(defaultSearchResults, getSearchResults, 300);
 
   const setSearchInputCallback = useCallback(
     (event: ChangeEvent<HTMLInputElement>) => {
@@ -43,5 +57,16 @@ export const useRecipeSearch = (keys: Set<string>): {
     [setSearchInput]
   );
 
-  return { searchResults, searchInput, setSearchInput: setSearchInputCallback };
+  const uuidsWithVisibility = useMemo(() => {
+    const visibleRecipes = Array.from(searchResults).map((result) => ({
+      uuid: result,
+      visible: true,
+    }));
+    const invisibleRecipes = Object.keys(recipes)
+      .filter((uuid) => !searchResults.has(uuid))
+      .map((result) => ({ uuid: result, visible: false }));
+    return [...visibleRecipes, ...invisibleRecipes];
+  }, [searchResults, recipes]);
+
+  return { searchResults: uuidsWithVisibility, searchInput, setSearchInput: setSearchInputCallback };
 };

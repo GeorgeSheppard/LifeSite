@@ -20,7 +20,7 @@ import ListItemText from "@mui/material/ListItemText";
 import Tooltip from "@mui/material/Tooltip";
 import Typography from "@mui/material/Typography";
 import { NextRouter } from "next/router";
-import { useCallback, useMemo } from "react";
+import { memo, useCallback, useMemo } from "react";
 import { useDispatch } from "react-redux";
 import { useAppSelector } from "../../store/hooks/hooks";
 import {
@@ -35,9 +35,10 @@ import { useBoolean } from "../hooks/use_boolean";
 export interface IRecipeCardProps {
   uuid: RecipeUuid;
   router: NextRouter;
+  visible: boolean;
 }
 
-export const RecipeCard = (props: IRecipeCardProps) => {
+export const RecipeCard = memo(function RenderRecipeCard(props: IRecipeCardProps) {
   const {uuid, router} = props;
 
   const dispatch = useDispatch();
@@ -103,7 +104,7 @@ export const RecipeCard = (props: IRecipeCardProps) => {
           </Button>
         </DialogActions>
       </Dialog>
-      <Card className="cardWithHover">
+      <Card className="cardWithHover" sx={{opacity: props.visible ? 1 : 0}}>
         {recipe.images && <WrappedCardMedia images={recipe.images} />}
         <Accordion key="name">
           <AccordionSummary
@@ -128,7 +129,7 @@ export const RecipeCard = (props: IRecipeCardProps) => {
       </Card>
     </>
   );
-};
+});
 
 export interface IComponentContentInstructionsMethod {
   component: IRecipeComponent;
