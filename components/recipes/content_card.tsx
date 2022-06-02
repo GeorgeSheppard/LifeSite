@@ -21,12 +21,13 @@ import Tooltip from "@mui/material/Tooltip";
 import Typography from "@mui/material/Typography";
 import { NextRouter } from "next/router";
 import { memo, useCallback, useMemo } from "react";
+import { useDrag } from "react-dnd";
 import { useDispatch } from "react-redux";
 import { useAppSelector } from "../../store/hooks/hooks";
 import {
   deleteRecipe,
   IRecipeComponent,
-  RecipeUuid
+  RecipeUuid,
 } from "../../store/reducers/food/recipes";
 import { Quantities } from "../../store/reducers/food/units";
 import { WrappedCardMedia } from "../cards/wrapped_card_media";
@@ -38,29 +39,46 @@ export interface IRecipeCardProps {
   visible: boolean;
 }
 
-export const RecipeCard = memo(function RenderRecipeCard(props: IRecipeCardProps) {
-  const {uuid, router} = props;
+export const RecipeCard = memo(function RenderRecipeCard(
+  props: IRecipeCardProps
+) {
+  const { uuid, router } = props;
 
   const dispatch = useDispatch();
   const recipe = useAppSelector((store) => store.food.recipes[uuid]);
   const [dialogOpen, setters] = useBoolean(false);
 
   const onEdit = useCallback(() => {
-    router.push(`/food/${uuid}`)
-  }, [router, uuid])
+    router.push(`/food/${uuid}`);
+  }, [router, uuid]);
 
   const deleteRecipeOnClick = useCallback(() => {
     dispatch(deleteRecipe(uuid));
   }, [dispatch, uuid]);
+
+  const [{ isDragging }, drag, preview] = useDrag(
+    () => ({
+      type: "recipe",
+      item: { uuid },
+      collect: (monitor) => {
+        return {
+          isDragging: !!monitor.isDragging(),
+        };
+      },
+    })
+  );
 
   const headerChildren = useMemo(() => {
     const turnOn = setters.turnOn;
 
     return (
       <>
-        <Typography fontSize={24} fontWeight={400}>
-          {recipe.name}
-        </Typography>
+          <Typography
+            fontSize={24}
+            fontWeight={400}
+          >
+            {recipe.name}
+          </Typography>
         <div style={{ flexGrow: 1, paddingRight: 2 }} />
         <IconButton
           onClick={(event) => {
@@ -104,7 +122,13 @@ export const RecipeCard = memo(function RenderRecipeCard(props: IRecipeCardProps
           </Button>
         </DialogActions>
       </Dialog>
-      <Card className="cardWithHover" sx={{opacity: props.visible ? 1 : 0}}>
+      {/* This removes the drag and drop preview */}
+      <p ref={preview} style={{display: "none"}}></p>
+      <Card
+        className="cardWithHover"
+        sx={{ opacity: !props.visible ? 0 : isDragging ? 0.5 : 1 }}
+        ref={drag}
+      >
         {recipe.images && <WrappedCardMedia images={recipe.images} />}
         <Accordion key="name">
           <AccordionSummary

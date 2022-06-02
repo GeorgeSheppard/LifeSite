@@ -5,10 +5,12 @@ import { motion } from "framer-motion";
 import { NextRouter, useRouter } from "next/router";
 import { memo, useCallback, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
+import { headerHeight } from "../../components/core/header";
 import { RecipeCard } from "../../components/recipes/content_card";
 import { useRecipeSearch } from "../../components/recipes/search_bar";
 import { SearchChips } from "../../components/recipes/search_chip";
 import { RecipeUuid } from "../../store/reducers/food/recipes";
+import MealPlanner from "../../components/recipes/planner";
 
 const Recipes = () => {
   const [keys, setKeys] = useState(() => new Set(["name"]));
@@ -16,18 +18,51 @@ const Recipes = () => {
 
   return (
     <main>
-      <Container sx={{ py: 8 }} maxWidth="md">
-        <Grid item key={"Search"}>
-          <SearchChips keys={keys} setKeys={setKeys} />
-          <OutlinedInput
-            value={searchInput}
-            onChange={setSearchInput}
-            sx={{ marginBottom: 3, mt: 1 }}
-            placeholder="Search"
-            fullWidth
-          />
-        </Grid>
-        <RecipeGrid searchResults={searchResults} />
+      <Container sx={{ py: 8 }} maxWidth="lg">
+        <div style={{ display: "flex", flexDirection: "row" }}>
+          <Box component="div">
+            <Grid item key={"Search"}>
+              <SearchChips keys={keys} setKeys={setKeys} />
+              <OutlinedInput
+                value={searchInput}
+                onChange={setSearchInput}
+                sx={{ marginBottom: 3, mt: 1 }}
+                placeholder="Search"
+                fullWidth
+              />
+            </Grid>
+            <RecipeGrid searchResults={searchResults} />
+          </Box>
+          <Box
+            sx={{
+              display: {
+                xs: "none",
+                sm: "none",
+                md: "none",
+                lg: "block",
+                xl: "block",
+              },
+              pl: 3,
+            }}
+            component="div"
+          >
+            <div
+              style={{
+                flexGrow: 1,
+                width: 200,
+                height: `calc(100vh - 64px - ${headerHeight}px - 20px)`,
+                position: "sticky",
+                top: 0,
+                overflowY: "scroll",
+                // TODO: Border of cards get cut off without this
+                paddingTop: 3,
+                paddingBottom: 3,
+              }}
+            >
+              <MealPlanner />
+            </div>
+          </Box>
+        </div>
       </Container>
     </main>
   );

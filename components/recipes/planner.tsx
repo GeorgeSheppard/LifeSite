@@ -1,4 +1,4 @@
-import { CalendarRow } from "../../components/recipes/dnd_calendar"
+import { CalendarRow } from "./dnd_calendar"
 
 const Planner = () => {
   return <CalendarRow />
