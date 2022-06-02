@@ -1,8 +1,9 @@
 const path = require("path");
 const { PHASE_DEVELOPMENT_SERVER } = require("next/constants");
+const withTM = require('next-transpile-modules')(['react-dnd'])
 
 /** @type {import('next').NextConfig} */
-module.exports = (phase) => {
+module.exports = withTM((phase) => {
   const envVariables = {
     ENV_LOGIN_LOGOUT_REDIRECT_URL: process.env.ENV_LOGIN_LOGOUT_REDIRECT_URL,
     ENV_AWS_S3_REGION: process.env.ENV_AWS_S3_REGION,
@@ -38,4 +39,4 @@ module.exports = (phase) => {
     },
     env: envVariables,
   };
-};
+});

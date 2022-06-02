@@ -18,7 +18,7 @@ const Recipes = () => {
 
   return (
     <main>
-      <Container sx={{ py: 8 }} maxWidth="lg">
+      <Container sx={{ py: 8 }} maxWidth="xl">
         <div style={{ display: "flex", flexDirection: "row" }}>
           <Box component="div">
             <Grid item key={"Search"}>
@@ -43,13 +43,14 @@ const Recipes = () => {
                 xl: "block",
               },
               pl: 3,
+              flexGrow: 1
             }}
             component="div"
           >
             <div
               style={{
                 flexGrow: 1,
-                width: 200,
+                minWidth: 100,
                 height: `calc(100vh - 64px - ${headerHeight}px - 20px)`,
                 position: "sticky",
                 top: 0,

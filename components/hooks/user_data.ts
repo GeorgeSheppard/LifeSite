@@ -12,6 +12,7 @@ import { AwsS3Client } from "../aws/s3_client";
 import { printingEmptyState } from "../../store/reducers/printing";
 import { plantsEmptyState } from "../../store/reducers/plants";
 import { foodEmptyState } from "../../store/reducers/food/recipes";
+import { mealPlanEmptyState } from "../../store/reducers/food/meal_plan"
 
 export interface IUserDataReturn {
   uploading: boolean;
@@ -75,8 +76,9 @@ export const useUserData = (): IUserDataReturn => {
               user: userEmptyState,
               printing: printingEmptyState,
               plants: plantsEmptyState,
-              food: foodEmptyState
-            }
+              food: foodEmptyState,
+              mealPlan: mealPlanEmptyState
+            } as IFullStoreState
           }
   
   

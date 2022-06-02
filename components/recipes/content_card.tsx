@@ -77,7 +77,7 @@ export const RecipeCard = memo(function RenderRecipeCard(
             fontSize={24}
             fontWeight={400}
           >
-            {recipe.name}
+            {recipe?.name}
           </Typography>
         <div style={{ flexGrow: 1, paddingRight: 2 }} />
         <IconButton
@@ -103,7 +103,11 @@ export const RecipeCard = memo(function RenderRecipeCard(
         </IconButton>
       </>
     );
-  }, [recipe.name, onEdit, setters.turnOn]);
+  }, [recipe?.name, onEdit, setters.turnOn]);
+
+  if (!recipe) {
+    return null;
+  }
 
   return (
     <>
