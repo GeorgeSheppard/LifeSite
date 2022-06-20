@@ -30,7 +30,6 @@ export interface IHeaderProps {
 export default function Header(props: IHeaderProps) {
   const session = useSession();
   const router = useRouter();
-  const dispatch = useAppDispatch();
 
   const [anchorEl, setAnchorEl] = useState(null);
   const openDropdown = useCallback(
@@ -46,10 +45,6 @@ export default function Header(props: IHeaderProps) {
     closeDropdown();
     signOut({ callbackUrl: `http://localhost:3000/api/auth/logout` });
   }, [closeDropdown]);
-  // const profile = useCallback(() => {
-  //   closeDropdown();
-  //   router.push("/profile");
-  // }, [closeDropdown, router]);
 
   return (
     <AppBar position="relative">

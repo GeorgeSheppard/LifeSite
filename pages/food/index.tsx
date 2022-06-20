@@ -16,11 +16,13 @@ import { DateString } from "../../store/reducers/food/meal_plan";
 import CheckBoxIcon from '@mui/icons-material/CheckBox';
 import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
 import { useAppSelector } from "../../store/hooks/hooks";
+import { createShoppingList } from '../../components/recipes/shopping_list_creator';
 
 const Recipes = () => {
   const [keys, setKeys] = useState(() => new Set(["name"]));
   const { searchInput, setSearchInput, searchResults } = useRecipeSearch(keys);
-  const mealPlan = useAppSelector(store => store.mealPlan)
+  const mealPlan = useAppSelector(store => store.mealPlan.plan)
+  const recipes = useAppSelector(store => store.food.recipes)
   const [selected, setSelected] = useState<Set<DateString>>(() => new Set());
   const allSelected = selected.size === Object.keys(mealPlan).length;
 
@@ -87,6 +89,19 @@ const Recipes = () => {
               <Button
                 variant="outlined"
                 fullWidth
+                onClick={() => {
+                  const meals = Object.keys(mealPlan).map(day => {
+                    if (selected.has(day)) {
+                      return mealPlan[day]
+                    } else {
+                      return []
+                    }
+                  });
+                  const text = createShoppingList(recipes, meals);
+                  if (text) {
+                    navigator.clipboard.writeText(text)
+                  }
+                }}
                 >
                 Create shopping list
               </Button>
@@ -96,7 +111,7 @@ const Recipes = () => {
                   height: "100vh",
                 }}
               >
-                <Planner selected={selected} setSelected={setSelected} mealPlan={mealPlan} />
+                <Planner selected={selected} setSelected={setSelected} />
               </div>
             </div>
           </Box>

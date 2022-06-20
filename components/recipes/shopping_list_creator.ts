@@ -23,5 +23,5 @@ export function createShoppingList(recipes: { [key: RecipeUuid]: IRecipe }, meal
     })
   })
 
-  return 3;
+  return "here is a recipe"
 }

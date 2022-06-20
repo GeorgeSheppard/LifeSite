@@ -31,12 +31,14 @@ import {
 export interface ICalendarRowProps {
   selected: Set<DateString>;
   setSelected: Dispatch<SetStateAction<Set<DateString>>>;
-  mealPlan: IMealPlanState;
 }
 
 export const Planner = (props: ICalendarRowProps) => {
-  const { setSelected, selected, mealPlan } = props;
+  const { setSelected, selected } = props;
   const [lastSelected, setLastSelected] = useState<DateString | null>(null);
+  const mealPlan = useAppSelector(
+    (store) => store.mealPlan.plan
+  );
 
   // Toggles selection onClick
   const onClick = useCallback(
@@ -83,7 +85,7 @@ export const Planner = (props: ICalendarRowProps) => {
       marginBottom={0}
       flexGrow={1}
     >
-      {Object.entries(mealPlan).map(([day, meals], index) => {
+      {Object.entries(mealPlan).map(([day], index) => {
         return (
           // TODO: CSS selector instead of this fast hack
           <Grid
@@ -94,7 +96,6 @@ export const Planner = (props: ICalendarRowProps) => {
           >
             <DroppableCard
               day={day}
-              meals={meals}
               selected={selected.has(day)}
               onClick={onClick}
             />
@@ -107,11 +108,11 @@ export const Planner = (props: ICalendarRowProps) => {
 
 const DroppableCard = (props: {
   day: DateString;
-  meals: IDailyMealPlan | undefined;
   selected: boolean;
   onClick: (day: DateString) => (event: MouseEvent<HTMLDivElement>) => void;
 }) => {
-  const { day, meals, selected, onClick } = props;
+  const { day, selected, onClick } = props;
+  const meals = useAppSelector(store => store.mealPlan.plan[day])
   const dispatch = useDispatch();
 
   const toggleOnClick = useCallback(

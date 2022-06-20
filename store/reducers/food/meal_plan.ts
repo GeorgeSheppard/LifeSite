@@ -6,7 +6,7 @@ import { RecipeUuid } from './recipes';
 export type DateString = string;
 
 export interface IMealPlanState {
-  [index: DateString]: IDailyMealPlan;
+  plan: { [index: DateString]: IDailyMealPlan };
 }
 
 export type IDailyMealPlan = IMealPlanItem[];
@@ -35,11 +35,13 @@ function currentDate(): Date {
   return new Date(time);
 }
 
-export const mealPlanEmptyState: IMealPlanState = createDates(currentDate(), 7, 14).reduce((previous, current) => ({
-  ...previous, [current]: []
-}), {})
+export const mealPlanEmptyState: IMealPlanState = {
+  plan: createDates(currentDate(), 7, 14).reduce((previous, current) => ({
+    ...previous, [current]: []
+  }), {})
+}
 
-const initialState: IMealPlanState = mealPlanEmptyState
+const initialState = mealPlanEmptyState
 
 export const mealPlanSlice = createSlice({
   name: "mealPlanner",
@@ -47,53 +49,50 @@ export const mealPlanSlice = createSlice({
   reducers: {
     addOrUpdatePlan: (state, action: PayloadAction<{ date: DateString } & { uuid: RecipeUuid, servingsIncrease: number }>) => {
       const { date, uuid, servingsIncrease } = action.payload;
-      if (!state[date]) {
-        return state;
-      }
-
-      const index = state[date].findIndex(plan => plan.uuid === uuid)
-      // Immer wasn't managing to figure out the mutations so sometimes the UI wasn't
-      // updating, hence why I am using the immutable version of the reducer here
-      const newState = clone(state)
-      if (index > -1) {
-        const newServings = newState[date][index].servings + servingsIncrease;
-        if (newServings <= 0) {
-          newState[date].splice(index, 1);
+      if (state.plan[date]) {
+        const index = state.plan[date].findIndex(plan => plan.uuid === uuid)
+        if (index > -1) {
+          const newServings = state.plan[date][index].servings + servingsIncrease;
+          if (newServings <= 0) {
+            state.plan[date].splice(index, 1);
+          } else {
+            state.plan[date][index] = {
+              uuid,
+              servings: newServings
+            };
+          }
         } else {
-          newState[date][index] = {
+          state.plan[date].push({
             uuid,
-            servings: newServings
-          };
+            servings: 1
+          });
         }
-      } else {
-        newState[date].push({
-          uuid,
-          servings: 1
-        });
       }
-
-      return newState;
     },
     removeFromPlan: (state, action: PayloadAction<{ date: DateString } & { uuid: RecipeUuid }>) => {
       const { date, uuid } = action.payload;
-      if (state[date]) {
-        const index = state[date].findIndex(plan => plan.uuid === uuid)
-        if (index > -1) {
-          state[date].splice(index, 1);
-        }
+      const newPlan = clone(state.plan);
+
+      if (!newPlan[date]) {
+        return state;
       }
+
+      const index = newPlan[date].findIndex(plan => plan.uuid === uuid)
+      if (index > -1) {
+        newPlan[date].splice(index, 1);
+      }
+
+      return { ...state, plan: newPlan };
     }
   },
   extraReducers: {
     "user/login": (state, action: PayloadAction<IFullStoreState>) => {
-      const mealPlan = createDates(currentDate(), 7, 14).reduce((previous, current) => ({
-        ...previous, [current]: []
-      }), mealPlanEmptyState)
+      const mealPlan = clone(mealPlanEmptyState)
 
       if (action.payload.mealPlan) {
         for (const [date, plan] of Object.entries(action.payload.mealPlan)) {
           if (date in mealPlan) {
-            mealPlan[date] = plan;
+            mealPlan.plan[date] = plan;
           }
         }
       }
