@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import clone from "just-clone";
 import { IFullStoreState } from "../../store";
 import { RecipeUuid } from './recipes';
 
@@ -44,39 +45,42 @@ export const mealPlanSlice = createSlice({
   name: "mealPlanner",
   initialState,
   reducers: {
-    addOrUpdatePlan: (state, action: PayloadAction<{date: DateString} & {uuid: RecipeUuid, servingsIncrease: number}>) => {
+    addOrUpdatePlan: (state, action: PayloadAction<{ date: DateString } & { uuid: RecipeUuid, servingsIncrease: number }>) => {
       const { date, uuid, servingsIncrease } = action.payload;
       if (!state[date]) {
-        return;
+        return state;
       }
-      
+
       const index = state[date].findIndex(plan => plan.uuid === uuid)
+      // Immer wasn't managing to figure out the mutations so sometimes the UI wasn't
+      // updating, hence why I am using the immutable version of the reducer here
+      const newState = clone(state)
       if (index > -1) {
-        const newServings = state[date][index].servings + servingsIncrease;
+        const newServings = newState[date][index].servings + servingsIncrease;
         if (newServings <= 0) {
-          state[date].splice(index, 1);
+          newState[date].splice(index, 1);
         } else {
-          state[date][index] = {
+          newState[date][index] = {
             uuid,
             servings: newServings
           };
         }
       } else {
-        state[date].push({
+        newState[date].push({
           uuid,
           servings: 1
         });
       }
-    },
-    removeFromPlan: (state, action: PayloadAction<{date: DateString} & {uuid: RecipeUuid }>) => {
-      const { date, uuid } = action.payload;
-      if (!state[date]) {
-        return;
-      }
 
-      const index = state[date].findIndex(plan => plan.uuid === uuid)
-      if (index > -1) {
-        state[date].splice(index, 1);
+      return newState;
+    },
+    removeFromPlan: (state, action: PayloadAction<{ date: DateString } & { uuid: RecipeUuid }>) => {
+      const { date, uuid } = action.payload;
+      if (state[date]) {
+        const index = state[date].findIndex(plan => plan.uuid === uuid)
+        if (index > -1) {
+          state[date].splice(index, 1);
+        }
       }
     }
   },
@@ -93,7 +97,7 @@ export const mealPlanSlice = createSlice({
           }
         }
       }
-      
+
       return mealPlan;
     },
     "user/logout": (state) => {

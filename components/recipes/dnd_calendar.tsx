@@ -12,6 +12,7 @@ import {
   DateString,
   IDailyMealPlan,
   IMealPlanItem,
+  IMealPlanState,
 } from "../../store/reducers/food/meal_plan";
 import { useDispatch } from "react-redux";
 import Button from "@mui/material/Button";
@@ -19,12 +20,57 @@ import ButtonGroup from "@mui/material/ButtonGroup";
 import PersonIcon from "@mui/icons-material/Person";
 import Tooltip from "@mui/material/Tooltip";
 import DeleteIcon from "@mui/icons-material/Delete";
+import {
+  Dispatch,
+  MouseEvent,
+  SetStateAction,
+  useCallback,
+  useState,
+} from "react";
 
+export interface ICalendarRowProps {
+  selected: Set<DateString>;
+  setSelected: Dispatch<SetStateAction<Set<DateString>>>;
+  mealPlan: IMealPlanState;
+}
 
-export interface ICalendarRowProps {}
+export const Planner = (props: ICalendarRowProps) => {
+  const { setSelected, selected, mealPlan } = props;
+  const [lastSelected, setLastSelected] = useState<DateString | null>(null);
 
-export const CalendarRow = (props: ICalendarRowProps) => {
-  const mealPlan = useAppSelector((store) => store.mealPlan);
+  // Toggles selection onClick
+  const onClick = useCallback(
+    (day: DateString) => (event: MouseEvent<HTMLDivElement>) => {
+      setSelected((prevSelected) => {
+        const newSelection = new Set(prevSelected);
+        if (event.shiftKey) {
+          event.preventDefault();
+          const dates = Object.keys(mealPlan);
+          if (lastSelected) {
+            const start = dates.indexOf(lastSelected);
+            if (lastSelected !== day) {
+              for (const date of dates.slice(start)) {
+                newSelection.add(date);
+                if (date === day) {
+                  break;
+                }
+              }
+            }
+          }
+        } else {
+          if (newSelection.has(day)) {
+            newSelection.delete(day);
+          } else {
+            newSelection.add(day);
+          }
+        }
+
+        setLastSelected(day);
+        return newSelection;
+      });
+    },
+    [setSelected, lastSelected, mealPlan]
+  );
 
   return (
     <Grid
@@ -33,12 +79,25 @@ export const CalendarRow = (props: ICalendarRowProps) => {
       spacing={2}
       paddingLeft={2}
       paddingRight={2}
+      marginTop={0}
+      marginBottom={0}
       flexGrow={1}
     >
-      {Object.entries(mealPlan).map(([day, meals]) => {
+      {Object.entries(mealPlan).map(([day, meals], index) => {
         return (
-          <Grid item columns={1} key={day}>
-            <DroppableCard day={day} meals={meals} />
+          // TODO: CSS selector instead of this fast hack
+          <Grid
+            item
+            columns={1}
+            key={day}
+            style={{ paddingTop: index === 0 ? 0 : 16 }}
+          >
+            <DroppableCard
+              day={day}
+              meals={meals}
+              selected={selected.has(day)}
+              onClick={onClick}
+            />
           </Grid>
         );
       })}
@@ -49,9 +108,18 @@ export const CalendarRow = (props: ICalendarRowProps) => {
 const DroppableCard = (props: {
   day: DateString;
   meals: IDailyMealPlan | undefined;
+  selected: boolean;
+  onClick: (day: DateString) => (event: MouseEvent<HTMLDivElement>) => void;
 }) => {
-  const { day, meals } = props;
+  const { day, meals, selected, onClick } = props;
   const dispatch = useDispatch();
+
+  const toggleOnClick = useCallback(
+    (event: MouseEvent<HTMLDivElement>) => {
+      onClick(day)(event);
+    },
+    [onClick, day]
+  );
 
   const [collected, drop] = useDrop(
     () => ({
@@ -61,7 +129,7 @@ const DroppableCard = (props: {
           addOrUpdatePlan({
             date: day,
             uuid: item.uuid,
-            servingsIncrease: 1
+            servingsIncrease: 1,
           })
         );
       },
@@ -73,13 +141,13 @@ const DroppableCard = (props: {
   );
 
   let className = "card";
-  if (collected.isOver) {
+  if (collected.isOver || selected) {
     className += " hoveredBorder";
   }
 
   return (
-    <Card className={className} ref={drop}>
-      <CardHeader title={day} />
+    <Card className={className} ref={drop} onClick={toggleOnClick}>
+      <CardHeader title={day} className="noSelect" />
       <CardContent>
         <div style={{ minHeight: 30, width: 300, flexGrow: 1 }}>
           {meals &&
@@ -101,7 +169,11 @@ const RecipeName = ({
 }) => {
   const storedMeal = useAppSelector((store) => store.food.recipes[meal.uuid]);
   const dispatch = useAppDispatch();
-  
+
+  if (!storedMeal) {
+    return null;
+  }
+
   return (
     <div style={{ display: "flex", justifyContent: "space-between" }}>
       <p>{storedMeal.name}</p>
@@ -113,7 +185,7 @@ const RecipeName = ({
               display: "flex",
               alignItems: "center",
               paddingRight: 6.5,
-              marginLeft: 15
+              marginLeft: 15,
             }}
           >
             <Typography>{meal.servings}</Typography>
@@ -121,29 +193,49 @@ const RecipeName = ({
           </div>
         </Tooltip>
         <ButtonGroup variant="outlined" sx={{ height: 25 }}>
-          <Button onClick={() => {
-            dispatch(
-              addOrUpdatePlan({
-                date: day,
-                uuid: meal.uuid,
-                servingsIncrease: -1
-              })
-            );
-          }}>-</Button>
-          <Button onClick={() => {
-            dispatch(
-              addOrUpdatePlan({
-                date: day,
-                uuid: meal.uuid,
-                servingsIncrease: 1
-              })
-            );
-          }}>+</Button>
+          <Button
+            onClick={(event) => {
+              event.preventDefault();
+              dispatch(
+                addOrUpdatePlan({
+                  date: day,
+                  uuid: meal.uuid,
+                  servingsIncrease: -1,
+                })
+              );
+            }}
+          >
+            -
+          </Button>
+          <Button
+            onClick={(event) => {
+              event.preventDefault();
+              dispatch(
+                addOrUpdatePlan({
+                  date: day,
+                  uuid: meal.uuid,
+                  servingsIncrease: 1,
+                })
+              );
+            }}
+          >
+            +
+          </Button>
         </ButtonGroup>
-        <DeleteIcon onClick={() => dispatch(removeFromPlan({
-          date: day,
-          uuid: meal.uuid
-        }))} fontSize="small" htmlColor="#7d2020" sx={{ ml: 2}} />
+        <DeleteIcon
+          onClick={(event) => {
+            event.preventDefault();
+            dispatch(
+              removeFromPlan({
+                date: day,
+                uuid: meal.uuid,
+              })
+            );
+          }}
+          fontSize="small"
+          htmlColor="#7d2020"
+          sx={{ ml: 2 }}
+        />
       </div>
     </div>
   );

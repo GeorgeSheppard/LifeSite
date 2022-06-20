@@ -26,21 +26,22 @@ import { useDispatch } from "react-redux";
 import { useAppSelector } from "../../store/hooks/hooks";
 import {
   deleteRecipe,
+  IRecipe,
   IRecipeComponent,
   RecipeUuid,
 } from "../../store/reducers/food/recipes";
 import { Quantities } from "../../store/reducers/food/units";
 import { WrappedCardMedia } from "../cards/wrapped_card_media";
-import { useBoolean } from "../hooks/use_boolean";
+import { IUseBooleanCallbacks, useBoolean } from "../hooks/use_boolean";
 
-export interface IRecipeCardProps {
+export interface IRecipeCardWithDialogProps {
   uuid: RecipeUuid;
   router: NextRouter;
   visible: boolean;
 }
 
-export const RecipeCard = memo(function RenderRecipeCard(
-  props: IRecipeCardProps
+export const RecipeCardWithDialog = memo(function RenderRecipeCard(
+  props: IRecipeCardWithDialogProps
 ) {
   const { uuid, router } = props;
 
@@ -48,37 +49,75 @@ export const RecipeCard = memo(function RenderRecipeCard(
   const recipe = useAppSelector((store) => store.food.recipes[uuid]);
   const [dialogOpen, setters] = useBoolean(false);
 
-  const onEdit = useCallback(() => {
-    router.push(`/food/${uuid}`);
-  }, [router, uuid]);
-
   const deleteRecipeOnClick = useCallback(() => {
     dispatch(deleteRecipe(uuid));
   }, [dispatch, uuid]);
 
-  const [{ isDragging }, drag, preview] = useDrag(
-    () => ({
-      type: "recipe",
-      item: { uuid },
-      collect: (monitor) => {
-        return {
-          isDragging: !!monitor.isDragging(),
-        };
-      },
-    })
+  if (!recipe) {
+    return null;
+  }
+
+  return (
+    <>
+      <Dialog open={dialogOpen} onClose={setters.turnOff}>
+        <DialogTitle>{"Delete this recipe?"}</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Are you sure you want to delete this recipe? This action cannot be
+            undone.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={setters.turnOff}>{"No, cancel"}</Button>
+          <Button onClick={deleteRecipeOnClick} autoFocus>
+            {"Yes, I'm sure"}
+          </Button>
+        </DialogActions>
+      </Dialog>
+      <RecipeCard
+        router={router}
+        recipe={recipe}
+        uuid={uuid}
+        visible={props.visible}
+        setters={setters}
+      />
+    </>
   );
+});
+
+export interface IRecipeCard {
+  router: NextRouter;
+  recipe: IRecipe;
+  uuid: RecipeUuid;
+  visible: boolean;
+  setters: IUseBooleanCallbacks;
+}
+
+export const RecipeCard = (props: IRecipeCard) => {
+  const { recipe, router, uuid, setters } = props;
+
+  const [{ isDragging }, drag, preview] = useDrag(() => ({
+    type: "recipe",
+    item: { uuid },
+    collect: (monitor) => {
+      return {
+        isDragging: !!monitor.isDragging(),
+      };
+    },
+  }));
+
+  const onEdit = useCallback(() => {
+    router.push(`/food/${uuid}`);
+  }, [router, uuid]);
 
   const headerChildren = useMemo(() => {
     const turnOn = setters.turnOn;
 
     return (
       <>
-          <Typography
-            fontSize={24}
-            fontWeight={400}
-          >
-            {recipe?.name}
-          </Typography>
+        <Typography fontSize={24} fontWeight={400}>
+          {recipe?.name}
+        </Typography>
         <div style={{ flexGrow: 1, paddingRight: 2 }} />
         <IconButton
           onClick={(event) => {
@@ -105,59 +144,38 @@ export const RecipeCard = memo(function RenderRecipeCard(
     );
   }, [recipe?.name, onEdit, setters.turnOn]);
 
-  if (!recipe) {
-    return null;
-  }
-
   return (
-    <>
-      <Dialog open={dialogOpen} onClose={setters.turnOff}>
-        <DialogTitle>{"Delete this recipe?"}</DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-            Are you sure you want to delete this recipe? This action cannot be
-            undone.
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={setters.turnOff}>{"No, cancel"}</Button>
-          <Button onClick={deleteRecipeOnClick} autoFocus>
-            {"Yes, I'm sure"}
-          </Button>
-        </DialogActions>
-      </Dialog>
-      {/* This removes the drag and drop preview */}
-      <p ref={preview} style={{display: "none"}}></p>
-      <Card
-        className="cardWithHover"
-        sx={{ opacity: !props.visible ? 0 : isDragging ? 0.5 : 1 }}
-        ref={drag}
-      >
-        {recipe.images && <WrappedCardMedia images={recipe.images} />}
-        <Accordion key="name">
-          <AccordionSummary
-            expandIcon={
-              recipe.description?.length > 0 && (
-                <ExpandMoreIcon htmlColor="#212121" />
-              )
-            }
-            sx={{ display: "flex" }}
-          >
-            {headerChildren}
-          </AccordionSummary>
-          {recipe.description?.length > 0 && (
-            <AccordionDetails>
-              <Typography>{recipe.description}</Typography>
-            </AccordionDetails>
-          )}
-        </Accordion>
-        {recipe.components.map((component) => (
-          <ComponentContent key={component.name} component={component} />
-        ))}
-      </Card>
-    </>
+    <Card
+      className="cardWithHover"
+      sx={{ opacity: !props.visible ? 0 : isDragging ? 0.5 : 1 }}
+      ref={drag}
+    >
+      {/* Remove the drag preview */}
+      <div ref={preview} style={{width: 0, height: 0}} />
+      {recipe.images && <WrappedCardMedia images={recipe.images} />}
+      <Accordion key="name">
+        <AccordionSummary
+          expandIcon={
+            recipe.description?.length > 0 && (
+              <ExpandMoreIcon htmlColor="#212121" />
+            )
+          }
+          sx={{ display: "flex" }}
+        >
+          {headerChildren}
+        </AccordionSummary>
+        {recipe.description?.length > 0 && (
+          <AccordionDetails>
+            <Typography>{recipe.description}</Typography>
+          </AccordionDetails>
+        )}
+      </Accordion>
+      {recipe.components.map((component) => (
+        <ComponentContent key={component.name} component={component} />
+      ))}
+    </Card>
   );
-});
+};
 
 export interface IComponentContentInstructionsMethod {
   component: IRecipeComponent;

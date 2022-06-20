@@ -9,6 +9,7 @@ import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import "../styles/global_card.scss";
 import "../styles/scrollbar.scss";
+import "../styles/utilities.scss";
 
 export interface IMyLifeProps {
   Component: React.JSXElementConstructor<ILayoutProps>;

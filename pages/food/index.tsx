@@ -1,20 +1,36 @@
 import AddIcon from "@mui/icons-material/Add";
-import { Box, Card, Container, Grid } from "@mui/material";
+import { Box, ButtonGroup, Card, Container, Grid } from "@mui/material";
 import OutlinedInput from "@mui/material/OutlinedInput";
 import { motion } from "framer-motion";
 import { NextRouter, useRouter } from "next/router";
 import { memo, useCallback, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import { headerHeight } from "../../components/core/header";
-import { RecipeCard } from "../../components/recipes/content_card";
+import { RecipeCardWithDialog } from "../../components/recipes/content_card";
 import { useRecipeSearch } from "../../components/recipes/search_bar";
 import { SearchChips } from "../../components/recipes/search_chip";
 import { RecipeUuid } from "../../store/reducers/food/recipes";
-import MealPlanner from "../../components/recipes/planner";
+import Button from "@mui/material/Button";
+import { Planner } from "../../components/recipes/dnd_calendar";
+import { DateString } from "../../store/reducers/food/meal_plan";
+import CheckBoxIcon from '@mui/icons-material/CheckBox';
+import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
+import { useAppSelector } from "../../store/hooks/hooks";
 
 const Recipes = () => {
   const [keys, setKeys] = useState(() => new Set(["name"]));
   const { searchInput, setSearchInput, searchResults } = useRecipeSearch(keys);
+  const mealPlan = useAppSelector(store => store.mealPlan)
+  const [selected, setSelected] = useState<Set<DateString>>(() => new Set());
+  const allSelected = selected.size === Object.keys(mealPlan).length;
+
+  const selectOrUnselect = useCallback(() => {
+    if (allSelected) {
+      setSelected(new Set())
+    } else {
+      setSelected(new Set(Object.keys(mealPlan)))
+    }
+  }, [setSelected, mealPlan, allSelected]);
 
   return (
     <main>
@@ -43,11 +59,12 @@ const Recipes = () => {
                 xl: "block",
               },
               pl: 3,
-              flexGrow: 1
+              flexGrow: 1,
             }}
             component="div"
           >
             <div
+              className="noSelect"
               style={{
                 flexGrow: 1,
                 minWidth: 100,
@@ -60,7 +77,27 @@ const Recipes = () => {
                 paddingBottom: 3,
               }}
             >
-              <MealPlanner />
+              <ButtonGroup sx={{marginLeft: 2, width: 332, marginBottom: 2}}>
+              <Button
+                variant="outlined"
+                onClick={selectOrUnselect}
+                >
+                {allSelected ? <CheckBoxIcon /> : <CheckBoxOutlineBlankIcon />}
+              </Button>
+              <Button
+                variant="outlined"
+                fullWidth
+                >
+                Create shopping list
+              </Button>
+              </ButtonGroup>
+              <div
+                style={{
+                  height: "100vh",
+                }}
+              >
+                <Planner selected={selected} setSelected={setSelected} mealPlan={mealPlan} />
+              </div>
             </div>
           </Box>
         </div>
@@ -93,7 +130,7 @@ const RecipeGrid = memo(function RenderRecipeGrid(props: RecipeGridProps) {
           transition={{ duration: 0.3 }}
           layout
         >
-          <RecipeCard uuid={uuid} router={router} visible={visible} />
+          <RecipeCardWithDialog uuid={uuid} router={router} visible={visible} />
         </Grid>
       ))}
     </Grid>
