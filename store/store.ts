@@ -3,12 +3,14 @@ import printing, { IPrintingState } from "./reducers/printing";
 import user, { IUserState } from "./reducers/user";
 import plants, { IPlantsState } from "./reducers/plants";
 import food, { IRecipesState } from "./reducers/food/recipes";
+import mealPlan, { IMealPlanState } from "./reducers/food/meal_plan";
 
 export interface IFullStoreState {
   user: IUserState;
   printing: IPrintingState;
   plants: IPlantsState;
   food: IRecipesState;
+  mealPlan: IMealPlanState;
 }
 
 // TODO: Write some checks to make sure defaultProfile and any profiles conform
@@ -20,6 +22,7 @@ export const store = configureStore({
     user,
     plants,
     food,
+    mealPlan
   },
 });
 

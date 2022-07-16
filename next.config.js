@@ -3,6 +3,10 @@ const { PHASE_DEVELOPMENT_SERVER } = require("next/constants");
 
 /** @type {import('next').NextConfig} */
 module.exports = (phase) => {
+  if (Object.keys(process.env).length === 0) {
+    console.error("No environment variables");
+  }
+
   const envVariables = {
     ENV_LOGIN_LOGOUT_REDIRECT_URL: process.env.ENV_LOGIN_LOGOUT_REDIRECT_URL,
     ENV_AWS_S3_REGION: process.env.ENV_AWS_S3_REGION,
