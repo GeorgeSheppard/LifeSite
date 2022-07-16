@@ -11,7 +11,7 @@ import {
   PlantUuid,
   WateringAmount,
   deletePlant,
-} from "../../store/reducers/plants";
+} from "../../store/reducers/plants/plants";
 import { useMemo, useCallback } from "react";
 import AcUnitIcon from "@mui/icons-material/AcUnit";
 import WbSunnyIcon from "@mui/icons-material/WbSunny";

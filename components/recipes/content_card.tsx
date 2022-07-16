@@ -24,12 +24,12 @@ import { memo, useCallback, useMemo } from "react";
 import { useDrag } from "react-dnd";
 import { useDispatch } from "react-redux";
 import { useAppSelector } from "../../store/hooks/hooks";
+import { deleteRecipe } from "../../store/reducers/food/recipes";
 import {
-  deleteRecipe,
   IRecipe,
   IRecipeComponent,
   RecipeUuid,
-} from "../../store/reducers/food/recipes";
+} from "../../store/reducers/food/types";
 import { Quantities } from "../../store/reducers/food/units";
 import { WrappedCardMedia } from "../cards/wrapped_card_media";
 import { IUseBooleanCallbacks, useBoolean } from "../hooks/use_boolean";
@@ -151,7 +151,7 @@ export const RecipeCard = (props: IRecipeCard) => {
       ref={drag}
     >
       {/* Remove the drag preview */}
-      <div ref={preview} style={{width: 0, height: 0}} />
+      <div ref={preview} style={{ width: 0, height: 0 }} />
       {recipe.images && <WrappedCardMedia images={recipe.images} />}
       <Accordion key="name">
         <AccordionSummary

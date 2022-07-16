@@ -4,7 +4,6 @@ import CardHeader from "@mui/material/CardHeader";
 import CardContent from "@mui/material/CardContent";
 import { Typography } from "@mui/material";
 import { useDrop } from "react-dnd";
-import { RecipeUuid } from "../../store/reducers/food/recipes";
 import { useAppDispatch, useAppSelector } from "../../store/hooks/hooks";
 import {
   addOrUpdatePlan,

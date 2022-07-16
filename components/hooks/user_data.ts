@@ -4,15 +4,15 @@ import { useState, useEffect, useCallback, useMemo } from "react";
 import { useSession } from "next-auth/react";
 import { login, logout, userEmptyState } from "../../store/reducers/user";
 import { useRouter } from "next/router";
-import { IFullStoreState, store } from '../../store/store';
+import { IFullStoreState, store } from "../../store/store";
 import useUploadToS3 from "./upload_to_s3";
 import { getS3SignedUrl } from "../aws/s3_utilities";
 import { ListObjectsCommand } from "@aws-sdk/client-s3";
 import { AwsS3Client } from "../aws/s3_client";
 import { printingEmptyState } from "../../store/reducers/printing";
-import { plantsEmptyState } from "../../store/reducers/plants";
+import { plantsEmptyState } from "../../store/reducers/plants/plants";
 import { foodEmptyState } from "../../store/reducers/food/recipes";
-import { mealPlanEmptyState } from "../../store/reducers/food/meal_plan"
+import { mealPlanEmptyState } from "../../store/reducers/food/meal_plan";
 
 export interface IUserDataReturn {
   uploading: boolean;
@@ -42,14 +42,14 @@ export const useUserData = (): IUserDataReturn => {
       console.log(`Error uploading profile data ${err}`);
     },
     // We don't want multiple copies of the profile, and we want it to be at a predictable path
-    makeKeyUnique: false
+    makeKeyUnique: false,
   });
   const [gotUserData, setGotUserData] = useState(false);
   const [uploading, setUploading] = useState(false);
 
   const canUpload = useMemo(() => {
     // Only need to save if a user is logged in
-    return !!session?.id && gotUserData
+    return !!session?.id && gotUserData;
   }, [session?.id, gotUserData]);
 
   useEffect(() => {
@@ -58,12 +58,18 @@ export const useUserData = (): IUserDataReturn => {
     const fetchUserData = async () => {
       let json: IFullStoreState | undefined = undefined;
       try {
-        const profileResults = await AwsS3Client.send(new ListObjectsCommand({ Bucket: process.env.ENV_AWS_S3_BUCKET_NAME, Prefix: `${session.id}/profile.json`, MaxKeys: 1 }))
+        const profileResults = await AwsS3Client.send(
+          new ListObjectsCommand({
+            Bucket: process.env.ENV_AWS_S3_BUCKET_NAME,
+            Prefix: `${session.id}/profile.json`,
+            MaxKeys: 1,
+          })
+        );
 
         if (profileResults.$metadata.httpStatusCode !== 200) {
           setOffline(true);
         }
-        
+
         if (profileResults.$metadata.httpStatusCode === 200) {
           if (offline) {
             setOffline(false);
@@ -71,17 +77,19 @@ export const useUserData = (): IUserDataReturn => {
 
           // User doesn't have a profile, in this case we should stop trying to fetch a profile
           // and create a new one by dispatching an empty profile
-          if (!profileResults?.Contents || profileResults.Contents?.length === 0) {
+          if (
+            !profileResults?.Contents ||
+            profileResults.Contents?.length === 0
+          ) {
             json = {
               user: userEmptyState,
               printing: printingEmptyState,
               plants: plantsEmptyState,
               food: foodEmptyState,
-              mealPlan: mealPlanEmptyState
-            } as IFullStoreState
+              mealPlan: mealPlanEmptyState,
+            } as IFullStoreState;
           }
-  
-  
+
           const profileUrl = await getS3SignedUrl(`${session.id}/profile.json`);
           const data = await fetch(profileUrl);
           if (data.ok) {
@@ -93,8 +101,8 @@ export const useUserData = (): IUserDataReturn => {
       }
 
       if (json && !gotUserData) {
-          setGotUserData(true);
-          dispatch(login(json));
+        setGotUserData(true);
+        dispatch(login(json));
       } else {
         timerId = setTimeout(() => fetchUserData(), 20000);
       }
@@ -112,7 +120,7 @@ export const useUserData = (): IUserDataReturn => {
 
     return () => {
       if (timerId) {
-        clearTimeout(timerId)
+        clearTimeout(timerId);
       }
     };
   }, [session?.id, gotUserData, dispatch, offline, setOffline]);

@@ -14,11 +14,10 @@ import TableRow from "@mui/material/TableRow";
 import TextField from "@mui/material/TextField";
 import { ChangeEvent, memo, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
-import { IRecipeIngredient } from "../../store/reducers/food/recipes";
 import { Unit } from "../../store/reducers/food/units";
 import { CenteredComponent } from "../core/centered_component";
 import { ComponentsFormData } from "./component_form_data";
-
+import { IRecipeIngredient } from "../../store/reducers/food/types";
 
 export interface IIngredientsInputTableProps {
   componentFormData: ComponentsFormData;
@@ -30,7 +29,8 @@ export const IngredientsInputTable = memo(function IngredientTable(
 ) {
   const [ingredients, setIngredients] = useState(() => {
     const obj: { [key: string]: IRecipeIngredient } = {};
-    for (const value of props.componentFormData.components[props.uuid].ingredients) {
+    for (const value of props.componentFormData.components[props.uuid]
+      .ingredients) {
       obj[uuidv4()] = value;
     }
     return obj;
@@ -71,7 +71,10 @@ export const IngredientsInputTable = memo(function IngredientTable(
                           ...prevIngredients[uuid],
                           name: event.target.value,
                         };
-                        props.componentFormData.updateIngredients(props.uuid, Object.values(newIngredients));
+                        props.componentFormData.updateIngredients(
+                          props.uuid,
+                          Object.values(newIngredients)
+                        );
                         return newIngredients;
                       });
                     }}
@@ -95,7 +98,10 @@ export const IngredientsInputTable = memo(function IngredientTable(
                               value: prevIngredients[uuid].quantity.value,
                             },
                           };
-						  props.componentFormData.updateIngredients(props.uuid, Object.values(newIngredients))
+                          props.componentFormData.updateIngredients(
+                            props.uuid,
+                            Object.values(newIngredients)
+                          );
                           return newIngredients;
                         });
                       }}
@@ -137,7 +143,10 @@ export const IngredientsInputTable = memo(function IngredientTable(
                             value: event.target.value as any as number,
                           },
                         };
-						props.componentFormData.updateIngredients(props.uuid, Object.values(newIngredients))
+                        props.componentFormData.updateIngredients(
+                          props.uuid,
+                          Object.values(newIngredients)
+                        );
                         return newIngredients;
                       });
                     }}
@@ -158,7 +167,10 @@ export const IngredientsInputTable = memo(function IngredientTable(
                       setIngredients((prevIngredients) => {
                         const newIngredients = { ...prevIngredients };
                         delete newIngredients[uuid];
-						props.componentFormData.updateIngredients(props.uuid, Object.values(newIngredients))
+                        props.componentFormData.updateIngredients(
+                          props.uuid,
+                          Object.values(newIngredients)
+                        );
                         return newIngredients;
                       });
                     }}
@@ -178,8 +190,14 @@ export const IngredientsInputTable = memo(function IngredientTable(
           onClick={() => {
             setIngredients((prevIngredients) => {
               const newIngredients = { ...prevIngredients };
-              newIngredients[uuidv4()] = { name: "", quantity: { unit: Unit.GRAM } };
-			  props.componentFormData.updateIngredients(props.uuid, Object.values(newIngredients))
+              newIngredients[uuidv4()] = {
+                name: "",
+                quantity: { unit: Unit.GRAM },
+              };
+              props.componentFormData.updateIngredients(
+                props.uuid,
+                Object.values(newIngredients)
+              );
               return newIngredients;
             });
           }}

@@ -1,9 +1,10 @@
 import { configureStore } from "@reduxjs/toolkit";
 import printing, { IPrintingState } from "./reducers/printing";
 import user, { IUserState } from "./reducers/user";
-import plants, { IPlantsState } from "./reducers/plants";
-import food, { IRecipesState } from "./reducers/food/recipes";
+import plants, { IPlantsState } from "./reducers/plants/plants";
+import food from "./reducers/food/recipes";
 import mealPlan, { IMealPlanState } from "./reducers/food/meal_plan";
+import { IRecipesState } from "./reducers/food/types";
 
 export interface IFullStoreState {
   user: IUserState;
@@ -22,7 +23,7 @@ export const store = configureStore({
     user,
     plants,
     food,
-    mealPlan
+    mealPlan,
   },
 });
 

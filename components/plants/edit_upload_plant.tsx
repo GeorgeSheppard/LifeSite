@@ -16,8 +16,8 @@ import {
   LightLevelKeys,
   PlantUuid,
   WateringAmount,
-  WateringAmountKeys
-} from "../../store/reducers/plants";
+  WateringAmountKeys,
+} from "../../store/reducers/plants/plants";
 import { ExitSaveButtons } from "../cards/exit_save_buttons";
 import { UploadDisplayImages } from "../cards/upload_and_display_images";
 import { stopPropagation } from "../cards/utilities";

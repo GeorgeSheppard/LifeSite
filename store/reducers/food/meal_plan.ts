@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import clone from "just-clone";
 import { IFullStoreState } from "../../store";
-import { RecipeUuid } from "./recipes";
+import { RecipeUuid } from "./types";
 
 export type DateString = string;
 

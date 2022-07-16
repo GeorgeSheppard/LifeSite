@@ -16,7 +16,7 @@ import Button from "@mui/material/Button";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { MouseEvent, useCallback } from "react";
 import { useDrop } from "react-dnd";
-import { RecipeUuid } from "../../store/reducers/food/recipes";
+import { RecipeUuid } from "../../store/reducers/food/types";
 
 export const DroppableCard = (props: {
   day: DateString;

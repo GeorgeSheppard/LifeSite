@@ -9,28 +9,28 @@ import { headerHeight } from "../../components/core/header";
 import { RecipeCardWithDialog } from "../../components/recipes/content_card";
 import { useRecipeSearch } from "../../components/recipes/search_bar";
 import { SearchChips } from "../../components/recipes/search_chip";
-import { RecipeUuid } from "../../store/reducers/food/recipes";
+import { RecipeUuid } from "../../store/reducers/food/types";
 import Button from "@mui/material/Button";
 import { Planner } from "../../components/recipes/dnd_calendar";
 import { DateString } from "../../store/reducers/food/meal_plan";
-import CheckBoxIcon from '@mui/icons-material/CheckBox';
-import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
+import CheckBoxIcon from "@mui/icons-material/CheckBox";
+import CheckBoxOutlineBlankIcon from "@mui/icons-material/CheckBoxOutlineBlank";
 import { useAppSelector } from "../../store/hooks/hooks";
-import { createShoppingList } from '../../components/recipes/shopping_list_creator';
+import { createShoppingList } from "../../components/recipes/shopping_list_creator";
 
 const Recipes = () => {
   const [keys, setKeys] = useState(() => new Set(["name"]));
   const { searchInput, setSearchInput, searchResults } = useRecipeSearch(keys);
-  const mealPlan = useAppSelector(store => store.mealPlan.plan)
-  const recipes = useAppSelector(store => store.food.recipes)
+  const mealPlan = useAppSelector((store) => store.mealPlan.plan);
+  const recipes = useAppSelector((store) => store.food.recipes);
   const [selected, setSelected] = useState<Set<DateString>>(() => new Set());
   const allSelected = selected.size === Object.keys(mealPlan).length;
 
   const selectOrUnselect = useCallback(() => {
     if (allSelected) {
-      setSelected(new Set())
+      setSelected(new Set());
     } else {
-      setSelected(new Set(Object.keys(mealPlan)))
+      setSelected(new Set(Object.keys(mealPlan)));
     }
   }, [setSelected, mealPlan, allSelected]);
 
@@ -51,7 +51,7 @@ const Recipes = () => {
             </Grid>
             <RecipeGrid searchResults={searchResults} />
           </Box>
-          <Box
+          {/* <Box
             sx={{
               display: {
                 xs: "none",
@@ -71,6 +71,7 @@ const Recipes = () => {
                 flexGrow: 1,
                 minWidth: 100,
                 height: `calc(100vh - 64px - ${headerHeight}px - 20px)`,
+                maxWidth: "400px",
                 position: "sticky",
                 top: 0,
                 overflowY: "scroll",
@@ -79,32 +80,33 @@ const Recipes = () => {
                 paddingBottom: 3,
               }}
             >
-              <ButtonGroup sx={{marginLeft: 2, width: 332, marginBottom: 2}}>
-              <Button
-                variant="outlined"
-                onClick={selectOrUnselect}
-                >
-                {allSelected ? <CheckBoxIcon /> : <CheckBoxOutlineBlankIcon />}
-              </Button>
-              <Button
-                variant="outlined"
-                fullWidth
-                onClick={() => {
-                  const meals = Object.keys(mealPlan).map(day => {
-                    if (selected.has(day)) {
-                      return mealPlan[day]
-                    } else {
-                      return []
+              <ButtonGroup sx={{ marginLeft: 2, width: 332, marginBottom: 2 }}>
+                <Button variant="outlined" onClick={selectOrUnselect}>
+                  {allSelected ? (
+                    <CheckBoxIcon />
+                  ) : (
+                    <CheckBoxOutlineBlankIcon />
+                  )}
+                </Button>
+                <Button
+                  variant="outlined"
+                  fullWidth
+                  onClick={() => {
+                    const meals = Object.keys(mealPlan).map((day) => {
+                      if (selected.has(day)) {
+                        return mealPlan[day];
+                      } else {
+                        return [];
+                      }
+                    });
+                    const text = createShoppingList(recipes, meals);
+                    if (text) {
+                      navigator.clipboard.writeText(text);
                     }
-                  });
-                  const text = createShoppingList(recipes, meals);
-                  if (text) {
-                    navigator.clipboard.writeText(text)
-                  }
-                }}
+                  }}
                 >
-                Create shopping list
-              </Button>
+                  Create shopping list
+                </Button>
               </ButtonGroup>
               <div
                 style={{
@@ -114,7 +116,7 @@ const Recipes = () => {
                 <Planner selected={selected} setSelected={setSelected} />
               </div>
             </div>
-          </Box>
+          </Box> */}
         </div>
       </Container>
     </main>
