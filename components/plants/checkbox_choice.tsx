@@ -3,8 +3,44 @@ import Checkbox from "@mui/material/Checkbox";
 import Tooltip from "@mui/material/Tooltip";
 import Icon from "@mui/material/Icon";
 import Image from "next/image";
-import { Checkboxes } from "../../store/reducers/types";
 import { CSSProperties } from "react";
+import { Brightness4, Brightness5, Brightness6 } from "@mui/icons-material";
+import { Checkboxes, WateringAmountKeys, LightLevelKeys } from "../../store/reducers/plants/types";
+import LittleWater from "../public/images/little_water.svg";
+import NormalWater from "../public/images/normal_water.svg";
+import LotsWater from "../public/images/lots_water.svg";
+
+export const WateringAmount: Checkboxes = {
+  [WateringAmountKeys.LITTLE]: {
+    tooltip: "Likes small amounts of water",
+    icon: LittleWater,
+  },
+  [WateringAmountKeys.NORMAL]: {
+    tooltip: "Keep the soil moist",
+    icon: NormalWater,
+  },
+  [WateringAmountKeys.LOTS]: {
+    tooltip: "This plant loves water",
+    icon: LotsWater,
+  },
+};
+
+
+export const LightLevel: Checkboxes = {
+  [LightLevelKeys.INDIRECT_SUN]: {
+    tooltip: "Prefers to be slightly shaded with sun",
+    icon: <Brightness4 />,
+  },
+  [LightLevelKeys.SHADE]: {
+    tooltip: "Prefers to be in the shade",
+    // Don't ask me why brightness 6 looks less bright than brightness 5
+    icon: <Brightness6 />,
+  },
+  [LightLevelKeys.DIRECT_SUN]: {
+    tooltip: "This plant loves light, place in direct sunlight",
+    icon: <Brightness5 />,
+  },
+};
 
 export interface ICheckboxChoiceProps {
   currentChecked: string;

@@ -2,7 +2,7 @@ import clone from "just-clone";
 import { lt } from "semver";
 import { IMigration, IVersion } from "./types";
 
-const initialVersion = "0.0.1";
+export const initialVersion = "0.0.1";
 
 export class Migrator<T> {
   private _migrations: IMigration[];

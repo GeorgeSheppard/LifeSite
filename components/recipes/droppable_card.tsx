@@ -4,10 +4,8 @@ import CardContent from "@mui/material/CardContent";
 import CardHeader from "@mui/material/CardHeader";
 import {
   addOrUpdatePlan,
-  DateString,
-  IMealPlanItem,
   removeFromPlan,
-} from "../../store/reducers/food/meal_plan";
+} from "../../store/reducers/food/meal_plan/meal_plan";
 import PersonIcon from "@mui/icons-material/Person";
 import Typography from "@mui/material/Typography";
 import Tooltip from "@mui/material/Tooltip";
@@ -16,7 +14,8 @@ import Button from "@mui/material/Button";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { MouseEvent, useCallback } from "react";
 import { useDrop } from "react-dnd";
-import { RecipeUuid } from "../../store/reducers/food/types";
+import { DateString, IMealPlanItem } from "../../store/reducers/food/meal_plan/types";
+import { RecipeUuid } from "../../store/reducers/food/recipes/types";
 
 export const DroppableCard = (props: {
   day: DateString;

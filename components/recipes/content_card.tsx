@@ -24,12 +24,12 @@ import { memo, useCallback, useMemo } from "react";
 import { useDrag } from "react-dnd";
 import { useDispatch } from "react-redux";
 import { useAppSelector } from "../../store/hooks/hooks";
-import { deleteRecipe } from "../../store/reducers/food/recipes";
+import { deleteRecipe } from "../../store/reducers/food/recipes/recipes";
 import {
   IRecipe,
   IRecipeComponent,
   RecipeUuid,
-} from "../../store/reducers/food/types";
+} from "../../store/reducers/food/recipes/types";
 import { Quantities } from "../../store/reducers/food/units";
 import { WrappedCardMedia } from "../cards/wrapped_card_media";
 import { IUseBooleanCallbacks, useBoolean } from "../hooks/use_boolean";

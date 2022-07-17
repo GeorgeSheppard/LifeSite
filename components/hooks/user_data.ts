@@ -2,17 +2,17 @@ import { CustomSession } from "../../pages/api/auth/[...nextauth]";
 import { useAppDispatch } from "../../store/hooks/hooks";
 import { useState, useEffect, useCallback, useMemo } from "react";
 import { useSession } from "next-auth/react";
-import { login, logout, userEmptyState } from "../../store/reducers/user";
+import { login, logout, userEmptyState } from "../../store/reducers/user/user";
 import { useRouter } from "next/router";
 import { IFullStoreState, store } from "../../store/store";
 import useUploadToS3 from "./upload_to_s3";
 import { getS3SignedUrl } from "../aws/s3_utilities";
 import { ListObjectsCommand } from "@aws-sdk/client-s3";
 import { AwsS3Client } from "../aws/s3_client";
-import { printingEmptyState } from "../../store/reducers/printing";
+import { printingEmptyState } from "../../store/reducers/printing/printing";
 import { plantsEmptyState } from "../../store/reducers/plants/plants";
-import { foodEmptyState } from "../../store/reducers/food/recipes";
-import { mealPlanEmptyState } from "../../store/reducers/food/meal_plan";
+import { foodEmptyState } from "../../store/reducers/food/recipes/recipes";
+import { mealPlanEmptyState } from "../../store/reducers/food/meal_plan/meal_plan";
 
 export interface IUserDataReturn {
   uploading: boolean;

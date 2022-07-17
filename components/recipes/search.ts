@@ -1,6 +1,6 @@
 import Fuse from "fuse.js";
 import { useMemo, useCallback } from "react";
-import { IIngredientName, RecipeUuid } from "../../store/reducers/food/types";
+import { IIngredientName, RecipeUuid } from "../../store/reducers/food/recipes/types";
 
 export interface SearchableRecipe {
   uuid: RecipeUuid;

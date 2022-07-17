@@ -11,8 +11,8 @@ export interface ICanvasScreenshotterRef {
 
 export interface ICameraParams {
   zoom: number;
-  position: [x: number, y: number, z: number];
-  quaternion: [x: number, y: number, z: number, w: number];
+  position: number[];
+  quaternion: number[];
 }
 
 export const CanvasScreenshotter = forwardRef(function CanvasScreenshot(
@@ -41,12 +41,7 @@ export const CanvasScreenshotter = forwardRef(function CanvasScreenshot(
         return {
           zoom: camera.zoom,
           position: camera.position.toArray(),
-          quaternion: camera.quaternion.toArray() as [
-            x: number,
-            y: number,
-            z: number,
-            w: number
-          ],
+          quaternion: camera.quaternion.toArray()
         };
       },
     }),

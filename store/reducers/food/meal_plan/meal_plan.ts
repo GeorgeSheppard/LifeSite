@@ -1,20 +1,8 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import clone from "just-clone";
-import { IFullStoreState } from "../../store";
-import { RecipeUuid } from "./types";
-
-export type DateString = string;
-
-export interface IMealPlanState {
-  plan: { [index: DateString]: IDailyMealPlan };
-}
-
-export type IDailyMealPlan = IMealPlanItem[];
-
-export interface IMealPlanItem {
-  uuid: RecipeUuid;
-  servings: number;
-}
+import { IFullStoreState } from "../../../store";
+import { RecipeUuid } from "../recipes/types";
+import IMealPlanState, { DateString } from "./types";
 
 function addDays(theDate: Date, days: number) {
   return new Date(theDate.getTime() + days * 24 * 60 * 60 * 1000);

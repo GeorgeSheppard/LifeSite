@@ -1,10 +1,10 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { IFullStoreState } from "../../store";
-import { IRecipe, IRecipesState, RecipeUuid } from "./types";
+import IRecipesState, { IRecipe, RecipeUuid } from "./types";
 import defaultProfileProduction from "./defaultProduction.json";
-import { Migrator } from "../../migration/migrator";
+import { Migrator } from "../../../migration/migrator";
 import { latestVersion, migrations } from "./migrations";
-import validate from "./types.d.validator";
+import validate from "./types.d.validator"
+import { IFullStoreState } from "../../../store";
 
 export const foodEmptyState = {
   version: latestVersion,
@@ -53,7 +53,7 @@ export const foodSlice = createSlice({
         try {
           return migrator.migrate(action.payload.food);
         } catch (err) {
-          console.log("An error occurrence migrating recipes" + err);
+          console.log("An error occurrence migrating recipes: " + err);
           return state;
         }
       }

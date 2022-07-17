@@ -2,14 +2,9 @@ import { Box, Icon, Tooltip, IconButton } from "@mui/material";
 import Card from "@mui/material/Card";
 import CardActionArea from "@mui/material/CardActionArea";
 import CardContent from "@mui/material/CardContent";
-import CardHeader from "@mui/material/CardHeader";
 import Typography from "@mui/material/Typography";
 import { useAppSelector } from "../../store/hooks/hooks";
 import {
-  LightLevel,
-  LightLevelKeys,
-  PlantUuid,
-  WateringAmount,
   deletePlant,
 } from "../../store/reducers/plants/plants";
 import { useMemo, useCallback } from "react";
@@ -26,6 +21,8 @@ import DialogTitle from "@mui/material/DialogTitle";
 import { useBoolean } from "../hooks/use_boolean";
 import Button from "@mui/material/Button";
 import DeleteIcon from "@mui/icons-material/Delete";
+import { PlantUuid } from "../../store/reducers/plants/types";
+import { LightLevel, WateringAmount } from "./checkbox_choice";
 
 export interface IPlantPreview {
   uuid: PlantUuid;

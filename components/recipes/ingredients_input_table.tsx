@@ -14,10 +14,9 @@ import TableRow from "@mui/material/TableRow";
 import TextField from "@mui/material/TextField";
 import { ChangeEvent, memo, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
-import { Unit } from "../../store/reducers/food/units";
+import { IRecipeIngredient, Unit } from "../../store/reducers/food/recipes/types";
 import { CenteredComponent } from "../core/centered_component";
 import { ComponentsFormData } from "./component_form_data";
-import { IRecipeIngredient } from "../../store/reducers/food/types";
 
 export interface IIngredientsInputTableProps {
   componentFormData: ComponentsFormData;

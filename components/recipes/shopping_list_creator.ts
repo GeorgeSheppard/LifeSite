@@ -1,10 +1,10 @@
-import { IDailyMealPlan } from "../../store/reducers/food/meal_plan";
+import { IDailyMealPlan } from "../../store/reducers/food/meal_plan/types";
 import {
   IIngredientName,
   IQuantity,
   IRecipe,
   RecipeUuid,
-} from "../../store/reducers/food/types";
+} from "../../store/reducers/food/recipes/types";
 
 export function createShoppingList(
   recipes: { [key: RecipeUuid]: IRecipe },

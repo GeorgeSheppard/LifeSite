@@ -7,7 +7,7 @@ import ListItemText from "@mui/material/ListItemText";
 import TextField from "@mui/material/TextField";
 import { ChangeEvent, memo, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
-import { IInstruction } from "../../store/reducers/food/types";
+import { IInstruction } from "../../store/reducers/food/recipes/types";
 import { CenteredComponent } from "../core/centered_component";
 import { ComponentsFormData } from "./component_form_data";
 

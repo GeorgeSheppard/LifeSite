@@ -1,20 +1,5 @@
-import Card from "@mui/material/Card";
 import Grid from "@mui/material/Grid";
-import CardHeader from "@mui/material/CardHeader";
-import CardContent from "@mui/material/CardContent";
-import { Typography } from "@mui/material";
-import { useDrop } from "react-dnd";
-import { useAppDispatch, useAppSelector } from "../../store/hooks/hooks";
-import {
-  addOrUpdatePlan,
-  removeFromPlan,
-  DateString,
-  IMealPlanItem,
-} from "../../store/reducers/food/meal_plan";
-import { useDispatch } from "react-redux";
-import Button from "@mui/material/Button";
-import ButtonGroup from "@mui/material/ButtonGroup";
-import PersonIcon from "@mui/icons-material/Person";
+import { useAppSelector } from "../../store/hooks/hooks";
 import Tooltip from "@mui/material/Tooltip";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { DroppableCard } from "./droppable_card";
@@ -25,6 +10,7 @@ import {
   useCallback,
   useState,
 } from "react";
+import { DateString } from "../../store/reducers/food/meal_plan/types";
 
 export interface ICalendarRowProps {
   selected: Set<DateString>;

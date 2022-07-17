@@ -115,9 +115,9 @@ export default function Preview(props: IPreview) {
           }}
           gl={{ preserveDrawingBuffer: true }}
           camera={{
-            position: cameraParams.position,
+            position: cameraParams.position as [x: number, y: number, z: number],
             zoom: cameraParams.zoom,
-            quaternion: cameraParams.quaternion,
+            quaternion: cameraParams.quaternion as [x: number, y: number, z: number, w: number],
             fov: 50,
           }}
           dpr={window.devicePixelRatio}

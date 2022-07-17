@@ -14,9 +14,9 @@ import { CenteredComponent } from "../../components/core/centered_component";
 import { ComponentForm } from "../../components/recipes/component_form";
 import { ComponentsFormData } from "../../components/recipes/component_form_data";
 import { useAppDispatch, useAppSelector } from "../../store/hooks/hooks";
-import { addOrUpdateRecipe } from "../../store/reducers/food/recipes";
+import { addOrUpdateRecipe } from "../../store/reducers/food/recipes/recipes";
 import clone from "just-clone";
-import { RecipeUuid } from "../../store/reducers/food/types";
+import { RecipeUuid } from "../../store/reducers/food/recipes/types";
 
 const EditUploadRecipe = () => {
   const router = useRouter();

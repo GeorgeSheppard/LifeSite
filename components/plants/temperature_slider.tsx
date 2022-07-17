@@ -1,6 +1,6 @@
 import Slider from "@mui/material/Slider";
-import { TemperatureRange } from "../../store/reducers/plants/plants";
 import { useCallback } from "react";
+import { TemperatureRange } from "../../store/reducers/plants/types";
 
 export interface ITemperatureSliderProps {
   temperatureRange: TemperatureRange;

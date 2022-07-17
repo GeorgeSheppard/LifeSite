@@ -1,4 +1,6 @@
 import { IVersion } from "../../migration/types";
+import { Unit } from "../units";
+import { Image } from "../types"
 
 export type RecipeUuid = string;
 export type IngredientUuid = string;
@@ -45,17 +47,29 @@ export interface IRecipe {
 
 export type IIngredientsDatabase = {
   [index: IIngredientName]: IIngredient;
-};
+}; 
 
-// Do not change the name or from type -> interface, part of CI validation process
-export type IRecipesState = {
-  version: IVersion;
-  cards: RecipeUuid[];
-  recipes: { [key: RecipeUuid]: IRecipe };
-  ingredients: IIngredientsDatabase;
-};
+export enum Unit {
+  NO_UNIT = "none",
+  MILLILITER = "mL",
+  LITER = "L",
+  GRAM = "g",
+  KILOGRAM = "kg",
+  CUP = "cup",
+  TEASPOON = "tsp",
+  TABLESPOON = "tbsp",
+  NUMBER = "quantity",
+}
 
 export interface IQuantity {
   unit?: Unit;
   value?: number;
 }
+
+// Do not change the name, part of CI validation process
+export default interface IRecipesState {
+  version: IVersion;
+  cards: RecipeUuid[];
+  recipes: { [key: RecipeUuid]: IRecipe };
+  ingredients: IIngredientsDatabase;
+};

@@ -1,6 +1,6 @@
 import { useMemo, useState, useCallback, ChangeEvent, useEffect } from "react";
 import { useAppSelector } from "../../store/hooks/hooks";
-import { RecipeUuid } from "../../store/reducers/food/types";
+import { RecipeUuid } from "../../store/reducers/food/recipes/types";
 import { useQuerySearch } from "./search";
 
 export function useDebounce<T>(

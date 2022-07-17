@@ -1,22 +1,16 @@
 import AddIcon from "@mui/icons-material/Add";
-import { Box, ButtonGroup, Card, Container, Grid } from "@mui/material";
+import { Box, Card, Container, Grid } from "@mui/material";
 import OutlinedInput from "@mui/material/OutlinedInput";
 import { motion } from "framer-motion";
 import { NextRouter, useRouter } from "next/router";
 import { memo, useCallback, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
-import { headerHeight } from "../../components/core/header";
 import { RecipeCardWithDialog } from "../../components/recipes/content_card";
 import { useRecipeSearch } from "../../components/recipes/search_bar";
 import { SearchChips } from "../../components/recipes/search_chip";
-import { RecipeUuid } from "../../store/reducers/food/types";
-import Button from "@mui/material/Button";
-import { Planner } from "../../components/recipes/dnd_calendar";
-import { DateString } from "../../store/reducers/food/meal_plan";
-import CheckBoxIcon from "@mui/icons-material/CheckBox";
-import CheckBoxOutlineBlankIcon from "@mui/icons-material/CheckBoxOutlineBlank";
 import { useAppSelector } from "../../store/hooks/hooks";
-import { createShoppingList } from "../../components/recipes/shopping_list_creator";
+import { DateString } from "../../store/reducers/food/meal_plan/types";
+import { RecipeUuid } from "../../store/reducers/food/recipes/types";
 
 const Recipes = () => {
   const [keys, setKeys] = useState(() => new Set(["name"]));

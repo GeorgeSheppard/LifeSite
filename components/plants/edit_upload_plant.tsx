@@ -11,17 +11,13 @@ import { ChangeEvent, useCallback, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../store/hooks/hooks";
 import {
   addOrUpdatePlant,
-  IPlant,
-  LightLevel,
-  LightLevelKeys,
-  PlantUuid,
-  WateringAmount,
-  WateringAmountKeys,
 } from "../../store/reducers/plants/plants";
+import { IPlant, LightLevelKeys, PlantUuid, WateringAmountKeys } from '../../store/reducers/plants/types';
 import { ExitSaveButtons } from "../cards/exit_save_buttons";
 import { UploadDisplayImages } from "../cards/upload_and_display_images";
 import { stopPropagation } from "../cards/utilities";
 import { useBoolean } from "../hooks/use_boolean";
+import { LightLevel, WateringAmount } from "./checkbox_choice";
 import { TemperatureSlider } from "./temperature_slider";
 
 export interface IEditUploadPlant {

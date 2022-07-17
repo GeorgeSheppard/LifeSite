@@ -1,16 +1,4 @@
-import { IIngredientName, IQuantity } from "./types";
-
-export enum Unit {
-  NO_UNIT = "none",
-  MILLILITER = "mL",
-  LITER = "L",
-  GRAM = "g",
-  KILOGRAM = "kg",
-  CUP = "cup",
-  TEASPOON = "tsp",
-  TABLESPOON = "tbsp",
-  NUMBER = "quantity",
-}
+import { IIngredientName, IQuantity, Unit } from "./recipes/types";
 
 export const Quantities = {
   toString: (quantity?: IQuantity) => {

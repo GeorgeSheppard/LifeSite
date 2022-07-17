@@ -6,7 +6,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "compile-validation-types": "npx typescript-json-validator store/reducers/food/types.d.ts IRecipesState --usedNamedExport",
+    "compile-validation-types": "npx typescript-json-validator store/reducers/food/recipes/types.d.ts IRecipesState && npx typescript-json-validator store/reducers/food/meal_plan/types.d.ts IMealPlanState && npx typescript-json-validator store/reducers/plants/types.d.ts IPlantsState && npx typescript-json-validator store/reducers/printing/types.d.ts IPrintingState && npx typescript-json-validator store/reducers/user/types.d.ts IUserState",
     "husky-install": "husky install",
     "dev:ts": "yarn dev & yarn ts:watch",
     "ts": "tsc --noEmit --incremental",

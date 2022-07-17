@@ -3,7 +3,7 @@ import {
   IInstruction,
   IRecipeComponent,
   IRecipeIngredient,
-} from "../../store/reducers/food/types";
+} from "../../store/reducers/food/recipes/types";
 
 export class ComponentsFormData {
   public components: { [key: string]: IRecipeComponent };

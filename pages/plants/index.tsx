@@ -5,12 +5,12 @@ import Grid from "@mui/material/Grid";
 import { PlantPreview } from "../../components/plants/preview_card";
 import { useAppSelector } from "../../store/hooks/hooks";
 import { useState } from "react";
-import { PlantUuid } from "../../store/reducers/plants/plants";
 import { EditUploadPlant } from "../../components/plants/edit_upload_plant";
 import AddIcon from "@mui/icons-material/Add";
 import Box from "@mui/material/Box";
 import Card from "@mui/material/Card";
 import { v4 as uuidv4 } from "uuid";
+import { PlantUuid } from "../../store/reducers/plants/types";
 
 export default function Plants() {
   const plantUuids = useAppSelector((store) => store.plants.cards);
