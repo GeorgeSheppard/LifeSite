@@ -1,4 +1,4 @@
-import { IIngredientName, IQuantity, Unit } from "./recipes/types";
+import { IQuantity, Unit, IIngredientName } from "./recipes/types";
 
 export const Quantities = {
   toString: (quantity?: IQuantity) => {

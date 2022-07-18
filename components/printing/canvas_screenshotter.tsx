@@ -1,5 +1,6 @@
 import { useThree } from "@react-three/fiber";
 import { forwardRef, Ref, useCallback, useImperativeHandle } from "react";
+import { ICameraParams } from "../../store/reducers/printing/types";
 
 export interface ICanvasScreenshotter {}
 
@@ -7,12 +8,6 @@ export interface ICanvasScreenshotterRef {
   takeScreenshot(): string;
   getBlob(callback: BlobCallback): void;
   getCameraParams(): ICameraParams;
-}
-
-export interface ICameraParams {
-  zoom: number;
-  position: number[];
-  quaternion: number[];
 }
 
 export const CanvasScreenshotter = forwardRef(function CanvasScreenshot(
@@ -41,7 +36,7 @@ export const CanvasScreenshotter = forwardRef(function CanvasScreenshot(
         return {
           zoom: camera.zoom,
           position: camera.position.toArray(),
-          quaternion: camera.quaternion.toArray()
+          quaternion: camera.quaternion.toArray(),
         };
       },
     }),

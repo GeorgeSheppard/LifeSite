@@ -1,5 +1,5 @@
 import { IVersion } from "../../migration/types";
-import { Image } from "../types"
+import { Image } from "../types";
 
 export interface Checkboxes {
   /**
@@ -48,5 +48,7 @@ export interface IPlant {
 export default interface IPlantsState {
   version: IVersion;
   cards: PlantUuid[];
-  plants: { [key: PlantUuid]: IPlant };
+  // typescript does not like this primitive alias
+  // [key: PlantUuid]: IPlant
+  plants: { [key: string]: IPlant };
 }

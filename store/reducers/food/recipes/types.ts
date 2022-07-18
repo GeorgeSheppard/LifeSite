@@ -1,6 +1,5 @@
-import { IVersion } from "../../migration/types";
-import { Unit } from "../units";
-import { Image } from "../types"
+import { IVersion } from "../../../migration/types";
+import { Image } from "../../types";
 
 export type RecipeUuid = string;
 export type IngredientUuid = string;
@@ -46,8 +45,10 @@ export interface IRecipe {
 }
 
 export type IIngredientsDatabase = {
-  [index: IIngredientName]: IIngredient;
-}; 
+  // typescript does not like this primitive alias
+  // [index: IIngredientName]: IIngredient
+  [index: string]: IIngredient;
+};
 
 export enum Unit {
   NO_UNIT = "none",
@@ -70,6 +71,8 @@ export interface IQuantity {
 export default interface IRecipesState {
   version: IVersion;
   cards: RecipeUuid[];
-  recipes: { [key: RecipeUuid]: IRecipe };
+  // typescript does not like this primitive alias
+  // [key: RecipeUuid]: IRecipe
+  recipes: { [key: string]: IRecipe };
   ingredients: IIngredientsDatabase;
-};
+}

@@ -3,7 +3,7 @@ import IRecipesState, { IRecipe, RecipeUuid } from "./types";
 import defaultProfileProduction from "./defaultProduction.json";
 import { Migrator } from "../../../migration/migrator";
 import { latestVersion, migrations } from "./migrations";
-import validate from "./types.d.validator"
+import validate from "./types.validator";
 import { IFullStoreState } from "../../../store";
 
 export const foodEmptyState = {
@@ -22,7 +22,10 @@ const migrator = new Migrator<IRecipesState>(
 const initialState: IRecipesState =
   process.env.NODE_ENV === "development"
     ? foodEmptyState
-    : { version: latestVersion, ...defaultProfileProduction };
+    : ({
+        version: latestVersion,
+        ...defaultProfileProduction,
+      } as IRecipesState);
 
 export const foodSlice = createSlice({
   name: "food",

@@ -1,14 +1,17 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import clone from "just-clone";
+import { Migrator } from "../../../migration/migrator";
 import { IFullStoreState } from "../../../store";
 import { RecipeUuid } from "../recipes/types";
-import IMealPlanState, { DateString } from "./types";
+import { latestVersion, migrations } from "./migrations";
+import { isMealPlanValid } from "./schema";
+import { DateString, IMealPlanState } from "./types";
 
-function addDays(theDate: Date, days: number) {
+export function addDays(theDate: Date, days: number) {
   return new Date(theDate.getTime() + days * 24 * 60 * 60 * 1000);
 }
 
-function createDates(
+export function createDates(
   centreDate: Date,
   pastDays: number,
   futureDays: number
@@ -24,12 +27,13 @@ function createDates(
   });
 }
 
-function currentDate(): Date {
+export function currentDate(): Date {
   const time = new Date().setHours(12, 0, 0, 0);
   return new Date(time);
 }
 
 export const mealPlanEmptyState: IMealPlanState = {
+  version: latestVersion,
   plan: createDates(currentDate(), 7, 14).reduce(
     (previous, current) => ({
       ...previous,
@@ -40,6 +44,12 @@ export const mealPlanEmptyState: IMealPlanState = {
 };
 
 const initialState = mealPlanEmptyState;
+
+const migrator = new Migrator<IMealPlanState>(
+  migrations,
+  latestVersion,
+  isMealPlanValid
+);
 
 export const mealPlanSlice = createSlice({
   name: "mealPlanner",
@@ -94,12 +104,23 @@ export const mealPlanSlice = createSlice({
   },
   extraReducers: {
     "user/login": (state, action: PayloadAction<IFullStoreState>) => {
-      const mealPlan = clone(mealPlanEmptyState);
+      if (!action.payload.mealPlan) {
+        return state;
+      }
 
-      if (action.payload.mealPlan.plan) {
-        for (const [date, plan] of Object.entries(
-          action.payload.mealPlan.plan
-        )) {
+      let migratedMealPlan: IMealPlanState = action.payload.mealPlan;
+      if (migrator.needsMigrating(action.payload.mealPlan?.version)) {
+        try {
+          migratedMealPlan = migrator.migrate(action.payload.mealPlan);
+        } catch (err) {
+          console.log("An error occurrence migrating recipes: " + err);
+          return state;
+        }
+      }
+      let mealPlan = clone(mealPlanEmptyState);
+
+      if (migratedMealPlan.plan) {
+        for (const [date, plan] of Object.entries(migratedMealPlan.plan)) {
           if (date in mealPlan) {
             mealPlan.plan[date] = plan;
           }

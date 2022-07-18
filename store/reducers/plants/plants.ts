@@ -1,10 +1,10 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { Migrator } from "../../migration/migrator";
 import { IFullStoreState } from "../../store";
-import defaultProduction from "./defaultProduction.json"
+import defaultProduction from "./defaultProduction.json";
 import { latestVersion, migrations } from "./migrations";
 import IPlantsState, { IPlant, PlantUuid } from "./types";
-import validate from "./types.d.validator";
+import validate from "./types.validator";
 
 export const plantsEmptyState: IPlantsState = {
   version: latestVersion,
@@ -18,13 +18,12 @@ const migrator = new Migrator<IPlantsState>(
   validate
 );
 
-
 const initialState: IPlantsState =
   process.env.NODE_ENV === "development"
     ? plantsEmptyState
-    // TODO: For some reason, the correct enum string in the json for lightLevelKeys
-    // is not assignable to LightLevelKeys, but the unit in recipes is...
-    : { version: latestVersion, ...defaultProduction } as IPlantsState;
+    : // TODO: For some reason, the correct enum string in the json for lightLevelKeys
+      // is not assignable to LightLevelKeys, but the unit in recipes is...
+      ({ version: latestVersion, ...defaultProduction } as IPlantsState);
 
 export const plantsSlice = createSlice({
   name: "plants",

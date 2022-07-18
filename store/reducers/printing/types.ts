@@ -1,6 +1,13 @@
 import { IVersion } from "../../migration/types";
+import { S3Key, Image } from "../types";
 
 export type ModelUUID = string;
+
+export interface ICameraParams {
+  zoom: number;
+  position: number[];
+  quaternion: number[];
+}
 
 export interface IModelProps {
   filename: string;
@@ -27,5 +34,7 @@ export default interface IPrintingState {
    * a uuid needs to be passed around, and when updating state don't have to find the index
    * of the existing card in the cards list
    */
-  models: { [key: ModelUUID]: IModelProps };
+  // typescript does not like this primitive alias
+  // [key: string]: IModelProps
+  models: { [key: string]: IModelProps };
 }

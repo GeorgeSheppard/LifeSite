@@ -6,7 +6,6 @@ import { OrbitControls } from "@react-three/drei";
 import { useState, createRef, MouseEvent, useEffect } from "react";
 import {
   CanvasScreenshotter,
-  ICameraParams,
   ICanvasScreenshotterRef,
 } from "../../components/printing/canvas_screenshotter";
 import Model from "../../components/printing/model";
@@ -15,10 +14,10 @@ import { KeyboardArrowDown } from "@mui/icons-material";
 import { PreviewPopper } from "../../components/printing/preview_popper";
 import { useAppSelector } from "../../store/hooks/hooks";
 import { useRouter } from "next/router";
-import LinearProgress from '@mui/material/LinearProgress';
+import LinearProgress from "@mui/material/LinearProgress";
+import { ICameraParams } from "../../store/reducers/printing/types";
 
-export interface IPreview {
-}
+export interface IPreview {}
 
 export default function Preview(props: IPreview) {
   const router = useRouter();
@@ -46,7 +45,7 @@ export default function Preview(props: IPreview) {
     const load = async () => {
       try {
         const model = await loadModel(router.query.key as any as string);
-        setModelJSON(model.toJSON())
+        setModelJSON(model.toJSON());
       } catch (err) {
         console.error(err);
         return {
@@ -56,13 +55,12 @@ export default function Preview(props: IPreview) {
           },
         };
       }
-    }
+    };
 
     load();
     // Only run on mount
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
-
+  }, []);
 
   // TODO: Remove this awful hack, 48px is two times the padding on either side
   const canvasSideLength = `min(calc(100vh - ${headerHeight}px), 100vw - 48px)`;
@@ -76,7 +74,7 @@ export default function Preview(props: IPreview) {
   };
 
   if (!modelJSON) {
-    return <LinearProgress sx={{width: "100vw"}} />;
+    return <LinearProgress sx={{ width: "100vw" }} />;
   }
 
   return (
@@ -115,9 +113,18 @@ export default function Preview(props: IPreview) {
           }}
           gl={{ preserveDrawingBuffer: true }}
           camera={{
-            position: cameraParams.position as [x: number, y: number, z: number],
+            position: cameraParams.position as [
+              x: number,
+              y: number,
+              z: number
+            ],
             zoom: cameraParams.zoom,
-            quaternion: cameraParams.quaternion as [x: number, y: number, z: number, w: number],
+            quaternion: cameraParams.quaternion as [
+              x: number,
+              y: number,
+              z: number,
+              w: number
+            ],
             fov: 50,
           }}
           dpr={window.devicePixelRatio}

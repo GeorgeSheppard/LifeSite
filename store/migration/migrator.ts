@@ -7,7 +7,7 @@ export const initialVersion = "0.0.1";
 export class Migrator<T> {
   private _migrations: IMigration[];
   private _latestVersion: IVersion;
-  private _validate: (state: unknown) => T;
+  private _validate: (state: unknown) => boolean;
 
   /**
    * @param validate Validation function for output of migration, make sure it throws if it doesn't pass
@@ -15,7 +15,7 @@ export class Migrator<T> {
   constructor(
     migrations: IMigration[],
     latestVersion: IVersion,
-    validate: (state: unknown) => T
+    validate: (state: unknown) => boolean
   ) {
     this._migrations = migrations;
     this._latestVersion = latestVersion;
@@ -36,10 +36,11 @@ export class Migrator<T> {
       }
     }
 
-    // The CI compiled validation function throws an error if validation doesn't pass
-    newState = this._validate(newState);
-
-    return newState;
+    if (this._validate(newState)) {
+      return newState;
+    } else {
+      throw new Error(`Migration failed: ${newState}`);
+    }
   }
 
   public needsMigrating(currentVersion: IVersion): boolean {

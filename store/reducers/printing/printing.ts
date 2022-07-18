@@ -1,10 +1,10 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { Migrator } from "../../migration/migrator";
 import { IFullStoreState } from "../../store";
-import defaultProduction from "./defaultProduction.json"
+import defaultProduction from "./defaultProduction.json";
 import { latestVersion, migrations } from "./migrations";
 import IPrintingState, { IModelProps, ModelUUID } from "./types";
-import validate from "./types.d.validator"
+// import validate from "./types.validator";
 
 export const printingEmptyState: IPrintingState = {
   version: latestVersion,
@@ -20,7 +20,8 @@ const migrator = new Migrator<IPrintingState>(
 
 const initialState: IPrintingState =
   process.env.NODE_ENV === "development"
-    ? printingEmptyState : { version: latestVersion, ...defaultProduction } as IPrintingState
+    ? printingEmptyState
+    : ({ version: latestVersion, ...defaultProduction } as IPrintingState);
 
 export const printingSlice = createSlice({
   name: "printing",
