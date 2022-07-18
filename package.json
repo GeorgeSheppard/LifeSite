@@ -6,16 +6,17 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
+    "commit-tests": "yarn lint && yarn ts && yarn test",
     "husky-install": "husky install",
     "dev:ts": "yarn dev & yarn ts:watch",
     "ts": "tsc --noEmit --incremental",
     "ts:watch": "yarn ts --watch",
-    "test": "jest",
+    "test": "jest --watchAll=false",
     "test:watch": "jest --watch"
   },
   "husky": {
     "hooks": {
-      "pre-commit": "yarn lint && yarn test",
+      "pre-commit": "yarn commit-tests",
       "pre-push": "yarn lint"
     }
   },
