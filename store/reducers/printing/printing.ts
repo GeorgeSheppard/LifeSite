@@ -18,10 +18,15 @@ const migrator = new Migrator<IPrintingState>(
   isPrintingValid
 );
 
+export const productionDefault: IPrintingState = {
+  version: latestVersion,
+  ...defaultProduction,
+} as IPrintingState;
+
 const initialState: IPrintingState =
   process.env.NODE_ENV === "development"
     ? printingEmptyState
-    : ({ version: latestVersion, ...defaultProduction } as IPrintingState);
+    : productionDefault;
 
 export const printingSlice = createSlice({
   name: "printing",
@@ -52,6 +57,13 @@ export const printingSlice = createSlice({
           return migrator.migrate(action.payload.printing);
         } catch (err) {
           console.log("An error occurrence migrating printing: " + err);
+          return state;
+        }
+      } else {
+        if (!isPrintingValid(action.payload.printing)) {
+          console.error(
+            "Printing is invalid: " + JSON.stringify(action.payload.printing)
+          );
           return state;
         }
       }

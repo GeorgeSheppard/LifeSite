@@ -9,6 +9,11 @@ import { IPlantsState } from "./reducers/plants/types";
 import { IPrintingState } from "./reducers/printing/types";
 import { IMealPlanState } from "./reducers/food/meal_plan/types";
 import { IUserState } from "./reducers/user/types";
+import { isPrintingValid } from "./reducers/printing/schema";
+import { isPlantsValid } from "./reducers/plants/schema";
+import { isRecipesValid } from "./reducers/food/recipes/schema";
+import { isMealPlanValid } from "./reducers/food/meal_plan/schema";
+import { isUserValid } from "./reducers/user/schema";
 
 export interface IFullStoreState {
   printing: IPrintingState;
@@ -27,6 +32,16 @@ export const store = configureStore<IFullStoreState>({
     user,
   },
 });
+
+export const isStoreValid = (state: IFullStoreState) => {
+  return (
+    isPrintingValid(state.printing) &&
+    isPlantsValid(state.plants) &&
+    isRecipesValid(state.food) &&
+    isMealPlanValid(state.mealPlan) &&
+    isUserValid(state.user)
+  );
+};
 
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;

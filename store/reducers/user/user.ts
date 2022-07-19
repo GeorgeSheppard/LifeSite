@@ -41,6 +41,13 @@ export const userSlice = createSlice({
           console.log("An error occurrence migrating user: " + err);
           return state;
         }
+      } else {
+        if (!isUserValid(action.payload.user)) {
+          console.error(
+            "User is invalid: " + JSON.stringify(action.payload.mealPlan)
+          );
+          return state;
+        }
       }
 
       return action.payload.user;

@@ -39,11 +39,11 @@ export class Migrator<T> {
     if (this._validate(newState)) {
       return newState;
     } else {
-      throw new Error(`Migration failed: ${newState}`);
+      throw new Error(`Migration failed: ${JSON.stringify(newState)}`);
     }
   }
 
-  public needsMigrating(currentVersion: IVersion): boolean {
+  public needsMigrating(currentVersion?: IVersion): boolean {
     if (!currentVersion) {
       return true;
     }

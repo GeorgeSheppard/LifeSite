@@ -18,12 +18,15 @@ const migrator = new Migrator<IPlantsState>(
   isPlantsValid
 );
 
+// TODO: For some reason, the correct enum string in the json for lightLevelKeys
+// is not assignable to LightLevelKeys, but the unit in recipes is...
+export const productionDefault = {
+  version: latestVersion,
+  ...defaultProduction,
+} as IPlantsState;
+
 const initialState: IPlantsState =
-  process.env.NODE_ENV === "development"
-    ? plantsEmptyState
-    : // TODO: For some reason, the correct enum string in the json for lightLevelKeys
-      // is not assignable to LightLevelKeys, but the unit in recipes is...
-      ({ version: latestVersion, ...defaultProduction } as IPlantsState);
+  process.env.NODE_ENV === "development" ? plantsEmptyState : productionDefault;
 
 export const plantsSlice = createSlice({
   name: "plants",
@@ -57,6 +60,13 @@ export const plantsSlice = createSlice({
           return migrator.migrate(action.payload.plants);
         } catch (err) {
           console.log("An error occurrence migrating plants: " + err);
+          return state;
+        }
+      } else {
+        if (!isPlantsValid(action.payload.plants)) {
+          console.error(
+            "Plants is invalid: " + JSON.stringify(action.payload.plants)
+          );
           return state;
         }
       }

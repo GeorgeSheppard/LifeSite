@@ -113,7 +113,14 @@ export const mealPlanSlice = createSlice({
         try {
           migratedMealPlan = migrator.migrate(action.payload.mealPlan);
         } catch (err) {
-          console.log("An error occurrence migrating recipes: " + err);
+          console.error("An error occurrence migrating recipes: " + err);
+          return state;
+        }
+      } else {
+        if (!isMealPlanValid(migratedMealPlan)) {
+          console.error(
+            "Meal plan is invalid: " + JSON.stringify(action.payload.mealPlan)
+          );
           return state;
         }
       }

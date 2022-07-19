@@ -6,7 +6,7 @@ import { latestVersion, migrations } from "./migrations";
 import { IFullStoreState } from "../../../store";
 import { isRecipesValid } from "./schema";
 
-export const foodEmptyState = {
+export const recipesEmptyState = {
   version: latestVersion,
   cards: [],
   recipes: {},
@@ -19,13 +19,15 @@ const migrator = new Migrator<IRecipesState>(
   isRecipesValid
 );
 
+export const productionDefault = {
+  version: latestVersion,
+  ...defaultProfileProduction,
+} as IRecipesState;
+
 const initialState: IRecipesState =
   process.env.NODE_ENV === "development"
-    ? foodEmptyState
-    : ({
-        version: latestVersion,
-        ...defaultProfileProduction,
-      } as IRecipesState);
+    ? recipesEmptyState
+    : productionDefault;
 
 export const foodSlice = createSlice({
   name: "food",
@@ -57,6 +59,13 @@ export const foodSlice = createSlice({
           return migrator.migrate(action.payload.food);
         } catch (err) {
           console.log("An error occurrence migrating recipes: " + err);
+          return state;
+        }
+      } else {
+        if (!isRecipesValid(action.payload.food)) {
+          console.error(
+            "Recipes is invalid: " + JSON.stringify(action.payload.food)
+          );
           return state;
         }
       }
