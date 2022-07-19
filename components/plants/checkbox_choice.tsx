@@ -5,10 +5,14 @@ import Icon from "@mui/material/Icon";
 import Image from "next/image";
 import { CSSProperties } from "react";
 import { Brightness4, Brightness5, Brightness6 } from "@mui/icons-material";
-import { Checkboxes, WateringAmountKeys, LightLevelKeys } from "../../store/reducers/plants/types";
-import LittleWater from "../public/images/little_water.svg";
-import NormalWater from "../public/images/normal_water.svg";
-import LotsWater from "../public/images/lots_water.svg";
+import {
+  Checkboxes,
+  WateringAmountKeys,
+  LightLevelKeys,
+} from "../../store/reducers/plants/types";
+import LittleWater from "../../public/images/little_water.svg";
+import NormalWater from "../../public/images/normal_water.svg";
+import LotsWater from "../../public/images/lots_water.svg";
 
 export const WateringAmount: Checkboxes = {
   [WateringAmountKeys.LITTLE]: {
@@ -24,7 +28,6 @@ export const WateringAmount: Checkboxes = {
     icon: LotsWater,
   },
 };
-
 
 export const LightLevel: Checkboxes = {
   [LightLevelKeys.INDIRECT_SUN]: {
