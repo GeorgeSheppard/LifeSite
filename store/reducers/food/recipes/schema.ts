@@ -114,3 +114,4 @@ const recipesStateSchema: JSONSchemaType<IRecipesState> = {
 
 const ajv = new Ajv();
 export const isRecipesValid = ajv.compile(recipesStateSchema);
+export const isRecipeValid = ajv.compile(recipeSchema);

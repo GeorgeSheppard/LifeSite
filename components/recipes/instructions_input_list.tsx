@@ -69,7 +69,7 @@ export const InstructionInputList = memo(function InstructionList(
               });
             }}
             size="small"
-            sx={{ alignSelf: "center" }}
+            sx={{ alignSelf: "center", ml: 2, width: "70px" }}
           >
             <CloseIcon fontSize="small" />
           </IconButton>
@@ -77,6 +77,7 @@ export const InstructionInputList = memo(function InstructionList(
       ))}
       <CenteredComponent>
         <Button
+          sx={{ mt: 3 }}
           onClick={() => {
             setInstructions((prevInstructions) => {
               const newInstructions = { ...prevInstructions };

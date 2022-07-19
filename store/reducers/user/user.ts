@@ -44,7 +44,7 @@ export const userSlice = createSlice({
       } else {
         if (!isUserValid(action.payload.user)) {
           console.error(
-            "User is invalid: " + JSON.stringify(action.payload.mealPlan)
+            "User is invalid: " + JSON.stringify(action.payload.user)
           );
           return state;
         }

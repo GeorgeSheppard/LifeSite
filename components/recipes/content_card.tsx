@@ -33,6 +33,7 @@ import {
 import { Quantities } from "../../store/reducers/food/units";
 import { WrappedCardMedia } from "../cards/wrapped_card_media";
 import { IUseBooleanCallbacks, useBoolean } from "../hooks/use_boolean";
+import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 
 export interface IRecipeCardWithDialogProps {
   uuid: RecipeUuid;
@@ -119,30 +120,51 @@ export const RecipeCard = (props: IRecipeCard) => {
           {recipe?.name}
         </Typography>
         <div style={{ flexGrow: 1, paddingRight: 2 }} />
+        <div style={{ paddingLeft: 2 }} />
         <IconButton
           onClick={(event) => {
             event?.stopPropagation();
-            turnOn();
+            const ingredients = recipe.components.flatMap(
+              (component) => component.ingredients
+            );
+            const text = ingredients
+              .map((ingredient) =>
+                Quantities.toStringWithIngredient(
+                  ingredient.name,
+                  ingredient.quantity
+                )
+              )
+              .join("\n");
+            navigator.clipboard.writeText(text);
           }}
           size="small"
-          sx={{ alignSelf: "center" }}
+          sx={{ alignSelf: "center", mr: 1 }}
         >
-          <DeleteIcon fontSize="small" htmlColor="#7d2020" />
+          <ContentCopyIcon fontSize="small" htmlColor="#212121" />
         </IconButton>
-        <div style={{ paddingLeft: 2 }} />
         <IconButton
           onClick={(event) => {
             event?.stopPropagation();
             onEdit();
           }}
           size="small"
-          sx={{ alignSelf: "center", pr: 1 }}
+          sx={{ alignSelf: "center", mr: 1 }}
         >
           <EditIcon fontSize="small" htmlColor="#212121" />
         </IconButton>
+        <IconButton
+          onClick={(event) => {
+            event?.stopPropagation();
+            turnOn();
+          }}
+          size="small"
+          sx={{ alignSelf: "center", mr: 1 }}
+        >
+          <DeleteIcon fontSize="small" htmlColor="#7d2020" />
+        </IconButton>
       </>
     );
-  }, [recipe?.name, onEdit, setters.turnOn]);
+  }, [recipe?.name, onEdit, setters.turnOn, recipe.components]);
 
   return (
     <Card

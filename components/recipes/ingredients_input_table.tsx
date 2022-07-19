@@ -1,5 +1,6 @@
 import AddIcon from "@mui/icons-material/Add";
 import CloseIcon from "@mui/icons-material/Close";
+import { Input } from "@mui/material";
 import Button from "@mui/material/Button";
 import FormControl from "@mui/material/FormControl";
 import IconButton from "@mui/material/IconButton";
@@ -45,13 +46,13 @@ export const IngredientsInputTable = memo(function IngredientTable(
           <TableHead>
             <TableRow>
               <TableCell>Ingredient</TableCell>
-              <TableCell align="right" size="small">
+              <TableCell width="120px" align="left" size="small">
                 Unit
               </TableCell>
-              <TableCell align="right" size="small">
+              <TableCell width="110px" align="left" size="small">
                 Quantity
               </TableCell>
-              <TableCell align="right" size="small">
+              <TableCell width="70px" align="left" size="small">
                 {" "}
               </TableCell>
             </TableRow>
@@ -83,7 +84,7 @@ export const IngredientsInputTable = memo(function IngredientTable(
                     error={ingredient.name.length === 0}
                   />
                 </TableCell>
-                <TableCell align="right" size="small">
+                <TableCell width="120px" align="left" size="small">
                   <FormControl variant="standard">
                     <Select
                       labelId="demo-simple-select-standard-label"
@@ -108,7 +109,6 @@ export const IngredientsInputTable = memo(function IngredientTable(
                         });
                       }}
                       label="Unit"
-                      sx={{ width: "90px" }}
                       error={!ingredient.quantity.unit}
                     >
                       {Object.entries(Unit).map((value) => {
@@ -121,13 +121,19 @@ export const IngredientsInputTable = memo(function IngredientTable(
                     </Select>
                   </FormControl>
                 </TableCell>
-                <TableCell align="right" size="small">
-                  <TextField
+                <TableCell width="110px" align="left" size="small">
+                  <Input
                     value={ingredient.quantity.value}
                     id="ingredient quantity"
-                    variant="standard"
+                    // variant="standard"
                     margin="none"
+                    type="number"
                     multiline
+                    onKeyPress={(event) => {
+                      if (!/[0-9.]/.test(event.key)) {
+                        event.preventDefault();
+                      }
+                    }}
                     onChange={(event: ChangeEvent<HTMLTextAreaElement>) => {
                       setIngredients((prevIngredients) => {
                         const newIngredients = { ...prevIngredients };
@@ -142,7 +148,10 @@ export const IngredientsInputTable = memo(function IngredientTable(
                           ...prevIngredients[uuid],
                           quantity: {
                             unit: prevIngredients[uuid].quantity.unit,
-                            value: parseFloat(event.target.value),
+                            value:
+                              event.target.value.length > 0
+                                ? parseFloat(event.target.value)
+                                : undefined,
                           },
                         };
                         props.componentFormData.updateIngredients(
@@ -152,7 +161,6 @@ export const IngredientsInputTable = memo(function IngredientTable(
                         return newIngredients;
                       });
                     }}
-                    sx={{ width: "50px" }}
                     disabled={ingredient.quantity.unit === Unit.NO_UNIT}
                     error={
                       ingredient.quantity.unit !== Unit.NO_UNIT &&
@@ -163,7 +171,7 @@ export const IngredientsInputTable = memo(function IngredientTable(
                     }
                   />
                 </TableCell>
-                <TableCell align="right" size="small">
+                <TableCell align="left" width="70px" size="small">
                   <IconButton
                     onClick={() => {
                       setIngredients((prevIngredients) => {
@@ -189,6 +197,7 @@ export const IngredientsInputTable = memo(function IngredientTable(
       </TableContainer>
       <CenteredComponent>
         <Button
+          sx={{ mt: 3 }}
           onClick={() => {
             setIngredients((prevIngredients) => {
               const newIngredients = { ...prevIngredients };

@@ -39,16 +39,16 @@ export const ComponentForm = (props: IComponentFormProps) => {
     <Accordion>
       <AccordionSummary expandIcon={<ExpandMoreIcon />}>
         <TextField
-          key="MethodTextField"
           fullWidth
           value={name}
+          label="Section name"
           id="name"
           variant="standard"
           margin="none"
           onClick={stopPropagation}
           onChange={(event: ChangeEvent<HTMLTextAreaElement>) => {
             component.name = event.target.value;
-            setName(event.target.value)
+            setName(event.target.value);
           }}
         />
         <div style={{ flexGrow: 1 }} />
@@ -65,30 +65,22 @@ export const ComponentForm = (props: IComponentFormProps) => {
         </IconButton>
       </AccordionSummary>
       <AccordionDetails>
-        <List
-          subheader={<ListSubheader component="div">Ingredients</ListSubheader>}
-        >
-          <IngredientsInputTable
-            componentFormData={componentFormData}
-            uuid={uuid}
-          />
-        </List>
-        <Divider sx={{ pt: 1, pb: 1 }} />
-        <FormControl sx={{ pt: 1 }}>
-          <Tooltip title="Can it last in the cupboard, or freezer">
-            <FormControlLabel
-              control={
-                <Checkbox
-                  checked={storeable}
-                  onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-                    component.storeable = event.target.checked;
-                    setters.setState(event.target.checked)
-                  }}
-                />
-              }
-              label="Storeable"
-            />
-          </Tooltip>
+        <Divider textAlign="center">Ingredients</Divider>
+        <IngredientsInputTable
+          componentFormData={componentFormData}
+          uuid={uuid}
+        />
+        <Divider textAlign="center" sx={{ pt: 5, pb: 1 }}>
+          Instructions
+        </Divider>
+        <InstructionInputList
+          componentFormData={componentFormData}
+          uuid={uuid}
+        />
+        <Divider textAlign="center" sx={{ pt: 5, pb: 1 }}>
+          Optional
+        </Divider>
+        <FormControl sx={{ pt: 1, flexDirection: "row", alignItems: "end" }}>
           <TextField
             label="Servings"
             value={servings}
@@ -99,19 +91,28 @@ export const ComponentForm = (props: IComponentFormProps) => {
             onChange={(event: ChangeEvent<HTMLTextAreaElement>) => {
               const newServings = parseInt(event.target.value, 10);
               const validServings = isNaN(newServings) ? 1 : newServings;
-              component.servings = validServings
+              component.servings = validServings;
               setServings(validServings);
             }}
             sx={{ width: "100px" }}
           />
+          <Tooltip title="Can it last in the cupboard, or freezer">
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={storeable}
+                  onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                    component.storeable = event.target.checked;
+                    setters.setState(event.target.checked);
+                  }}
+                  size="small"
+                />
+              }
+              label="Storeable"
+              sx={{ ml: 5 }}
+            />
+          </Tooltip>
         </FormControl>
-        <Divider sx={{ pt: 1, pb: 1 }} />
-        <List subheader={<ListSubheader component="div">Method</ListSubheader>}>
-          <InstructionInputList
-            componentFormData={componentFormData}
-            uuid={uuid}
-          />
-        </List>
       </AccordionDetails>
     </Accordion>
   );

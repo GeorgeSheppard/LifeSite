@@ -17,6 +17,7 @@ import { useAppDispatch, useAppSelector } from "../../store/hooks/hooks";
 import { addOrUpdateRecipe } from "../../store/reducers/food/recipes/recipes";
 import clone from "just-clone";
 import { RecipeUuid } from "../../store/reducers/food/recipes/types";
+import { isRecipeValid } from "../../store/reducers/food/recipes/schema";
 
 const EditUploadRecipe = () => {
   const router = useRouter();
@@ -72,16 +73,29 @@ const EditUploadRecipe = () => {
       return;
     }
 
-    dispatch(
-      addOrUpdateRecipe({
-        uuid: recipeData.uuid,
-        name: recipeName,
-        description,
-        images,
-        components: Object.values(componentFormData.components),
-      })
-    );
-    router.push("/food");
+    const recipe = {
+      uuid: recipeData.uuid,
+      name: recipeName,
+      description,
+      images,
+      components: Object.values(componentFormData.components),
+    };
+
+    if (isRecipeValid(recipe)) {
+      dispatch(
+        addOrUpdateRecipe({
+          uuid: recipeData.uuid,
+          name: recipeName,
+          description,
+          images,
+          components: Object.values(componentFormData.components),
+        })
+      );
+      router.push("/food");
+    } else {
+      setFormAlert("Error validating recipe");
+      console.error("Validation error creating recipe" + recipe);
+    }
   }, [
     router,
     recipeData.uuid,
@@ -119,6 +133,7 @@ const EditUploadRecipe = () => {
           onChange={(event: ChangeEvent<HTMLTextAreaElement>) =>
             setDescription(event.target.value)
           }
+          sx={{ mt: 2 }}
         />
         <UploadDisplayImages images={images} setImages={setImages} />
         {Object.entries(componentFormData.components).map(([key, _]) => (
@@ -131,6 +146,7 @@ const EditUploadRecipe = () => {
         ))}
         <CenteredComponent>
           <Button
+            sx={{ mt: 2, mb: 3 }}
             onClick={() => {
               componentFormData.components[uuidv4()] = {
                 name: "",
