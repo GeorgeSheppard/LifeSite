@@ -3,8 +3,8 @@ import { Migrator } from "../../migration/migrator";
 import { IFullStoreState } from "../../store";
 import defaultProduction from "./defaultProduction.json";
 import { latestVersion, migrations } from "./migrations";
-import IPrintingState, { IModelProps, ModelUUID } from "./types";
-// import validate from "./types.validator";
+import { isPrintingValid } from "./schema";
+import { IPrintingState, IModelProps, ModelUuid } from "./types";
 
 export const printingEmptyState: IPrintingState = {
   version: latestVersion,
@@ -15,7 +15,7 @@ export const printingEmptyState: IPrintingState = {
 const migrator = new Migrator<IPrintingState>(
   migrations,
   latestVersion,
-  validate
+  isPrintingValid
 );
 
 const initialState: IPrintingState =
@@ -35,7 +35,7 @@ export const printingSlice = createSlice({
         state.cards.unshift(action.payload.uuid);
       }
     },
-    deleteModel: (state, action: PayloadAction<ModelUUID>) => {
+    deleteModel: (state, action: PayloadAction<ModelUuid>) => {
       const uuid = action.payload;
       delete state.models[uuid];
       state.cards = state.cards.filter((cardUuid) => cardUuid !== uuid);

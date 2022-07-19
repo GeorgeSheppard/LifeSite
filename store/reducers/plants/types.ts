@@ -28,7 +28,6 @@ export enum WateringAmountKeys {
   LOTS = "LOTS",
 }
 
-// export type TemperatureRange = [low: number, high: number];
 export type TemperatureRange = number[];
 
 export type PlantUuid = string;
@@ -44,11 +43,8 @@ export interface IPlant {
   reminders: IReminder[];
 }
 
-// Do not change the name, part of CI validation process
-export default interface IPlantsState {
+export interface IPlantsState {
   version: IVersion;
   cards: PlantUuid[];
-  // typescript does not like this primitive alias
-  // [key: PlantUuid]: IPlant
-  plants: { [key: string]: IPlant };
+  plants: { [key: PlantUuid]: IPlant };
 }

@@ -5,9 +5,7 @@ export type DateString = string;
 
 export interface IMealPlanState {
   version: IVersion;
-  // typescript does not like this primitive alias
-  // [index: DateString]: IDailyMealPlan
-  plan: { [index: string]: IDailyMealPlan };
+  plan: { [index: DateString]: IDailyMealPlan };
 }
 
 export type IDailyMealPlan = IMealPlanItem[];

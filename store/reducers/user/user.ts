@@ -2,19 +2,19 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { initialVersion, Migrator } from "../../migration/migrator";
 import { IFullStoreState } from "../../store";
 import { latestVersion, migrations } from "./migrations";
-import IUserState from "./types";
-import validate from "./types.d.validator"
+import { IUserState } from "./types";
+import { isUserValid } from "./schema";
 
 export const userEmptyState: IUserState = {
-  version: latestVersion
-}
+  version: latestVersion,
+};
 
 const initialState: IUserState = userEmptyState;
 
 const migrator = new Migrator<IUserState>(
   migrations,
   latestVersion,
-  validate
+  isUserValid
 );
 
 export const userSlice = createSlice({
@@ -30,7 +30,7 @@ export const userSlice = createSlice({
       // was a number, which means the migrator won't be able to tell whether it
       // should be migrated. We first change to semver then allow the migrator
       // to operate
-      if (typeof action.payload.user?.version === 'number') {
+      if (typeof action.payload.user?.version === "number") {
         action.payload.user.version = initialVersion;
       }
 

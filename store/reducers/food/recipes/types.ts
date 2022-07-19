@@ -23,6 +23,11 @@ export interface IInstruction {
   optional?: boolean;
 }
 
+export interface IQuantity {
+  unit: Unit;
+  value?: number;
+}
+
 export interface IRecipeIngredient {
   name: IIngredientName;
   quantity: IQuantity;
@@ -45,9 +50,7 @@ export interface IRecipe {
 }
 
 export type IIngredientsDatabase = {
-  // typescript does not like this primitive alias
-  // [index: IIngredientName]: IIngredient
-  [index: string]: IIngredient;
+  [index: IIngredientName]: IIngredient;
 };
 
 export enum Unit {
@@ -62,17 +65,9 @@ export enum Unit {
   NUMBER = "quantity",
 }
 
-export interface IQuantity {
-  unit?: Unit;
-  value?: number;
-}
-
-// Do not change the name, part of CI validation process
-export default interface IRecipesState {
+export interface IRecipesState {
   version: IVersion;
   cards: RecipeUuid[];
-  // typescript does not like this primitive alias
-  // [key: RecipeUuid]: IRecipe
-  recipes: { [key: string]: IRecipe };
+  recipes: { [key: RecipeUuid]: IRecipe };
   ingredients: IIngredientsDatabase;
 }

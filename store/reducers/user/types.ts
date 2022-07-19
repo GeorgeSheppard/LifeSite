@@ -1,5 +1,5 @@
 import { IVersion } from "../../migration/types";
 
-export default interface IUserState {
+export interface IUserState {
   version: IVersion;
 }

@@ -1,7 +1,7 @@
 import { IVersion } from "../../migration/types";
 import { S3Key, Image } from "../types";
 
-export type ModelUUID = string;
+export type ModelUuid = string;
 
 export interface ICameraParams {
   zoom: number;
@@ -17,24 +17,21 @@ export interface IModelProps {
    */
   image?: Image;
   key: S3Key;
-  uuid: ModelUUID;
+  uuid: ModelUuid;
   cameraParams?: ICameraParams;
 }
 
-// Do not change the name, part of CI validation process
-export default interface IPrintingState {
+export interface IPrintingState {
   version: IVersion;
   /**
    * The array of uuids corresponding to each card
    */
-  cards: string[];
+  cards: ModelUuid[];
   /**
    * Map from uuid to the data associated with the card
    * It's much easier to maintain the store and use client side like this, as only
    * a uuid needs to be passed around, and when updating state don't have to find the index
    * of the existing card in the cards list
    */
-  // typescript does not like this primitive alias
-  // [key: string]: IModelProps
-  models: { [key: string]: IModelProps };
+  models: { [key: ModelUuid]: IModelProps };
 }

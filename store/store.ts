@@ -4,11 +4,11 @@ import plants from "./reducers/plants/plants";
 import food from "./reducers/food/recipes/recipes";
 import mealPlan from "./reducers/food/meal_plan/meal_plan";
 import user from "./reducers/user/user";
-import IRecipesState from "./reducers/food/recipes/types";
-import IPlantsState from "./reducers/plants/types"
-import IPrintingState from "./reducers/printing/types"
-import IMealPlanState from "./reducers/food/meal_plan/types"
-import IUserState from "./reducers/user/types"
+import { IRecipesState } from "./reducers/food/recipes/types";
+import { IPlantsState } from "./reducers/plants/types";
+import { IPrintingState } from "./reducers/printing/types";
+import { IMealPlanState } from "./reducers/food/meal_plan/types";
+import { IUserState } from "./reducers/user/types";
 
 export interface IFullStoreState {
   printing: IPrintingState;
@@ -24,7 +24,7 @@ export const store = configureStore<IFullStoreState>({
     plants,
     food,
     mealPlan,
-    user
+    user,
   },
 });
 

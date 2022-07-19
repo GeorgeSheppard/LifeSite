@@ -1,10 +1,10 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import IRecipesState, { IRecipe, RecipeUuid } from "./types";
+import { IRecipesState, IRecipe, RecipeUuid } from "./types";
 import defaultProfileProduction from "./defaultProduction.json";
 import { Migrator } from "../../../migration/migrator";
 import { latestVersion, migrations } from "./migrations";
-import validate from "./types.validator";
 import { IFullStoreState } from "../../../store";
+import { isRecipesValid } from "./schema";
 
 export const foodEmptyState = {
   version: latestVersion,
@@ -16,7 +16,7 @@ export const foodEmptyState = {
 const migrator = new Migrator<IRecipesState>(
   migrations,
   latestVersion,
-  validate
+  isRecipesValid
 );
 
 const initialState: IRecipesState =

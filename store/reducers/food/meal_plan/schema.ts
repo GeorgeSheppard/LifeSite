@@ -1,8 +1,6 @@
 import Ajv, { JSONSchemaType } from "ajv";
 import { IDailyMealPlan, IMealPlanItem, IMealPlanState } from "./types";
 
-const ajv = new Ajv();
-
 const mealPlanItemSchema: JSONSchemaType<IMealPlanItem> = {
   type: "object",
   properties: {
@@ -32,4 +30,5 @@ const mealPlanStateSchema: JSONSchemaType<IMealPlanState> = {
   required: ["version", "plan"],
 };
 
+const ajv = new Ajv();
 export const isMealPlanValid = ajv.compile(mealPlanStateSchema);

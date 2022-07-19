@@ -3,8 +3,8 @@ import { Migrator } from "../../migration/migrator";
 import { IFullStoreState } from "../../store";
 import defaultProduction from "./defaultProduction.json";
 import { latestVersion, migrations } from "./migrations";
-import IPlantsState, { IPlant, PlantUuid } from "./types";
-import validate from "./types.validator";
+import { isPlantsValid } from "./schema";
+import { IPlantsState, IPlant, PlantUuid } from "./types";
 
 export const plantsEmptyState: IPlantsState = {
   version: latestVersion,
@@ -15,7 +15,7 @@ export const plantsEmptyState: IPlantsState = {
 const migrator = new Migrator<IPlantsState>(
   migrations,
   latestVersion,
-  validate
+  isPlantsValid
 );
 
 const initialState: IPlantsState =
