@@ -32,7 +32,7 @@ const Recipes = () => {
     <main>
       <Container sx={{ py: 8 }} maxWidth="xl">
         <div style={{ display: "flex", flexDirection: "row" }}>
-          <Box component="div">
+          <Box component="div" width="100%">
             <Grid item key={"Search"}>
               <SearchChips keys={keys} setKeys={setKeys} />
               <OutlinedInput

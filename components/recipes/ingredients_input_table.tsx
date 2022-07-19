@@ -14,7 +14,10 @@ import TableRow from "@mui/material/TableRow";
 import TextField from "@mui/material/TextField";
 import { ChangeEvent, memo, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
-import { IRecipeIngredient, Unit } from "../../store/reducers/food/recipes/types";
+import {
+  IRecipeIngredient,
+  Unit,
+} from "../../store/reducers/food/recipes/types";
 import { CenteredComponent } from "../core/centered_component";
 import { ComponentsFormData } from "./component_form_data";
 
@@ -139,7 +142,7 @@ export const IngredientsInputTable = memo(function IngredientTable(
                           ...prevIngredients[uuid],
                           quantity: {
                             unit: prevIngredients[uuid].quantity.unit,
-                            value: event.target.value as any as number,
+                            value: parseFloat(event.target.value),
                           },
                         };
                         props.componentFormData.updateIngredients(
