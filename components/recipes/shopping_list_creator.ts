@@ -12,21 +12,21 @@ export function createShoppingList(
 ) {
   const ingredients: { [key: IIngredientName]: Set<IQuantity> } = {};
 
-  mealPlan.forEach((day) => {
-    day.forEach((meal) => {
-      const { uuid, servings } = meal;
+  // mealPlan.forEach((day) => {
+  //   day.forEach((meal) => {
+  //     const { uuid, servings } = meal;
 
-      const recipe = recipes[uuid];
-      if (!recipe) {
-        console.error(`Could not find recipe with id: ${uuid}`);
-        return;
-      }
+  //     const recipe = recipes[uuid];
+  //     if (!recipe) {
+  //       console.error(`Could not find recipe with id: ${uuid}`);
+  //       return;
+  //     }
 
-      recipe.components.forEach((component) => {
-        component.servings;
-      });
-    });
-  });
+  //     recipe.components.forEach((component) => {
+  //       component.servings;
+  //     });
+  //   });
+  // });
 
   return "here is a recipe";
 }

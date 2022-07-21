@@ -1,6 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { IRecipesState, IRecipe, RecipeUuid } from "./types";
 import defaultProfileProduction from "./defaultProduction.json";
+import defaultProfileDevelopment from "./defaultDevelopment.json";
 import { Migrator } from "../../../migration/migrator";
 import { latestVersion, migrations } from "./migrations";
 import { IFullStoreState } from "../../../store";
@@ -20,13 +21,17 @@ const migrator = new Migrator<IRecipesState>(
 );
 
 export const productionDefault = {
-  version: latestVersion,
   ...defaultProfileProduction,
+  version: latestVersion,
+} as IRecipesState;
+export const developmentDefault = {
+  ...defaultProfileDevelopment,
+  version: latestVersion,
 } as IRecipesState;
 
 const initialState: IRecipesState =
   process.env.NODE_ENV === "development"
-    ? recipesEmptyState
+    ? developmentDefault
     : productionDefault;
 
 export const foodSlice = createSlice({

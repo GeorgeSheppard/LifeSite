@@ -21,8 +21,8 @@ const migrator = new Migrator<IPlantsState>(
 // TODO: For some reason, the correct enum string in the json for lightLevelKeys
 // is not assignable to LightLevelKeys, but the unit in recipes is...
 export const productionDefault = {
-  version: latestVersion,
   ...defaultProduction,
+  version: latestVersion,
 } as IPlantsState;
 
 const initialState: IPlantsState =

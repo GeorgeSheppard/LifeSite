@@ -58,6 +58,7 @@ const recipeComponentSchema: JSONSchemaType<IRecipeComponent> = {
   type: "object",
   properties: {
     name: { type: "string" },
+    uuid: { type: "string" },
     ingredients: {
       type: "array",
       items: recipeIngredientSchema,

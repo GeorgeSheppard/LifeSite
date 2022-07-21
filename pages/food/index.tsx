@@ -1,16 +1,21 @@
 import AddIcon from "@mui/icons-material/Add";
-import { Box, Card, Container, Grid } from "@mui/material";
+import { Box, Button, ButtonGroup, Card, Container, Grid } from "@mui/material";
 import OutlinedInput from "@mui/material/OutlinedInput";
 import { motion } from "framer-motion";
 import { NextRouter, useRouter } from "next/router";
 import { memo, useCallback, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
+import { headerHeight } from "../../components/core/header";
 import { RecipeCardWithDialog } from "../../components/recipes/content_card";
+import { Planner } from "../../components/recipes/dnd_calendar";
 import { useRecipeSearch } from "../../components/recipes/search_bar";
 import { SearchChips } from "../../components/recipes/search_chip";
+import { createShoppingList } from "../../components/recipes/shopping_list_creator";
 import { useAppSelector } from "../../store/hooks/hooks";
 import { DateString } from "../../store/reducers/food/meal_plan/types";
 import { RecipeUuid } from "../../store/reducers/food/recipes/types";
+import CheckBoxIcon from "@mui/icons-material/CheckBox";
+import CheckBoxOutlineBlankIcon from "@mui/icons-material/CheckBoxOutlineBlank";
 
 const Recipes = () => {
   const [keys, setKeys] = useState(() => new Set(["name"]));
@@ -45,7 +50,7 @@ const Recipes = () => {
             </Grid>
             <RecipeGrid searchResults={searchResults} />
           </Box>
-          {/* <Box
+          <Box
             sx={{
               display: {
                 xs: "none",
@@ -64,14 +69,11 @@ const Recipes = () => {
               style={{
                 flexGrow: 1,
                 minWidth: 100,
-                height: `calc(100vh - 64px - ${headerHeight}px - 20px)`,
+                height: `calc(100vh - 64px - ${headerHeight}px - 40px)`,
                 maxWidth: "400px",
                 position: "sticky",
                 top: 0,
                 overflowY: "scroll",
-                // TODO: Border of cards get cut off without this
-                paddingTop: 3,
-                paddingBottom: 3,
               }}
             >
               <ButtonGroup sx={{ marginLeft: 2, width: 332, marginBottom: 2 }}>
@@ -86,17 +88,17 @@ const Recipes = () => {
                   variant="outlined"
                   fullWidth
                   onClick={() => {
-                    const meals = Object.keys(mealPlan).map((day) => {
-                      if (selected.has(day)) {
-                        return mealPlan[day];
-                      } else {
-                        return [];
-                      }
-                    });
-                    const text = createShoppingList(recipes, meals);
-                    if (text) {
-                      navigator.clipboard.writeText(text);
-                    }
+                    // const meals = Object.keys(mealPlan).map((day) => {
+                    //   if (selected.has(day)) {
+                    //     return mealPlan[day];
+                    //   } else {
+                    //     return [];
+                    //   }
+                    // });
+                    // const text = createShoppingList(recipes, meals);
+                    // if (text) {
+                    //   navigator.clipboard.writeText(text);
+                    // }
                   }}
                 >
                   Create shopping list
@@ -110,7 +112,7 @@ const Recipes = () => {
                 <Planner selected={selected} setSelected={setSelected} />
               </div>
             </div>
-          </Box> */}
+          </Box>
         </div>
       </Container>
     </main>

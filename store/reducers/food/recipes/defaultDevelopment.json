@@ -125,12 +125,7 @@
             "uuid": "56f61031-4e16-47c3-ae87-43280b746a9f",
             "name": "Vietnamese Pho",
             "description": "A Vietnamese based broth dish.",
-            "images": [
-                {
-                    "key": "31ae6d9d-60f4-46cb-bddc-7fd2810d7e7d/images/fea5cb86-cc71-4504-9ee9-2e928f79f930_Vietnamese-Pho-Recipe-Beef-Chicken-Pork-Shrimp-2.jpg",
-                    "timestamp": 1650281482472
-                }
-            ],
+            "images": [],
             "components": [
                 {
                     "name": "Broth",
@@ -271,12 +266,7 @@
             "uuid": "de76eb6f-b76f-48c4-bcc2-ea0038532e96",
             "name": "Red Thai Curry",
             "description": "Variation on red Thai curry.",
-            "images": [
-                {
-                    "key": "31ae6d9d-60f4-46cb-bddc-7fd2810d7e7d/images/fdbf5bb1-5f3b-43b6-9d97-3ee2e91a879c_Thai-Curry-Sauce-71.jpg",
-                    "timestamp": 1650281776035
-                }
-            ],
+            "images": [],
             "components": [
                 {
                     "name": "Sauce",
@@ -397,12 +387,7 @@
             "uuid": "ebe53802-c507-4d2a-b8ea-ddee2e8c40b5",
             "name": "Chilli con carne",
             "description": "Spiced beef in a tomato sauce, with kidney beans and onions",
-            "images": [
-                {
-                    "key": "31ae6d9d-60f4-46cb-bddc-7fd2810d7e7d/images/3fa1ddc2-7be4-4774-a745-b6b22a0efe68_ChilliConCarne (1).jpg",
-                    "timestamp": 1650401463682
-                }
-            ],
+            "images": [],
             "components": [
                 {
                     "name": "",
@@ -552,12 +537,7 @@
             "uuid": "967e8b77-1d04-4b3c-9b58-c750ccb3b1dc",
             "name": "Vegetable fried rice",
             "description": "",
-            "images": [
-                {
-                    "key": "31ae6d9d-60f4-46cb-bddc-7fd2810d7e7d/images/adfd15f4-fdee-424b-b525-b95b6a496a6f_vegetable-fried-rice-550x757.jpg",
-                    "timestamp": 1650401671189
-                }
-            ],
+            "images": [],
             "components": [
                 {
                     "name": "",
@@ -685,12 +665,7 @@
             "uuid": "bf81e569-aaac-4e94-b1c4-aebc8351d764",
             "name": "Chicken pad thai",
             "description": "",
-            "images": [
-                {
-                    "key": "31ae6d9d-60f4-46cb-bddc-7fd2810d7e7d/images/73aa1247-af67-4827-a368-965cab9dfc59_Chicken-Pad-Thai_9.jpg",
-                    "timestamp": 1650402631347
-                }
-            ],
+            "images": [],
             "components": [
                 {
                     "name": "Sauce",

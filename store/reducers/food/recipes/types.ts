@@ -2,6 +2,7 @@ import { IVersion } from "../../../migration/types";
 import { Image } from "../../types";
 
 export type RecipeUuid = string;
+export type ComponentUuid = string;
 export type IngredientUuid = string;
 export type IIngredientName = string;
 
@@ -35,6 +36,7 @@ export interface IRecipeIngredient {
 
 export interface IRecipeComponent {
   name: string;
+  uuid: ComponentUuid;
   ingredients: IRecipeIngredient[];
   instructions: IInstruction[];
   storeable?: boolean;

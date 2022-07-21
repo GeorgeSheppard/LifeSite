@@ -1,5 +1,11 @@
 import { Migrator } from "../../../store/migration/migrator";
 import { IMigration } from "../../../store/migration/types";
+import profile from "../../../store/reducers/food/recipes/defaultProduction.json";
+import {
+  latestVersion,
+  migrations,
+} from "../../../store/reducers/food/recipes/migrations";
+import { isRecipesValid } from "../../../store/reducers/food/recipes/schema";
 
 describe("Migrator", () => {
   describe("needsMigrating", () => {

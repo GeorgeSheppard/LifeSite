@@ -1,5 +1,5 @@
 import { IVersion } from "../../../migration/types";
-import { RecipeUuid } from "../recipes/types";
+import { ComponentUuid, RecipeUuid } from "../recipes/types";
 
 export type DateString = string;
 
@@ -8,9 +8,11 @@ export interface IMealPlanState {
   plan: { [index: DateString]: IDailyMealPlan };
 }
 
-export type IDailyMealPlan = IMealPlanItem[];
+export interface IDailyMealPlan {
+  [index: RecipeUuid]: IComponentItem[];
+}
 
-export interface IMealPlanItem {
-  uuid: RecipeUuid;
+export interface IComponentItem {
+  componentId: ComponentUuid;
   servings: number;
 }

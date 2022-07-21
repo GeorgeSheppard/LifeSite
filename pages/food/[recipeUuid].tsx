@@ -38,6 +38,7 @@ const EditUploadRecipe = () => {
             ingredients: [],
             instructions: [],
             storeable: false,
+            uuid: uuidv4(),
           },
         ],
       };
@@ -153,6 +154,7 @@ const EditUploadRecipe = () => {
                 ingredients: [],
                 instructions: [],
                 storeable: false,
+                uuid: uuidv4(),
               };
               forceUpdate();
             }}

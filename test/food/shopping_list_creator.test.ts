@@ -12,15 +12,6 @@ const recipes: { [key: RecipeUuid]: IRecipe } = {
   },
 };
 
-const mealPlan: IDailyMealPlan[] = [
-  [
-    {
-      uuid: "1",
-      servings: 1,
-    },
-  ],
-];
+const mealPlan: IDailyMealPlan = {};
 
-test("create a shopping list", () => {
-  // expect(createShoppingList(recipes, mealPlan)).toBe(2);
-});
+test("", () => {});

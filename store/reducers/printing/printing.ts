@@ -19,8 +19,8 @@ const migrator = new Migrator<IPrintingState>(
 );
 
 export const productionDefault: IPrintingState = {
-  version: latestVersion,
   ...defaultProduction,
+  version: latestVersion,
 } as IPrintingState;
 
 const initialState: IPrintingState =

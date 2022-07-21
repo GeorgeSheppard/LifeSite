@@ -1,18 +1,21 @@
 import Ajv, { JSONSchemaType } from "ajv";
-import { IDailyMealPlan, IMealPlanItem, IMealPlanState } from "./types";
+import { IComponentItem, IDailyMealPlan, IMealPlanState } from "./types";
 
-const mealPlanItemSchema: JSONSchemaType<IMealPlanItem> = {
+const componentItemSchema: JSONSchemaType<IComponentItem> = {
   type: "object",
   properties: {
-    uuid: { type: "string" },
+    componentId: { type: "string" },
     servings: { type: "number" },
   },
-  required: ["uuid", "servings"],
+  required: ["componentId", "servings"],
 };
 
 const dailyMealPlanSchema: JSONSchemaType<IDailyMealPlan> = {
-  type: "array",
-  items: mealPlanItemSchema,
+  type: "object",
+  patternProperties: {
+    ".*": { type: "array", items: componentItemSchema },
+  },
+  required: [],
 };
 
 const mealPlanStateSchema: JSONSchemaType<IMealPlanState> = {
