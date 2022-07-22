@@ -1,5 +1,18 @@
 import AddIcon from "@mui/icons-material/Add";
-import { Box, Button, ButtonGroup, Card, Container, Grid } from "@mui/material";
+import {
+  Box,
+  Button,
+  ButtonGroup,
+  Card,
+  Container,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  fabClasses,
+  Grid,
+} from "@mui/material";
 import OutlinedInput from "@mui/material/OutlinedInput";
 import { motion } from "framer-motion";
 import { NextRouter, useRouter } from "next/router";
@@ -10,12 +23,16 @@ import { RecipeCardWithDialog } from "../../components/recipes/content_card";
 import { Planner } from "../../components/recipes/dnd_calendar";
 import { useRecipeSearch } from "../../components/recipes/search_bar";
 import { SearchChips } from "../../components/recipes/search_chip";
-import { createShoppingList } from "../../components/recipes/shopping_list_creator";
+import {
+  createShoppingList,
+  createShoppingListData,
+} from "../../components/recipes/shopping_list_creator";
 import { useAppSelector } from "../../store/hooks/hooks";
 import { DateString } from "../../store/reducers/food/meal_plan/types";
 import { RecipeUuid } from "../../store/reducers/food/recipes/types";
 import CheckBoxIcon from "@mui/icons-material/CheckBox";
 import CheckBoxOutlineBlankIcon from "@mui/icons-material/CheckBoxOutlineBlank";
+import { useBoolean } from "../../components/hooks/use_boolean";
 
 const Recipes = () => {
   const [keys, setKeys] = useState(() => new Set(["name"]));
@@ -24,6 +41,8 @@ const Recipes = () => {
   const recipes = useAppSelector((store) => store.food.recipes);
   const [selected, setSelected] = useState<Set<DateString>>(() => new Set());
   const allSelected = selected.size === Object.keys(mealPlan).length;
+  const [on, { turnOn, turnOff }] = useBoolean(false);
+  const [shoppingList, setShoppingList] = useState<string>("");
 
   const selectOrUnselect = useCallback(() => {
     if (allSelected) {
@@ -35,6 +54,22 @@ const Recipes = () => {
 
   return (
     <main>
+      <Dialog open={on} onClose={turnOff}>
+        <DialogTitle>Shopping list</DialogTitle>
+        <DialogContent>
+          <DialogContentText sx={{ whiteSpace: "pre-wrap" }}>
+            {shoppingList}
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={turnOff} color="error">
+            Close
+          </Button>
+          <Button onClick={() => navigator.clipboard.writeText(shoppingList)}>
+            Copy to clipboard
+          </Button>
+        </DialogActions>
+      </Dialog>
       <Container sx={{ py: 8 }} maxWidth="xl">
         <div style={{ display: "flex", flexDirection: "row" }}>
           <Box component="div" width="100%">
@@ -88,17 +123,12 @@ const Recipes = () => {
                   variant="outlined"
                   fullWidth
                   onClick={() => {
-                    // const meals = Object.keys(mealPlan).map((day) => {
-                    //   if (selected.has(day)) {
-                    //     return mealPlan[day];
-                    //   } else {
-                    //     return [];
-                    //   }
-                    // });
-                    // const text = createShoppingList(recipes, meals);
-                    // if (text) {
-                    //   navigator.clipboard.writeText(text);
-                    // }
+                    setShoppingList(
+                      createShoppingList(
+                        createShoppingListData(recipes, mealPlan, selected)
+                      )
+                    );
+                    turnOn();
                   }}
                 >
                   Create shopping list

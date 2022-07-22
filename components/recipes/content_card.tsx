@@ -71,7 +71,7 @@ export const RecipeCardWithDialog = memo(function RenderRecipeCard(
         </DialogContent>
         <DialogActions>
           <Button onClick={setters.turnOff}>{"No, cancel"}</Button>
-          <Button onClick={deleteRecipeOnClick} autoFocus>
+          <Button onClick={deleteRecipeOnClick} autoFocus color="error">
             {"Yes, I'm sure"}
           </Button>
         </DialogActions>
