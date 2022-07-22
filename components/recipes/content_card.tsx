@@ -39,6 +39,7 @@ export interface IRecipeCardWithDialogProps {
   uuid: RecipeUuid;
   router: NextRouter;
   visible: boolean;
+  withIcons?: boolean;
 }
 
 export const RecipeCardWithDialog = memo(function RenderRecipeCard(
@@ -64,8 +65,8 @@ export const RecipeCardWithDialog = memo(function RenderRecipeCard(
         <DialogTitle>{"Delete this recipe?"}</DialogTitle>
         <DialogContent>
           <DialogContentText>
-            Are you sure you want to delete this recipe? This action cannot be
-            undone.
+            Are you sure you want to delete this recipe? This may affect your
+            meal plan and this action cannot be undone.
           </DialogContentText>
         </DialogContent>
         <DialogActions>
@@ -81,6 +82,7 @@ export const RecipeCardWithDialog = memo(function RenderRecipeCard(
         uuid={uuid}
         visible={props.visible}
         setters={setters}
+        withIcons={props.withIcons}
       />
     </>
   );
@@ -92,10 +94,11 @@ export interface IRecipeCard {
   uuid: RecipeUuid;
   visible: boolean;
   setters: IUseBooleanCallbacks;
+  withIcons?: boolean;
 }
 
 export const RecipeCard = (props: IRecipeCard) => {
-  const { recipe, router, uuid, setters } = props;
+  const { recipe, router, uuid, setters, withIcons } = props;
 
   const [{ isDragging }, drag, preview] = useDrag(() => ({
     type: "recipe",
@@ -119,52 +122,56 @@ export const RecipeCard = (props: IRecipeCard) => {
         <Typography fontSize={24} fontWeight={400}>
           {recipe?.name}
         </Typography>
-        <div style={{ flexGrow: 1, paddingRight: 2 }} />
-        <div style={{ paddingLeft: 2 }} />
-        <IconButton
-          onClick={(event) => {
-            event?.stopPropagation();
-            const ingredients = recipe.components.flatMap(
-              (component) => component.ingredients
-            );
-            const text = ingredients
-              .map((ingredient) =>
-                Quantities.toStringWithIngredient(
-                  ingredient.name,
-                  ingredient.quantity
-                )
-              )
-              .join("\n");
-            navigator.clipboard.writeText(text);
-          }}
-          size="small"
-          sx={{ alignSelf: "center", mr: 1 }}
-        >
-          <ContentCopyIcon fontSize="small" htmlColor="#212121" />
-        </IconButton>
-        <IconButton
-          onClick={(event) => {
-            event?.stopPropagation();
-            onEdit();
-          }}
-          size="small"
-          sx={{ alignSelf: "center", mr: 1 }}
-        >
-          <EditIcon fontSize="small" htmlColor="#212121" />
-        </IconButton>
-        <IconButton
-          onClick={(event) => {
-            event?.stopPropagation();
-            turnOn();
-          }}
-          size="small"
-          sx={{ alignSelf: "center", mr: 1 }}
-        >
-          <DeleteIcon fontSize="small" htmlColor="#7d2020" />
-        </IconButton>
+        {(withIcons ?? true) && (
+          <>
+            <div style={{ flexGrow: 1, paddingRight: 2 }} />
+            <div style={{ paddingLeft: 2 }} />
+            <IconButton
+              onClick={(event) => {
+                event?.stopPropagation();
+                const ingredients = recipe.components.flatMap(
+                  (component) => component.ingredients
+                );
+                const text = ingredients
+                  .map((ingredient) =>
+                    Quantities.toStringWithIngredient(
+                      ingredient.name,
+                      ingredient.quantity
+                    )
+                  )
+                  .join("\n");
+                navigator.clipboard.writeText(text);
+              }}
+              size="small"
+              sx={{ alignSelf: "center", mr: 1 }}
+            >
+              <ContentCopyIcon fontSize="small" htmlColor="#212121" />
+            </IconButton>
+            <IconButton
+              onClick={(event) => {
+                event?.stopPropagation();
+                onEdit();
+              }}
+              size="small"
+              sx={{ alignSelf: "center", mr: 1 }}
+            >
+              <EditIcon fontSize="small" htmlColor="#212121" />
+            </IconButton>
+            <IconButton
+              onClick={(event) => {
+                event?.stopPropagation();
+                turnOn();
+              }}
+              size="small"
+              sx={{ alignSelf: "center", mr: 1 }}
+            >
+              <DeleteIcon fontSize="small" htmlColor="#7d2020" />
+            </IconButton>
+          </>
+        )}
       </>
     );
-  }, [recipe?.name, onEdit, setters.turnOn, recipe.components]);
+  }, [recipe?.name, onEdit, setters.turnOn, recipe.components, withIcons]);
 
   return (
     <Card

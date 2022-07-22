@@ -160,6 +160,18 @@ export const mealPlanSlice = createSlice({
     "user/logout": (state) => {
       return initialState;
     },
+    "recipes/deleteRecipe": (state, action: PayloadAction<RecipeUuid>) => {
+      const newState = clone(state);
+
+      const recipeId = action.payload;
+      for (const mealPlan of Object.values(state.plan)) {
+        if (recipeId in mealPlan) {
+          delete mealPlan[recipeId];
+        }
+      }
+
+      return { ...newState };
+    },
   },
 });
 
