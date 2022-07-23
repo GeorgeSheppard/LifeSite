@@ -62,10 +62,18 @@ export function createShoppingListData(
             (quant) => quant.unit === quantity.unit
           );
           const value = (quantity.value ?? 0) * ratio;
-          if (quantityIndex > -1 && quantity.unit !== Unit.NO_UNIT) {
-            (currentQuantities[quantityIndex].value as number) += value;
+          if (quantityIndex > -1) {
+            if (quantity.unit !== Unit.NO_UNIT) {
+              currentQuantities[quantityIndex] = {
+                unit: quantity.unit,
+                value: (currentQuantities[quantityIndex].value ?? 0) + value
+              }
+            }
           } else {
-            currentQuantities.push(quantity);
+            currentQuantities.push({
+              unit: quantity.unit,
+              value
+            });
           }
         });
       }
