@@ -56,13 +56,19 @@ export const DroppableCard = (props: {
     [day]
   );
 
-  let className = "card";
-  if (collected.isOver || selected) {
-    className += " hoveredBorder";
-  }
-
   return (
-    <Card className={className} ref={drop} onClick={toggleOnClick}>
+    // Would like to use a class here for the hovered border but ran into this https://github.com/mui/material-ui/issues/25324
+    <Card
+      className="card"
+      ref={drop}
+      onClick={toggleOnClick}
+      sx={{
+        boxShadow:
+          collected.isOver || selected
+            ? "0 0 0 3px rgba(32, 125, 57, 0.3)"
+            : undefined,
+      }}
+    >
       <CardHeader title={day} className="noSelect" />
       <div
         style={{
