@@ -1,6 +1,6 @@
 import Fuse from "fuse.js";
-import { IIngredientName, IRecipe, RecipeUuid } from '../../store/reducers/food/recipes';
 import { useMemo, useCallback } from "react";
+import { IIngredientName, RecipeUuid } from "../../store/reducers/food/recipes/types";
 
 export interface SearchableRecipe {
   uuid: RecipeUuid;
@@ -17,7 +17,7 @@ const createFuseSearch = (
     includeScore: true,
     findAllMatches: true,
     ignoreLocation: true,
-    threshold: 0.2
+    threshold: 0.2,
   };
   return new Fuse(data, {
     ...defaultOptions,

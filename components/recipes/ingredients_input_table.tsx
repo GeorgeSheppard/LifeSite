@@ -1,5 +1,6 @@
 import AddIcon from "@mui/icons-material/Add";
 import CloseIcon from "@mui/icons-material/Close";
+import { Input } from "@mui/material";
 import Button from "@mui/material/Button";
 import FormControl from "@mui/material/FormControl";
 import IconButton from "@mui/material/IconButton";
@@ -14,11 +15,12 @@ import TableRow from "@mui/material/TableRow";
 import TextField from "@mui/material/TextField";
 import { ChangeEvent, memo, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
-import { IRecipeIngredient } from "../../store/reducers/food/recipes";
-import { Unit } from "../../store/reducers/food/units";
+import {
+  IRecipeIngredient,
+  Unit,
+} from "../../store/reducers/food/recipes/types";
 import { CenteredComponent } from "../core/centered_component";
 import { ComponentsFormData } from "./component_form_data";
-
 
 export interface IIngredientsInputTableProps {
   componentFormData: ComponentsFormData;
@@ -30,7 +32,8 @@ export const IngredientsInputTable = memo(function IngredientTable(
 ) {
   const [ingredients, setIngredients] = useState(() => {
     const obj: { [key: string]: IRecipeIngredient } = {};
-    for (const value of props.componentFormData.components[props.uuid].ingredients) {
+    for (const value of props.componentFormData.components[props.uuid]
+      .ingredients) {
       obj[uuidv4()] = value;
     }
     return obj;
@@ -43,13 +46,13 @@ export const IngredientsInputTable = memo(function IngredientTable(
           <TableHead>
             <TableRow>
               <TableCell>Ingredient</TableCell>
-              <TableCell align="right" size="small">
+              <TableCell width="120px" align="left" size="small">
                 Unit
               </TableCell>
-              <TableCell align="right" size="small">
+              <TableCell width="110px" align="left" size="small">
                 Quantity
               </TableCell>
-              <TableCell align="right" size="small">
+              <TableCell width="70px" align="left" size="small">
                 {" "}
               </TableCell>
             </TableRow>
@@ -71,14 +74,17 @@ export const IngredientsInputTable = memo(function IngredientTable(
                           ...prevIngredients[uuid],
                           name: event.target.value,
                         };
-                        props.componentFormData.updateIngredients(props.uuid, Object.values(newIngredients));
+                        props.componentFormData.updateIngredients(
+                          props.uuid,
+                          Object.values(newIngredients)
+                        );
                         return newIngredients;
                       });
                     }}
                     error={ingredient.name.length === 0}
                   />
                 </TableCell>
-                <TableCell align="right" size="small">
+                <TableCell width="120px" align="left" size="small">
                   <FormControl variant="standard">
                     <Select
                       labelId="demo-simple-select-standard-label"
@@ -95,12 +101,14 @@ export const IngredientsInputTable = memo(function IngredientTable(
                               value: prevIngredients[uuid].quantity.value,
                             },
                           };
-						  props.componentFormData.updateIngredients(props.uuid, Object.values(newIngredients))
+                          props.componentFormData.updateIngredients(
+                            props.uuid,
+                            Object.values(newIngredients)
+                          );
                           return newIngredients;
                         });
                       }}
                       label="Unit"
-                      sx={{ width: "90px" }}
                       error={!ingredient.quantity.unit}
                     >
                       {Object.entries(Unit).map((value) => {
@@ -113,13 +121,19 @@ export const IngredientsInputTable = memo(function IngredientTable(
                     </Select>
                   </FormControl>
                 </TableCell>
-                <TableCell align="right" size="small">
-                  <TextField
+                <TableCell width="110px" align="left" size="small">
+                  <Input
                     value={ingredient.quantity.value}
                     id="ingredient quantity"
-                    variant="standard"
+                    // variant="standard"
                     margin="none"
+                    type="number"
                     multiline
+                    onKeyPress={(event) => {
+                      if (!/[0-9.]/.test(event.key)) {
+                        event.preventDefault();
+                      }
+                    }}
                     onChange={(event: ChangeEvent<HTMLTextAreaElement>) => {
                       setIngredients((prevIngredients) => {
                         const newIngredients = { ...prevIngredients };
@@ -134,14 +148,19 @@ export const IngredientsInputTable = memo(function IngredientTable(
                           ...prevIngredients[uuid],
                           quantity: {
                             unit: prevIngredients[uuid].quantity.unit,
-                            value: event.target.value as any as number,
+                            value:
+                              event.target.value.length > 0
+                                ? parseFloat(event.target.value)
+                                : undefined,
                           },
                         };
-						props.componentFormData.updateIngredients(props.uuid, Object.values(newIngredients))
+                        props.componentFormData.updateIngredients(
+                          props.uuid,
+                          Object.values(newIngredients)
+                        );
                         return newIngredients;
                       });
                     }}
-                    sx={{ width: "50px" }}
                     disabled={ingredient.quantity.unit === Unit.NO_UNIT}
                     error={
                       ingredient.quantity.unit !== Unit.NO_UNIT &&
@@ -152,13 +171,16 @@ export const IngredientsInputTable = memo(function IngredientTable(
                     }
                   />
                 </TableCell>
-                <TableCell align="right" size="small">
+                <TableCell align="left" width="70px" size="small">
                   <IconButton
                     onClick={() => {
                       setIngredients((prevIngredients) => {
                         const newIngredients = { ...prevIngredients };
                         delete newIngredients[uuid];
-						props.componentFormData.updateIngredients(props.uuid, Object.values(newIngredients))
+                        props.componentFormData.updateIngredients(
+                          props.uuid,
+                          Object.values(newIngredients)
+                        );
                         return newIngredients;
                       });
                     }}
@@ -175,11 +197,18 @@ export const IngredientsInputTable = memo(function IngredientTable(
       </TableContainer>
       <CenteredComponent>
         <Button
+          sx={{ mt: 3 }}
           onClick={() => {
             setIngredients((prevIngredients) => {
               const newIngredients = { ...prevIngredients };
-              newIngredients[uuidv4()] = { name: "", quantity: { unit: Unit.GRAM } };
-			  props.componentFormData.updateIngredients(props.uuid, Object.values(newIngredients))
+              newIngredients[uuidv4()] = {
+                name: "",
+                quantity: { unit: Unit.GRAM },
+              };
+              props.componentFormData.updateIngredients(
+                props.uuid,
+                Object.values(newIngredients)
+              );
               return newIngredients;
             });
           }}

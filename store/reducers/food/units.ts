@@ -1,21 +1,4 @@
-import { IIngredientName } from "./recipes";
-
-export enum Unit {
-  NO_UNIT = "none",
-  MILLILITER = "mL",
-  LITER = "L",
-  GRAM = "g",
-  KILOGRAM = "kg",
-  CUP = "cup",
-  TEASPOON = "tsp",
-  TABLESPOON = "tbsp",
-  NUMBER = "quantity",
-}
-
-export interface IQuantity {
-  unit?: Unit;
-  value?: number;
-}
+import { IQuantity, Unit, IIngredientName } from "./recipes/types";
 
 export const Quantities = {
   toString: (quantity?: IQuantity) => {
@@ -34,10 +17,13 @@ export const Quantities = {
 
     return `${quantity.value}${unit}`;
   },
-  toStringWithIngredient: (ingredientName: IIngredientName, quantity?: IQuantity) => {
+  toStringWithIngredient: (
+    ingredientName: IIngredientName,
+    quantity?: IQuantity
+  ) => {
     {
       const quantityString = Quantities.toString(quantity);
-  
+
       if (!quantityString) {
         return ingredientName;
       } else {
@@ -45,4 +31,4 @@ export const Quantities = {
       }
     }
   },
-} 
+};

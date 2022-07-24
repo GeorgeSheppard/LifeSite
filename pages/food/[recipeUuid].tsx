@@ -5,13 +5,7 @@ import Card from "@mui/material/Card";
 import Container from "@mui/material/Container";
 import TextField from "@mui/material/TextField";
 import { useRouter } from "next/router";
-import {
-  ChangeEvent,
-  useCallback,
-  useReducer,
-  useRef,
-  useState
-} from "react";
+import { ChangeEvent, useCallback, useReducer, useRef, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import { ExitSaveButtons } from "../../components/cards/exit_save_buttons";
 import { UploadDisplayImages } from "../../components/cards/upload_and_display_images";
@@ -20,10 +14,10 @@ import { CenteredComponent } from "../../components/core/centered_component";
 import { ComponentForm } from "../../components/recipes/component_form";
 import { ComponentsFormData } from "../../components/recipes/component_form_data";
 import { useAppDispatch, useAppSelector } from "../../store/hooks/hooks";
-import {
-  addOrUpdateRecipe, RecipeUuid
-} from "../../store/reducers/food/recipes";
-import clone from 'just-clone';
+import { addOrUpdateRecipe } from "../../store/reducers/food/recipes/recipes";
+import clone from "just-clone";
+import { RecipeUuid } from "../../store/reducers/food/recipes/types";
+import { isRecipeValid } from "../../store/reducers/food/recipes/schema";
 
 const EditUploadRecipe = () => {
   const router = useRouter();
@@ -44,6 +38,7 @@ const EditUploadRecipe = () => {
             ingredients: [],
             instructions: [],
             storeable: false,
+            uuid: uuidv4(),
           },
         ],
       };
@@ -55,7 +50,9 @@ const EditUploadRecipe = () => {
   // Instead, we use a class that never changes reference and therefore doesn't need to re-render child components/
   // the child components can then populate themselves from the initial state and then mutate the class whenever
   // their properties change.
-  const [componentFormData] = useState(() => new ComponentsFormData(clone(recipeData.components)));
+  const [componentFormData] = useState(
+    () => new ComponentsFormData(clone(recipeData.components))
+  );
   const [recipeName, setRecipeName] = useState(recipeData.name);
   const [description, setDescription] = useState(recipeData.description);
   const [images, setImages] = useState(recipeData.images);
@@ -77,17 +74,38 @@ const EditUploadRecipe = () => {
       return;
     }
 
-    dispatch(
-      addOrUpdateRecipe({
-        uuid: recipeData.uuid,
-        name: recipeName,
-        description,
-        images,
-        components: Object.values(componentFormData.components),
-      })
-    );
-    router.push("/food");
-  }, [router, recipeData.uuid, recipeName, description, images, dispatch, componentFormData.components]);
+    const recipe = {
+      uuid: recipeData.uuid,
+      name: recipeName,
+      description,
+      images,
+      components: Object.values(componentFormData.components),
+    };
+
+    if (isRecipeValid(recipe)) {
+      dispatch(
+        addOrUpdateRecipe({
+          uuid: recipeData.uuid,
+          name: recipeName,
+          description,
+          images,
+          components: Object.values(componentFormData.components),
+        })
+      );
+      router.push("/food");
+    } else {
+      setFormAlert("Error validating recipe");
+      console.error("Validation error creating recipe" + recipe);
+    }
+  }, [
+    router,
+    recipeData.uuid,
+    recipeName,
+    description,
+    images,
+    dispatch,
+    componentFormData.components,
+  ]);
 
   return (
     <Container maxWidth="lg" sx={{ pt: 3, pb: 3 }}>
@@ -116,6 +134,7 @@ const EditUploadRecipe = () => {
           onChange={(event: ChangeEvent<HTMLTextAreaElement>) =>
             setDescription(event.target.value)
           }
+          sx={{ mt: 2 }}
         />
         <UploadDisplayImages images={images} setImages={setImages} />
         {Object.entries(componentFormData.components).map(([key, _]) => (
@@ -128,12 +147,14 @@ const EditUploadRecipe = () => {
         ))}
         <CenteredComponent>
           <Button
+            sx={{ mt: 2, mb: 3 }}
             onClick={() => {
               componentFormData.components[uuidv4()] = {
                 name: "",
                 ingredients: [],
                 instructions: [],
                 storeable: false,
+                uuid: uuidv4(),
               };
               forceUpdate();
             }}

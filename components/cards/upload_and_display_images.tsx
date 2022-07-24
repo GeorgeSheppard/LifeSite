@@ -8,7 +8,10 @@ import { ClickToUpload } from "../core/click_to_upload";
 import { useBoolean } from "../hooks/use_boolean";
 import { Image } from "../../store/reducers/types";
 import { SetStateAction, Dispatch, useCallback } from "react";
-import { IS3ErrorUploadResponse, IS3ValidUploadResponse } from "../hooks/upload_to_s3";
+import {
+  IS3ErrorUploadResponse,
+  IS3ValidUploadResponse,
+} from "../hooks/upload_to_s3";
 import { S3CardMedia } from "./s3_card_media";
 import { Delete } from "@mui/icons-material";
 
@@ -20,14 +23,17 @@ export interface IUploadDisplayImagesProps {
 export const UploadDisplayImages = (props: IUploadDisplayImagesProps) => {
   const [uploading, setters] = useBoolean(false);
 
-  const deleteImage = useCallback((index) => {
-    const setImages = props.setImages;
-    setImages(prevImages => {
-      const newImages = [...prevImages];
-      newImages.splice(index, 1);
-      return newImages;
-    })
-  }, [props.setImages])
+  const deleteImage = useCallback(
+    (index) => {
+      const setImages = props.setImages;
+      setImages((prevImages) => {
+        const newImages = [...prevImages];
+        newImages.splice(index, 1);
+        return newImages;
+      });
+    },
+    [props.setImages]
+  );
 
   return (
     <div
@@ -35,7 +41,7 @@ export const UploadDisplayImages = (props: IUploadDisplayImagesProps) => {
       style={{
         display: "flex",
         flexWrap: "wrap",
-        justifyContent: "space-between",
+        gap: 20,
         paddingBottom: 20,
       }}
     >
@@ -93,11 +99,14 @@ export const UploadDisplayImages = (props: IUploadDisplayImagesProps) => {
                 sx={{
                   display: "flex",
                   margin: "auto",
-                  position: "relative"
+                  position: "relative",
                 }}
               >
                 <S3CardMedia s3Key={image.key} height="100px" />
-                <IconButton sx={{ position: "absolute", top: "0%", right: "0%"}} onClick={() => deleteImage(index)}>
+                <IconButton
+                  sx={{ position: "absolute", top: "0%", right: "0%" }}
+                  onClick={() => deleteImage(index)}
+                >
                   <Delete htmlColor="white" />
                 </IconButton>
               </Box>

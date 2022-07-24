@@ -7,7 +7,7 @@ import ListItemText from "@mui/material/ListItemText";
 import TextField from "@mui/material/TextField";
 import { ChangeEvent, memo, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
-import { IInstruction } from "../../store/reducers/food/recipes";
+import { IInstruction } from "../../store/reducers/food/recipes/types";
 import { CenteredComponent } from "../core/centered_component";
 import { ComponentsFormData } from "./component_form_data";
 
@@ -21,7 +21,8 @@ export const InstructionInputList = memo(function InstructionList(
 ) {
   const [instructions, setInstructions] = useState(() => {
     const obj: { [key: string]: IInstruction } = {};
-    for (const value of props.componentFormData.components[props.uuid].instructions) {
+    for (const value of props.componentFormData.components[props.uuid]
+      .instructions) {
       obj[uuidv4()] = value;
     }
     return obj;
@@ -46,7 +47,10 @@ export const InstructionInputList = memo(function InstructionList(
                   ...prevInstructions[uuid],
                   text: event.target.value,
                 };
-                props.componentFormData.updateInstructions(props.uuid, Object.values(newInstructions))
+                props.componentFormData.updateInstructions(
+                  props.uuid,
+                  Object.values(newInstructions)
+                );
                 return newInstructions;
               });
             }}
@@ -57,12 +61,15 @@ export const InstructionInputList = memo(function InstructionList(
               setInstructions((prevInstructions) => {
                 const newInstructions = { ...prevInstructions };
                 delete newInstructions[uuid];
-                props.componentFormData.updateInstructions(props.uuid, Object.values(newInstructions))
+                props.componentFormData.updateInstructions(
+                  props.uuid,
+                  Object.values(newInstructions)
+                );
                 return newInstructions;
               });
             }}
             size="small"
-            sx={{ alignSelf: "center" }}
+            sx={{ alignSelf: "center", ml: 2, width: "70px" }}
           >
             <CloseIcon fontSize="small" />
           </IconButton>
@@ -70,14 +77,18 @@ export const InstructionInputList = memo(function InstructionList(
       ))}
       <CenteredComponent>
         <Button
+          sx={{ mt: 3 }}
           onClick={() => {
             setInstructions((prevInstructions) => {
-              const newInstructions = {...prevInstructions}
-              newInstructions[uuidv4()] = { text: "" }
-              props.componentFormData.updateInstructions(props.uuid, Object.values(newInstructions))
+              const newInstructions = { ...prevInstructions };
+              newInstructions[uuidv4()] = { text: "" };
+              props.componentFormData.updateInstructions(
+                props.uuid,
+                Object.values(newInstructions)
+              );
               return newInstructions;
-            })
-              }}
+            });
+          }}
           startIcon={<AddIcon />}
         >
           Add instruction

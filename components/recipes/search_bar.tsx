@@ -1,21 +1,27 @@
 import { useMemo, useState, useCallback, ChangeEvent, useEffect } from "react";
 import { useAppSelector } from "../../store/hooks/hooks";
-import { RecipeUuid } from "../../store/reducers/food/recipes";
+import { RecipeUuid } from "../../store/reducers/food/recipes/types";
 import { useQuerySearch } from "./search";
 
-export function useDebounce<T>(initialState: T, callback: () => T, time: number) {
-  const [debouncedValue, setDebouncedValue] = useState<T>(initialState)
+export function useDebounce<T>(
+  initialState: T,
+  callback: () => T,
+  time: number
+) {
+  const [debouncedValue, setDebouncedValue] = useState<T>(initialState);
 
   useEffect(() => {
-    const timer = setTimeout(() => setDebouncedValue(callback()), time)
+    const timer = setTimeout(() => setDebouncedValue(callback()), time);
     return () => clearTimeout(timer);
-  }, [callback, time])
+  }, [callback, time]);
 
   return debouncedValue;
 }
 
-export const useRecipeSearch = (keys: Set<string>): {
-  searchResults: {uuid: RecipeUuid, visible: boolean}[];
+export const useRecipeSearch = (
+  keys: Set<string>
+): {
+  searchResults: { uuid: RecipeUuid; visible: boolean }[];
   setSearchInput: (event: ChangeEvent<HTMLInputElement>) => void;
   searchInput: string;
 } => {
@@ -32,12 +38,15 @@ export const useRecipeSearch = (keys: Set<string>): {
       ),
     }));
   }, [recipes]);
-  const options = useMemo(() => ({
-    keys: Array.from(keys),
-  }), [keys])
+  const options = useMemo(
+    () => ({
+      keys: Array.from(keys),
+    }),
+    [keys]
+  );
   const { search } = useQuerySearch(searchableRecipes, options);
   const [searchInput, setSearchInput] = useState("");
-  const [defaultSearchResults] = useState(() => new Set(Object.keys(recipes)))
+  const [defaultSearchResults] = useState(() => new Set(Object.keys(recipes)));
 
   const getSearchResults = useCallback(() => {
     if (searchInput.length === 0) {
@@ -48,7 +57,11 @@ export const useRecipeSearch = (keys: Set<string>): {
     return new Set(results.map((result) => result.item.uuid));
   }, [search, searchInput, defaultSearchResults]);
 
-  const searchResults = useDebounce(defaultSearchResults, getSearchResults, 300);
+  const searchResults = useDebounce(
+    defaultSearchResults,
+    getSearchResults,
+    300
+  );
 
   const setSearchInputCallback = useCallback(
     (event: ChangeEvent<HTMLInputElement>) => {
@@ -68,5 +81,9 @@ export const useRecipeSearch = (keys: Set<string>): {
     return [...visibleRecipes, ...invisibleRecipes];
   }, [searchResults, recipes]);
 
-  return { searchResults: uuidsWithVisibility, searchInput, setSearchInput: setSearchInputCallback };
+  return {
+    searchResults: uuidsWithVisibility,
+    searchInput,
+    setSearchInput: setSearchInputCallback,
+  };
 };

@@ -1,8 +1,12 @@
-import { IInstruction, IRecipeComponent, IRecipeIngredient } from '../../store/reducers/food/recipes';
 import { v4 as uuidv4 } from "uuid";
+import {
+  IInstruction,
+  IRecipeComponent,
+  IRecipeIngredient,
+} from "../../store/reducers/food/recipes/types";
 
 export class ComponentsFormData {
-  public components: { [key: string]: IRecipeComponent }
+  public components: { [key: string]: IRecipeComponent };
 
   constructor(formData: IRecipeComponent[]) {
     const obj: { [key: string]: IRecipeComponent } = {};

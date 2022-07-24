@@ -45,7 +45,7 @@ export default function NavigatorCard(props: INavigatorCardProps) {
             fontSize: 40,
             color: "black",
             zIndex: 100,
-            opacity: 0.8
+            opacity: 0.8,
           }}
         >
           Coming soon
@@ -78,8 +78,9 @@ export default function NavigatorCard(props: INavigatorCardProps) {
 
 export const navigatorCards: INavigatorCardProps[] = [
   {
-    title: "Recipes",
-    description: "My regular recipes, with ingredients, method, and search functionality.",
+    title: "Recipes and meal planner",
+    description:
+      "My regular recipes, with ingredients, method, and search functionality. Meal planning only available on large screen sizes",
     imageSrc: "/images/ChilliConCarne.jpg",
     href: "/food",
   },
@@ -96,6 +97,12 @@ export const navigatorCards: INavigatorCardProps[] = [
     href: "/printing",
   },
   {
+    title: "Meal Plan",
+    description: "Mobile available meal plan created from meal planner.",
+    imageSrc: "/images/food.jpg",
+    href: "/meal_plan",
+  },
+  {
     title: "Library",
     description: "All the books I own, and what I rate them.",
     imageSrc: "/images/bookshelf.jpg",
@@ -108,13 +115,5 @@ export const navigatorCards: INavigatorCardProps[] = [
     imageSrc: "/images/path-finder.jpg",
     href: "/path_finder",
     disabled: true,
-  },
-
-  {
-    title: "Meal Planner",
-    description: "Calendar to plan meals with, and also to create shopping lists.",
-    imageSrc: "/images/food.jpg",
-    href: "/food/planner",
-    disabled: true
   },
 ];

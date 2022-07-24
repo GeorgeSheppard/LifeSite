@@ -49,76 +49,81 @@ export default function Header(props: IHeaderProps) {
   return (
     <AppBar position="relative">
       <CenteredComponent>
-
-      <Toolbar id="toolbar" sx={{ height: headerHeight, maxWidth: "lg", minWidth: "sm", flexGrow: 1 }}>
-        {/* TODO: Make it obvious both of these are clickable */}
-        {/* TODO: Better name */}
-        <Typography
-          variant="h6"
-          color="inherit"
-          noWrap
-          onClick={() => router.push("/")}
+        <Toolbar
+          id="toolbar"
+          sx={{
+            height: headerHeight,
+            maxWidth: "lg",
+            minWidth: "sm",
+            flexGrow: 1,
+          }}
         >
-          MyLife
-        </Typography>
-        <Box component="div" sx={{ flexGrow: 1 }} />
-        <Box component="div" sx={{ display: "flex" }}>
-          {props.offline && (
-            <Tooltip
-              title="We are having trouble connecting right now, you are able to navigate but if you leave MyLife your updates may not be saved"
-              sx={{ margin: "auto", marginRight: 2 }}
-            >
-              <SignalWifiConnectedNoInternet4Icon />
-            </Tooltip>
-          )}
-          {props.canUpload && (
-            <div style={{ margin: "auto" }}>
-              <IconButton
-                color="inherit"
-                size="large"
-                onClick={() => !props.uploading && props.upload()}
-              >
-                {props.uploading ? (
-                  // For some reason, circular progress takes a number size prop, but icon button takes a string
-                  <CircularProgress color="inherit" size={24} />
-                ) : (
-                  <SaveIcon />
-                )}
-              </IconButton>
-            </div>
-          )}
-          <IconButton
-            size="large"
+          {/* TODO: Make it obvious both of these are clickable */}
+          {/* TODO: Better name */}
+          <Typography
+            variant="h6"
             color="inherit"
-            onClick={
-              session.status === "authenticated"
-                ? openDropdown
-                : () => signIn("cognito")
-            }
+            noWrap
+            onClick={() => router.push("/")}
           >
-            {session.status === "authenticated" ? (
-              <SettingsIcon />
-            ) : (
-              <AccountCircle />
+            MyLife
+          </Typography>
+          <Box component="div" sx={{ flexGrow: 1 }} />
+          <Box component="div" sx={{ display: "flex" }}>
+            {props.offline && (
+              <Tooltip
+                title="We are having trouble connecting right now, you are able to navigate but if you leave MyLife your updates may not be saved"
+                sx={{ margin: "auto", marginRight: 2 }}
+              >
+                <SignalWifiConnectedNoInternet4Icon />
+              </Tooltip>
             )}
-          </IconButton>
-          <Menu
-            id="basic-menu"
-            anchorEl={anchorEl}
-            open={!!anchorEl}
-            onClose={closeDropdown}
-            MenuListProps={{
-              "aria-labelledby": "basic-button",
-            }}
-          >
-            {/* <MenuItem onClick={profile}>Profile</MenuItem> */}
-            <MenuItem onClick={logout}>Logout</MenuItem>
-          </Menu>
-
-        </Box>
-      </Toolbar>
+            {props.canUpload && (
+              <div style={{ margin: "auto" }}>
+                <IconButton
+                  color="inherit"
+                  size="large"
+                  onClick={() => !props.uploading && props.upload()}
+                >
+                  {props.uploading ? (
+                    // For some reason, circular progress takes a number size prop, but icon button takes a string
+                    <CircularProgress color="inherit" size={24} />
+                  ) : (
+                    <SaveIcon />
+                  )}
+                </IconButton>
+              </div>
+            )}
+            <IconButton
+              size="large"
+              color="inherit"
+              onClick={
+                session.status === "authenticated"
+                  ? openDropdown
+                  : () => signIn("cognito")
+              }
+            >
+              {session.status === "authenticated" ? (
+                <SettingsIcon />
+              ) : (
+                <AccountCircle />
+              )}
+            </IconButton>
+            <Menu
+              id="basic-menu"
+              anchorEl={anchorEl}
+              open={!!anchorEl}
+              onClose={closeDropdown}
+              MenuListProps={{
+                "aria-labelledby": "basic-button",
+              }}
+            >
+              {/* <MenuItem onClick={profile}>Profile</MenuItem> */}
+              <MenuItem onClick={logout}>Logout</MenuItem>
+            </Menu>
+          </Box>
+        </Toolbar>
       </CenteredComponent>
-
     </AppBar>
   );
 }

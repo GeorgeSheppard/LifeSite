@@ -24,20 +24,22 @@ import { memo, useCallback, useMemo } from "react";
 import { useDrag } from "react-dnd";
 import { useDispatch } from "react-redux";
 import { useAppSelector } from "../../store/hooks/hooks";
+import { deleteRecipe } from "../../store/reducers/food/recipes/recipes";
 import {
-  deleteRecipe,
   IRecipe,
   IRecipeComponent,
   RecipeUuid,
-} from "../../store/reducers/food/recipes";
+} from "../../store/reducers/food/recipes/types";
 import { Quantities } from "../../store/reducers/food/units";
 import { WrappedCardMedia } from "../cards/wrapped_card_media";
 import { IUseBooleanCallbacks, useBoolean } from "../hooks/use_boolean";
+import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 
 export interface IRecipeCardWithDialogProps {
   uuid: RecipeUuid;
   router: NextRouter;
   visible: boolean;
+  withIcons?: boolean;
 }
 
 export const RecipeCardWithDialog = memo(function RenderRecipeCard(
@@ -63,13 +65,13 @@ export const RecipeCardWithDialog = memo(function RenderRecipeCard(
         <DialogTitle>{"Delete this recipe?"}</DialogTitle>
         <DialogContent>
           <DialogContentText>
-            Are you sure you want to delete this recipe? This action cannot be
-            undone.
+            Are you sure you want to delete this recipe? This may affect your
+            meal plan and this action cannot be undone.
           </DialogContentText>
         </DialogContent>
         <DialogActions>
           <Button onClick={setters.turnOff}>{"No, cancel"}</Button>
-          <Button onClick={deleteRecipeOnClick} autoFocus>
+          <Button onClick={deleteRecipeOnClick} autoFocus color="error">
             {"Yes, I'm sure"}
           </Button>
         </DialogActions>
@@ -80,6 +82,7 @@ export const RecipeCardWithDialog = memo(function RenderRecipeCard(
         uuid={uuid}
         visible={props.visible}
         setters={setters}
+        withIcons={props.withIcons}
       />
     </>
   );
@@ -91,10 +94,11 @@ export interface IRecipeCard {
   uuid: RecipeUuid;
   visible: boolean;
   setters: IUseBooleanCallbacks;
+  withIcons?: boolean;
 }
 
 export const RecipeCard = (props: IRecipeCard) => {
-  const { recipe, router, uuid, setters } = props;
+  const { recipe, router, uuid, setters, withIcons } = props;
 
   const [{ isDragging }, drag, preview] = useDrag(() => ({
     type: "recipe",
@@ -118,31 +122,56 @@ export const RecipeCard = (props: IRecipeCard) => {
         <Typography fontSize={24} fontWeight={400}>
           {recipe?.name}
         </Typography>
-        <div style={{ flexGrow: 1, paddingRight: 2 }} />
-        <IconButton
-          onClick={(event) => {
-            event?.stopPropagation();
-            turnOn();
-          }}
-          size="small"
-          sx={{ alignSelf: "center" }}
-        >
-          <DeleteIcon fontSize="small" htmlColor="#7d2020" />
-        </IconButton>
-        <div style={{ paddingLeft: 2 }} />
-        <IconButton
-          onClick={(event) => {
-            event?.stopPropagation();
-            onEdit();
-          }}
-          size="small"
-          sx={{ alignSelf: "center", pr: 1 }}
-        >
-          <EditIcon fontSize="small" htmlColor="#212121" />
-        </IconButton>
+        {(withIcons ?? true) && (
+          <>
+            <div style={{ flexGrow: 1, paddingRight: 2 }} />
+            <div style={{ paddingLeft: 2 }} />
+            <IconButton
+              onClick={(event) => {
+                event?.stopPropagation();
+                const ingredients = recipe.components.flatMap(
+                  (component) => component.ingredients
+                );
+                const text = ingredients
+                  .map((ingredient) =>
+                    Quantities.toStringWithIngredient(
+                      ingredient.name,
+                      ingredient.quantity
+                    )
+                  )
+                  .join("\n");
+                navigator.clipboard.writeText(text);
+              }}
+              size="small"
+              sx={{ alignSelf: "center", mr: 1 }}
+            >
+              <ContentCopyIcon fontSize="small" htmlColor="#212121" />
+            </IconButton>
+            <IconButton
+              onClick={(event) => {
+                event?.stopPropagation();
+                onEdit();
+              }}
+              size="small"
+              sx={{ alignSelf: "center", mr: 1 }}
+            >
+              <EditIcon fontSize="small" htmlColor="#212121" />
+            </IconButton>
+            <IconButton
+              onClick={(event) => {
+                event?.stopPropagation();
+                turnOn();
+              }}
+              size="small"
+              sx={{ alignSelf: "center", mr: 1 }}
+            >
+              <DeleteIcon fontSize="small" htmlColor="#7d2020" />
+            </IconButton>
+          </>
+        )}
       </>
     );
-  }, [recipe?.name, onEdit, setters.turnOn]);
+  }, [recipe?.name, onEdit, setters.turnOn, recipe.components, withIcons]);
 
   return (
     <Card
@@ -151,7 +180,7 @@ export const RecipeCard = (props: IRecipeCard) => {
       ref={drag}
     >
       {/* Remove the drag preview */}
-      <div ref={preview} style={{width: 0, height: 0}} />
+      <div ref={preview} style={{ width: 0, height: 0 }} />
       {recipe.images && <WrappedCardMedia images={recipe.images} />}
       <Accordion key="name">
         <AccordionSummary
