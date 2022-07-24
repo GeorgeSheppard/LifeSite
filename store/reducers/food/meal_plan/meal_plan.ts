@@ -88,7 +88,9 @@ export const addOrUpdate = (
         if (componentIndex > -1) {
           const component = newState.plan[date][recipeId][componentIndex];
           const newServings = component.servings + servingsIncrease;
-          if (newServings > 0) {
+          // Note: We allow a component with zero servings, this allows the user to set that they are eating that
+          // item in the meal plan, without having to buy ingredients for it, perhaps they have a portion in the freezer
+          if (newServings >= 0) {
             newState.plan[date][recipeId][componentIndex].servings =
               newServings;
           } else {

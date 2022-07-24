@@ -79,6 +79,7 @@ export const Planner = (props: ICalendarRowProps) => {
             <DroppableCard
               day={day}
               selected={selected.has(day)}
+              setSelected={setSelected}
               onClick={onClick}
             />
           </Grid>

@@ -10,13 +10,13 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
-  fabClasses,
   Grid,
+  Tooltip,
 } from "@mui/material";
 import OutlinedInput from "@mui/material/OutlinedInput";
 import { motion } from "framer-motion";
 import { NextRouter, useRouter } from "next/router";
-import { memo, useCallback, useState } from "react";
+import { memo, useCallback, useState, useMemo } from "react";
 import { v4 as uuidv4 } from "uuid";
 import { headerHeight } from "../../components/core/header";
 import { RecipeCardWithDialog } from "../../components/recipes/content_card";
@@ -26,6 +26,7 @@ import { SearchChips } from "../../components/recipes/search_chip";
 import {
   createShoppingList,
   createShoppingListData,
+  IQuantitiesAndMeals,
 } from "../../components/recipes/shopping_list_creator";
 import { useAppSelector } from "../../store/hooks/hooks";
 import { DateString } from "../../store/reducers/food/meal_plan/types";
@@ -33,6 +34,7 @@ import { RecipeUuid } from "../../store/reducers/food/recipes/types";
 import CheckBoxIcon from "@mui/icons-material/CheckBox";
 import CheckBoxOutlineBlankIcon from "@mui/icons-material/CheckBoxOutlineBlank";
 import { useBoolean } from "../../components/hooks/use_boolean";
+import Chip from "@mui/material/Chip";
 
 const Recipes = () => {
   const [keys, setKeys] = useState(() => new Set(["name"]));
@@ -42,7 +44,9 @@ const Recipes = () => {
   const [selected, setSelected] = useState<Set<DateString>>(() => new Set());
   const allSelected = selected.size === Object.keys(mealPlan).length;
   const [on, { turnOn, turnOff }] = useBoolean(false);
-  const [shoppingList, setShoppingList] = useState<string>("");
+  const [shoppingListData, setShoppingListData] = useState<IQuantitiesAndMeals>(
+    {}
+  );
 
   const selectOrUnselect = useCallback(() => {
     if (allSelected) {
@@ -54,22 +58,11 @@ const Recipes = () => {
 
   return (
     <main>
-      <Dialog open={on} onClose={turnOff}>
-        <DialogTitle>Shopping list</DialogTitle>
-        <DialogContent>
-          <DialogContentText sx={{ whiteSpace: "pre-wrap" }}>
-            {shoppingList}
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={turnOff} color="error">
-            Close
-          </Button>
-          <Button onClick={() => navigator.clipboard.writeText(shoppingList)}>
-            Copy to clipboard
-          </Button>
-        </DialogActions>
-      </Dialog>
+      <ShoppingListDialog
+        quantityAndMeals={shoppingListData}
+        on={on}
+        turnOff={turnOff}
+      />
       <Container sx={{ py: 8 }} maxWidth="xl">
         <div style={{ display: "flex", flexDirection: "row" }}>
           <Box component="div" width="100%">
@@ -123,10 +116,8 @@ const Recipes = () => {
                   variant="outlined"
                   fullWidth
                   onClick={() => {
-                    setShoppingList(
-                      createShoppingList(
-                        createShoppingListData(recipes, mealPlan, selected)
-                      )
+                    setShoppingListData(
+                      createShoppingListData(recipes, mealPlan, selected)
                     );
                     turnOn();
                   }}
@@ -157,7 +148,7 @@ const RecipeGrid = memo(function RenderRecipeGrid(props: RecipeGridProps) {
   const router = useRouter();
 
   return (
-    <Grid container spacing={4} component={motion.div} layout>
+    <Grid container spacing={2} component={motion.div} layout>
       <CreateNewRecipeCard router={router} />
       {props.searchResults.map(({ uuid, visible }) => (
         <Grid
@@ -165,7 +156,9 @@ const RecipeGrid = memo(function RenderRecipeGrid(props: RecipeGridProps) {
           item
           xs={12}
           sm={6}
-          md={4}
+          md={6}
+          lg={6}
+          xl={4}
           component={motion.div}
           animate={{ opacity: 1 }}
           initial={{ opacity: 0 }}
@@ -192,7 +185,7 @@ const CreateNewRecipeCard = (props: ICreateNewRecipeCard) => {
   }, [router]);
 
   return (
-    <Grid item key={"CreateRecipe"} xs={12} sm={6} md={4}>
+    <Grid item key={"CreateRecipe"} xs={12} sm={6} md={6} lg={6} xl={4}>
       <Card
         sx={{
           height: "100%",
@@ -210,6 +203,64 @@ const CreateNewRecipeCard = (props: ICreateNewRecipeCard) => {
         <Box component="div" sx={{ flexGrow: 0.5 }} />
       </Card>
     </Grid>
+  );
+};
+
+interface IShoppingListDialogProps {
+  quantityAndMeals: IQuantitiesAndMeals;
+  on: boolean;
+  turnOff: () => void;
+}
+
+const ShoppingListDialog = (props: IShoppingListDialogProps) => {
+  const { quantityAndMeals, on, turnOff } = props;
+
+  const [options, setOptions] = useState({
+    includeMeals: true,
+  });
+
+  const shoppingList = useMemo(() => {
+    return createShoppingList(quantityAndMeals, options);
+  }, [quantityAndMeals, options]);
+
+  return (
+    <Dialog open={on} onClose={turnOff}>
+      <DialogTitle sx={{ minWidth: "600px" }}>Shopping list</DialogTitle>
+      <DialogContent>
+        <Chip
+          label={"Include meals"}
+          size="small"
+          variant={options.includeMeals ? "filled" : "outlined"}
+          color={options.includeMeals ? "primary" : "default"}
+          onClick={() =>
+            setOptions((prevOptions) => ({
+              ...prevOptions,
+              includeMeals: !prevOptions.includeMeals,
+            }))
+          }
+        />
+        <DialogContentText sx={{ whiteSpace: "pre-wrap", marginTop: "24px" }}>
+          {shoppingList.length > 0
+            ? shoppingList
+            : "No shopping list, there are either no selected dates or zero servings."}
+        </DialogContentText>
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={turnOff} color="error">
+          Close
+        </Button>
+        <Tooltip
+          title="Copied!"
+          disableFocusListener
+          disableHoverListener
+          enterTouchDelay={500}
+        >
+          <Button onClick={() => navigator.clipboard.writeText(shoppingList)}>
+            Copy to clipboard
+          </Button>
+        </Tooltip>
+      </DialogActions>
+    </Dialog>
   );
 };
 

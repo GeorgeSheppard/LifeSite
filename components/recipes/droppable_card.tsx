@@ -9,7 +9,7 @@ import Tooltip from "@mui/material/Tooltip";
 import { useAppDispatch, useAppSelector } from "../../store/hooks/hooks";
 import Button from "@mui/material/Button";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { MouseEvent, useCallback } from "react";
+import { Dispatch, MouseEvent, SetStateAction, useCallback } from "react";
 import { useDrop } from "react-dnd";
 import {
   DateString,
@@ -20,9 +20,10 @@ import { RecipeUuid } from "../../store/reducers/food/recipes/types";
 export const DroppableCard = (props: {
   day: DateString;
   selected: boolean;
+  setSelected: Dispatch<SetStateAction<Set<DateString>>>;
   onClick: (day: DateString) => (event: MouseEvent<HTMLDivElement>) => void;
 }) => {
-  const { day, selected, onClick } = props;
+  const { day, selected, onClick, setSelected } = props;
   const meals = useAppSelector((store) => store.mealPlan.plan[day]);
   const recipes = useAppSelector((store) => store.food.recipes);
   const dispatch = useAppDispatch();
@@ -48,6 +49,13 @@ export const DroppableCard = (props: {
             })),
           })
         );
+        if (!selected) {
+          setSelected((prevSelected) => {
+            const newSelected = new Set(prevSelected);
+            newSelected.add(day);
+            return newSelected;
+          });
+        }
       },
       collect: (monitor) => ({
         isOver: !!monitor.isOver(),

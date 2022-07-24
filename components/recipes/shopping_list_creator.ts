@@ -35,6 +35,10 @@ export function createShoppingListData(
       const recipe = recipes[recipeId];
 
       for (const component of components) {
+        if (component.servings === 0) {
+          continue;
+        }
+
         const recipeComponent = recipe.components.find(
           (comp) => comp.uuid === component.componentId
         );
@@ -66,13 +70,13 @@ export function createShoppingListData(
             if (quantity.unit !== Unit.NO_UNIT) {
               currentQuantities[quantityIndex] = {
                 unit: quantity.unit,
-                value: (currentQuantities[quantityIndex].value ?? 0) + value
-              }
+                value: (currentQuantities[quantityIndex].value ?? 0) + value,
+              };
             }
           } else {
             currentQuantities.push({
               unit: quantity.unit,
-              value
+              value,
             });
           }
         });
@@ -83,7 +87,10 @@ export function createShoppingListData(
 }
 
 export function createShoppingList(
-  quantityAndMeals: IQuantitiesAndMeals
+  quantityAndMeals: IQuantitiesAndMeals,
+  options: {
+    includeMeals: boolean;
+  }
 ): string {
   return Object.entries(quantityAndMeals)
     .map(([ingredient, { meals, quantities }]) => {
@@ -92,9 +99,11 @@ export function createShoppingList(
         return Quantities.toString(quantity) ?? "extra";
       });
 
-      return `${ingredient} (${quantityString.join(" + ")}) [${Array.from(
-        meals
-      ).join(", ")}]`;
+      let text = `${ingredient} (${quantityString.join(" + ")})`;
+      if (options.includeMeals) {
+        text += ` [${Array.from(meals).join(", ")}]`;
+      }
+      return text;
     })
     .join("\n");
 }

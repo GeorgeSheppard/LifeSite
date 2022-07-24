@@ -43,7 +43,7 @@ function DailyPlan(props: IDailyPlanProps) {
   return (
     <>
       <Grid item key="Date" xs={12} sm={12} md={12} lg={12} xl={12}>
-        <Typography fontSize={28} fontWeight={400} pl={1}>
+        <Typography fontSize={24} fontWeight={400} pl={1}>
           {date}
         </Typography>
       </Grid>
