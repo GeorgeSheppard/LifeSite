@@ -46,7 +46,16 @@ export const useRecipeSearch = (
   );
   const { search } = useQuerySearch(searchableRecipes, options);
   const [searchInput, setSearchInput] = useState("");
-  const [defaultSearchResults] = useState(() => new Set(Object.keys(recipes)));
+  const [defaultSearchResults] = useState(
+    () =>
+      new Set(
+        Object.values(recipes)
+          .sort((recipeA, recipeB) => {
+            return recipeB.images.length - recipeA.images.length;
+          })
+          .map((recipe) => recipe.uuid)
+      )
+  );
 
   const getSearchResults = useCallback(() => {
     if (searchInput.length === 0) {

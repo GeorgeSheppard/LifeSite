@@ -209,6 +209,7 @@ const RecipeName = ({
                 </Button>
               </ButtonGroup>
               <DeleteIcon
+                sx={{ margin: "auto", marginLeft: "10px" }}
                 onClick={(event) => {
                   event.stopPropagation();
                   dispatch(
@@ -218,7 +219,7 @@ const RecipeName = ({
                         {
                           recipeId,
                           componentId,
-                          servingsIncrease: -servings,
+                          servingsIncrease: -servings - 1,
                         },
                       ],
                     })
@@ -226,7 +227,6 @@ const RecipeName = ({
                 }}
                 fontSize="small"
                 htmlColor="#7d2020"
-                sx={{ ml: 2 }}
               />
             </div>
           </div>
