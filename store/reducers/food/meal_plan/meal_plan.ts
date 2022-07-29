@@ -151,7 +151,7 @@ export const mealPlanSlice = createSlice({
 
       if (migratedMealPlan.plan) {
         for (const [date, plan] of Object.entries(migratedMealPlan.plan)) {
-          if (date in mealPlan) {
+          if (date in mealPlan.plan) {
             mealPlan.plan[date] = plan;
           }
         }
