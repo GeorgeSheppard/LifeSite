@@ -6,6 +6,7 @@ import { Migrator } from "../../../migration/migrator";
 import { latestVersion, migrations } from "./migrations";
 import { IFullStoreState } from "../../../store";
 import { isRecipesValid } from "./schema";
+import { login } from "../../user/user";
 
 export const recipesEmptyState = {
   version: latestVersion,
@@ -53,33 +54,38 @@ export const foodSlice = createSlice({
       state.cards = state.cards.filter((cardUuid) => cardUuid !== uuid);
     },
   },
-  extraReducers: {
-    "user/login": (state, action: PayloadAction<IFullStoreState>) => {
-      if (!action.payload.food) {
-        return state;
-      }
+  // extraReducers: {
+  //   "user/login": (state, action: PayloadAction<IFullStoreState>) => {
+  //     if (!action.payload.food) {
+  //       return state;
+  //     }
 
-      if (migrator.needsMigrating(action.payload.food?.version)) {
-        try {
-          return migrator.migrate(action.payload.food);
-        } catch (err) {
-          console.log("An error occurrence migrating recipes: " + err);
-          return state;
-        }
-      } else {
-        if (!isRecipesValid(action.payload.food)) {
-          console.error(
-            "Recipes is invalid: " + JSON.stringify(action.payload.food)
-          );
-          return state;
-        }
-      }
+  //     if (migrator.needsMigrating(action.payload.food?.version)) {
+  //       try {
+  //         return migrator.migrate(action.payload.food);
+  //       } catch (err) {
+  //         console.log("An error occurrence migrating recipes: " + err);
+  //         return state;
+  //       }
+  //     } else {
+  //       if (!isRecipesValid(action.payload.food)) {
+  //         console.error(
+  //           "Recipes is invalid: " + JSON.stringify(action.payload.food)
+  //         );
+  //         return state;
+  //       }
+  //     }
 
-      return action.payload.food;
-    },
-    "user/logout": (state) => {
-      return initialState;
-    },
+  //     return action.payload.food;
+  //   },
+  //   "user/logout": (state) => {
+  //     return initialState;
+  //   },
+  // },
+  extraReducers: (builder) => {
+    builder.addCase(login.type, (state) => {
+      state.version = "0.0.4";
+    });
   },
 });
 

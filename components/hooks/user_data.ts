@@ -47,64 +47,23 @@ export const useUserData = (): IUserDataReturn => {
   const [gotUserData, setGotUserData] = useState(false);
   const [uploading, setUploading] = useState(false);
 
-  const canUpload = useMemo(() => {
-    // Only need to save if a user is logged in
-    return !!session?.id && gotUserData;
-  }, [session?.id, gotUserData]);
+  // Only need to save if a user is logged in
+  const canUpload = !!session?.id && gotUserData;
 
   useEffect(() => {
-    let timerId: NodeJS.Timeout;
-
     const fetchUserData = async () => {
-      let json: IFullStoreState | undefined = undefined;
-      try {
-        const profileResults = await AwsS3Client.send(
-          new ListObjectsCommand({
-            Bucket: process.env.ENV_AWS_S3_BUCKET_NAME,
-            Prefix: `${session.id}/profile.json`,
-            MaxKeys: 1,
-          })
-        );
+      const { failed, json } = await attemptToFetchUserProfile(session.id);
 
-        if (profileResults.$metadata.httpStatusCode !== 200) {
-          setOffline(true);
-        }
-
-        if (profileResults.$metadata.httpStatusCode === 200) {
-          if (offline) {
-            setOffline(false);
-          }
-
-          // User doesn't have a profile, in this case we should stop trying to fetch a profile
-          // and create a new one by dispatching an empty profile
-          if (
-            !profileResults?.Contents ||
-            profileResults.Contents?.length === 0
-          ) {
-            json = {
-              user: userEmptyState,
-              printing: printingEmptyState,
-              plants: plantsEmptyState,
-              food: recipesEmptyState,
-              mealPlan: mealPlanEmptyState,
-            } as IFullStoreState;
-          }
-
-          const profileUrl = await getS3SignedUrl(`${session.id}/profile.json`);
-          const data = await fetch(profileUrl);
-          if (data.ok) {
-            json = await data.json();
-          }
-        }
-      } catch (err) {
-        console.error(err);
+      if (failed) {
+        setOffline(true);
+        return;
+      } else if (offline) {
+        setOffline(false);
       }
 
       if (json && !gotUserData) {
         setGotUserData(true);
         dispatch(login(json));
-      } else {
-        timerId = setTimeout(() => fetchUserData(), 20000);
       }
     };
 
@@ -117,12 +76,6 @@ export const useUserData = (): IUserDataReturn => {
     if (session?.id && !gotUserData) {
       fetchUserData();
     }
-
-    return () => {
-      if (timerId) {
-        clearTimeout(timerId);
-      }
-    };
   }, [session?.id, gotUserData, dispatch, offline, setOffline]);
 
   const storeUserData = useCallback(() => {
@@ -148,16 +101,64 @@ export const useUserData = (): IUserDataReturn => {
     // the properties
   }, [uploadFile, canUpload]);
 
-  // Save the user data everytime the route changes
-  // And if the user closes the webpage
+  // Save the user data if the user closes the webpage
   useEffect(() => {
-    router.events.on("routeChangeStart", storeUserData);
     window.addEventListener("beforeunload", storeUserData);
     return () => {
-      router.events.off("routeChangeStart", storeUserData);
       window.removeEventListener("beforeunload", storeUserData);
     };
   }, [storeUserData, router.events]);
 
   return { upload: storeUserData, uploading, canUpload, offline };
+};
+
+interface IProfileResults {
+  failed?: boolean;
+  json?: IFullStoreState;
+}
+
+const attemptToFetchUserProfile = async (
+  sessionId: string
+): Promise<IProfileResults> => {
+  const profileResults = await AwsS3Client.send(
+    new ListObjectsCommand({
+      Bucket: process.env.ENV_AWS_S3_BUCKET_NAME,
+      Prefix: `${sessionId}/profile.json`,
+      MaxKeys: 1,
+    })
+  );
+
+  if (profileResults.$metadata.httpStatusCode !== 200) {
+    return { failed: true };
+  }
+
+  // User doesn't have a profile, in this case we should stop trying to fetch a profile
+  // and create a new one by dispatching an empty profile
+  if (!profileResults?.Contents || profileResults.Contents?.length === 0) {
+    return {
+      json: {
+        user: userEmptyState,
+        printing: printingEmptyState,
+        plants: plantsEmptyState,
+        food: recipesEmptyState,
+        mealPlan: mealPlanEmptyState,
+      },
+    };
+  }
+
+  const profileUrl = await getS3SignedUrl(`${sessionId}/profile.json`);
+  const data = await fetch(profileUrl);
+
+  if (!data.ok) {
+    console.error("Response error status", data.statusText);
+    return { failed: true };
+  }
+
+  const json = await data.json();
+  if (!json) {
+    console.error("No json for user profile");
+    return { failed: true };
+  }
+
+  return { json };
 };
