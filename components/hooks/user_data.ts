@@ -46,62 +46,61 @@ export const useMutateAndStore = <TVariables>(
 
   const queryClient = useQueryClient();
 
-  const mutateAndStore = useCallback(
-    async (variables: TVariables) => {
-      const currentStoreState = queryClient.getQueryData<IFullStoreState>(
-        sessionQueryKey(session)
+  const mutateAndStore = useCallback(async () => {
+    const currentStoreState = queryClient.getQueryData<IFullStoreState>(
+      sessionQueryKey(session)
+    );
+    if (!currentStoreState) {
+      throw new Error("No current store state");
+    }
+
+    // We allow production users to upload their corrupted file (if they manage to get it in that state)
+    // but for development it is better to just prevent uploading
+    if (
+      process.env.NODE_ENV === "development" &&
+      !isStoreValid(currentStoreState)
+    ) {
+      throw new Error(
+        `Store data is not valid, prevented upload: ${JSON.stringify(
+          currentStoreState
+        )}`
       );
-      if (!currentStoreState) {
-        throw new Error("No current store state");
-      }
-
-      // Cannot directly mutate query cache
-      const data = mutation(clone(currentStoreState), variables);
-
-      // We allow production users to upload their corrupted file (if they manage to get it in that state)
-      // but for development it is better to just prevent uploading
-      if (process.env.NODE_ENV === "development" && !isStoreValid(data)) {
-        throw new Error(
-          `Store data is not valid, prevented upload: ${JSON.stringify(data)}`
-        );
-      }
-      const blob = new Blob([JSON.stringify(data, null, 2)], {
-        type: "application/json",
-      });
-      const file = new File([blob], "profile.json");
-      await uploadFile(file);
-      return data;
-    },
-    [uploadFile, mutation, queryClient, session]
-  );
+    }
+    const blob = new Blob([JSON.stringify(currentStoreState, null, 2)], {
+      type: "application/json",
+    });
+    const file = new File([blob], "profile.json");
+    await uploadFile(file);
+    return currentStoreState;
+  }, [uploadFile, queryClient, session]);
 
   return useMutation(mutateAndStore, {
-    // onMutate: async (variables: TVariables) => {
-    //   const profileQueryKey = sessionQueryKey(session);
-    //   await queryClient.cancelQueries({ queryKey: profileQueryKey });
+    onMutate: async (variables: TVariables) => {
+      const profileQueryKey = sessionQueryKey(session);
+      await queryClient.cancelQueries({ queryKey: profileQueryKey });
 
-    //   const previousValue =
-    //     queryClient.getQueryData<IFullStoreState>(profileQueryKey);
+      const previousValue =
+        queryClient.getQueryData<IFullStoreState>(profileQueryKey);
 
-    //   if (!previousValue) {
-    //     return;
-    //   }
+      if (!previousValue) {
+        return;
+      }
 
-    //   queryClient.setQueryData(profileQueryKey, () =>
-    //     mutation(clone(previousValue), variables)
-    //   );
+      queryClient.setQueryData(profileQueryKey, () =>
+        mutation(clone(previousValue), variables)
+      );
 
-    //   return { previousValue };
-    // },
-    // onError: (err, __, context) => {
-    //   const previousValue = context?.previousValue;
-    //   if (previousValue) {
-    //     queryClient.setQueryData(sessionQueryKey(session), previousValue);
-    //   }
-    //   console.error(`Error updating profile: ${err}`);
-    // },
-    onSuccess: (data) => {
-      queryClient.setQueryData(sessionQueryKey(session), data);
+      return { previousValue };
+    },
+    onError: (err, __, context) => {
+      const previousValue = context?.previousValue;
+      if (previousValue) {
+        queryClient.setQueryData(sessionQueryKey(session), previousValue);
+      }
+      console.error(`Error updating profile: ${err}`);
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: sessionQueryKey(session) });
     },
   });
 };

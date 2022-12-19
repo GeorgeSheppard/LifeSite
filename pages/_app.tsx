@@ -14,9 +14,7 @@ import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      staleTime: Infinity,
-      refetchOnWindowFocus: true,
-      refetchOnMount: "always",
+      staleTime: 60 * 60 * 24 * 1000,
     },
   },
 });
