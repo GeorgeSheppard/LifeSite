@@ -9,12 +9,13 @@ export default NextAuth({
       clientId: process.env.ENV_AWS_COGNITO_CLIENT_ID ?? "",
       clientSecret: process.env.ENV_AWS_COGNITO_CLIENT_SECRET ?? "",
       issuer: process.env.ENV_AWS_COGNITO_CLIENT_ISSUER,
+      checks: "nonce",
     }),
   ],
   callbacks: {
     async session({ session, user, token }) {
-      session.id = token.sub;
-      return session
+      (session as any).id = token.sub;
+      return session;
     },
-  }
+  },
 });
