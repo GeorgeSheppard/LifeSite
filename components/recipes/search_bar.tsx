@@ -46,7 +46,7 @@ export const useRecipeSearch = (
   );
   const { search } = useQuerySearch(searchableRecipes, options);
   const [searchInput, setSearchInput] = useState("");
-  const [defaultSearchResults] = useState(
+  const defaultSearchResults = useMemo(
     () =>
       new Set(
         Object.values(recipes)
@@ -54,7 +54,8 @@ export const useRecipeSearch = (
             return recipeB.images.length - recipeA.images.length;
           })
           .map((recipe) => recipe.uuid)
-      )
+      ),
+    [recipes]
   );
 
   const getSearchResults = useCallback(() => {
