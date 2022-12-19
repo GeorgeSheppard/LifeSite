@@ -11,7 +11,7 @@ import Card from "@mui/material/Card";
 import { useMealPlan } from "../../components/hooks/use_data";
 
 export default function MealPlan() {
-  const mealPlan = useMealPlan();
+  const mealPlan = useMealPlan().data;
   const router = useRouter();
 
   return (
