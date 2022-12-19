@@ -1,6 +1,4 @@
-import { CustomSession } from "../../pages/api/auth/[...nextauth]";
 import { useCallback } from "react";
-import { useSession } from "next-auth/react";
 import { migrateUser, userEmptyState } from "../../store/reducers/user/user";
 import { IFullStoreState, isStoreValid, MutateFunc } from "../../store/store";
 import useUploadToS3 from "./upload_to_s3";
@@ -25,6 +23,8 @@ import {
 } from "../../store/reducers/food/meal_plan/meal_plan";
 import { useQueryClient, useMutation } from "@tanstack/react-query";
 import clone from "just-clone";
+import { useAppSession } from "./use_app_session";
+import { sessionQueryKey } from "./use_data";
 
 export interface IUserDataReturn {
   uploading: boolean;
@@ -35,7 +35,7 @@ export interface IUserDataReturn {
 export const useMutateAndStore = <TVariables>(
   mutation: MutateFunc<TVariables>
 ) => {
-  const session = useSession().data as CustomSession;
+  const session = useAppSession();
   const { uploadFile } = useUploadToS3({
     onUploadError: (err) => {
       console.log(`Error uploading profile data ${err}`);
@@ -48,10 +48,9 @@ export const useMutateAndStore = <TVariables>(
 
   const mutateAndStore = useCallback(
     async (variables: TVariables) => {
-      const currentStoreState = queryClient.getQueryData<IFullStoreState>([
-        // TODO: This is a pretty flimsy connection
-        session?.id ?? "",
-      ]);
+      const currentStoreState = queryClient.getQueryData<IFullStoreState>(
+        sessionQueryKey(session)
+      );
       if (!currentStoreState) {
         throw new Error("No current store state");
       }
@@ -73,12 +72,12 @@ export const useMutateAndStore = <TVariables>(
       await uploadFile(file);
       return data;
     },
-    [uploadFile, mutation, queryClient, session?.id]
+    [uploadFile, mutation, queryClient, session]
   );
 
   return useMutation(mutateAndStore, {
     onSuccess: (data) => {
-      queryClient.setQueryData([session?.id ?? ""], data);
+      queryClient.setQueryData(sessionQueryKey(session), data);
     },
   });
 };
