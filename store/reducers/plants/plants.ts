@@ -84,9 +84,6 @@ export const plantsSlice = createSlice({
 
       return action.payload.plants;
     },
-    "user/logout": (state) => {
-      return plantsInitialState;
-    },
   },
 });
 

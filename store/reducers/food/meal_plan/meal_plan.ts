@@ -157,9 +157,6 @@ export const mealPlanSlice = createSlice({
 
       return mealPlan;
     },
-    "user/logout": (state) => {
-      return mealPlanInitialState;
-    },
   },
 });
 

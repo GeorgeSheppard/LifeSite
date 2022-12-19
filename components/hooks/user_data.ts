@@ -1,9 +1,7 @@
 import { CustomSession } from "../../pages/api/auth/[...nextauth]";
-import { useAppDispatch } from "../../store/hooks/hooks";
-import { useState, useEffect, useCallback } from "react";
+import { useCallback } from "react";
 import { useSession } from "next-auth/react";
-import { login, logout, userEmptyState } from "../../store/reducers/user/user";
-import { useRouter } from "next/router";
+import { userEmptyState } from "../../store/reducers/user/user";
 import { IFullStoreState, isStoreValid, MutateFunc } from "../../store/store";
 import useUploadToS3 from "./upload_to_s3";
 import { getS3SignedUrl } from "../aws/s3_utilities";

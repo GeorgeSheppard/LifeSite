@@ -100,9 +100,6 @@ export const foodSlice = createSlice({
 
       return action.payload.food;
     },
-    "user/logout": (state) => {
-      return recipesInitialState;
-    },
   },
 });
 

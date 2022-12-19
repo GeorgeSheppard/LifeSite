@@ -8,10 +8,8 @@ import TextField from "@mui/material/TextField";
 import Tooltip from "@mui/material/Tooltip";
 import Image from "next/image";
 import { ChangeEvent, useCallback, useState } from "react";
-import { useAppDispatch } from "../../store/hooks/hooks";
 import { addOrUpdatePlant } from "../../store/reducers/plants/plants";
 import {
-  IPlant,
   LightLevelKeys,
   PlantUuid,
   WateringAmountKeys,
@@ -19,6 +17,7 @@ import {
 import { ExitSaveButtons } from "../cards/exit_save_buttons";
 import { UploadDisplayImages } from "../cards/upload_and_display_images";
 import { stopPropagation } from "../cards/utilities";
+import { useMutateAndStore } from "../hooks/user_data";
 import { usePlants } from "../hooks/use_data";
 import { LightLevel, WateringAmount } from "./checkbox_choice";
 import { TemperatureSlider } from "./temperature_slider";
@@ -32,7 +31,7 @@ export interface IEditUploadPlant {
 }
 
 export const EditUploadPlant = (props: IEditUploadPlant) => {
-  const dispatch = useAppDispatch();
+  const { mutateAsync } = useMutateAndStore(addOrUpdatePlant);
   const [uuid] = useState<PlantUuid>(props.uuid);
   // Return either the existing plant data, or a default form
   // Much easier to work with fully defined properties
@@ -56,25 +55,22 @@ export const EditUploadPlant = (props: IEditUploadPlant) => {
   const [wateringLevel, setWateringLevel] = useState(plantData.wateringKey);
   const [lightLevel, setLightLevel] = useState(plantData.lightLevelKey);
 
-  const dispatchPlant = useCallback(() => {
+  const dispatchPlant = useCallback(async () => {
     const close = props.closeBackdrop;
 
-    dispatch(
-      addOrUpdatePlant({
-        uuid,
-        name,
-        description,
-        lightLevelKey: lightLevel,
-        wateringKey: wateringLevel,
-        temperatureRange,
-        images,
-        // TODO: No reminders UI yet
-        reminders: [],
-      })
-    );
+    await mutateAsync({
+      uuid,
+      name,
+      description,
+      lightLevelKey: lightLevel,
+      wateringKey: wateringLevel,
+      temperatureRange,
+      images,
+      // TODO: No reminders UI yet
+      reminders: [],
+    });
     close();
   }, [
-    dispatch,
     uuid,
     name,
     description,
@@ -83,6 +79,7 @@ export const EditUploadPlant = (props: IEditUploadPlant) => {
     temperatureRange,
     images,
     props.closeBackdrop,
+    mutateAsync,
   ]);
 
   return (

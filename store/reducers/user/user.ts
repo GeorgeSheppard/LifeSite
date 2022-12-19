@@ -52,12 +52,9 @@ export const userSlice = createSlice({
 
       return action.payload.user;
     },
-    logout: (state) => {
-      return userInitialState;
-    },
   },
 });
 
-export const { login, logout } = userSlice.actions;
+export const { login } = userSlice.actions;
 
 export default userSlice.reducer;

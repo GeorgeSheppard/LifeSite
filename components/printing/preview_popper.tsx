@@ -13,7 +13,6 @@ import {
   useState,
   useEffect,
 } from "react";
-import { useAppDispatch } from "../../store/hooks/hooks";
 import { addModel } from "../../store/reducers/printing/printing";
 import { v4 as uuidv4 } from "uuid";
 import { ICanvasScreenshotterRef } from "./canvas_screenshotter";
@@ -21,6 +20,7 @@ import { ExitSaveButtons } from "../cards/exit_save_buttons";
 import useUploadToS3 from "../hooks/upload_to_s3";
 import { IS3ValidUploadResponse } from "../hooks/upload_to_s3";
 import { IModelProps } from "../../store/reducers/printing/types";
+import { useMutateAndStore } from "../hooks/user_data";
 
 export interface IPreviewPopperProps {
   open: boolean;
@@ -32,7 +32,7 @@ export interface IPreviewPopperProps {
 
 export const PreviewPopper = (props: IPreviewPopperProps) => {
   const { screenshotRef, existingData } = props;
-
+  const { mutateAsync } = useMutateAndStore(addModel);
   const [screenshot, setScreenshot] = useState<string | undefined>();
 
   useEffect(() => {
@@ -42,25 +42,22 @@ export const PreviewPopper = (props: IPreviewPopperProps) => {
   }, [screenshotRef, setScreenshot]);
 
   const router = useRouter();
-  const dispatch = useAppDispatch();
   const { uploadFile } = useUploadToS3({
     folder: "images",
-    onUploadFinished: (response: IS3ValidUploadResponse) => {
-      dispatch(
-        addModel({
-          filename: name,
-          description,
-          image: {
-            key: response.key,
-            timestamp: Date.now(),
-          },
-          // TODO: Better way of managing types with nextjs, seems to be very hard
-          // to work with, need custom type definitions for the pages
-          key: router.query.key as any as string,
-          uuid,
-          cameraParams: screenshotRef.current?.getCameraParams(),
-        })
-      );
+    onUploadFinished: async (response: IS3ValidUploadResponse) => {
+      await mutateAsync({
+        filename: name,
+        description,
+        image: {
+          key: response.key,
+          timestamp: Date.now(),
+        },
+        // TODO: Better way of managing types with nextjs, seems to be very hard
+        // to work with, need custom type definitions for the pages
+        key: router.query.key as any as string,
+        uuid,
+        cameraParams: screenshotRef.current?.getCameraParams(),
+      });
       onExit();
     },
     onUploadError: (err) => console.log(err),

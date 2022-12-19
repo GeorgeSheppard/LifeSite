@@ -81,9 +81,6 @@ export const printingSlice = createSlice({
 
       return action.payload.printing;
     },
-    "user/logout": (state) => {
-      return printingInitialState;
-    },
   },
 });
 

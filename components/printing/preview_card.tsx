@@ -5,7 +5,6 @@ import * as React from "react";
 import Box from "@mui/material/Box";
 import { navigateToPreview } from "./navigate_to_preview";
 import { useRouter } from "next/router";
-import { useAppDispatch } from "../../store/hooks/hooks";
 import DeleteIcon from "@mui/icons-material/Delete";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import DownloadIcon from "@mui/icons-material/Download";
@@ -22,6 +21,7 @@ import DialogTitle from "@mui/material/DialogTitle";
 import { useBoolean } from "../hooks/use_boolean";
 import Button from "@mui/material/Button";
 import { usePrinting } from "../hooks/use_data";
+import { useMutateAndStore } from "../hooks/user_data";
 
 export interface IPreviewCardProps {
   uuid: string;
@@ -29,7 +29,7 @@ export interface IPreviewCardProps {
 
 export default function PreviewCard(props: IPreviewCardProps) {
   const router = useRouter();
-  const dispatch = useAppDispatch();
+  const { mutate } = useMutateAndStore(deleteModel);
   const { uuid } = props;
   const [dialogOpen, setters] = useBoolean(false);
 
@@ -45,9 +45,9 @@ export default function PreviewCard(props: IPreviewCardProps) {
   const deleteModelOnClick = useCallback(
     (event) => {
       event.stopPropagation();
-      dispatch(deleteModel(uuid));
+      mutate(uuid);
     },
-    [dispatch, uuid]
+    [mutate, uuid]
   );
 
   const onDownload = useCallback(
