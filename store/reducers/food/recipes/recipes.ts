@@ -1,4 +1,3 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { IRecipesState, IRecipe, RecipeUuid } from "./types";
 import defaultProfileProduction from "./defaultProduction.json";
 import defaultProfileDevelopment from "./defaultDevelopment.json";
@@ -6,6 +5,7 @@ import { Migrator } from "../../../migration/migrator";
 import { latestVersion, migrations } from "./migrations";
 import { IFullStoreState, MutateFunc } from "../../../store";
 import { isRecipesValid } from "./schema";
+import clone from "just-clone";
 
 export const recipesEmptyState = {
   version: latestVersion,
@@ -72,35 +72,15 @@ export const deleteRecipe: MutateFunc<RecipeUuid> = (
   return store;
 };
 
-export const foodSlice = createSlice({
-  name: "food",
-  initialState: recipesInitialState,
-  reducers: {},
-  extraReducers: {
-    "user/login": (state, action: PayloadAction<IFullStoreState>) => {
-      if (!action.payload.food) {
-        return state;
-      }
-
-      if (migrator.needsMigrating(action.payload.food?.version)) {
-        try {
-          return migrator.migrate(action.payload.food);
-        } catch (err) {
-          console.log("An error occurrence migrating recipes: " + err);
-          return state;
-        }
-      } else {
-        if (!isRecipesValid(action.payload.food)) {
-          console.error(
-            "Recipes is invalid: " + JSON.stringify(action.payload.food)
-          );
-          return state;
-        }
-      }
-
-      return action.payload.food;
-    },
-  },
-});
-
-export default foodSlice.reducer;
+export const migrateRecipes = (store: IFullStoreState): IFullStoreState => {
+  if (!store.food) {
+    store.food = clone(recipesEmptyState);
+  }
+  if (migrator.needsMigrating(store.food.version)) {
+    store.food = migrator.migrate(store.food);
+  }
+  if (!isRecipesValid(store.food)) {
+    throw new Error("Recipes is invalid: " + JSON.stringify(store.food));
+  }
+  return store;
+};

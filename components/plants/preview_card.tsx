@@ -9,7 +9,6 @@ import AcUnitIcon from "@mui/icons-material/AcUnit";
 import WbSunnyIcon from "@mui/icons-material/WbSunny";
 import Image from "next/image";
 import { WrappedCardMedia } from "../cards/wrapped_card_media";
-import { useDispatch } from "react-redux";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
@@ -21,6 +20,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import { PlantUuid } from "../../store/reducers/plants/types";
 import { LightLevel, WateringAmount } from "./checkbox_choice";
 import { usePlants } from "../hooks/use_data";
+import { useMutateAndStore } from "../hooks/user_data";
 
 export interface IPlantPreview {
   uuid: PlantUuid;
@@ -31,7 +31,7 @@ const degreesC = "\xB0C";
 
 export const PlantPreview = (props: IPlantPreview) => {
   const plant = usePlants().data.plants[props.uuid];
-  const dispatch = useDispatch();
+  const { mutate } = useMutateAndStore(deletePlant);
   const [dialogOpen, setters] = useBoolean(false);
 
   const lightLevel = useMemo(
@@ -44,8 +44,8 @@ export const PlantPreview = (props: IPlantPreview) => {
   );
 
   const deletePlantOnClick = useCallback(() => {
-    dispatch(deletePlant(props.uuid));
-  }, [dispatch, props.uuid]);
+    mutate(props.uuid);
+  }, [props.uuid, mutate]);
 
   return (
     <>

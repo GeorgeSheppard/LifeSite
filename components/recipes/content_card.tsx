@@ -22,7 +22,6 @@ import Typography from "@mui/material/Typography";
 import { NextRouter } from "next/router";
 import { memo, useCallback, useMemo } from "react";
 import { useDrag } from "react-dnd";
-import { useDispatch } from "react-redux";
 import { deleteRecipe } from "../../store/reducers/food/recipes/recipes";
 import {
   IRecipe,
@@ -34,6 +33,7 @@ import { WrappedCardMedia } from "../cards/wrapped_card_media";
 import { IUseBooleanCallbacks, useBoolean } from "../hooks/use_boolean";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import { useRecipes } from "../hooks/use_data";
+import { useMutateAndStore } from "../hooks/user_data";
 
 export interface IRecipeCardWithDialogProps {
   uuid: RecipeUuid;
@@ -46,13 +46,13 @@ export const RecipeCardWithDialog = memo(function RenderRecipeCard(
   props: IRecipeCardWithDialogProps
 ) {
   const { uuid, router } = props;
-  const dispatch = useDispatch();
+  const { mutate } = useMutateAndStore(deleteRecipe);
   const recipe = useRecipes().data[uuid];
   const [dialogOpen, setters] = useBoolean(false);
 
   const deleteRecipeOnClick = useCallback(() => {
-    dispatch(deleteRecipe(uuid));
-  }, [dispatch, uuid]);
+    mutate(uuid);
+  }, [uuid, mutate]);
 
   if (!recipe) {
     return null;

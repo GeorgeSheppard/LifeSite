@@ -1,4 +1,3 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import clone from "just-clone";
 import { Migrator } from "../../../migration/migrator";
 import { IFullStoreState, MutateFunc } from "../../../store";
@@ -119,45 +118,28 @@ export const addOrUpdatePlan: MutateFunc<IAddOrUpdatePlan> = (
   return store;
 };
 
-export const mealPlanSlice = createSlice({
-  name: "mealPlanner",
-  initialState: mealPlanInitialState,
-  reducers: {},
-  extraReducers: {
-    "user/login": (state, action: PayloadAction<IFullStoreState>) => {
-      if (!action.payload.mealPlan) {
-        return state;
-      }
+export const migrateMealPlan = (store: IFullStoreState): IFullStoreState => {
+  if (!store.mealPlan) {
+    store.mealPlan = clone(mealPlanEmptyState);
+  }
 
-      let migratedMealPlan: IMealPlanState = action.payload.mealPlan;
-      if (migrator.needsMigrating(action.payload.mealPlan?.version)) {
-        try {
-          migratedMealPlan = migrator.migrate(action.payload.mealPlan);
-        } catch (err) {
-          console.error("An error occurrence migrating recipes: " + err);
-          return state;
-        }
-      } else {
-        if (!isMealPlanValid(migratedMealPlan)) {
-          console.error(
-            "Meal plan is invalid: " + JSON.stringify(action.payload.mealPlan)
-          );
-          return state;
-        }
-      }
-      let mealPlan = clone(mealPlanEmptyState);
+  let migratedMealPlan: IMealPlanState = store.mealPlan;
+  if (migrator.needsMigrating(store.mealPlan.version)) {
+    migratedMealPlan = migrator.migrate(store.mealPlan);
+  }
+  if (!isMealPlanValid(migratedMealPlan)) {
+    throw new Error(
+      "Meal plan is invalid: " + JSON.stringify(migratedMealPlan)
+    );
+  }
 
-      if (migratedMealPlan.plan) {
-        for (const [date, plan] of Object.entries(migratedMealPlan.plan)) {
-          if (date in mealPlan.plan) {
-            mealPlan.plan[date] = plan;
-          }
-        }
-      }
+  let newDatesMealPlan = clone(mealPlanEmptyState);
 
-      return mealPlan;
-    },
-  },
-});
-
-export default mealPlanSlice.reducer;
+  for (const [date, plan] of Object.entries(migratedMealPlan.plan)) {
+    if (date in newDatesMealPlan.plan) {
+      newDatesMealPlan.plan[date] = plan;
+    }
+  }
+  store.mealPlan = newDatesMealPlan;
+  return store;
+};

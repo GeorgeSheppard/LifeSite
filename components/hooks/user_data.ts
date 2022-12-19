@@ -1,16 +1,28 @@
 import { CustomSession } from "../../pages/api/auth/[...nextauth]";
 import { useCallback } from "react";
 import { useSession } from "next-auth/react";
-import { userEmptyState } from "../../store/reducers/user/user";
+import { migrateUser, userEmptyState } from "../../store/reducers/user/user";
 import { IFullStoreState, isStoreValid, MutateFunc } from "../../store/store";
 import useUploadToS3 from "./upload_to_s3";
 import { getS3SignedUrl } from "../aws/s3_utilities";
 import { ListObjectsCommand } from "@aws-sdk/client-s3";
 import { AwsS3Client } from "../aws/s3_client";
-import { printingEmptyState } from "../../store/reducers/printing/printing";
-import { plantsEmptyState } from "../../store/reducers/plants/plants";
-import { recipesEmptyState } from "../../store/reducers/food/recipes/recipes";
-import { mealPlanEmptyState } from "../../store/reducers/food/meal_plan/meal_plan";
+import {
+  printingEmptyState,
+  migratePrinting,
+} from "../../store/reducers/printing/printing";
+import {
+  plantsEmptyState,
+  migratePlants,
+} from "../../store/reducers/plants/plants";
+import {
+  recipesEmptyState,
+  migrateRecipes,
+} from "../../store/reducers/food/recipes/recipes";
+import {
+  mealPlanEmptyState,
+  migrateMealPlan,
+} from "../../store/reducers/food/meal_plan/meal_plan";
 import { useQueryClient, useMutation } from "@tanstack/react-query";
 import clone from "just-clone";
 
@@ -90,11 +102,11 @@ export const attemptToFetchUserProfile = async (
   // and create a new one by dispatching an empty profile
   if (!profileResults?.Contents || profileResults.Contents?.length === 0) {
     return {
-      user: userEmptyState,
-      printing: printingEmptyState,
-      plants: plantsEmptyState,
-      food: recipesEmptyState,
-      mealPlan: mealPlanEmptyState,
+      user: clone(userEmptyState),
+      printing: clone(printingEmptyState),
+      plants: clone(plantsEmptyState),
+      food: clone(recipesEmptyState),
+      mealPlan: clone(mealPlanEmptyState),
     };
   }
 
@@ -105,10 +117,26 @@ export const attemptToFetchUserProfile = async (
     throw new Error(`Response error: ${data.statusText}`);
   }
 
-  const json = await data.json();
+  let json = await data.json();
   if (!json) {
     throw new Error("No json for user profile");
   }
 
+  json = migrateUserProfile(json);
+
   return json;
+};
+
+export const migrateUserProfile = (profile: IFullStoreState) => {
+  for (const migration of [
+    migrateMealPlan,
+    migrateUser,
+    migratePlants,
+    migratePrinting,
+    migrateRecipes,
+  ]) {
+    profile = migration(profile);
+  }
+
+  return profile;
 };

@@ -1,4 +1,4 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import clone from "just-clone";
 import { Migrator } from "../../migration/migrator";
 import { IFullStoreState, MutateFunc } from "../../store";
 import defaultProduction from "./defaultProduction.json";
@@ -53,35 +53,15 @@ export const deleteModel: MutateFunc<ModelUuid> = (
   return store;
 };
 
-export const printingSlice = createSlice({
-  name: "printing",
-  initialState: printingInitialState,
-  reducers: {},
-  extraReducers: {
-    "user/login": (state, action: PayloadAction<IFullStoreState>) => {
-      if (!action.payload.printing) {
-        return state;
-      }
-
-      if (migrator.needsMigrating(action.payload.printing?.version)) {
-        try {
-          return migrator.migrate(action.payload.printing);
-        } catch (err) {
-          console.log("An error occurrence migrating printing: " + err);
-          return state;
-        }
-      } else {
-        if (!isPrintingValid(action.payload.printing)) {
-          console.error(
-            "Printing is invalid: " + JSON.stringify(action.payload.printing)
-          );
-          return state;
-        }
-      }
-
-      return action.payload.printing;
-    },
-  },
-});
-
-export default printingSlice.reducer;
+export const migratePrinting = (store: IFullStoreState): IFullStoreState => {
+  if (!store.printing) {
+    store.printing = clone(printingEmptyState);
+  }
+  if (migrator.needsMigrating(store.printing.version)) {
+    store.printing = migrator.migrate(store.printing);
+  }
+  if (!isPrintingValid(store.printing)) {
+    throw new Error("Printing is invalid: " + JSON.stringify(store.printing));
+  }
+  return store;
+};

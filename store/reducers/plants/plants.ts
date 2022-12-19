@@ -1,4 +1,4 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import clone from "just-clone";
 import { Migrator } from "../../migration/migrator";
 import { IFullStoreState, MutateFunc } from "../../store";
 import defaultProduction from "./defaultProduction.json";
@@ -56,35 +56,15 @@ export const deletePlant: MutateFunc<PlantUuid> = (
   return store;
 };
 
-export const plantsSlice = createSlice({
-  name: "plants",
-  initialState: plantsInitialState,
-  reducers: {},
-  extraReducers: {
-    "user/login": (state, action: PayloadAction<IFullStoreState>) => {
-      if (!action.payload.plants) {
-        return state;
-      }
-
-      if (migrator.needsMigrating(action.payload.plants?.version)) {
-        try {
-          return migrator.migrate(action.payload.plants);
-        } catch (err) {
-          console.log("An error occurrence migrating plants: " + err);
-          return state;
-        }
-      } else {
-        if (!isPlantsValid(action.payload.plants)) {
-          console.error(
-            "Plants is invalid: " + JSON.stringify(action.payload.plants)
-          );
-          return state;
-        }
-      }
-
-      return action.payload.plants;
-    },
-  },
-});
-
-export default plantsSlice.reducer;
+export const migratePlants = (store: IFullStoreState): IFullStoreState => {
+  if (!store.plants) {
+    store.plants = clone(plantsEmptyState);
+  }
+  if (migrator.needsMigrating(store.plants.version)) {
+    store.plants = migrator.migrate(store.plants);
+  }
+  if (!isPlantsValid(store.plants)) {
+    throw new Error("Plants is invalid: " + JSON.stringify(store.plants));
+  }
+  return store;
+};

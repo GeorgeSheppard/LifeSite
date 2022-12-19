@@ -1,9 +1,6 @@
-import { configureStore } from "@reduxjs/toolkit";
-import printing from "./reducers/printing/printing";
-import plants, { plantsInitialState } from "./reducers/plants/plants";
-import food, { recipesInitialState } from "./reducers/food/recipes/recipes";
-import mealPlan from "./reducers/food/meal_plan/meal_plan";
-import user, { userInitialState } from "./reducers/user/user";
+import { plantsInitialState } from "./reducers/plants/plants";
+import { recipesInitialState } from "./reducers/food/recipes/recipes";
+import { userInitialState } from "./reducers/user/user";
 import { IRecipesState } from "./reducers/food/recipes/types";
 import { IPlantsState } from "./reducers/plants/types";
 import { IPrintingState } from "./reducers/printing/types";
@@ -30,16 +27,6 @@ export type MutateFunc<T> = (
   payload: T
 ) => IFullStoreState;
 
-export const store = configureStore<IFullStoreState>({
-  reducer: {
-    printing,
-    plants,
-    food,
-    mealPlan,
-    user,
-  },
-});
-
 export const initialState: IFullStoreState = {
   food: recipesInitialState,
   mealPlan: mealPlanInitialState,
@@ -57,6 +44,3 @@ export const isStoreValid = (state: IFullStoreState) => {
     isUserValid(state.user)
   );
 };
-
-export type RootState = ReturnType<typeof store.getState>;
-export type AppDispatch = typeof store.dispatch;
