@@ -25,12 +25,12 @@ export const productionDefault = {
   version: latestVersion,
 } as IPlantsState;
 
-const initialState: IPlantsState =
+export const plantsInitialState: IPlantsState =
   process.env.NODE_ENV === "development" ? plantsEmptyState : productionDefault;
 
 export const plantsSlice = createSlice({
   name: "plants",
-  initialState,
+  initialState: plantsInitialState,
   reducers: {
     addOrUpdatePlant: (state, action: PayloadAction<IPlant>) => {
       const plant = action.payload;
@@ -74,7 +74,7 @@ export const plantsSlice = createSlice({
       return action.payload.plants;
     },
     "user/logout": (state) => {
-      return initialState;
+      return plantsInitialState;
     },
   },
 });

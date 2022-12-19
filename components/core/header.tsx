@@ -14,7 +14,6 @@ import Typography from "@mui/material/Typography";
 import { signIn, signOut, useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import { useCallback, useState } from "react";
-import { useAppDispatch, useAppSelector } from "../../store/hooks/hooks";
 import { CenteredComponent } from "./centered_component";
 
 // TODO: Min height in MUI is set to 64 so don't go lower than this, make it so I can though

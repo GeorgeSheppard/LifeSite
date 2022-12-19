@@ -1,6 +1,5 @@
 import { Typography } from "@mui/material";
 import Container from "@mui/material/Container";
-import { useAppSelector } from "../../store/hooks/hooks";
 import Grid from "@mui/material/Grid";
 import {
   DateString,
@@ -9,9 +8,10 @@ import {
 import { RecipeCardWithDialog } from "../../components/recipes/content_card";
 import { NextRouter, useRouter } from "next/router";
 import Card from "@mui/material/Card";
+import { useMealPlan } from "../../components/hooks/use_data";
 
 export default function MealPlan() {
-  const mealPlan = useAppSelector((store) => store.mealPlan.plan);
+  const mealPlan = useMealPlan();
   const router = useRouter();
 
   return (

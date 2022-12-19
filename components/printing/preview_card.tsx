@@ -5,7 +5,7 @@ import * as React from "react";
 import Box from "@mui/material/Box";
 import { navigateToPreview } from "./navigate_to_preview";
 import { useRouter } from "next/router";
-import { useAppDispatch, useAppSelector } from "../../store/hooks/hooks";
+import { useAppDispatch } from "../../store/hooks/hooks";
 import DeleteIcon from "@mui/icons-material/Delete";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import DownloadIcon from "@mui/icons-material/Download";
@@ -21,6 +21,7 @@ import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import { useBoolean } from "../hooks/use_boolean";
 import Button from "@mui/material/Button";
+import { usePrinting } from "../hooks/use_data";
 
 export interface IPreviewCardProps {
   uuid: string;
@@ -32,7 +33,7 @@ export default function PreviewCard(props: IPreviewCardProps) {
   const { uuid } = props;
   const [dialogOpen, setters] = useBoolean(false);
 
-  const cardData = useAppSelector((store) => store.printing.models[uuid]);
+  const cardData = usePrinting().data.models[uuid];
 
   const onClickToPreview = useCallback(
     (event: MouseEvent) => {
@@ -62,6 +63,10 @@ export default function PreviewCard(props: IPreviewCardProps) {
     },
     [cardData]
   );
+
+  if (!cardData) {
+    return null;
+  }
 
   return (
     <>
@@ -109,7 +114,7 @@ export default function PreviewCard(props: IPreviewCardProps) {
             margin: "auto",
             paddingRight: 2,
             pt: 2,
-            pb: 2
+            pb: 2,
           }}
         >
           <Tooltip title="Preview part">
@@ -122,10 +127,13 @@ export default function PreviewCard(props: IPreviewCardProps) {
             <DownloadIcon onClick={onDownload} />
           </Tooltip>
           <Tooltip title="Delete">
-            <DeleteIcon sx={{ marginTop: 2 }} onClick={(event) => {
-              event.stopPropagation();
-              setters.turnOn();
-            }} />
+            <DeleteIcon
+              sx={{ marginTop: 2 }}
+              onClick={(event) => {
+                event.stopPropagation();
+                setters.turnOn();
+              }}
+            />
           </Tooltip>
         </Box>
         <Box

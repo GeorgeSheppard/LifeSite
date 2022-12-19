@@ -23,14 +23,14 @@ export const productionDefault: IPrintingState = {
   version: latestVersion,
 } as IPrintingState;
 
-const initialState: IPrintingState =
+export const printingInitialState: IPrintingState =
   process.env.NODE_ENV === "development"
     ? printingEmptyState
     : productionDefault;
 
 export const printingSlice = createSlice({
   name: "printing",
-  initialState,
+  initialState: printingInitialState,
   reducers: {
     addModel: (state, action: PayloadAction<IModelProps>) => {
       const uuid = action.payload.uuid;
@@ -71,7 +71,7 @@ export const printingSlice = createSlice({
       return action.payload.printing;
     },
     "user/logout": (state) => {
-      return initialState;
+      return printingInitialState;
     },
   },
 });

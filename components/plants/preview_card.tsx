@@ -3,10 +3,7 @@ import Card from "@mui/material/Card";
 import CardActionArea from "@mui/material/CardActionArea";
 import CardContent from "@mui/material/CardContent";
 import Typography from "@mui/material/Typography";
-import { useAppSelector } from "../../store/hooks/hooks";
-import {
-  deletePlant,
-} from "../../store/reducers/plants/plants";
+import { deletePlant } from "../../store/reducers/plants/plants";
 import { useMemo, useCallback } from "react";
 import AcUnitIcon from "@mui/icons-material/AcUnit";
 import WbSunnyIcon from "@mui/icons-material/WbSunny";
@@ -23,6 +20,7 @@ import Button from "@mui/material/Button";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { PlantUuid } from "../../store/reducers/plants/types";
 import { LightLevel, WateringAmount } from "./checkbox_choice";
+import { usePlants } from "../hooks/use_data";
 
 export interface IPlantPreview {
   uuid: PlantUuid;
@@ -32,7 +30,7 @@ export interface IPlantPreview {
 const degreesC = "\xB0C";
 
 export const PlantPreview = (props: IPlantPreview) => {
-  const plant = useAppSelector((store) => store.plants.plants[props.uuid]);
+  const plant = usePlants().data.plants[props.uuid];
   const dispatch = useDispatch();
   const [dialogOpen, setters] = useBoolean(false);
 

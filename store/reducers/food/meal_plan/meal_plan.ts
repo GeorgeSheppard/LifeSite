@@ -56,7 +56,7 @@ export const mealPlanEmptyState: IMealPlanState = {
   ),
 };
 
-const initialState = mealPlanEmptyState;
+export const mealPlanInitialState = mealPlanEmptyState;
 
 const migrator = new Migrator<IMealPlanState>(
   migrations,
@@ -121,7 +121,7 @@ export const addOrUpdate = (
 
 export const mealPlanSlice = createSlice({
   name: "mealPlanner",
-  initialState,
+  initialState: mealPlanInitialState,
   reducers: {
     addOrUpdatePlan: addOrUpdate,
   },
@@ -160,7 +160,7 @@ export const mealPlanSlice = createSlice({
       return mealPlan;
     },
     "user/logout": (state) => {
-      return initialState;
+      return mealPlanInitialState;
     },
     "recipes/deleteRecipe": (state, action: PayloadAction<RecipeUuid>) => {
       const newState = clone(state);

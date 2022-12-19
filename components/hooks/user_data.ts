@@ -18,27 +18,21 @@ export interface IUserDataReturn {
   uploading: boolean;
   canUpload: boolean;
   upload: () => void;
-  offline: boolean;
 }
 
 export const useUserData = (): IUserDataReturn => {
   const session = useSession().data as CustomSession;
   const router = useRouter();
   const dispatch = useAppDispatch();
-  const [offline, setOffline] = useState(false);
   const { uploadFile } = useUploadToS3({
     onStartUpload: () => {
       setUploading(true);
-      if (offline) {
-        setOffline(false);
-      }
       // We could use onUploadFinished to setUploading to false, but users don't actually
       // care how long it's taking they just want to know it has been triggered
       setTimeout(() => setUploading(false), 1000);
     },
     onUploadError: (err) => {
       setUploading(false);
-      setOffline(true);
       console.log(`Error uploading profile data ${err}`);
     },
     // We don't want multiple copies of the profile, and we want it to be at a predictable path
@@ -52,14 +46,7 @@ export const useUserData = (): IUserDataReturn => {
 
   useEffect(() => {
     const fetchUserData = async () => {
-      const { failed, json } = await attemptToFetchUserProfile(session.id);
-
-      if (failed) {
-        setOffline(true);
-        return;
-      } else if (offline) {
-        setOffline(false);
-      }
+      const json = await attemptToFetchUserProfile(session.id);
 
       if (json && !gotUserData) {
         setGotUserData(true);
@@ -76,7 +63,7 @@ export const useUserData = (): IUserDataReturn => {
     if (session?.id && !gotUserData) {
       fetchUserData();
     }
-  }, [session?.id, gotUserData, dispatch, offline, setOffline]);
+  }, [session?.id, gotUserData, dispatch]);
 
   const storeUserData = useCallback(() => {
     if (canUpload) {
@@ -96,9 +83,6 @@ export const useUserData = (): IUserDataReturn => {
       const file = new File([blob], "profile.json");
       uploadFile(file);
     }
-    // NB: From experience session.id does not guarantee everything has gone through
-    // make sure we have successfully retrieved the data otherwise it will override
-    // the properties
   }, [uploadFile, canUpload]);
 
   // Save the user data if the user closes the webpage
@@ -109,17 +93,12 @@ export const useUserData = (): IUserDataReturn => {
     };
   }, [storeUserData, router.events]);
 
-  return { upload: storeUserData, uploading, canUpload, offline };
+  return { upload: storeUserData, uploading, canUpload };
 };
 
-interface IProfileResults {
-  failed?: boolean;
-  json?: IFullStoreState;
-}
-
-const attemptToFetchUserProfile = async (
+export const attemptToFetchUserProfile = async (
   sessionId: string
-): Promise<IProfileResults> => {
+): Promise<IFullStoreState> => {
   const profileResults = await AwsS3Client.send(
     new ListObjectsCommand({
       Bucket: process.env.ENV_AWS_S3_BUCKET_NAME,
@@ -129,20 +108,18 @@ const attemptToFetchUserProfile = async (
   );
 
   if (profileResults.$metadata.httpStatusCode !== 200) {
-    return { failed: true };
+    throw new Error("Profile fetch failed");
   }
 
   // User doesn't have a profile, in this case we should stop trying to fetch a profile
   // and create a new one by dispatching an empty profile
   if (!profileResults?.Contents || profileResults.Contents?.length === 0) {
     return {
-      json: {
-        user: userEmptyState,
-        printing: printingEmptyState,
-        plants: plantsEmptyState,
-        food: recipesEmptyState,
-        mealPlan: mealPlanEmptyState,
-      },
+      user: userEmptyState,
+      printing: printingEmptyState,
+      plants: plantsEmptyState,
+      food: recipesEmptyState,
+      mealPlan: mealPlanEmptyState,
     };
   }
 
@@ -150,15 +127,13 @@ const attemptToFetchUserProfile = async (
   const data = await fetch(profileUrl);
 
   if (!data.ok) {
-    console.error("Response error status", data.statusText);
-    return { failed: true };
+    throw new Error(`Response error: ${data.statusText}`);
   }
 
   const json = await data.json();
   if (!json) {
-    console.error("No json for user profile");
-    return { failed: true };
+    throw new Error("No json for user profile");
   }
 
-  return { json };
+  return json;
 };

@@ -10,6 +10,9 @@ import { HTML5Backend } from "react-dnd-html5-backend";
 import "../styles/global_card.scss";
 import "../styles/scrollbar.scss";
 import "../styles/utilities.scss";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+
+const queryClient = new QueryClient();
 
 export interface IMyLifeProps {
   Component: React.JSXElementConstructor<ILayoutProps>;
@@ -22,15 +25,17 @@ export default function MyLife(props: IMyLifeProps) {
 
   return (
     <Provider store={store}>
-      <DndProvider backend={HTML5Backend}>
-        <ThemeController>
-          <SessionProvider session={session}>
-            <Layout>
-              <Component {...pageProps} />
-            </Layout>
-          </SessionProvider>
-        </ThemeController>
-      </DndProvider>
+      <QueryClientProvider client={queryClient}>
+        <DndProvider backend={HTML5Backend}>
+          <ThemeController>
+            <SessionProvider session={session}>
+              <Layout>
+                <Component {...pageProps} />
+              </Layout>
+            </SessionProvider>
+          </ThemeController>
+        </DndProvider>
+      </QueryClientProvider>
     </Provider>
   );
 }

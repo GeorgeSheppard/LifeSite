@@ -9,7 +9,7 @@ export const userEmptyState: IUserState = {
   version: latestVersion,
 };
 
-const initialState: IUserState = userEmptyState;
+export const userInitialState: IUserState = userEmptyState;
 
 const migrator = new Migrator<IUserState>(
   migrations,
@@ -19,7 +19,7 @@ const migrator = new Migrator<IUserState>(
 
 export const userSlice = createSlice({
   name: "user",
-  initialState,
+  initialState: userInitialState,
   reducers: {
     login: (state, action: PayloadAction<IFullStoreState>) => {
       if (!action.payload.user) {
@@ -53,7 +53,7 @@ export const userSlice = createSlice({
       return action.payload.user;
     },
     logout: (state) => {
-      return initialState;
+      return userInitialState;
     },
   },
 });

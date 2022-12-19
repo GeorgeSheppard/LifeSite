@@ -8,15 +8,18 @@ import TextField from "@mui/material/TextField";
 import Tooltip from "@mui/material/Tooltip";
 import Image from "next/image";
 import { ChangeEvent, useCallback, useState } from "react";
-import { useAppDispatch, useAppSelector } from "../../store/hooks/hooks";
+import { useAppDispatch } from "../../store/hooks/hooks";
+import { addOrUpdatePlant } from "../../store/reducers/plants/plants";
 import {
-  addOrUpdatePlant,
-} from "../../store/reducers/plants/plants";
-import { IPlant, LightLevelKeys, PlantUuid, WateringAmountKeys } from '../../store/reducers/plants/types';
+  IPlant,
+  LightLevelKeys,
+  PlantUuid,
+  WateringAmountKeys,
+} from "../../store/reducers/plants/types";
 import { ExitSaveButtons } from "../cards/exit_save_buttons";
 import { UploadDisplayImages } from "../cards/upload_and_display_images";
 import { stopPropagation } from "../cards/utilities";
-import { useBoolean } from "../hooks/use_boolean";
+import { usePlants } from "../hooks/use_data";
 import { LightLevel, WateringAmount } from "./checkbox_choice";
 import { TemperatureSlider } from "./temperature_slider";
 
@@ -31,25 +34,18 @@ export interface IEditUploadPlant {
 export const EditUploadPlant = (props: IEditUploadPlant) => {
   const dispatch = useAppDispatch();
   const [uuid] = useState<PlantUuid>(props.uuid);
-  const [uploading, setters] = useBoolean(false);
   // Return either the existing plant data, or a default form
   // Much easier to work with fully defined properties
-  const plantData: IPlant = useAppSelector((store) => {
-    if (uuid in store.plants.plants) {
-      return store.plants.plants[uuid];
-    } else {
-      return {
-        uuid,
-        name: "",
-        description: "",
-        lightLevelKey: LightLevelKeys.INDIRECT_SUN,
-        wateringKey: WateringAmountKeys.NORMAL,
-        temperatureRange: [12, 25],
-        images: [],
-        reminders: [],
-      };
-    }
-  });
+  const plantData = usePlants().data.plants[uuid] ?? {
+    uuid,
+    name: "",
+    description: "",
+    lightLevelKey: LightLevelKeys.INDIRECT_SUN,
+    wateringKey: WateringAmountKeys.NORMAL,
+    temperatureRange: [12, 25],
+    images: [],
+    reminders: [],
+  };
   const [name, setName] = useState(plantData.name);
   const [images, setImages] = useState(plantData.images);
   const [description, setDescription] = useState(plantData.description);

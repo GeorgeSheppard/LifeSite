@@ -12,10 +12,10 @@ import Model from "../../components/printing/model";
 import { loadModel } from "../../components/printing/model_loader";
 import { KeyboardArrowDown } from "@mui/icons-material";
 import { PreviewPopper } from "../../components/printing/preview_popper";
-import { useAppSelector } from "../../store/hooks/hooks";
 import { useRouter } from "next/router";
 import LinearProgress from "@mui/material/LinearProgress";
 import { ICameraParams } from "../../store/reducers/printing/types";
+import { usePrinting } from "../../components/hooks/use_data";
 
 export interface IPreview {}
 
@@ -25,11 +25,8 @@ export default function Preview(props: IPreview) {
   const screenshotRef = createRef<ICanvasScreenshotterRef>();
   const [popperOpen, setPopperOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
-  const existingData = useAppSelector((store) => {
-    if (uuid?.length > 0) {
-      return store.printing.models[uuid];
-    }
-  });
+  const models = usePrinting().data.models;
+  const existingData = uuid?.length > 0 ? models[uuid] : undefined;
   const [cameraParams] = useState<ICameraParams>(() => {
     return (
       existingData?.cameraParams ?? {

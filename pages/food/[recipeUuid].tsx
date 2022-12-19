@@ -13,37 +13,32 @@ import { stopPropagation } from "../../components/cards/utilities";
 import { CenteredComponent } from "../../components/core/centered_component";
 import { ComponentForm } from "../../components/recipes/component_form";
 import { ComponentsFormData } from "../../components/recipes/component_form_data";
-import { useAppDispatch, useAppSelector } from "../../store/hooks/hooks";
+import { useAppDispatch } from "../../store/hooks/hooks";
 import { addOrUpdateRecipe } from "../../store/reducers/food/recipes/recipes";
 import clone from "just-clone";
 import { RecipeUuid } from "../../store/reducers/food/recipes/types";
 import { isRecipeValid } from "../../store/reducers/food/recipes/schema";
+import { useRecipes } from "../../components/hooks/use_data";
 
 const EditUploadRecipe = () => {
   const router = useRouter();
   const [uuid] = useState(router.query.recipeUuid as RecipeUuid);
   const dispatch = useAppDispatch();
-  const recipeData = useAppSelector((store) => {
-    if (uuid in store.food.recipes) {
-      return store.food.recipes[uuid];
-    } else {
-      return {
-        uuid,
+  const recipeData = useRecipes().data[uuid] ?? {
+    uuid,
+    name: "",
+    description: "",
+    images: [],
+    components: [
+      {
         name: "",
-        description: "",
-        images: [],
-        components: [
-          {
-            name: "",
-            ingredients: [],
-            instructions: [],
-            storeable: false,
-            uuid: uuidv4(),
-          },
-        ],
-      };
-    }
-  });
+        ingredients: [],
+        instructions: [],
+        storeable: false,
+        uuid: uuidv4(),
+      },
+    ],
+  };
   const [_, forceUpdate] = useReducer((x) => x + 1, 0);
 
   // Because this form is quite deeply nested, and the state needs to be placed at the top it was very slow
