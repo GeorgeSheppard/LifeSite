@@ -1,26 +1,31 @@
-import {
-  addOrUpdate,
-  addOrUpdatePlan,
-} from "../../../store/reducers/food/meal_plan/meal_plan";
+import clone from "just-clone";
+import { addOrUpdatePlan } from "../../../store/reducers/food/meal_plan/meal_plan";
 import { latestVersion } from "../../../store/reducers/food/meal_plan/migrations";
-import { IMealPlanState } from "../../../store/reducers/food/meal_plan/types";
+import { recipesEmptyState } from "../../../store/reducers/food/recipes/recipes";
+import { plantsEmptyState } from "../../../store/reducers/plants/plants";
+import { printingEmptyState } from "../../../store/reducers/printing/printing";
+import { userEmptyState } from "../../../store/reducers/user/user";
+import { IFullStoreState } from "../../../store/store";
 
-const state: IMealPlanState = {
-  version: latestVersion,
-  plan: {
-    "16/7/2022": {},
+const state: IFullStoreState = {
+  user: clone(userEmptyState),
+  printing: clone(printingEmptyState),
+  plants: clone(plantsEmptyState),
+  food: clone(recipesEmptyState),
+  mealPlan: {
+    version: latestVersion,
+    plan: {
+      "16/7/2022": {},
+    },
   },
 };
 
 test("can add a recipe", () => {
   expect(
-    addOrUpdate(state, {
-      type: "",
-      payload: {
-        date: "16/7/2022",
-        components: [{ recipeId: "11", componentId: "1", servingsIncrease: 3 }],
-      },
-    })
+    addOrUpdatePlan(state, {
+      date: "16/7/2022",
+      components: [{ recipeId: "11", componentId: "1", servingsIncrease: 3 }],
+    }).mealPlan
   ).toStrictEqual({
     version: latestVersion,
     plan: {
@@ -31,23 +36,23 @@ test("can add a recipe", () => {
 
 test("can reduce serving quantity on existing recipe", () => {
   expect(
-    addOrUpdate(
+    addOrUpdatePlan(
       {
-        version: latestVersion,
-        plan: {
-          "16/7/2022": { "11": [{ componentId: "1", servings: 3 }] },
+        ...state,
+        mealPlan: {
+          version: latestVersion,
+          plan: {
+            "16/7/2022": { "11": [{ componentId: "1", servings: 3 }] },
+          },
         },
       },
       {
-        type: "",
-        payload: {
-          date: "16/7/2022",
-          components: [
-            { recipeId: "11", componentId: "1", servingsIncrease: -1 },
-          ],
-        },
+        date: "16/7/2022",
+        components: [
+          { recipeId: "11", componentId: "1", servingsIncrease: -1 },
+        ],
       }
-    )
+    ).mealPlan
   ).toStrictEqual({
     version: latestVersion,
     plan: {
@@ -58,30 +63,30 @@ test("can reduce serving quantity on existing recipe", () => {
 
 test("can reduce serving quantity with two existing recipes in the plan", () => {
   expect(
-    addOrUpdate(
+    addOrUpdatePlan(
       {
-        version: latestVersion,
-        plan: {
-          "16/7/2022": {
-            "11": [{ componentId: "1", servings: 2 }],
-            "22": [{ componentId: "2", servings: 3 }],
+        ...state,
+        mealPlan: {
+          version: latestVersion,
+          plan: {
+            "16/7/2022": {
+              "11": [{ componentId: "1", servings: 2 }],
+              "22": [{ componentId: "2", servings: 3 }],
+            },
           },
         },
       },
       {
-        type: "",
-        payload: {
-          date: "16/7/2022",
-          components: [
-            {
-              recipeId: "22",
-              componentId: "2",
-              servingsIncrease: -1,
-            },
-          ],
-        },
+        date: "16/7/2022",
+        components: [
+          {
+            recipeId: "22",
+            componentId: "2",
+            servingsIncrease: -1,
+          },
+        ],
       }
-    )
+    ).mealPlan
   ).toStrictEqual({
     version: latestVersion,
     plan: {
@@ -95,28 +100,28 @@ test("can reduce serving quantity with two existing recipes in the plan", () => 
 
 test("can reduce servings with multiple components", () => {
   expect(
-    addOrUpdate(
+    addOrUpdatePlan(
       {
-        version: latestVersion,
-        plan: {
-          "16/7/2022": {
-            "11": [
-              { componentId: "1", servings: 2 },
-              { componentId: "2", servings: 4 },
-            ],
+        ...state,
+        mealPlan: {
+          version: latestVersion,
+          plan: {
+            "16/7/2022": {
+              "11": [
+                { componentId: "1", servings: 2 },
+                { componentId: "2", servings: 4 },
+              ],
+            },
           },
         },
       },
       {
-        type: "",
-        payload: {
-          date: "16/7/2022",
-          components: [
-            { recipeId: "11", componentId: "2", servingsIncrease: -1 },
-          ],
-        },
+        date: "16/7/2022",
+        components: [
+          { recipeId: "11", componentId: "2", servingsIncrease: -1 },
+        ],
       }
-    )
+    ).mealPlan
   ).toStrictEqual({
     version: latestVersion,
     plan: {
@@ -132,37 +137,37 @@ test("can reduce servings with multiple components", () => {
 
 test("can reduce servings with multiple components and multiple recipes", () => {
   expect(
-    addOrUpdate(
+    addOrUpdatePlan(
       {
-        version: latestVersion,
-        plan: {
-          "16/7/2022": {
-            "11": [
-              { componentId: "1", servings: 2 },
-              { componentId: "2", servings: 4 },
-            ],
-            "22": [
-              { componentId: "3", servings: 6 },
-              { componentId: "4", servings: 8 },
-            ],
+        ...state,
+        mealPlan: {
+          version: latestVersion,
+          plan: {
+            "16/7/2022": {
+              "11": [
+                { componentId: "1", servings: 2 },
+                { componentId: "2", servings: 4 },
+              ],
+              "22": [
+                { componentId: "3", servings: 6 },
+                { componentId: "4", servings: 8 },
+              ],
+            },
           },
         },
       },
       {
-        type: "",
-        payload: {
-          date: "16/7/2022",
-          components: [
-            { recipeId: "22", componentId: "4", servingsIncrease: -2 },
-            {
-              recipeId: "11",
-              componentId: "2",
-              servingsIncrease: -2,
-            },
-          ],
-        },
+        date: "16/7/2022",
+        components: [
+          { recipeId: "22", componentId: "4", servingsIncrease: -2 },
+          {
+            recipeId: "11",
+            componentId: "2",
+            servingsIncrease: -2,
+          },
+        ],
       }
-    )
+    ).mealPlan
   ).toStrictEqual({
     version: latestVersion,
     plan: {
