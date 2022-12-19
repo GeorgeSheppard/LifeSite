@@ -76,8 +76,29 @@ export const useMutateAndStore = <TVariables>(
   );
 
   return useMutation(mutateAndStore, {
-    onSuccess: (data) => {
-      queryClient.setQueryData(sessionQueryKey(session), data);
+    onMutate: async (variables: TVariables) => {
+      const profileQueryKey = sessionQueryKey(session);
+      await queryClient.cancelQueries({ queryKey: profileQueryKey });
+
+      const previousValue =
+        queryClient.getQueryData<IFullStoreState>(profileQueryKey);
+
+      if (!previousValue) {
+        return;
+      }
+
+      queryClient.setQueryData(profileQueryKey, () =>
+        mutation(clone(previousValue), variables)
+      );
+
+      return { previousValue };
+    },
+    onError: (err, __, context) => {
+      const previousValue = context?.previousValue;
+      if (previousValue) {
+        queryClient.setQueryData(sessionQueryKey(session), previousValue);
+      }
+      console.error(`Error updating profile: ${err}`);
     },
   });
 };
