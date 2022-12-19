@@ -25,6 +25,11 @@ export interface IFullStoreState {
   user: IUserState;
 }
 
+export type MutateFunc<T> = (
+  store: IFullStoreState,
+  payload: T
+) => IFullStoreState;
+
 export const store = configureStore<IFullStoreState>({
   reducer: {
     printing,

@@ -1,10 +1,10 @@
 import { CustomSession } from "../../pages/api/auth/[...nextauth]";
 import { useAppDispatch } from "../../store/hooks/hooks";
-import { useState, useEffect, useCallback, useMemo } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useSession } from "next-auth/react";
 import { login, logout, userEmptyState } from "../../store/reducers/user/user";
 import { useRouter } from "next/router";
-import { IFullStoreState, isStoreValid, store } from "../../store/store";
+import { IFullStoreState, isStoreValid, MutateFunc } from "../../store/store";
 import useUploadToS3 from "./upload_to_s3";
 import { getS3SignedUrl } from "../aws/s3_utilities";
 import { ListObjectsCommand } from "@aws-sdk/client-s3";
@@ -13,12 +13,65 @@ import { printingEmptyState } from "../../store/reducers/printing/printing";
 import { plantsEmptyState } from "../../store/reducers/plants/plants";
 import { recipesEmptyState } from "../../store/reducers/food/recipes/recipes";
 import { mealPlanEmptyState } from "../../store/reducers/food/meal_plan/meal_plan";
+import { useQueryClient, useMutation } from "@tanstack/react-query";
+import clone from "just-clone";
 
 export interface IUserDataReturn {
   uploading: boolean;
   canUpload: boolean;
   upload: () => void;
 }
+
+export const useMutateAndStore = <TVariables>(
+  mutation: MutateFunc<TVariables>
+) => {
+  const session = useSession().data as CustomSession;
+  const { uploadFile } = useUploadToS3({
+    onUploadError: (err) => {
+      console.log(`Error uploading profile data ${err}`);
+    },
+    // We don't want multiple copies of the profile, and we want it to be at a predictable path
+    makeKeyUnique: false,
+  });
+
+  const queryClient = useQueryClient();
+
+  const mutateAndStore = useCallback(
+    async (variables: TVariables) => {
+      const currentStoreState = queryClient.getQueryData<IFullStoreState>([
+        // TODO: This is a pretty flimsy connection
+        session?.id ?? "",
+      ]);
+      if (!currentStoreState) {
+        throw new Error("No current store state");
+      }
+
+      // Cannot directly mutate query cache
+      const data = mutation(clone(currentStoreState), variables);
+
+      // We allow production users to upload their corrupted file (if they manage to get it in that state)
+      // but for development it is better to just prevent uploading
+      if (process.env.NODE_ENV === "development" && !isStoreValid(data)) {
+        throw new Error(
+          `Store data is not valid, prevented upload: ${JSON.stringify(data)}`
+        );
+      }
+      const blob = new Blob([JSON.stringify(data, null, 2)], {
+        type: "application/json",
+      });
+      const file = new File([blob], "profile.json");
+      await uploadFile(file);
+      return data;
+    },
+    [uploadFile, mutation, queryClient, session?.id]
+  );
+
+  return useMutation(mutateAndStore, {
+    onSuccess: (data) => {
+      queryClient.setQueryData([session?.id ?? ""], data);
+    },
+  });
+};
 
 export const useUserData = (): IUserDataReturn => {
   const session = useSession().data as CustomSession;
@@ -66,23 +119,22 @@ export const useUserData = (): IUserDataReturn => {
   }, [session?.id, gotUserData, dispatch]);
 
   const storeUserData = useCallback(() => {
-    if (canUpload) {
-      const data = store.getState();
-
-      // We allow production users to upload their corrupted file (if they manage to get it in that state)
-      // but for development it is better to just prevent uploading
-      if (process.env.NODE_ENV === "development" && !isStoreValid(data)) {
-        console.error(
-          `Store data is not valid, prevented upload: ${JSON.stringify(data)}`
-        );
-        return;
-      }
-      const blob = new Blob([JSON.stringify(data, null, 2)], {
-        type: "application/json",
-      });
-      const file = new File([blob], "profile.json");
-      uploadFile(file);
-    }
+    // if (canUpload) {
+    //   const data = store.getState();
+    //   // We allow production users to upload their corrupted file (if they manage to get it in that state)
+    //   // but for development it is better to just prevent uploading
+    //   if (process.env.NODE_ENV === "development" && !isStoreValid(data)) {
+    //     console.error(
+    //       `Store data is not valid, prevented upload: ${JSON.stringify(data)}`
+    //     );
+    //     return;
+    //   }
+    //   const blob = new Blob([JSON.stringify(data, null, 2)], {
+    //     type: "application/json",
+    //   });
+    //   const file = new File([blob], "profile.json");
+    //   uploadFile(file);
+    // }
   }, [uploadFile, canUpload]);
 
   // Save the user data if the user closes the webpage

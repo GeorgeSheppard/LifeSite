@@ -4,7 +4,7 @@ import defaultProfileProduction from "./defaultProduction.json";
 import defaultProfileDevelopment from "./defaultDevelopment.json";
 import { Migrator } from "../../../migration/migrator";
 import { latestVersion, migrations } from "./migrations";
-import { IFullStoreState } from "../../../store";
+import { IFullStoreState, MutateFunc } from "../../../store";
 import { isRecipesValid } from "./schema";
 
 export const recipesEmptyState = {
@@ -34,19 +34,30 @@ export const recipesInitialState: IRecipesState =
     ? developmentDefault
     : productionDefault;
 
+export interface IAddOrUpdateRecipe {
+  store: IFullStoreState;
+  payload: IRecipe;
+}
+
+export const addOrUpdateRecipe: MutateFunc<IRecipe> = (
+  store: IFullStoreState,
+  payload: IRecipe
+) => {
+  const state = store.food;
+  const recipe = payload;
+  const { uuid } = recipe;
+  const existsAlready = uuid in state.recipes;
+  state.recipes[uuid] = recipe;
+  if (!existsAlready) {
+    state.cards.unshift(uuid);
+  }
+  return store;
+};
+
 export const foodSlice = createSlice({
   name: "food",
   initialState: recipesInitialState,
   reducers: {
-    addOrUpdateRecipe: (state, action: PayloadAction<IRecipe>) => {
-      const recipe = action.payload;
-      const { uuid } = recipe;
-      const existsAlready = uuid in state.recipes;
-      state.recipes[uuid] = recipe;
-      if (!existsAlready) {
-        state.cards.unshift(uuid);
-      }
-    },
     deleteRecipe: (state, action: PayloadAction<RecipeUuid>) => {
       const uuid = action.payload;
       delete state.recipes[uuid];
@@ -83,6 +94,6 @@ export const foodSlice = createSlice({
   },
 });
 
-export const { addOrUpdateRecipe, deleteRecipe } = foodSlice.actions;
+export const { deleteRecipe } = foodSlice.actions;
 
 export default foodSlice.reducer;
