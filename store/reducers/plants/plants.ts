@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { Migrator } from "../../migration/migrator";
-import { IFullStoreState } from "../../store";
+import { IFullStoreState, MutateFunc } from "../../store";
 import defaultProduction from "./defaultProduction.json";
 import { latestVersion, migrations } from "./migrations";
 import { isPlantsValid } from "./schema";
@@ -28,27 +28,38 @@ export const productionDefault = {
 export const plantsInitialState: IPlantsState =
   process.env.NODE_ENV === "development" ? plantsEmptyState : productionDefault;
 
+export const addOrUpdatePlant: MutateFunc<IPlant> = (
+  store: IFullStoreState,
+  payload: IPlant
+) => {
+  const plant = payload;
+  const state = store.plants;
+  const { uuid } = plant;
+  const existsAlready = uuid in state.plants;
+  state.plants[uuid] = plant;
+  if (!existsAlready) {
+    state.cards.unshift(uuid);
+  }
+  return store;
+};
+
+export const deletePlant: MutateFunc<PlantUuid> = (
+  store: IFullStoreState,
+  payload: PlantUuid
+) => {
+  const uuid = payload;
+  const state = store.plants;
+  if (uuid in state.plants) {
+    delete state.plants[uuid];
+    state.cards = state.cards.filter((cardUuid) => cardUuid !== uuid);
+  }
+  return store;
+};
+
 export const plantsSlice = createSlice({
   name: "plants",
   initialState: plantsInitialState,
-  reducers: {
-    addOrUpdatePlant: (state, action: PayloadAction<IPlant>) => {
-      const plant = action.payload;
-      const { uuid } = plant;
-      const existsAlready = uuid in state.plants;
-      state.plants[uuid] = plant;
-      if (!existsAlready) {
-        state.cards.unshift(uuid);
-      }
-    },
-    deletePlant: (state, action: PayloadAction<PlantUuid>) => {
-      const uuid = action.payload;
-      if (uuid in state.plants) {
-        delete state.plants[uuid];
-        state.cards = state.cards.filter((cardUuid) => cardUuid !== uuid);
-      }
-    },
-  },
+  reducers: {},
   extraReducers: {
     "user/login": (state, action: PayloadAction<IFullStoreState>) => {
       if (!action.payload.plants) {
@@ -78,7 +89,5 @@ export const plantsSlice = createSlice({
     },
   },
 });
-
-export const { addOrUpdatePlant, deletePlant } = plantsSlice.actions;
 
 export default plantsSlice.reducer;

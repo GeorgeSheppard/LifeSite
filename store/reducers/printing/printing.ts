@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { Migrator } from "../../migration/migrator";
-import { IFullStoreState } from "../../store";
+import { IFullStoreState, MutateFunc } from "../../store";
 import defaultProduction from "./defaultProduction.json";
 import { latestVersion, migrations } from "./migrations";
 import { isPrintingValid } from "./schema";
@@ -28,24 +28,35 @@ export const printingInitialState: IPrintingState =
     ? printingEmptyState
     : productionDefault;
 
+export const addModel: MutateFunc<IModelProps> = (
+  store: IFullStoreState,
+  payload: IModelProps
+) => {
+  const uuid = payload.uuid;
+  const state = store.printing;
+  const existsAlready = uuid in state.models;
+  state.models[uuid] = payload;
+  if (!existsAlready) {
+    state.cards.unshift(payload.uuid);
+  }
+  return store;
+};
+
+export const deleteModel: MutateFunc<ModelUuid> = (
+  store: IFullStoreState,
+  payload: ModelUuid
+) => {
+  const uuid = payload;
+  const state = store.printing;
+  delete state.models[uuid];
+  state.cards = state.cards.filter((cardUuid) => cardUuid !== uuid);
+  return store;
+};
+
 export const printingSlice = createSlice({
   name: "printing",
   initialState: printingInitialState,
-  reducers: {
-    addModel: (state, action: PayloadAction<IModelProps>) => {
-      const uuid = action.payload.uuid;
-      const existsAlready = uuid in state.models;
-      state.models[uuid] = action.payload;
-      if (!existsAlready) {
-        state.cards.unshift(action.payload.uuid);
-      }
-    },
-    deleteModel: (state, action: PayloadAction<ModelUuid>) => {
-      const uuid = action.payload;
-      delete state.models[uuid];
-      state.cards = state.cards.filter((cardUuid) => cardUuid !== uuid);
-    },
-  },
+  reducers: {},
   extraReducers: {
     "user/login": (state, action: PayloadAction<IFullStoreState>) => {
       if (!action.payload.printing) {
@@ -75,7 +86,5 @@ export const printingSlice = createSlice({
     },
   },
 });
-
-export const { addModel, deleteModel } = printingSlice.actions;
 
 export default printingSlice.reducer;

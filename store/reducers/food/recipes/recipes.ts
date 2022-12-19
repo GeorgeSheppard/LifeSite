@@ -54,16 +54,28 @@ export const addOrUpdateRecipe: MutateFunc<IRecipe> = (
   return store;
 };
 
+export const deleteRecipe: MutateFunc<RecipeUuid> = (
+  store: IFullStoreState,
+  payload: RecipeUuid
+) => {
+  const uuid = payload;
+  const state = store.food;
+  delete state.recipes[uuid];
+  state.cards = state.cards.filter((cardUuid) => cardUuid !== uuid);
+
+  for (const mealPlan of Object.values(store.mealPlan.plan)) {
+    if (uuid in mealPlan) {
+      delete mealPlan[uuid];
+    }
+  }
+
+  return store;
+};
+
 export const foodSlice = createSlice({
   name: "food",
   initialState: recipesInitialState,
-  reducers: {
-    deleteRecipe: (state, action: PayloadAction<RecipeUuid>) => {
-      const uuid = action.payload;
-      delete state.recipes[uuid];
-      state.cards = state.cards.filter((cardUuid) => cardUuid !== uuid);
-    },
-  },
+  reducers: {},
   extraReducers: {
     "user/login": (state, action: PayloadAction<IFullStoreState>) => {
       if (!action.payload.food) {
@@ -93,7 +105,5 @@ export const foodSlice = createSlice({
     },
   },
 });
-
-export const { deleteRecipe } = foodSlice.actions;
 
 export default foodSlice.reducer;
