@@ -9,8 +9,15 @@ import "../styles/global_card.scss";
 import "../styles/scrollbar.scss";
 import "../styles/utilities.scss";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: Infinity,
+    },
+  },
+});
 
 export interface IMyLifeProps {
   Component: React.JSXElementConstructor<ILayoutProps>;
@@ -23,6 +30,7 @@ export default function MyLife(props: IMyLifeProps) {
 
   return (
     <QueryClientProvider client={queryClient}>
+      <ReactQueryDevtools initialIsOpen={false} />
       <DndProvider backend={HTML5Backend}>
         <ThemeController>
           <SessionProvider session={session}>
