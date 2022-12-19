@@ -3,8 +3,7 @@ import { PutObjectCommand } from "@aws-sdk/client-s3";
 import { v4 as uuidv4 } from "uuid";
 import { AwsS3Client } from "../aws/s3_client";
 import { S3Key } from "../../store/reducers/types";
-import { useSession } from "next-auth/react";
-import { CustomSession } from "../../pages/api/auth/[...nextauth]";
+import { useAppSession } from "./use_app_session";
 
 export interface IS3ValidUploadResponse {
   key: S3Key;
@@ -32,7 +31,7 @@ export interface IUseUploadToS3Props {
  * @param folder?: string - S3 doesn't really have folders but helps to organise
  */
 export default function useUploadToS3(props: IUseUploadToS3Props) {
-  const session = useSession().data as CustomSession;
+  const session = useAppSession();
 
   const userFolder = session?.id ?? "shared";
 

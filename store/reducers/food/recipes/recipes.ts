@@ -1,12 +1,11 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { IRecipesState, IRecipe, RecipeUuid } from "./types";
 import defaultProfileProduction from "./defaultProduction.json";
 import defaultProfileDevelopment from "./defaultDevelopment.json";
 import { Migrator } from "../../../migration/migrator";
 import { latestVersion, migrations } from "./migrations";
-import { IFullStoreState } from "../../../store";
+import { IFullStoreState, MutateFunc } from "../../../store";
 import { isRecipesValid } from "./schema";
-import { login } from "../../user/user";
+import clone from "just-clone";
 
 export const recipesEmptyState = {
   version: latestVersion,
@@ -30,65 +29,58 @@ export const developmentDefault = {
   version: latestVersion,
 } as IRecipesState;
 
-const initialState: IRecipesState =
+export const recipesInitialState: IRecipesState =
   process.env.NODE_ENV === "development"
     ? developmentDefault
     : productionDefault;
 
-export const foodSlice = createSlice({
-  name: "food",
-  initialState,
-  reducers: {
-    addOrUpdateRecipe: (state, action: PayloadAction<IRecipe>) => {
-      const recipe = action.payload;
-      const { uuid } = recipe;
-      const existsAlready = uuid in state.recipes;
-      state.recipes[uuid] = recipe;
-      if (!existsAlready) {
-        state.cards.unshift(uuid);
-      }
-    },
-    deleteRecipe: (state, action: PayloadAction<RecipeUuid>) => {
-      const uuid = action.payload;
-      delete state.recipes[uuid];
-      state.cards = state.cards.filter((cardUuid) => cardUuid !== uuid);
-    },
-  },
-  // extraReducers: {
-  //   "user/login": (state, action: PayloadAction<IFullStoreState>) => {
-  //     if (!action.payload.food) {
-  //       return state;
-  //     }
+export interface IAddOrUpdateRecipe {
+  store: IFullStoreState;
+  payload: IRecipe;
+}
 
-  //     if (migrator.needsMigrating(action.payload.food?.version)) {
-  //       try {
-  //         return migrator.migrate(action.payload.food);
-  //       } catch (err) {
-  //         console.log("An error occurrence migrating recipes: " + err);
-  //         return state;
-  //       }
-  //     } else {
-  //       if (!isRecipesValid(action.payload.food)) {
-  //         console.error(
-  //           "Recipes is invalid: " + JSON.stringify(action.payload.food)
-  //         );
-  //         return state;
-  //       }
-  //     }
+export const addOrUpdateRecipe: MutateFunc<IRecipe> = (
+  store: IFullStoreState,
+  payload: IRecipe
+) => {
+  const state = store.food;
+  const recipe = payload;
+  const { uuid } = recipe;
+  const existsAlready = uuid in state.recipes;
+  state.recipes[uuid] = recipe;
+  if (!existsAlready) {
+    state.cards.unshift(uuid);
+  }
+  return store;
+};
 
-  //     return action.payload.food;
-  //   },
-  //   "user/logout": (state) => {
-  //     return initialState;
-  //   },
-  // },
-  extraReducers: (builder) => {
-    builder.addCase(login.type, (state) => {
-      state.version = "0.0.4";
-    });
-  },
-});
+export const deleteRecipe: MutateFunc<RecipeUuid> = (
+  store: IFullStoreState,
+  payload: RecipeUuid
+) => {
+  const uuid = payload;
+  const state = store.food;
+  delete state.recipes[uuid];
+  state.cards = state.cards.filter((cardUuid) => cardUuid !== uuid);
 
-export const { addOrUpdateRecipe, deleteRecipe } = foodSlice.actions;
+  for (const mealPlan of Object.values(store.mealPlan.plan)) {
+    if (uuid in mealPlan) {
+      delete mealPlan[uuid];
+    }
+  }
 
-export default foodSlice.reducer;
+  return store;
+};
+
+export const migrateRecipes = (store: IFullStoreState): IFullStoreState => {
+  if (!store.food) {
+    store.food = clone(recipesEmptyState);
+  }
+  if (migrator.needsMigrating(store.food.version)) {
+    store.food = migrator.migrate(store.food);
+  }
+  if (!isRecipesValid(store.food)) {
+    throw new Error("Recipes is invalid: " + JSON.stringify(store.food));
+  }
+  return store;
+};

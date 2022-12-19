@@ -1,15 +1,15 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { initialVersion, Migrator } from "../../migration/migrator";
 import { IFullStoreState } from "../../store";
 import { latestVersion, migrations } from "./migrations";
 import { IUserState } from "./types";
 import { isUserValid } from "./schema";
+import clone from "just-clone";
 
 export const userEmptyState: IUserState = {
   version: latestVersion,
 };
 
-const initialState: IUserState = userEmptyState;
+export const userInitialState: IUserState = userEmptyState;
 
 const migrator = new Migrator<IUserState>(
   migrations,
@@ -17,47 +17,25 @@ const migrator = new Migrator<IUserState>(
   isUserValid
 );
 
-export const userSlice = createSlice({
-  name: "user",
-  initialState,
-  reducers: {
-    login: (state, action: PayloadAction<IFullStoreState>) => {
-      if (!action.payload.user) {
-        return state;
-      }
+export const migrateUser = (store: IFullStoreState): IFullStoreState => {
+  if (!store.user) {
+    store.user = clone(userEmptyState);
+  }
 
-      // We handle this case slightly differently, originally the version field
-      // was a number, which means the migrator won't be able to tell whether it
-      // should be migrated. We first change to semver then allow the migrator
-      // to operate
-      if (typeof action.payload.user?.version === "number") {
-        action.payload.user.version = initialVersion;
-      }
+  // We handle this case slightly differently, originally the version field
+  // was a number, which means the migrator won't be able to tell whether it
+  // should be migrated. We first change to semver then allow the migrator
+  // to operate
+  if (typeof store.user.version === "number") {
+    store.user.version = initialVersion;
+  }
 
-      if (migrator.needsMigrating(action.payload.user?.version)) {
-        try {
-          return migrator.migrate(action.payload.user);
-        } catch (err) {
-          console.log("An error occurrence migrating user: " + err);
-          return state;
-        }
-      } else {
-        if (!isUserValid(action.payload.user)) {
-          console.error(
-            "User is invalid: " + JSON.stringify(action.payload.user)
-          );
-          return state;
-        }
-      }
+  if (migrator.needsMigrating(store.user.version)) {
+    store.user = migrator.migrate(store.user);
+  }
+  if (!isUserValid(store.user)) {
+    throw new Error("User is invalid: " + JSON.stringify(store.user));
+  }
 
-      return action.payload.user;
-    },
-    logout: (state) => {
-      return initialState;
-    },
-  },
-});
-
-export const { login, logout } = userSlice.actions;
-
-export default userSlice.reducer;
+  return store;
+};

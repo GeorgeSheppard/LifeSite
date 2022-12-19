@@ -28,19 +28,19 @@ import {
   createShoppingListData,
   IQuantitiesAndMeals,
 } from "../../components/recipes/shopping_list_creator";
-import { useAppSelector } from "../../store/hooks/hooks";
 import { DateString } from "../../store/reducers/food/meal_plan/types";
 import { RecipeUuid } from "../../store/reducers/food/recipes/types";
 import CheckBoxIcon from "@mui/icons-material/CheckBox";
 import CheckBoxOutlineBlankIcon from "@mui/icons-material/CheckBoxOutlineBlank";
 import { useBoolean } from "../../components/hooks/use_boolean";
 import Chip from "@mui/material/Chip";
+import { useMealPlan, useRecipes } from "../../components/hooks/use_data";
 
 const Recipes = () => {
   const [keys, setKeys] = useState(() => new Set(["name"]));
   const { searchInput, setSearchInput, searchResults } = useRecipeSearch(keys);
-  const mealPlan = useAppSelector((store) => store.mealPlan.plan);
-  const recipes = useAppSelector((store) => store.food.recipes);
+  const mealPlan = useMealPlan();
+  const recipes = useRecipes();
   const [selected, setSelected] = useState<Set<DateString>>(() => new Set());
   const allSelected = selected.size === Object.keys(mealPlan).length;
   const [on, { turnOn, turnOff }] = useBoolean(false);
@@ -117,7 +117,11 @@ const Recipes = () => {
                   fullWidth
                   onClick={() => {
                     setShoppingListData(
-                      createShoppingListData(recipes, mealPlan, selected)
+                      createShoppingListData(
+                        recipes.data,
+                        mealPlan.data,
+                        selected
+                      )
                     );
                     turnOn();
                   }}

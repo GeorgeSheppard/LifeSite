@@ -1,7 +1,4 @@
 import Grid from "@mui/material/Grid";
-import { useAppSelector } from "../../store/hooks/hooks";
-import Tooltip from "@mui/material/Tooltip";
-import DeleteIcon from "@mui/icons-material/Delete";
 import { DroppableCard } from "./droppable_card";
 import {
   Dispatch,
@@ -11,6 +8,7 @@ import {
   useState,
 } from "react";
 import { DateString } from "../../store/reducers/food/meal_plan/types";
+import { useMealPlan } from "../hooks/use_data";
 
 export interface ICalendarRowProps {
   selected: Set<DateString>;
@@ -20,7 +18,7 @@ export interface ICalendarRowProps {
 export const Planner = (props: ICalendarRowProps) => {
   const { setSelected, selected } = props;
   const [lastSelected, setLastSelected] = useState<DateString | null>(null);
-  const mealPlan = useAppSelector((store) => store.mealPlan.plan);
+  const mealPlan = useMealPlan();
 
   // Toggles selection onClick
   const onClick = useCallback(
@@ -29,7 +27,7 @@ export const Planner = (props: ICalendarRowProps) => {
         const newSelection = new Set(prevSelected);
         if (event.shiftKey) {
           event.preventDefault();
-          const dates = Object.keys(mealPlan);
+          const dates = Object.keys(mealPlan.data);
           if (lastSelected) {
             const start = dates.indexOf(lastSelected);
             if (lastSelected !== day) {
@@ -67,7 +65,7 @@ export const Planner = (props: ICalendarRowProps) => {
       marginBottom={0}
       flexGrow={1}
     >
-      {Object.entries(mealPlan).map(([day], index) => {
+      {Object.entries(mealPlan.data).map(([day], index) => {
         return (
           // TODO: CSS selector instead of this fast hack
           <Grid

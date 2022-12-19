@@ -1,6 +1,6 @@
 import { useMemo, useState, useCallback, ChangeEvent, useEffect } from "react";
-import { useAppSelector } from "../../store/hooks/hooks";
 import { RecipeUuid } from "../../store/reducers/food/recipes/types";
+import { useRecipes } from "../hooks/use_data";
 import { useQuerySearch } from "./search";
 
 export function useDebounce<T>(
@@ -25,7 +25,7 @@ export const useRecipeSearch = (
   setSearchInput: (event: ChangeEvent<HTMLInputElement>) => void;
   searchInput: string;
 } => {
-  const recipes = useAppSelector((store) => store.food.recipes);
+  const recipes = useRecipes().data;
   const searchableRecipes = useMemo(() => {
     // Note: Fuse.js had trouble searching the nested structure for ingredients
     // so I flatten out the recipes here

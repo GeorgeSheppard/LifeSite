@@ -1,12 +1,10 @@
 import ButtonGroup from "@mui/material/ButtonGroup";
 import Card from "@mui/material/Card";
-import CardContent from "@mui/material/CardContent";
 import CardHeader from "@mui/material/CardHeader";
 import { addOrUpdatePlan } from "../../store/reducers/food/meal_plan/meal_plan";
 import PersonIcon from "@mui/icons-material/Person";
 import Typography from "@mui/material/Typography";
 import Tooltip from "@mui/material/Tooltip";
-import { useAppDispatch, useAppSelector } from "../../store/hooks/hooks";
 import Button from "@mui/material/Button";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { Dispatch, MouseEvent, SetStateAction, useCallback } from "react";
@@ -16,6 +14,8 @@ import {
   IComponentItem,
 } from "../../store/reducers/food/meal_plan/types";
 import { RecipeUuid } from "../../store/reducers/food/recipes/types";
+import { useMealPlan, useRecipes } from "../hooks/use_data";
+import { useMutateAndStore } from "../hooks/user_data";
 
 export const DroppableCard = (props: {
   day: DateString;
@@ -24,9 +24,9 @@ export const DroppableCard = (props: {
   onClick: (day: DateString) => (event: MouseEvent<HTMLDivElement>) => void;
 }) => {
   const { day, selected, onClick, setSelected } = props;
-  const meals = useAppSelector((store) => store.mealPlan.plan[day]);
-  const recipes = useAppSelector((store) => store.food.recipes);
-  const dispatch = useAppDispatch();
+  const meals = useMealPlan().data[day];
+  const recipes = useRecipes().data;
+  const { mutate } = useMutateAndStore(addOrUpdatePlan);
 
   const toggleOnClick = useCallback(
     (event: MouseEvent<HTMLDivElement>) => {
@@ -39,16 +39,14 @@ export const DroppableCard = (props: {
     () => ({
       accept: "recipe",
       drop: (item: { uuid: RecipeUuid }) => {
-        dispatch(
-          addOrUpdatePlan({
-            date: day,
-            components: recipes[item.uuid].components.map((component) => ({
-              recipeId: item.uuid,
-              componentId: component.uuid,
-              servingsIncrease: component.servings ?? 1,
-            })),
-          })
-        );
+        mutate({
+          date: day,
+          components: recipes[item.uuid].components.map((component) => ({
+            recipeId: item.uuid,
+            componentId: component.uuid,
+            servingsIncrease: component.servings ?? 1,
+          })),
+        });
         if (!selected) {
           setSelected((prevSelected) => {
             const newSelected = new Set(prevSelected);
@@ -110,10 +108,8 @@ const RecipeName = ({
   recipeId: RecipeUuid;
   day: DateString;
 }) => {
-  const dispatch = useAppDispatch();
-  const recipe = useAppSelector((store) => {
-    return store.food.recipes[recipeId];
-  });
+  const recipe = useRecipes().data[recipeId];
+  const { mutate } = useMutateAndStore(addOrUpdatePlan);
 
   if (!recipe) {
     return null;
@@ -172,18 +168,16 @@ const RecipeName = ({
                 <Button
                   onClick={(event) => {
                     event.stopPropagation();
-                    dispatch(
-                      addOrUpdatePlan({
-                        date: day,
-                        components: [
-                          {
-                            recipeId,
-                            componentId,
-                            servingsIncrease: -1,
-                          },
-                        ],
-                      })
-                    );
+                    mutate({
+                      date: day,
+                      components: [
+                        {
+                          recipeId,
+                          componentId,
+                          servingsIncrease: -1,
+                        },
+                      ],
+                    });
                   }}
                 >
                   -
@@ -191,18 +185,16 @@ const RecipeName = ({
                 <Button
                   onClick={(event) => {
                     event.stopPropagation();
-                    dispatch(
-                      addOrUpdatePlan({
-                        date: day,
-                        components: [
-                          {
-                            recipeId,
-                            componentId,
-                            servingsIncrease: 1,
-                          },
-                        ],
-                      })
-                    );
+                    mutate({
+                      date: day,
+                      components: [
+                        {
+                          recipeId,
+                          componentId,
+                          servingsIncrease: 1,
+                        },
+                      ],
+                    });
                   }}
                 >
                   +
@@ -212,18 +204,16 @@ const RecipeName = ({
                 sx={{ margin: "auto", marginLeft: "10px" }}
                 onClick={(event) => {
                   event.stopPropagation();
-                  dispatch(
-                    addOrUpdatePlan({
-                      date: day,
-                      components: [
-                        {
-                          recipeId,
-                          componentId,
-                          servingsIncrease: -servings - 1,
-                        },
-                      ],
-                    })
-                  );
+                  mutate({
+                    date: day,
+                    components: [
+                      {
+                        recipeId,
+                        componentId,
+                        servingsIncrease: -servings - 1,
+                      },
+                    ],
+                  });
                 }}
                 fontSize="small"
                 htmlColor="#7d2020"

@@ -1,6 +1,6 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import clone from "just-clone";
 import { Migrator } from "../../migration/migrator";
-import { IFullStoreState } from "../../store";
+import { IFullStoreState, MutateFunc } from "../../store";
 import defaultProduction from "./defaultProduction.json";
 import { latestVersion, migrations } from "./migrations";
 import { isPrintingValid } from "./schema";
@@ -23,59 +23,45 @@ export const productionDefault: IPrintingState = {
   version: latestVersion,
 } as IPrintingState;
 
-const initialState: IPrintingState =
+export const printingInitialState: IPrintingState =
   process.env.NODE_ENV === "development"
     ? printingEmptyState
     : productionDefault;
 
-export const printingSlice = createSlice({
-  name: "printing",
-  initialState,
-  reducers: {
-    addModel: (state, action: PayloadAction<IModelProps>) => {
-      const uuid = action.payload.uuid;
-      const existsAlready = uuid in state.models;
-      state.models[uuid] = action.payload;
-      if (!existsAlready) {
-        state.cards.unshift(action.payload.uuid);
-      }
-    },
-    deleteModel: (state, action: PayloadAction<ModelUuid>) => {
-      const uuid = action.payload;
-      delete state.models[uuid];
-      state.cards = state.cards.filter((cardUuid) => cardUuid !== uuid);
-    },
-  },
-  extraReducers: {
-    "user/login": (state, action: PayloadAction<IFullStoreState>) => {
-      if (!action.payload.printing) {
-        return state;
-      }
+export const addModel: MutateFunc<IModelProps> = (
+  store: IFullStoreState,
+  payload: IModelProps
+) => {
+  const uuid = payload.uuid;
+  const state = store.printing;
+  const existsAlready = uuid in state.models;
+  state.models[uuid] = payload;
+  if (!existsAlready) {
+    state.cards.unshift(payload.uuid);
+  }
+  return store;
+};
 
-      if (migrator.needsMigrating(action.payload.printing?.version)) {
-        try {
-          return migrator.migrate(action.payload.printing);
-        } catch (err) {
-          console.log("An error occurrence migrating printing: " + err);
-          return state;
-        }
-      } else {
-        if (!isPrintingValid(action.payload.printing)) {
-          console.error(
-            "Printing is invalid: " + JSON.stringify(action.payload.printing)
-          );
-          return state;
-        }
-      }
+export const deleteModel: MutateFunc<ModelUuid> = (
+  store: IFullStoreState,
+  payload: ModelUuid
+) => {
+  const uuid = payload;
+  const state = store.printing;
+  delete state.models[uuid];
+  state.cards = state.cards.filter((cardUuid) => cardUuid !== uuid);
+  return store;
+};
 
-      return action.payload.printing;
-    },
-    "user/logout": (state) => {
-      return initialState;
-    },
-  },
-});
-
-export const { addModel, deleteModel } = printingSlice.actions;
-
-export default printingSlice.reducer;
+export const migratePrinting = (store: IFullStoreState): IFullStoreState => {
+  if (!store.printing) {
+    store.printing = clone(printingEmptyState);
+  }
+  if (migrator.needsMigrating(store.printing.version)) {
+    store.printing = migrator.migrate(store.printing);
+  }
+  if (!isPrintingValid(store.printing)) {
+    throw new Error("Printing is invalid: " + JSON.stringify(store.printing));
+  }
+  return store;
+};

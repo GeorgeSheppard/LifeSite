@@ -1,6 +1,6 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import clone from "just-clone";
 import { Migrator } from "../../migration/migrator";
-import { IFullStoreState } from "../../store";
+import { IFullStoreState, MutateFunc } from "../../store";
 import defaultProduction from "./defaultProduction.json";
 import { latestVersion, migrations } from "./migrations";
 import { isPlantsValid } from "./schema";
@@ -25,60 +25,46 @@ export const productionDefault = {
   version: latestVersion,
 } as IPlantsState;
 
-const initialState: IPlantsState =
+export const plantsInitialState: IPlantsState =
   process.env.NODE_ENV === "development" ? plantsEmptyState : productionDefault;
 
-export const plantsSlice = createSlice({
-  name: "plants",
-  initialState,
-  reducers: {
-    addOrUpdatePlant: (state, action: PayloadAction<IPlant>) => {
-      const plant = action.payload;
-      const { uuid } = plant;
-      const existsAlready = uuid in state.plants;
-      state.plants[uuid] = plant;
-      if (!existsAlready) {
-        state.cards.unshift(uuid);
-      }
-    },
-    deletePlant: (state, action: PayloadAction<PlantUuid>) => {
-      const uuid = action.payload;
-      if (uuid in state.plants) {
-        delete state.plants[uuid];
-        state.cards = state.cards.filter((cardUuid) => cardUuid !== uuid);
-      }
-    },
-  },
-  extraReducers: {
-    "user/login": (state, action: PayloadAction<IFullStoreState>) => {
-      if (!action.payload.plants) {
-        return state;
-      }
+export const addOrUpdatePlant: MutateFunc<IPlant> = (
+  store: IFullStoreState,
+  payload: IPlant
+) => {
+  const plant = payload;
+  const state = store.plants;
+  const { uuid } = plant;
+  const existsAlready = uuid in state.plants;
+  state.plants[uuid] = plant;
+  if (!existsAlready) {
+    state.cards.unshift(uuid);
+  }
+  return store;
+};
 
-      if (migrator.needsMigrating(action.payload.plants?.version)) {
-        try {
-          return migrator.migrate(action.payload.plants);
-        } catch (err) {
-          console.log("An error occurrence migrating plants: " + err);
-          return state;
-        }
-      } else {
-        if (!isPlantsValid(action.payload.plants)) {
-          console.error(
-            "Plants is invalid: " + JSON.stringify(action.payload.plants)
-          );
-          return state;
-        }
-      }
+export const deletePlant: MutateFunc<PlantUuid> = (
+  store: IFullStoreState,
+  payload: PlantUuid
+) => {
+  const uuid = payload;
+  const state = store.plants;
+  if (uuid in state.plants) {
+    delete state.plants[uuid];
+    state.cards = state.cards.filter((cardUuid) => cardUuid !== uuid);
+  }
+  return store;
+};
 
-      return action.payload.plants;
-    },
-    "user/logout": (state) => {
-      return initialState;
-    },
-  },
-});
-
-export const { addOrUpdatePlant, deletePlant } = plantsSlice.actions;
-
-export default plantsSlice.reducer;
+export const migratePlants = (store: IFullStoreState): IFullStoreState => {
+  if (!store.plants) {
+    store.plants = clone(plantsEmptyState);
+  }
+  if (migrator.needsMigrating(store.plants.version)) {
+    store.plants = migrator.migrate(store.plants);
+  }
+  if (!isPlantsValid(store.plants)) {
+    throw new Error("Plants is invalid: " + JSON.stringify(store.plants));
+  }
+  return store;
+};

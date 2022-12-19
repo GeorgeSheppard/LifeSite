@@ -3,16 +3,12 @@ import Card from "@mui/material/Card";
 import CardActionArea from "@mui/material/CardActionArea";
 import CardContent from "@mui/material/CardContent";
 import Typography from "@mui/material/Typography";
-import { useAppSelector } from "../../store/hooks/hooks";
-import {
-  deletePlant,
-} from "../../store/reducers/plants/plants";
+import { deletePlant } from "../../store/reducers/plants/plants";
 import { useMemo, useCallback } from "react";
 import AcUnitIcon from "@mui/icons-material/AcUnit";
 import WbSunnyIcon from "@mui/icons-material/WbSunny";
 import Image from "next/image";
 import { WrappedCardMedia } from "../cards/wrapped_card_media";
-import { useDispatch } from "react-redux";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
@@ -23,6 +19,8 @@ import Button from "@mui/material/Button";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { PlantUuid } from "../../store/reducers/plants/types";
 import { LightLevel, WateringAmount } from "./checkbox_choice";
+import { usePlants } from "../hooks/use_data";
+import { useMutateAndStore } from "../hooks/user_data";
 
 export interface IPlantPreview {
   uuid: PlantUuid;
@@ -32,8 +30,8 @@ export interface IPlantPreview {
 const degreesC = "\xB0C";
 
 export const PlantPreview = (props: IPlantPreview) => {
-  const plant = useAppSelector((store) => store.plants.plants[props.uuid]);
-  const dispatch = useDispatch();
+  const plant = usePlants().data.plants[props.uuid];
+  const { mutate } = useMutateAndStore(deletePlant);
   const [dialogOpen, setters] = useBoolean(false);
 
   const lightLevel = useMemo(
@@ -46,8 +44,8 @@ export const PlantPreview = (props: IPlantPreview) => {
   );
 
   const deletePlantOnClick = useCallback(() => {
-    dispatch(deletePlant(props.uuid));
-  }, [dispatch, props.uuid]);
+    mutate(props.uuid);
+  }, [props.uuid, mutate]);
 
   return (
     <>

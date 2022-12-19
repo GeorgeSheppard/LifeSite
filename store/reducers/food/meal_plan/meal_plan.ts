@@ -1,7 +1,6 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import clone from "just-clone";
 import { Migrator } from "../../../migration/migrator";
-import { IFullStoreState } from "../../../store";
+import { IFullStoreState, MutateFunc } from "../../../store";
 import { ComponentUuid, RecipeUuid } from "../recipes/types";
 import { latestVersion, migrations } from "./migrations";
 import { isMealPlanValid } from "./schema";
@@ -56,7 +55,7 @@ export const mealPlanEmptyState: IMealPlanState = {
   ),
 };
 
-const initialState = mealPlanEmptyState;
+export const mealPlanInitialState = mealPlanEmptyState;
 
 const migrator = new Migrator<IMealPlanState>(
   migrations,
@@ -64,49 +63,49 @@ const migrator = new Migrator<IMealPlanState>(
   isMealPlanValid
 );
 
-export const addOrUpdate = (
-  state: IMealPlanState,
-  action: PayloadAction<
-    { date: DateString } & {
-      components: {
-        recipeId: RecipeUuid;
-        componentId: ComponentUuid;
-        servingsIncrease: number;
-      }[];
-    }
-  >
-) => {
-  const newState = clone(state);
+export interface IAddOrUpdatePlan {
+  date: DateString;
+  components: {
+    recipeId: RecipeUuid;
+    componentId: ComponentUuid;
+    servingsIncrease: number;
+  }[];
+}
 
-  const { date, components } = action.payload;
+export const addOrUpdatePlan: MutateFunc<IAddOrUpdatePlan> = (
+  store: IFullStoreState,
+  payload: IAddOrUpdatePlan
+) => {
+  const state = store.mealPlan;
+
+  const { date, components } = payload;
   for (const { recipeId, componentId, servingsIncrease } of components) {
-    if (newState.plan[date]) {
-      if (recipeId in newState.plan[date]) {
-        const componentIndex = newState.plan[date][recipeId].findIndex(
+    if (state.plan[date]) {
+      if (recipeId in state.plan[date]) {
+        const componentIndex = state.plan[date][recipeId].findIndex(
           (mealPlanItem) => mealPlanItem.componentId === componentId
         );
         if (componentIndex > -1) {
-          const component = newState.plan[date][recipeId][componentIndex];
+          const component = state.plan[date][recipeId][componentIndex];
           const newServings = component.servings + servingsIncrease;
           // Note: We allow a component with zero servings, this allows the user to set that they are eating that
           // item in the meal plan, without having to buy ingredients for it, perhaps they have a portion in the freezer
           if (newServings >= 0) {
-            newState.plan[date][recipeId][componentIndex].servings =
-              newServings;
+            state.plan[date][recipeId][componentIndex].servings = newServings;
           } else {
-            newState.plan[date][recipeId].splice(componentIndex, 1);
-            if (newState.plan[date][recipeId].length === 0) {
-              delete newState.plan[date][recipeId];
+            state.plan[date][recipeId].splice(componentIndex, 1);
+            if (state.plan[date][recipeId].length === 0) {
+              delete state.plan[date][recipeId];
             }
           }
         } else {
-          newState.plan[date][recipeId].push({
+          state.plan[date][recipeId].push({
             componentId,
             servings: servingsIncrease,
           });
         }
       } else {
-        newState.plan[date][recipeId] = [
+        state.plan[date][recipeId] = [
           {
             componentId,
             servings: servingsIncrease,
@@ -116,67 +115,31 @@ export const addOrUpdate = (
     }
   }
 
-  return { ...newState };
+  return store;
 };
 
-export const mealPlanSlice = createSlice({
-  name: "mealPlanner",
-  initialState,
-  reducers: {
-    addOrUpdatePlan: addOrUpdate,
-  },
-  extraReducers: {
-    "user/login": (state, action: PayloadAction<IFullStoreState>) => {
-      if (!action.payload.mealPlan) {
-        return state;
-      }
+export const migrateMealPlan = (store: IFullStoreState): IFullStoreState => {
+  if (!store.mealPlan) {
+    store.mealPlan = clone(mealPlanEmptyState);
+  }
 
-      let migratedMealPlan: IMealPlanState = action.payload.mealPlan;
-      if (migrator.needsMigrating(action.payload.mealPlan?.version)) {
-        try {
-          migratedMealPlan = migrator.migrate(action.payload.mealPlan);
-        } catch (err) {
-          console.error("An error occurrence migrating recipes: " + err);
-          return state;
-        }
-      } else {
-        if (!isMealPlanValid(migratedMealPlan)) {
-          console.error(
-            "Meal plan is invalid: " + JSON.stringify(action.payload.mealPlan)
-          );
-          return state;
-        }
-      }
-      let mealPlan = clone(mealPlanEmptyState);
+  let migratedMealPlan: IMealPlanState = store.mealPlan;
+  if (migrator.needsMigrating(store.mealPlan.version)) {
+    migratedMealPlan = migrator.migrate(store.mealPlan);
+  }
+  if (!isMealPlanValid(migratedMealPlan)) {
+    throw new Error(
+      "Meal plan is invalid: " + JSON.stringify(migratedMealPlan)
+    );
+  }
 
-      if (migratedMealPlan.plan) {
-        for (const [date, plan] of Object.entries(migratedMealPlan.plan)) {
-          if (date in mealPlan.plan) {
-            mealPlan.plan[date] = plan;
-          }
-        }
-      }
+  let newDatesMealPlan = clone(mealPlanEmptyState);
 
-      return mealPlan;
-    },
-    "user/logout": (state) => {
-      return initialState;
-    },
-    "recipes/deleteRecipe": (state, action: PayloadAction<RecipeUuid>) => {
-      const newState = clone(state);
-
-      const recipeId = action.payload;
-      for (const mealPlan of Object.values(state.plan)) {
-        if (recipeId in mealPlan) {
-          delete mealPlan[recipeId];
-        }
-      }
-
-      return { ...newState };
-    },
-  },
-});
-
-export const { addOrUpdatePlan } = mealPlanSlice.actions;
-
-export default mealPlanSlice.reducer;
+  for (const [date, plan] of Object.entries(migratedMealPlan.plan)) {
+    if (date in newDatesMealPlan.plan) {
+      newDatesMealPlan.plan[date] = plan;
+    }
+  }
+  store.mealPlan = newDatesMealPlan;
+  return store;
+};
