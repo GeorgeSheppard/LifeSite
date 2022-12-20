@@ -1,13 +1,24 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { CustomSession } from "../../pages/api/auth/[...nextauth]";
 import { IFullStoreState, initialState } from "../../store/store";
 import { attemptToFetchUserProfile } from "./user_data";
 import { useAppSession } from "./use_app_session";
+import { createRef, useEffect, useRef } from "react";
 
 export const sessionQueryKey = (session: CustomSession) => [session?.id ?? ""];
 
-export const useData = <T>(select: (data: IFullStoreState) => T) => {
+export const useData = <T>(
+  select: (data: IFullStoreState) => T,
+  invalidateOnMount?: boolean
+) => {
   const session = useAppSession();
+  const queryClient = useQueryClient();
+  const called = useRef(false);
+
+  if (!called.current && invalidateOnMount) {
+    called.current = true;
+    queryClient.invalidateQueries();
+  }
 
   return useQuery({
     queryKey: sessionQueryKey(session),
@@ -18,18 +29,18 @@ export const useData = <T>(select: (data: IFullStoreState) => T) => {
   });
 };
 
-export const useRecipes = () => {
-  return useData((data) => data.food.recipes);
+export const useRecipes = (invalidateOnMount?: boolean) => {
+  return useData((data) => data.food.recipes, invalidateOnMount);
 };
 
-export const useMealPlan = () => {
-  return useData((data) => data.mealPlan.plan);
+export const useMealPlan = (invalidateOnMount?: boolean) => {
+  return useData((data) => data.mealPlan.plan, invalidateOnMount);
 };
 
-export const usePrinting = () => {
-  return useData((data) => data.printing);
+export const usePrinting = (invalidateOnMount?: boolean) => {
+  return useData((data) => data.printing, invalidateOnMount);
 };
 
-export const usePlants = () => {
-  return useData((data) => data.plants);
+export const usePlants = (invalidateOnMount?: boolean) => {
+  return useData((data) => data.plants, invalidateOnMount);
 };

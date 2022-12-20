@@ -16,7 +16,7 @@ import {
 import OutlinedInput from "@mui/material/OutlinedInput";
 import { motion } from "framer-motion";
 import { NextRouter, useRouter } from "next/router";
-import { memo, useCallback, useState, useMemo } from "react";
+import { useCallback, useState, useMemo } from "react";
 import { v4 as uuidv4 } from "uuid";
 import { headerHeight } from "../../components/core/header";
 import { RecipeCardWithDialog } from "../../components/recipes/content_card";
@@ -39,8 +39,8 @@ import { useMealPlan, useRecipes } from "../../components/hooks/use_data";
 const Recipes = () => {
   const [keys, setKeys] = useState(() => new Set(["name"]));
   const { searchInput, setSearchInput, searchResults } = useRecipeSearch(keys);
-  const mealPlan = useMealPlan();
-  const recipes = useRecipes();
+  const mealPlan = useMealPlan(true);
+  const recipes = useRecipes(true);
   const [selected, setSelected] = useState<Set<DateString>>(() => new Set());
   const allSelected = selected.size === Object.keys(mealPlan).length;
   const [on, { turnOn, turnOff }] = useBoolean(false);
@@ -148,7 +148,7 @@ interface RecipeGridProps {
   searchResults: { uuid: RecipeUuid; visible: boolean }[];
 }
 
-const RecipeGrid = memo(function RenderRecipeGrid(props: RecipeGridProps) {
+const RecipeGrid = (props: RecipeGridProps) => {
   const router = useRouter();
 
   return (
@@ -175,7 +175,7 @@ const RecipeGrid = memo(function RenderRecipeGrid(props: RecipeGridProps) {
       ))}
     </Grid>
   );
-});
+};
 
 interface ICreateNewRecipeCard {
   router: NextRouter;

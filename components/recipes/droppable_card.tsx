@@ -59,7 +59,7 @@ export const DroppableCard = (props: {
         isOver: !!monitor.isOver(),
       }),
     }),
-    [day]
+    [day, recipes, setSelected]
   );
 
   return (
