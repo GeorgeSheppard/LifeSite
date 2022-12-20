@@ -10,6 +10,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { signIn, signOut, useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import { useCallback, useState, useEffect } from "react";
+import { useAppSession } from "../hooks/use_app_session";
 import { CenteredComponent } from "./centered_component";
 
 // TODO: Min height in MUI is set to 64 so don't go lower than this, make it so I can though
@@ -17,14 +18,16 @@ export const headerHeight = 65;
 
 export default function Header() {
   const session = useSession();
+  const data = useAppSession();
   const router = useRouter();
 
   const queryClient = useQueryClient();
 
   useEffect(() => {
+    queryClient.cancelQueries();
     queryClient.invalidateQueries();
-    // Note: We should invalidate everything when account status changes
-  }, [session?.status, queryClient]);
+    // Note: We should invalidate everything when account id changes
+  }, [data?.id, queryClient]);
 
   const [anchorEl, setAnchorEl] = useState(null);
   const openDropdown = useCallback(
