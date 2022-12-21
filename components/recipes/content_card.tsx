@@ -42,9 +42,7 @@ export interface IRecipeCardWithDialogProps {
   withIcons?: boolean;
 }
 
-export const RecipeCardWithDialog = memo(function RenderRecipeCard(
-  props: IRecipeCardWithDialogProps
-) {
+export const RecipeCardWithDialog = (props: IRecipeCardWithDialogProps) => {
   const { uuid, router } = props;
   const { mutate } = useMutateAndStore(deleteRecipe);
   const recipe = useRecipes().data[uuid];
@@ -85,7 +83,7 @@ export const RecipeCardWithDialog = memo(function RenderRecipeCard(
       />
     </>
   );
-});
+};
 
 export interface IRecipeCard {
   router: NextRouter;

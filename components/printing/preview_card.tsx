@@ -34,39 +34,31 @@ export default function PreviewCard(props: IPreviewCardProps) {
   const [dialogOpen, setters] = useBoolean(false);
 
   const cardData = usePrinting().data.models[uuid];
-
-  const onClickToPreview = useCallback(
-    (event: MouseEvent) => {
-      navigateToPreview(router, cardData.key, uuid);
-      event.stopPropagation();
-    },
-    [router, cardData.key, uuid]
-  );
-  const deleteModelOnClick = useCallback(
-    (event) => {
-      event.stopPropagation();
-      mutate(uuid);
-    },
-    [mutate, uuid]
-  );
-
-  const onDownload = useCallback(
-    async (event: MouseEvent<SVGElement>) => {
-      event.stopPropagation();
-      const link = document.createElement("a");
-      link.download = cardData.filename + "." + cardData.key.split(".").pop();
-      const response = await fetch(await getS3SignedUrl(cardData.key));
-      const blob = await response.blob();
-      const url = window.URL.createObjectURL(blob);
-      link.href = url;
-      link.click();
-    },
-    [cardData]
-  );
-
   if (!cardData) {
     return null;
   }
+
+  const onClickToPreview = (event: MouseEvent) => {
+    navigateToPreview(router, cardData.key, uuid);
+    event.stopPropagation();
+  };
+  const deleteModelOnClick = (
+    event: React.MouseEvent<HTMLButtonElement, globalThis.MouseEvent>
+  ) => {
+    event.stopPropagation();
+    mutate(uuid);
+  };
+
+  const onDownload = async (event: MouseEvent<SVGElement>) => {
+    event.stopPropagation();
+    const link = document.createElement("a");
+    link.download = cardData.filename + "." + cardData.key.split(".").pop();
+    const response = await fetch(await getS3SignedUrl(cardData.key));
+    const blob = await response.blob();
+    const url = window.URL.createObjectURL(blob);
+    link.href = url;
+    link.click();
+  };
 
   return (
     <>

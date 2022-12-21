@@ -30,22 +30,16 @@ export interface IPlantPreview {
 const degreesC = "\xB0C";
 
 export const PlantPreview = (props: IPlantPreview) => {
-  const plant = usePlants().data.plants[props.uuid];
+  const plant = usePlants().data?.plants[props.uuid];
   const { mutate } = useMutateAndStore(deletePlant);
   const [dialogOpen, setters] = useBoolean(false);
 
-  const lightLevel = useMemo(
-    () => LightLevel[plant.lightLevelKey],
-    [plant.lightLevelKey]
-  );
-  const wateringLevel = useMemo(
-    () => WateringAmount[plant.wateringKey],
-    [plant.wateringKey]
-  );
+  if (!plant) {
+    return null;
+  }
 
-  const deletePlantOnClick = useCallback(() => {
-    mutate(props.uuid);
-  }, [props.uuid, mutate]);
+  const lightLevel = LightLevel[plant.lightLevelKey];
+  const wateringLevel = WateringAmount[plant.wateringKey];
 
   return (
     <>
@@ -59,7 +53,7 @@ export const PlantPreview = (props: IPlantPreview) => {
         </DialogContent>
         <DialogActions>
           <Button onClick={setters.turnOff}>{"No, cancel"}</Button>
-          <Button onClick={deletePlantOnClick} autoFocus>
+          <Button onClick={() => mutate(props.uuid)} autoFocus>
             {"Yes, I'm sure"}
           </Button>
         </DialogActions>
