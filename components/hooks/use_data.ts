@@ -1,46 +1,47 @@
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery, UseQueryOptions } from "@tanstack/react-query";
 import { CustomSession } from "../../pages/api/auth/[...nextauth]";
 import { IFullStoreState, initialState } from "../../store/store";
 import { attemptToFetchUserProfile } from "./user_data";
 import { useAppSession } from "./use_app_session";
-import { createRef, useEffect, useRef } from "react";
 
 export const sessionQueryKey = (session: CustomSession) => [session?.id ?? ""];
 
 export const useData = <T>(
   select: (data: IFullStoreState) => T,
-  invalidateOnMount?: boolean
+  queryOptions?: UseQueryOptions<IFullStoreState, unknown, T, string[]>
 ) => {
   const session = useAppSession();
-  const queryClient = useQueryClient();
-  const called = useRef(false);
-
-  if (!called.current && invalidateOnMount) {
-    called.current = true;
-    queryClient.invalidateQueries();
-  }
 
   return useQuery({
     queryKey: sessionQueryKey(session),
     queryFn: () => attemptToFetchUserProfile(session.id),
     select,
-    initialData: initialState,
+    placeholderData: initialState,
     enabled: !!session?.id,
+    ...queryOptions,
   });
 };
 
-export const useRecipes = (invalidateOnMount?: boolean) => {
-  return useData((data) => data.food.recipes, invalidateOnMount);
+export const useRecipes = (
+  options?: UseQueryOptions<IFullStoreState, unknown, any, string[]>
+) => {
+  return useData((data) => data.food.recipes, options);
 };
 
-export const useMealPlan = (invalidateOnMount?: boolean) => {
-  return useData((data) => data.mealPlan.plan, invalidateOnMount);
+export const useMealPlan = (
+  options?: UseQueryOptions<IFullStoreState, unknown, any, string[]>
+) => {
+  return useData((data) => data.mealPlan.plan, options);
 };
 
-export const usePrinting = (invalidateOnMount?: boolean) => {
-  return useData((data) => data.printing, invalidateOnMount);
+export const usePrinting = (
+  options?: UseQueryOptions<IFullStoreState, unknown, any, string[]>
+) => {
+  return useData((data) => data.printing, options);
 };
 
-export const usePlants = (invalidateOnMount?: boolean) => {
-  return useData((data) => data.plants, invalidateOnMount);
+export const usePlants = (
+  options?: UseQueryOptions<IFullStoreState, unknown, any, string[]>
+) => {
+  return useData((data) => data.plants, options);
 };

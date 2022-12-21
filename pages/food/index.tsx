@@ -39,8 +39,8 @@ import { useMealPlan, useRecipes } from "../../components/hooks/use_data";
 const Recipes = () => {
   const [keys, setKeys] = useState(() => new Set(["name"]));
   const { searchInput, setSearchInput, searchResults } = useRecipeSearch(keys);
-  const mealPlan = useMealPlan(true);
-  const recipes = useRecipes(true);
+  const recipes = useRecipes();
+  const mealPlan = useMealPlan();
   const [selected, setSelected] = useState<Set<DateString>>(() => new Set());
   const allSelected = selected.size === Object.keys(mealPlan).length;
   const [on, { turnOn, turnOff }] = useBoolean(false);
