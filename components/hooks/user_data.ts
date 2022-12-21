@@ -1,26 +1,20 @@
 import { useCallback } from "react";
-import { migrateUser, userEmptyState } from "../../store/reducers/user/user";
-import { IFullStoreState, isStoreValid, MutateFunc } from "../../store/store";
+import { migrateUser } from "../../store/reducers/user/user";
+import {
+  emptyStore,
+  IFullStoreState,
+  initialState,
+  isStoreValid,
+  MutateFunc,
+} from "../../store/store";
 import useUploadToS3 from "./upload_to_s3";
 import { getS3SignedUrl } from "../aws/s3_utilities";
 import { ListObjectsCommand } from "@aws-sdk/client-s3";
 import { AwsS3Client } from "../aws/s3_client";
-import {
-  printingEmptyState,
-  migratePrinting,
-} from "../../store/reducers/printing/printing";
-import {
-  plantsEmptyState,
-  migratePlants,
-} from "../../store/reducers/plants/plants";
-import {
-  recipesEmptyState,
-  migrateRecipes,
-} from "../../store/reducers/food/recipes/recipes";
-import {
-  mealPlanEmptyState,
-  migrateMealPlan,
-} from "../../store/reducers/food/meal_plan/meal_plan";
+import { migratePrinting } from "../../store/reducers/printing/printing";
+import { migratePlants } from "../../store/reducers/plants/plants";
+import { migrateRecipes } from "../../store/reducers/food/recipes/recipes";
+import { migrateMealPlan } from "../../store/reducers/food/meal_plan/meal_plan";
 import { useQueryClient, useMutation } from "@tanstack/react-query";
 import clone from "just-clone";
 import { useAppSession } from "./use_app_session";
@@ -66,6 +60,9 @@ export const useMutateAndStore = <TVariables>(
         )}`
       );
     }
+    if (!session) {
+      return currentStoreState;
+    }
     const blob = new Blob([JSON.stringify(currentStoreState, null, 2)], {
       type: "application/json",
     });
@@ -83,7 +80,7 @@ export const useMutateAndStore = <TVariables>(
         queryClient.getQueryData<IFullStoreState>(profileQueryKey);
 
       if (!previousValue) {
-        return;
+        throw new Error("Failed to update profile");
       }
 
       queryClient.setQueryData(profileQueryKey, () =>
@@ -100,14 +97,20 @@ export const useMutateAndStore = <TVariables>(
       console.error(`Error updating profile: ${err}`);
     },
     onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: sessionQueryKey(session) });
+      if (session) {
+        queryClient.invalidateQueries({ queryKey: sessionQueryKey(session) });
+      }
     },
   });
 };
 
 export const attemptToFetchUserProfile = async (
-  sessionId: string
+  sessionId?: string
 ): Promise<IFullStoreState> => {
+  if (!sessionId) {
+    return clone(initialState);
+  }
+
   const profileResults = await AwsS3Client.send(
     new ListObjectsCommand({
       Bucket: process.env.ENV_AWS_S3_BUCKET_NAME,
@@ -123,13 +126,7 @@ export const attemptToFetchUserProfile = async (
   // User doesn't have a profile, in this case we should stop trying to fetch a profile
   // and create a new one by dispatching an empty profile
   if (!profileResults?.Contents || profileResults.Contents?.length === 0) {
-    return {
-      user: clone(userEmptyState),
-      printing: clone(printingEmptyState),
-      plants: clone(plantsEmptyState),
-      food: clone(recipesEmptyState),
-      mealPlan: clone(mealPlanEmptyState),
-    };
+    return clone(emptyStore);
   }
 
   const profileUrl = await getS3SignedUrl(`${sessionId}/profile.json`);

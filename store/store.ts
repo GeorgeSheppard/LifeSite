@@ -1,6 +1,9 @@
-import { plantsInitialState } from "./reducers/plants/plants";
-import { recipesInitialState } from "./reducers/food/recipes/recipes";
-import { userInitialState } from "./reducers/user/user";
+import { plantsEmptyState, plantsInitialState } from "./reducers/plants/plants";
+import {
+  recipesEmptyState,
+  recipesInitialState,
+} from "./reducers/food/recipes/recipes";
+import { userEmptyState, userInitialState } from "./reducers/user/user";
 import { IRecipesState } from "./reducers/food/recipes/types";
 import { IPlantsState } from "./reducers/plants/types";
 import { IPrintingState } from "./reducers/printing/types";
@@ -11,8 +14,14 @@ import { isPlantsValid } from "./reducers/plants/schema";
 import { isRecipesValid } from "./reducers/food/recipes/schema";
 import { isMealPlanValid } from "./reducers/food/meal_plan/schema";
 import { isUserValid } from "./reducers/user/schema";
-import { mealPlanInitialState } from "./reducers/food/meal_plan/meal_plan";
-import { printingInitialState } from "./reducers/printing/printing";
+import {
+  mealPlanEmptyState,
+  mealPlanInitialState,
+} from "./reducers/food/meal_plan/meal_plan";
+import {
+  printingEmptyState,
+  printingInitialState,
+} from "./reducers/printing/printing";
 
 export interface IFullStoreState {
   printing: IPrintingState;
@@ -33,6 +42,14 @@ export const initialState: IFullStoreState = {
   plants: plantsInitialState,
   printing: printingInitialState,
   user: userInitialState,
+};
+
+export const emptyStore: IFullStoreState = {
+  food: recipesEmptyState,
+  mealPlan: mealPlanEmptyState,
+  plants: plantsEmptyState,
+  printing: printingEmptyState,
+  user: userEmptyState,
 };
 
 export const isStoreValid = (state: IFullStoreState) => {

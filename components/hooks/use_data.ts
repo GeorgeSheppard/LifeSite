@@ -1,47 +1,43 @@
-import { useQuery, UseQueryOptions } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { CustomSession } from "../../pages/api/auth/[...nextauth]";
-import { IFullStoreState, initialState } from "../../store/store";
+import { emptyStore, IFullStoreState } from "../../store/store";
 import { attemptToFetchUserProfile } from "./user_data";
 import { useAppSession } from "./use_app_session";
 
 export const sessionQueryKey = (session: CustomSession) => [session?.id ?? ""];
 
-export const useData = <T>(
-  select: (data: IFullStoreState) => T,
-  queryOptions?: UseQueryOptions<IFullStoreState, unknown, T, string[]>
-) => {
+export const useData = <T>(select: (data: IFullStoreState) => T) => {
   const session = useAppSession();
 
-  return useQuery({
+  const result = useQuery({
     queryKey: sessionQueryKey(session),
-    queryFn: () => attemptToFetchUserProfile(session.id),
+    queryFn: () => attemptToFetchUserProfile(session?.id),
     select,
-    placeholderData: initialState,
-    enabled: !!session?.id,
-    ...queryOptions,
+    placeholderData: emptyStore,
   });
+
+  // Note: This is pretty dirty, data will always exist because we have
+  // placeholderData, but tanstack doesn't update the type for itself.
+  // It will update the type if you use initialData but that value is placed
+  // into the cache and we don't want that.
+  return {
+    ...result,
+    data: result.data!,
+  };
 };
 
-export const useRecipes = (
-  options?: UseQueryOptions<IFullStoreState, unknown, any, string[]>
-) => {
-  return useData((data) => data.food.recipes, options);
+export const useRecipes = () => {
+  return useData((data) => data.food.recipes);
 };
 
-export const useMealPlan = (
-  options?: UseQueryOptions<IFullStoreState, unknown, any, string[]>
-) => {
-  return useData((data) => data.mealPlan.plan, options);
+export const useMealPlan = () => {
+  return useData((data) => data.mealPlan.plan);
 };
 
-export const usePrinting = (
-  options?: UseQueryOptions<IFullStoreState, unknown, any, string[]>
-) => {
-  return useData((data) => data.printing, options);
+export const usePrinting = () => {
+  return useData((data) => data.printing);
 };
 
-export const usePlants = (
-  options?: UseQueryOptions<IFullStoreState, unknown, any, string[]>
-) => {
-  return useData((data) => data.plants, options);
+export const usePlants = () => {
+  return useData((data) => data.plants);
 };
