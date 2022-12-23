@@ -12,7 +12,7 @@ export default function Home(props: any) {
   return (
     <main>
       <Head>
-        <title>MyLife</title>
+        <title>LifeSite</title>
         <meta name="viewport" content="initial-scale=1.0, width=device-width" />
       </Head>
       <Box
@@ -30,9 +30,10 @@ export default function Home(props: any) {
             color="text.secondary"
             paragraph
           >
-            My work in progress personal website, with some of my projects. Some help me with my everyday
-            life, and some are just ideas that I wanted to try. The data you see are a default profile, which will be wiped
-            if you log in.
+            My personal website, with some of my projects. If you are logged out
+            you will use a default profile that will not be saved. If you choose
+            to login, initially you will have a blank account but your changes
+            will then be saved. Enjoy!
           </Typography>
         </Container>
       </Box>

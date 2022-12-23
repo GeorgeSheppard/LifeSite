@@ -53,7 +53,7 @@ export default function Header() {
             noWrap
             onClick={() => router.push("/")}
           >
-            MyLife
+            LifeSite
           </Typography>
           <Box component="div" sx={{ flexGrow: 1 }} />
           <Box component="div" sx={{ display: "flex" }}>
