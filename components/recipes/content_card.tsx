@@ -123,47 +123,53 @@ export const RecipeCard = (props: IRecipeCard) => {
           <>
             <div style={{ flexGrow: 1, paddingRight: 2 }} />
             <div style={{ paddingLeft: 2 }} />
-            <IconButton
-              onClick={(event) => {
-                event?.stopPropagation();
-                const ingredients = recipe.components.flatMap(
-                  (component) => component.ingredients
-                );
-                const text = ingredients
-                  .map((ingredient) =>
-                    Quantities.toStringWithIngredient(
-                      ingredient.name,
-                      ingredient.quantity
+            <Tooltip title="Copy ingredients">
+              <IconButton
+                onClick={(event) => {
+                  event?.stopPropagation();
+                  const ingredients = recipe.components.flatMap(
+                    (component) => component.ingredients
+                  );
+                  const text = ingredients
+                    .map((ingredient) =>
+                      Quantities.toStringWithIngredient(
+                        ingredient.name,
+                        ingredient.quantity
+                      )
                     )
-                  )
-                  .join("\n");
-                navigator.clipboard.writeText(text);
-              }}
-              size="small"
-              sx={{ alignSelf: "center", mr: 1 }}
-            >
-              <ContentCopyIcon fontSize="small" htmlColor="#212121" />
-            </IconButton>
-            <IconButton
-              onClick={(event) => {
-                event?.stopPropagation();
-                onEdit();
-              }}
-              size="small"
-              sx={{ alignSelf: "center", mr: 1 }}
-            >
-              <EditIcon fontSize="small" htmlColor="#212121" />
-            </IconButton>
-            <IconButton
-              onClick={(event) => {
-                event?.stopPropagation();
-                turnOn();
-              }}
-              size="small"
-              sx={{ alignSelf: "center", mr: 1 }}
-            >
-              <DeleteIcon fontSize="small" htmlColor="#7d2020" />
-            </IconButton>
+                    .join("\n");
+                  navigator.clipboard.writeText(text);
+                }}
+                size="small"
+                sx={{ alignSelf: "center", mr: 1 }}
+              >
+                <ContentCopyIcon fontSize="small" htmlColor="#212121" />
+              </IconButton>
+            </Tooltip>
+            <Tooltip title="Edit">
+              <IconButton
+                onClick={(event) => {
+                  event?.stopPropagation();
+                  onEdit();
+                }}
+                size="small"
+                sx={{ alignSelf: "center", mr: 1 }}
+              >
+                <EditIcon fontSize="small" htmlColor="#212121" />
+              </IconButton>
+            </Tooltip>
+            <Tooltip title="Delete">
+              <IconButton
+                onClick={(event) => {
+                  event?.stopPropagation();
+                  turnOn();
+                }}
+                size="small"
+                sx={{ alignSelf: "center", mr: 1 }}
+              >
+                <DeleteIcon fontSize="small" htmlColor="#7d2020" />
+              </IconButton>
+            </Tooltip>
           </>
         )}
       </>

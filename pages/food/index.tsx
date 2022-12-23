@@ -1,5 +1,7 @@
 import AddIcon from "@mui/icons-material/Add";
 import {
+  Accordion,
+  AccordionSummary,
   Box,
   Button,
   ButtonGroup,
@@ -11,10 +13,11 @@ import {
   DialogContentText,
   DialogTitle,
   Grid,
+  Skeleton,
   Tooltip,
 } from "@mui/material";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import OutlinedInput from "@mui/material/OutlinedInput";
-import { motion } from "framer-motion";
 import { NextRouter, useRouter } from "next/router";
 import { useCallback, useState, useMemo } from "react";
 import { v4 as uuidv4 } from "uuid";
@@ -42,7 +45,7 @@ const Recipes = () => {
   const recipes = useRecipes();
   const mealPlan = useMealPlan();
   const [selected, setSelected] = useState<Set<DateString>>(() => new Set());
-  const allSelected = selected.size === Object.keys(mealPlan).length;
+  const allSelected = selected.size === Object.keys(mealPlan.data).length;
   const [on, { turnOn, turnOff }] = useBoolean(false);
   const [shoppingListData, setShoppingListData] = useState<IQuantitiesAndMeals>(
     {}
@@ -52,7 +55,7 @@ const Recipes = () => {
     if (allSelected) {
       setSelected(new Set());
     } else {
-      setSelected(new Set(Object.keys(mealPlan)));
+      setSelected(new Set(Object.keys(mealPlan.data)));
     }
   }, [setSelected, mealPlan, allSelected]);
 
@@ -76,7 +79,10 @@ const Recipes = () => {
                 fullWidth
               />
             </Grid>
-            <RecipeGrid searchResults={searchResults} />
+            <RecipeGrid
+              searchResults={searchResults}
+              loading={recipes.isFetching && !recipes.isRefetching}
+            />
           </Box>
           <Box
             sx={{
@@ -104,31 +110,43 @@ const Recipes = () => {
                 overflowY: "scroll",
               }}
             >
-              <ButtonGroup sx={{ marginLeft: 2, width: 332, marginBottom: 2 }}>
-                <Button variant="outlined" onClick={selectOrUnselect}>
-                  {allSelected ? (
-                    <CheckBoxIcon />
-                  ) : (
-                    <CheckBoxOutlineBlankIcon />
-                  )}
-                </Button>
-                <Button
-                  variant="outlined"
-                  fullWidth
-                  onClick={() => {
-                    setShoppingListData(
-                      createShoppingListData(
-                        recipes.data,
-                        mealPlan.data,
-                        selected
-                      )
-                    );
-                    turnOn();
-                  }}
+              <Tooltip
+                title={
+                  selected.size === 0
+                    ? "Drag recipes into your meal plan, then select date(s) manually or use the checkbox to select all available dates to create a shopping list"
+                    : ""
+                }
+                placement="bottom"
+              >
+                <ButtonGroup
+                  sx={{ marginLeft: 2, width: 332, marginBottom: 2 }}
                 >
-                  Create shopping list
-                </Button>
-              </ButtonGroup>
+                  <Button variant="outlined" onClick={selectOrUnselect}>
+                    {allSelected ? (
+                      <CheckBoxIcon />
+                    ) : (
+                      <CheckBoxOutlineBlankIcon />
+                    )}
+                  </Button>
+                  <Button
+                    variant="outlined"
+                    fullWidth
+                    onClick={() => {
+                      setShoppingListData(
+                        createShoppingListData(
+                          recipes.data,
+                          mealPlan.data,
+                          selected
+                        )
+                      );
+                      turnOn();
+                    }}
+                    disabled={selected.size === 0}
+                  >
+                    Create shopping list
+                  </Button>
+                </ButtonGroup>
+              </Tooltip>
               <div
                 style={{
                   height: "100vh",
@@ -144,35 +162,61 @@ const Recipes = () => {
   );
 };
 
+const LoadingRecipeItem = () => {
+  return (
+    <Grid item xs={12} sm={6} md={6} lg={6} xl={4}>
+      <Card>
+        <Skeleton variant="rectangular" height={300} />
+        <Accordion>
+          <AccordionSummary expandIcon={<ExpandMoreIcon htmlColor="#212121" />}>
+            <Skeleton variant="rectangular" width="60%" height={30} />
+          </AccordionSummary>
+        </Accordion>
+        <Accordion>
+          <AccordionSummary expandIcon={<ExpandMoreIcon htmlColor="#212121" />}>
+            <Skeleton variant="rectangular" width="30%" />
+          </AccordionSummary>
+        </Accordion>
+        <Accordion>
+          <AccordionSummary expandIcon={<ExpandMoreIcon htmlColor="#212121" />}>
+            <Skeleton variant="rectangular" width="30%" />
+          </AccordionSummary>
+        </Accordion>
+      </Card>
+    </Grid>
+  );
+};
+
 interface RecipeGridProps {
   searchResults: { uuid: RecipeUuid; visible: boolean }[];
+  loading: boolean;
 }
 
 const RecipeGrid = (props: RecipeGridProps) => {
   const router = useRouter();
 
   return (
-    <Grid container spacing={2} component={motion.div} layout>
+    <Grid container spacing={2}>
       <CreateNewRecipeCard router={router} />
-      {props.searchResults.map(({ uuid, visible }) => (
-        <Grid
-          key={uuid}
-          item
-          xs={12}
-          sm={6}
-          md={6}
-          lg={6}
-          xl={4}
-          component={motion.div}
-          animate={{ opacity: 1 }}
-          initial={{ opacity: 0 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.3 }}
-          layout
-        >
-          <RecipeCardWithDialog uuid={uuid} router={router} visible={visible} />
-        </Grid>
-      ))}
+      {!props.loading ? (
+        <>
+          {props.searchResults.map(({ uuid, visible }) => (
+            <Grid key={uuid} item xs={12} sm={6} md={6} lg={6} xl={4}>
+              <RecipeCardWithDialog
+                uuid={uuid}
+                router={router}
+                visible={visible}
+              />
+            </Grid>
+          ))}
+        </>
+      ) : (
+        <>
+          {Array.from(Array(8)).map((_, index) => {
+            return <LoadingRecipeItem key={index} />;
+          })}
+        </>
+      )}
     </Grid>
   );
 };
@@ -192,9 +236,7 @@ const CreateNewRecipeCard = (props: ICreateNewRecipeCard) => {
     <Grid item key={"CreateRecipe"} xs={12} sm={6} md={6} lg={6} xl={4}>
       <Card
         sx={{
-          height: "100%",
-          minHeight: "30vh",
-          maxHeight: "70vh",
+          height: "300px",
           display: "flex",
         }}
         className="cardWithHover"

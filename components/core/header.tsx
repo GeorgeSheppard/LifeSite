@@ -45,16 +45,11 @@ export default function Header() {
             flexGrow: 1,
           }}
         >
-          {/* TODO: Make it obvious both of these are clickable */}
-          {/* TODO: Better name */}
-          <Typography
-            variant="h6"
-            color="inherit"
-            noWrap
-            onClick={() => router.push("/")}
-          >
-            LifeSite
-          </Typography>
+          <IconButton disableRipple onClick={() => router.push("/")}>
+            <Typography variant="h6" color="white" noWrap>
+              LifeSite
+            </Typography>
+          </IconButton>
           <Box component="div" sx={{ flexGrow: 1 }} />
           <Box component="div" sx={{ display: "flex" }}>
             <IconButton

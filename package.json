@@ -34,7 +34,6 @@
     "ajv": "^8.11.0",
     "eslint-plugin-unused-imports": "^2.0.0",
     "formidable": "^2.0.1",
-    "framer-motion": "^6.3.3",
     "fuse.js": "^6.5.3",
     "husky": "^7.0.4",
     "just-clone": "^5.0.1",
