@@ -18,7 +18,6 @@ import {
 } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import OutlinedInput from "@mui/material/OutlinedInput";
-import { motion } from "framer-motion";
 import { NextRouter, useRouter } from "next/router";
 import { useCallback, useState, useMemo } from "react";
 import { v4 as uuidv4 } from "uuid";
@@ -82,7 +81,7 @@ const Recipes = () => {
             </Grid>
             <RecipeGrid
               searchResults={searchResults}
-              loading={recipes.isLoading}
+              loading={recipes.isFetching && !recipes.isRefetching}
             />
           </Box>
           <Box
@@ -197,26 +196,12 @@ const RecipeGrid = (props: RecipeGridProps) => {
   const router = useRouter();
 
   return (
-    <Grid container spacing={2} component={motion.div} layout>
+    <Grid container spacing={2}>
       <CreateNewRecipeCard router={router} />
       {!props.loading ? (
         <>
           {props.searchResults.map(({ uuid, visible }) => (
-            <Grid
-              key={uuid}
-              item
-              xs={12}
-              sm={6}
-              md={6}
-              lg={6}
-              xl={4}
-              component={motion.div}
-              animate={{ opacity: 1 }}
-              initial={{ opacity: 0 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.3 }}
-              layout
-            >
+            <Grid key={uuid} item xs={12} sm={6} md={6} lg={6} xl={4}>
               <RecipeCardWithDialog
                 uuid={uuid}
                 router={router}
