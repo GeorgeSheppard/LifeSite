@@ -80,13 +80,13 @@ export const navigatorCards: INavigatorCardProps[] = [
   {
     title: "Recipes and meal planner",
     description:
-      "My regular recipes, with ingredients, method, and search functionality. Meal planning only available on large screen sizes",
+      "Recipes, with ingredients, method, and search functionality. Meal planning is only available on larger size screens",
     imageSrc: "/images/ChilliConCarne.jpg",
     href: "/food",
   },
   {
     title: "3D Printing",
-    description: "Some models I have printed.",
+    description: "3D model uploader, storage, and visualisation.",
     imageSrc: "/images/printing.jpg",
     href: "/printing",
   },
