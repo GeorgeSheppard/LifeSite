@@ -20,12 +20,12 @@ const queryClient = new QueryClient({
   },
 });
 
-export interface IMyLifeProps {
+export interface ILifeSiteProps {
   Component: React.JSXElementConstructor<ILayoutProps>;
   pageProps: ILayoutProps & { session: Session };
 }
 
-export default function MyLife(props: IMyLifeProps) {
+export default function LifeSite(props: ILifeSiteProps) {
   const { Component } = props;
   const { session, ...pageProps } = props.pageProps;
 

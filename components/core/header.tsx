@@ -53,7 +53,7 @@ export default function Header() {
             noWrap
             onClick={() => router.push("/")}
           >
-            MyLife
+            LifeSite
           </Typography>
           <Box component="div" sx={{ flexGrow: 1 }} />
           <Box component="div" sx={{ display: "flex" }}>
@@ -81,7 +81,6 @@ export default function Header() {
                 "aria-labelledby": "basic-button",
               }}
             >
-              {/* <MenuItem onClick={profile}>Profile</MenuItem> */}
               <MenuItem onClick={logout}>Logout</MenuItem>
             </Menu>
           </Box>
