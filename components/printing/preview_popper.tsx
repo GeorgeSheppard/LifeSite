@@ -16,7 +16,7 @@ import {
 import { addModel } from "../../store/reducers/printing/printing";
 import { v4 as uuidv4 } from "uuid";
 import { ICanvasScreenshotterRef } from "./canvas_screenshotter";
-import { ExitSaveButtons } from "../cards/exit_save_buttons";
+import { ExitSaveButtons } from "../core/exit_save_buttons";
 import useUploadToS3 from "../hooks/upload_to_s3";
 import { IS3ValidUploadResponse } from "../hooks/upload_to_s3";
 import { IModelProps } from "../../store/reducers/printing/types";

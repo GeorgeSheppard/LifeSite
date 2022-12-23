@@ -6,7 +6,7 @@ import Typography from "@mui/material/Typography";
 import * as React from "react";
 import { CardActionArea } from "@mui/material";
 import Link from "next/link";
-import { stopPropagation } from "../cards/utilities";
+import { stopPropagation } from "../core/utilities";
 
 export interface INavigatorCardProps {
   title: string;
@@ -83,12 +83,6 @@ export const navigatorCards: INavigatorCardProps[] = [
       "My regular recipes, with ingredients, method, and search functionality. Meal planning only available on large screen sizes",
     imageSrc: "/images/ChilliConCarne.jpg",
     href: "/food",
-  },
-  {
-    title: "Plants",
-    description: "My plants, images and optimal conditions.",
-    imageSrc: "/images/plants.jpg",
-    href: "/plants",
   },
   {
     title: "3D Printing",

@@ -81,7 +81,6 @@ export default function Header() {
                 "aria-labelledby": "basic-button",
               }}
             >
-              {/* <MenuItem onClick={profile}>Profile</MenuItem> */}
               <MenuItem onClick={logout}>Logout</MenuItem>
             </Menu>
           </Box>

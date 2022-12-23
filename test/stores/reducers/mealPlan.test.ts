@@ -2,7 +2,6 @@ import clone from "just-clone";
 import { addOrUpdatePlan } from "../../../store/reducers/food/meal_plan/meal_plan";
 import { latestVersion } from "../../../store/reducers/food/meal_plan/migrations";
 import { recipesEmptyState } from "../../../store/reducers/food/recipes/recipes";
-import { plantsEmptyState } from "../../../store/reducers/plants/plants";
 import { printingEmptyState } from "../../../store/reducers/printing/printing";
 import { userEmptyState } from "../../../store/reducers/user/user";
 import { IFullStoreState } from "../../../store/store";
@@ -10,7 +9,6 @@ import { IFullStoreState } from "../../../store/store";
 const state: IFullStoreState = {
   user: clone(userEmptyState),
   printing: clone(printingEmptyState),
-  plants: clone(plantsEmptyState),
   food: clone(recipesEmptyState),
   mealPlan: {
     version: latestVersion,
