@@ -1,5 +1,5 @@
 import { useThree } from "@react-three/fiber";
-import { ObjectLoader, MeshBasicMaterial, Mesh } from "three";
+import { ObjectLoader } from "three";
 
 export interface IModelProps {
   // Group is passed through props as json

@@ -9,7 +9,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import DownloadIcon from "@mui/icons-material/Download";
 import Tooltip from "@mui/material/Tooltip";
-import { useCallback, MouseEvent } from "react";
+import { MouseEvent } from "react";
 import { deleteModel } from "../../store/reducers/printing/printing";
 import { getS3SignedUrl } from "../aws/s3_utilities";
 import { S3CardMedia } from "../cards/s3_card_media";

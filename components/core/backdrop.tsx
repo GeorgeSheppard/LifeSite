@@ -1,4 +1,4 @@
-import { useState, useCallback, PropsWithChildren, cloneElement } from "react";
+import { useState, useCallback, PropsWithChildren } from "react";
 import Backdrop from "@mui/material/Backdrop";
 
 export function useCustomBackdrop<T>() {

@@ -20,7 +20,7 @@ import ListItemText from "@mui/material/ListItemText";
 import Tooltip from "@mui/material/Tooltip";
 import Typography from "@mui/material/Typography";
 import { NextRouter } from "next/router";
-import { memo, useCallback, useMemo } from "react";
+import { useCallback, useMemo } from "react";
 import { useDrag } from "react-dnd";
 import { deleteRecipe } from "../../store/reducers/food/recipes/recipes";
 import {

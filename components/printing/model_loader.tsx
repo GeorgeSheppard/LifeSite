@@ -9,9 +9,6 @@ import {
   MeshBasicMaterial,
 } from "three";
 import { STLLoader } from "three/examples/jsm/loaders/STLLoader";
-import { ThreeMFLoader } from "three/examples/jsm/loaders/3MFLoader";
-import { join } from "path";
-import fs from "fs";
 import { getS3SignedUrl } from "../aws/s3_utilities";
 import { S3Key } from "../../store/reducers/types";
 
@@ -62,7 +59,7 @@ export const loadModel = async (key: S3Key): Promise<Group> => {
   }
 
   const loader = modelLoader.getLoader(extension);
-  const url = await getS3SignedUrl(key)
+  const url = await getS3SignedUrl(key);
   const data = await fetch(url);
 
   // ThreeJs refuses to load the file itself, instead have to use the parse method
@@ -94,8 +91,12 @@ export const loadModel = async (key: S3Key): Promise<Group> => {
     const reductionScale = radius ? 1.5 / radius : 1;
     geometry.scale(reductionScale, reductionScale, reductionScale);
     const mesh = new Mesh(geometry, material);
-    const wireframeMaterial = new MeshBasicMaterial( { color: 0x000000, wireframe: true, transparent: true } );
-    mesh.add(new Mesh(geometry, wireframeMaterial))
+    const wireframeMaterial = new MeshBasicMaterial({
+      color: 0x000000,
+      wireframe: true,
+      transparent: true,
+    });
+    mesh.add(new Mesh(geometry, wireframeMaterial));
     const group = new Group();
     group.add(mesh);
     return group;
