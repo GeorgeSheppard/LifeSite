@@ -13,14 +13,14 @@ import {
   useState,
   useEffect,
 } from "react";
-import { addModel } from "../../store/reducers/printing/printing";
+import { addModel } from "../../../store/reducers/printing/printing";
 import { v4 as uuidv4 } from "uuid";
 import { ICanvasScreenshotterRef } from "./canvas_screenshotter";
-import { ExitSaveButtons } from "../core/exit_save_buttons";
-import useUploadToS3 from "../hooks/upload_to_s3";
-import { IS3ValidUploadResponse } from "../hooks/upload_to_s3";
-import { IModelProps } from "../../store/reducers/printing/types";
-import { useMutateAndStore } from "../hooks/user_data";
+import { ExitSaveButtons } from "../../core/exit_save_buttons";
+import useUploadToS3 from "../../hooks/upload_to_s3";
+import { IS3ValidUploadResponse } from "../../hooks/upload_to_s3";
+import { IModelProps } from "../../../store/reducers/printing/types";
+import { useMutateAndStore } from "../../hooks/user_data";
 
 export interface IPreviewPopperProps {
   open: boolean;

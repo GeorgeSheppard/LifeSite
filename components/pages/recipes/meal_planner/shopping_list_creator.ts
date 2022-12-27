@@ -1,15 +1,15 @@
-import { Quantities } from "../../store/reducers/food/units";
+import { Quantities } from "../../../../store/reducers/food/units";
 import {
   DateString,
   IDailyMealPlan,
-} from "../../store/reducers/food/meal_plan/types";
+} from "../../../../store/reducers/food/meal_plan/types";
 import {
   IIngredientName,
   IQuantity,
   IRecipe,
   RecipeUuid,
   Unit,
-} from "../../store/reducers/food/recipes/types";
+} from "../../../../store/reducers/food/recipes/types";
 
 export interface IQuantitiesAndMeals {
   [index: IIngredientName]: {

@@ -22,18 +22,18 @@ import Typography from "@mui/material/Typography";
 import { NextRouter } from "next/router";
 import { useCallback, useMemo } from "react";
 import { useDrag } from "react-dnd";
-import { deleteRecipe } from "../../store/reducers/food/recipes/recipes";
+import { deleteRecipe } from "../../../store/reducers/food/recipes/recipes";
 import {
   IRecipe,
   IRecipeComponent,
   RecipeUuid,
-} from "../../store/reducers/food/recipes/types";
-import { Quantities } from "../../store/reducers/food/units";
-import { WrappedCardMedia } from "../cards/wrapped_card_media";
-import { IUseBooleanCallbacks, useBoolean } from "../hooks/use_boolean";
+} from "../../../store/reducers/food/recipes/types";
+import { Quantities } from "../../../store/reducers/food/units";
+import { WrappedCardMedia } from "../../cards/wrapped_card_media";
+import { IUseBooleanCallbacks, useBoolean } from "../../hooks/use_boolean";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
-import { useRecipes } from "../hooks/use_data";
-import { useMutateAndStore } from "../hooks/user_data";
+import { useRecipes } from "../../hooks/use_data";
+import { useMutateAndStore } from "../../hooks/user_data";
 
 export interface IRecipeCardWithDialogProps {
   uuid: RecipeUuid;

@@ -1,7 +1,7 @@
 import ButtonGroup from "@mui/material/ButtonGroup";
 import Card from "@mui/material/Card";
 import CardHeader from "@mui/material/CardHeader";
-import { addOrUpdatePlan } from "../../store/reducers/food/meal_plan/meal_plan";
+import { addOrUpdatePlan } from "../../../../store/reducers/food/meal_plan/meal_plan";
 import PersonIcon from "@mui/icons-material/Person";
 import Typography from "@mui/material/Typography";
 import Tooltip from "@mui/material/Tooltip";
@@ -12,10 +12,10 @@ import { useDrop } from "react-dnd";
 import {
   DateString,
   IComponentItem,
-} from "../../store/reducers/food/meal_plan/types";
-import { RecipeUuid } from "../../store/reducers/food/recipes/types";
-import { useMealPlan, useRecipes } from "../hooks/use_data";
-import { useMutateAndStore } from "../hooks/user_data";
+} from "../../../../store/reducers/food/meal_plan/types";
+import { RecipeUuid } from "../../../../store/reducers/food/recipes/types";
+import { useMealPlan, useRecipes } from "../../../hooks/use_data";
+import { useMutateAndStore } from "../../../hooks/user_data";
 
 export const DroppableCard = (props: {
   day: DateString;

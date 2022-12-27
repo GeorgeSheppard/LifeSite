@@ -1,5 +1,5 @@
 import { NextRouter } from "next/router";
-import { S3Key } from "../../store/reducers/types";
+import { S3Key } from "../../../store/reducers/types";
 
 export const navigateToPreview = (
   router: NextRouter,

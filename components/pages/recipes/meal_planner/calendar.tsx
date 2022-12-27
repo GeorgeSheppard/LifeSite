@@ -1,5 +1,5 @@
 import Grid from "@mui/material/Grid";
-import { DroppableCard } from "./droppable_card";
+import { DroppableCard } from "./meal_drop_card";
 import {
   Dispatch,
   MouseEvent,
@@ -7,8 +7,8 @@ import {
   useCallback,
   useState,
 } from "react";
-import { DateString } from "../../store/reducers/food/meal_plan/types";
-import { useMealPlan } from "../hooks/use_data";
+import { DateString } from "../../../../store/reducers/food/meal_plan/types";
+import { useMealPlan } from "../../../hooks/use_data";
 
 export interface ICalendarRowProps {
   selected: Set<DateString>;

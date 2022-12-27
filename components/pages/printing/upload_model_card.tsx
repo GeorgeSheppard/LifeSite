@@ -4,9 +4,12 @@ import Box from "@mui/material/Box";
 import LinearProgress from "@mui/material/LinearProgress";
 import { useRouter } from "next/router";
 import { navigateToPreview } from "./navigate_to_preview";
-import { ClickToUpload } from "../core/click_to_upload";
-import { useBoolean } from "../hooks/use_boolean";
-import { IS3ErrorUploadResponse, IS3ValidUploadResponse } from '../hooks/upload_to_s3';
+import { ClickToUpload } from "../../core/click_to_upload";
+import { useBoolean } from "../../hooks/use_boolean";
+import {
+  IS3ErrorUploadResponse,
+  IS3ValidUploadResponse,
+} from "../../hooks/upload_to_s3";
 
 export default function UploadCard() {
   const router = useRouter();

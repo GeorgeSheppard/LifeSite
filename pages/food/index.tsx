@@ -22,15 +22,15 @@ import { NextRouter, useRouter } from "next/router";
 import { useCallback, useState, useMemo } from "react";
 import { v4 as uuidv4 } from "uuid";
 import { headerHeight } from "../../components/core/header";
-import { RecipeCardWithDialog } from "../../components/recipes/content_card";
-import { Planner } from "../../components/recipes/dnd_calendar";
-import { useRecipeSearch } from "../../components/recipes/search_bar";
-import { SearchChips } from "../../components/recipes/search_chip";
+import { RecipeCardWithDialog } from "../../components/pages/recipes/recipe_card";
+import { Planner } from "../../components/pages/recipes/meal_planner/calendar";
+import { useRecipeSearch } from "../../components/pages/recipes/search/search_bar";
+import { SearchChips } from "../../components/pages/recipes/search/search_chip";
 import {
   createShoppingList,
   createShoppingListData,
   IQuantitiesAndMeals,
-} from "../../components/recipes/shopping_list_creator";
+} from "../../components/pages/recipes/meal_planner/shopping_list_creator";
 import { DateString } from "../../store/reducers/food/meal_plan/types";
 import { RecipeUuid } from "../../store/reducers/food/recipes/types";
 import CheckBoxIcon from "@mui/icons-material/CheckBox";

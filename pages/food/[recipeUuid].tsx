@@ -5,13 +5,18 @@ import Card from "@mui/material/Card";
 import Container from "@mui/material/Container";
 import TextField from "@mui/material/TextField";
 import { useRouter } from "next/router";
-import { ChangeEvent, useCallback, useReducer, useState } from "react";
+import {
+  ChangeEvent,
+  useCallback,
+  useReducer,
+  useState,
+  MouseEvent,
+} from "react";
 import { v4 as uuidv4 } from "uuid";
 import { ExitSaveButtons } from "../../components/core/exit_save_buttons";
 import { UploadDisplayImages } from "../../components/cards/upload_and_display_images";
-import { stopPropagation } from "../../components/core/utilities";
-import { ComponentForm } from "../../components/recipes/component_form";
-import { ComponentsFormData } from "../../components/recipes/component_form_data";
+import { ComponentForm } from "../../components/pages/recipes/recipe_form/component_form";
+import { ComponentsFormData } from "../../components/pages/recipes/recipe_form/component_form_data";
 import { addOrUpdateRecipe } from "../../store/reducers/food/recipes/recipes";
 import clone from "just-clone";
 import { RecipeUuid } from "../../store/reducers/food/recipes/types";
@@ -101,7 +106,12 @@ const EditUploadRecipe = () => {
 
   return (
     <Container maxWidth="lg" sx={{ pt: 3, pb: 3 }}>
-      <Card sx={{ padding: 4 }} onClick={stopPropagation}>
+      <Card
+        sx={{ padding: 4 }}
+        onClick={(event: MouseEvent<HTMLElement>) => {
+          event.stopPropagation();
+        }}
+      >
         <TextField
           key="NameTextField"
           fullWidth

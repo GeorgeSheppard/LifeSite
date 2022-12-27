@@ -10,18 +10,18 @@ import VisibilityIcon from "@mui/icons-material/Visibility";
 import DownloadIcon from "@mui/icons-material/Download";
 import Tooltip from "@mui/material/Tooltip";
 import { MouseEvent } from "react";
-import { deleteModel } from "../../store/reducers/printing/printing";
-import { getS3SignedUrl } from "../aws/s3_utilities";
-import { S3CardMedia } from "../cards/s3_card_media";
+import { deleteModel } from "../../../store/reducers/printing/printing";
+import { getS3SignedUrl } from "../../aws/s3_utilities";
+import { S3CardMedia } from "../../cards/s3_card_media";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
-import { useBoolean } from "../hooks/use_boolean";
+import { useBoolean } from "../../hooks/use_boolean";
 import Button from "@mui/material/Button";
-import { usePrinting } from "../hooks/use_data";
-import { useMutateAndStore } from "../hooks/user_data";
+import { usePrinting } from "../../hooks/use_data";
+import { useMutateAndStore } from "../../hooks/user_data";
 
 export interface IPreviewCardProps {
   uuid: string;

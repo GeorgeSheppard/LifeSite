@@ -1,6 +1,6 @@
 import { useThree } from "@react-three/fiber";
 import { forwardRef, Ref, useCallback, useImperativeHandle } from "react";
-import { ICameraParams } from "../../store/reducers/printing/types";
+import { ICameraParams } from "../../../store/reducers/printing/types";
 
 export interface ICanvasScreenshotter {}
 

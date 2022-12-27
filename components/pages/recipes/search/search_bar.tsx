@@ -1,21 +1,17 @@
-import { useMemo, useState, useCallback, ChangeEvent, useEffect } from "react";
-import { RecipeUuid } from "../../store/reducers/food/recipes/types";
-import { useRecipes } from "../hooks/use_data";
-import { useQuerySearch } from "./search";
+import { useMemo, useState, useCallback, ChangeEvent } from "react";
+import {
+  IIngredientName,
+  RecipeUuid,
+} from "../../../../store/reducers/food/recipes/types";
+import { useRecipes } from "../../../hooks/use_data";
+import { useDebounce } from "../../../hooks/use_debounce";
+import { useSearch } from "../../../hooks/use_search";
 
-export function useDebounce<T>(
-  initialState: T,
-  callback: () => T,
-  time: number
-) {
-  const [debouncedValue, setDebouncedValue] = useState<T>(initialState);
-
-  useEffect(() => {
-    const timer = setTimeout(() => setDebouncedValue(callback()), time);
-    return () => clearTimeout(timer);
-  }, [callback, time]);
-
-  return debouncedValue;
+export interface SearchableRecipe {
+  uuid: RecipeUuid;
+  name: string;
+  description: string;
+  ingredients: IIngredientName[];
 }
 
 export const useRecipeSearch = (
@@ -44,7 +40,7 @@ export const useRecipeSearch = (
     }),
     [keys]
   );
-  const { search } = useQuerySearch(searchableRecipes, options);
+  const search = useSearch<SearchableRecipe>(searchableRecipes, options);
   const [searchInput, setSearchInput] = useState("");
   const defaultSearchResults = useMemo(
     () =>

@@ -3,7 +3,7 @@ import {
   IInstruction,
   IRecipeComponent,
   IRecipeIngredient,
-} from "../../store/reducers/food/recipes/types";
+} from "../../../../store/reducers/food/recipes/types";
 
 export class ComponentsFormData {
   public components: { [key: string]: IRecipeComponent };
@@ -16,11 +16,14 @@ export class ComponentsFormData {
     this.components = obj;
   }
 
-  updateInstructions(uuid: string, instructions: IInstruction[]): void {
-    this.components[uuid].instructions = instructions;
+  updateInstructions(componentId: string, instructions: IInstruction[]): void {
+    this.components[componentId].instructions = instructions;
   }
 
-  updateIngredients(uuid: string, ingredients: IRecipeIngredient[]): void {
-    this.components[uuid].ingredients = ingredients;
+  updateIngredients(
+    componentId: string,
+    ingredients: IRecipeIngredient[]
+  ): void {
+    this.components[componentId].ingredients = ingredients;
   }
 }

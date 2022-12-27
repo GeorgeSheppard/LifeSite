@@ -1,8 +1,8 @@
 import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid";
 import { usePrinting } from "../../components/hooks/use_data";
-import PreviewCard from "../../components/printing/preview_card";
-import UploadCard from "../../components/printing/upload_model_card";
+import PreviewCard from "../../components/pages/printing/preview_card";
+import UploadCard from "../../components/pages/printing/upload_model_card";
 
 export default function Printing() {
   const cardUuids = usePrinting().data.cards;

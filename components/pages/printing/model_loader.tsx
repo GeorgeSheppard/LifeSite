@@ -9,8 +9,8 @@ import {
   MeshBasicMaterial,
 } from "three";
 import { STLLoader } from "three/examples/jsm/loaders/STLLoader";
-import { getS3SignedUrl } from "../aws/s3_utilities";
-import { S3Key } from "../../store/reducers/types";
+import { getS3SignedUrl } from "../../aws/s3_utilities";
+import { S3Key } from "../../../store/reducers/types";
 
 interface IModelLoader extends Loader {
   parse: (arrayBuffer: ArrayBuffer) => Group | BufferGeometry;

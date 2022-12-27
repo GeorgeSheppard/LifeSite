@@ -10,12 +10,11 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import IconButton from "@mui/material/IconButton";
 import TextField from "@mui/material/TextField";
 import Tooltip from "@mui/material/Tooltip";
-import { ChangeEvent, useState } from "react";
-import { stopPropagation } from "../core/utilities";
-import { useBoolean } from "../hooks/use_boolean";
+import { ChangeEvent, useState, MouseEvent } from "react";
+import { useBoolean } from "../../../hooks/use_boolean";
 import { ComponentsFormData } from "./component_form_data";
-import { IngredientsInputTable } from "./ingredients_input_table";
-import { InstructionInputList } from "./instructions_input_list";
+import { IngredientsInputTable } from "./ingredients/ingredients_table";
+import { InstructionInputList } from "./instructions/instructions_list";
 
 export interface IComponentFormProps {
   uuid: string;
@@ -43,7 +42,9 @@ export const ComponentForm = (props: IComponentFormProps) => {
           id="name"
           variant="standard"
           margin="none"
-          onClick={stopPropagation}
+          onClick={(event: MouseEvent<HTMLElement>) => {
+            event.stopPropagation();
+          }}
           onChange={(event: ChangeEvent<HTMLTextAreaElement>) => {
             component.name = event.target.value;
             setName(event.target.value);
@@ -73,7 +74,7 @@ export const ComponentForm = (props: IComponentFormProps) => {
         </Divider>
         <InstructionInputList
           componentFormData={componentFormData}
-          uuid={uuid}
+          componentId={uuid}
         />
         <Divider textAlign="center" sx={{ pt: 5, pb: 1 }}>
           Optional

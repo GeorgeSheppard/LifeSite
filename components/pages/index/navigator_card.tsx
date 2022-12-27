@@ -3,10 +3,9 @@ import CardContent from "@mui/material/CardContent";
 import CardHeader from "@mui/material/CardHeader";
 import CardMedia from "@mui/material/CardMedia";
 import Typography from "@mui/material/Typography";
-import * as React from "react";
+import { MouseEvent } from "react";
 import { CardActionArea } from "@mui/material";
 import Link from "next/link";
-import { stopPropagation } from "../core/utilities";
 
 export interface INavigatorCardProps {
   title: string;
@@ -33,7 +32,7 @@ export default function NavigatorCard(props: INavigatorCardProps) {
       style={{
         position: "relative",
       }}
-      onClick={stopPropagation}
+      onClick={(event: MouseEvent<HTMLElement>) => event.stopPropagation()}
     >
       {props.disabled && (
         <Typography
@@ -75,39 +74,3 @@ export default function NavigatorCard(props: INavigatorCardProps) {
     </div>
   );
 }
-
-export const navigatorCards: INavigatorCardProps[] = [
-  {
-    title: "Recipes and meal planner",
-    description:
-      "Recipes, with ingredients, method, and search functionality. Meal planning is only available on larger size screens",
-    imageSrc: "/images/ChilliConCarne.jpg",
-    href: "/food",
-  },
-  {
-    title: "3D Printing",
-    description: "3D model uploader, storage, and visualisation.",
-    imageSrc: "/images/printing.jpg",
-    href: "/printing",
-  },
-  {
-    title: "Meal Plan",
-    description: "Mobile available meal plan created from meal planner.",
-    imageSrc: "/images/food.jpg",
-    href: "/meal_plan",
-  },
-  {
-    title: "Library",
-    description: "All the books I own, and what I rate them.",
-    imageSrc: "/images/bookshelf.jpg",
-    href: "/bookshelf",
-    disabled: true,
-  },
-  {
-    title: "Path Finder",
-    description: "Visualization of path finding algorithms.",
-    imageSrc: "/images/path-finder.jpg",
-    href: "/path_finder",
-    disabled: true,
-  },
-];

@@ -5,7 +5,7 @@ import {
   DateString,
   IDailyMealPlan,
 } from "../../store/reducers/food/meal_plan/types";
-import { RecipeCardWithDialog } from "../../components/recipes/content_card";
+import { RecipeCardWithDialog } from "../../components/pages/recipes/recipe_card";
 import { NextRouter, useRouter } from "next/router";
 import Card from "@mui/material/Card";
 import { useMealPlan } from "../../components/hooks/use_data";
