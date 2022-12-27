@@ -8,6 +8,7 @@ import { HTML5Backend } from "react-dnd-html5-backend";
 import "../styles/global_card.scss";
 import "../styles/scrollbar.scss";
 import "../styles/utilities.scss";
+import "../styles/padding.scss";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 

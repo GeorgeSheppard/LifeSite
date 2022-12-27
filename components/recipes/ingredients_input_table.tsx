@@ -19,7 +19,6 @@ import {
   IRecipeIngredient,
   Unit,
 } from "../../store/reducers/food/recipes/types";
-import { CenteredComponent } from "../core/centered_component";
 import { ComponentsFormData } from "./component_form_data";
 
 export interface IIngredientsInputTableProps {
@@ -195,28 +194,27 @@ export const IngredientsInputTable = memo(function IngredientTable(
           </TableBody>
         </Table>
       </TableContainer>
-      <CenteredComponent>
-        <Button
-          sx={{ mt: 3 }}
-          onClick={() => {
-            setIngredients((prevIngredients) => {
-              const newIngredients = { ...prevIngredients };
-              newIngredients[uuidv4()] = {
-                name: "",
-                quantity: { unit: Unit.GRAM },
-              };
-              props.componentFormData.updateIngredients(
-                props.uuid,
-                Object.values(newIngredients)
-              );
-              return newIngredients;
-            });
-          }}
-          startIcon={<AddIcon />}
-        >
-          New ingredient
-        </Button>
-      </CenteredComponent>
+      <Button
+        className="center p8"
+        sx={{ mt: 3 }}
+        onClick={() => {
+          setIngredients((prevIngredients) => {
+            const newIngredients = { ...prevIngredients };
+            newIngredients[uuidv4()] = {
+              name: "",
+              quantity: { unit: Unit.GRAM },
+            };
+            props.componentFormData.updateIngredients(
+              props.uuid,
+              Object.values(newIngredients)
+            );
+            return newIngredients;
+          });
+        }}
+        startIcon={<AddIcon />}
+      >
+        New ingredient
+      </Button>
     </>
   );
 });

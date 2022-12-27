@@ -10,7 +10,6 @@ import { v4 as uuidv4 } from "uuid";
 import { ExitSaveButtons } from "../../components/core/exit_save_buttons";
 import { UploadDisplayImages } from "../../components/cards/upload_and_display_images";
 import { stopPropagation } from "../../components/core/utilities";
-import { CenteredComponent } from "../../components/core/centered_component";
 import { ComponentForm } from "../../components/recipes/component_form";
 import { ComponentsFormData } from "../../components/recipes/component_form_data";
 import { addOrUpdateRecipe } from "../../store/reducers/food/recipes/recipes";
@@ -138,24 +137,23 @@ const EditUploadRecipe = () => {
             forceUpdate={forceUpdate}
           />
         ))}
-        <CenteredComponent>
-          <Button
-            sx={{ mt: 2, mb: 3 }}
-            onClick={() => {
-              componentFormData.components[uuidv4()] = {
-                name: "",
-                ingredients: [],
-                instructions: [],
-                storeable: false,
-                uuid: uuidv4(),
-              };
-              forceUpdate();
-            }}
-            startIcon={<AddIcon />}
-          >
-            Add new section
-          </Button>
-        </CenteredComponent>
+        <Button
+          className="center p8"
+          sx={{ mt: 2, mb: 3 }}
+          onClick={() => {
+            componentFormData.components[uuidv4()] = {
+              name: "",
+              ingredients: [],
+              instructions: [],
+              storeable: false,
+              uuid: uuidv4(),
+            };
+            forceUpdate();
+          }}
+          startIcon={<AddIcon />}
+        >
+          Add new section
+        </Button>
         <ExitSaveButtons
           saveOnClick={dispatchRecipe}
           exitOnClick={() => router.push("/food")}

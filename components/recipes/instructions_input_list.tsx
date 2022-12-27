@@ -8,7 +8,6 @@ import TextField from "@mui/material/TextField";
 import { ChangeEvent, memo, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import { IInstruction } from "../../store/reducers/food/recipes/types";
-import { CenteredComponent } from "../core/centered_component";
 import { ComponentsFormData } from "./component_form_data";
 
 export interface IInstructionInputListProps {
@@ -75,25 +74,24 @@ export const InstructionInputList = memo(function InstructionList(
           </IconButton>
         </ListItem>
       ))}
-      <CenteredComponent>
-        <Button
-          sx={{ mt: 3 }}
-          onClick={() => {
-            setInstructions((prevInstructions) => {
-              const newInstructions = { ...prevInstructions };
-              newInstructions[uuidv4()] = { text: "" };
-              props.componentFormData.updateInstructions(
-                props.uuid,
-                Object.values(newInstructions)
-              );
-              return newInstructions;
-            });
-          }}
-          startIcon={<AddIcon />}
-        >
-          Add instruction
-        </Button>
-      </CenteredComponent>
+      <Button
+        className="center p8"
+        // sx={{ mt: 3 }}
+        onClick={() => {
+          setInstructions((prevInstructions) => {
+            const newInstructions = { ...prevInstructions };
+            newInstructions[uuidv4()] = { text: "" };
+            props.componentFormData.updateInstructions(
+              props.uuid,
+              Object.values(newInstructions)
+            );
+            return newInstructions;
+          });
+        }}
+        startIcon={<AddIcon />}
+      >
+        Add instruction
+      </Button>
     </>
   );
 });
