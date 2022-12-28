@@ -4,6 +4,7 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
+import { MouseEventHandler } from "react";
 import { useBoolean } from "../hooks/use_boolean";
 
 export interface IDialogProps {
@@ -11,7 +12,7 @@ export interface IDialogProps {
   content: string;
   confirmMessage: string;
   cancelMessage: string;
-  confirmOnClick: () => void;
+  confirmOnClick: MouseEventHandler<HTMLButtonElement>;
   children: (open: () => void) => JSX.Element;
 }
 

@@ -13,15 +13,9 @@ import { MouseEvent } from "react";
 import { deleteModel } from "../../../store/reducers/printing/printing";
 import { getS3SignedUrl } from "../../aws/s3_utilities";
 import { S3CardMedia } from "../../cards/s3_card_media";
-import Dialog from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
-import DialogContent from "@mui/material/DialogContent";
-import DialogContentText from "@mui/material/DialogContentText";
-import DialogTitle from "@mui/material/DialogTitle";
-import { useBoolean } from "../../hooks/use_boolean";
-import Button from "@mui/material/Button";
 import { usePrinting } from "../../hooks/use_data";
 import { useMutateAndStore } from "../../hooks/user_data";
+import { CustomDialog } from "../../core/dialog";
 
 export interface IPreviewCardProps {
   uuid: string;
@@ -31,7 +25,6 @@ export default function PreviewCard(props: IPreviewCardProps) {
   const router = useRouter();
   const { mutate } = useMutateAndStore(deleteModel);
   const { uuid } = props;
-  const [dialogOpen, setters] = useBoolean(false);
 
   const cardData = usePrinting().data.models[uuid];
   if (!cardData) {
@@ -62,84 +55,85 @@ export default function PreviewCard(props: IPreviewCardProps) {
 
   return (
     <>
-      <Dialog open={dialogOpen} onClose={setters.turnOff}>
-        <DialogTitle>{"Delete this model?"}</DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-            Are you sure you want to delete this model? This action cannot be
-            undone.
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={setters.turnOff}>{"No, cancel"}</Button>
-          <Button onClick={(event) => deleteModelOnClick(event)} autoFocus>
-            {"Yes, I'm sure"}
-          </Button>
-        </DialogActions>
-      </Dialog>
-      <Card
-        className="cardWithHover"
-        sx={{ display: "flex" }}
-        onClick={onClickToPreview}
+      <CustomDialog
+        title="Delete this model?"
+        content="Are you sure you want to delete this model? This action cannot be
+        undone."
+        confirmMessage="Yes, I'm sure"
+        cancelMessage="No, cancel"
+        confirmOnClick={deleteModelOnClick}
       >
-        <Box component="div" sx={{ display: "flex", flexDirection: "column" }}>
-          <CardContent sx={{ flex: "1 0 auto" }}>
-            <Typography component="div" variant="h5">
-              {cardData.filename}
-            </Typography>
-            <Typography
-              variant="subtitle1"
-              color="text.secondary"
+        {(open) => (
+          <Card
+            className="cardWithHover"
+            sx={{ display: "flex" }}
+            onClick={onClickToPreview}
+          >
+            <Box
               component="div"
+              sx={{ display: "flex", flexDirection: "column" }}
             >
-              {cardData.description}
-            </Typography>
-          </CardContent>
-        </Box>
-        <Box component="div" sx={{ flexGrow: 1 }} />
-        <Box
-          component="div"
-          m={3}
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            margin: "auto",
-            paddingRight: 2,
-            pt: 2,
-            pb: 2,
-          }}
-        >
-          <Tooltip title="Preview part">
-            <VisibilityIcon
-              sx={{ marginBottom: 2 }}
-              onClick={onClickToPreview}
-            />
-          </Tooltip>
-          <Tooltip title="Download">
-            <DownloadIcon onClick={onDownload} />
-          </Tooltip>
-          <Tooltip title="Delete">
-            <DeleteIcon
-              sx={{ marginTop: 2 }}
-              onClick={(event) => {
-                event.stopPropagation();
-                setters.turnOn();
+              <CardContent sx={{ flex: "1 0 auto" }}>
+                <Typography component="div" variant="h5">
+                  {cardData.filename}
+                </Typography>
+                <Typography
+                  variant="subtitle1"
+                  color="text.secondary"
+                  component="div"
+                >
+                  {cardData.description}
+                </Typography>
+              </CardContent>
+            </Box>
+            <Box component="div" sx={{ flexGrow: 1 }} />
+            <Box
+              component="div"
+              m={3}
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                margin: "auto",
+                paddingRight: 2,
+                pt: 2,
+                pb: 2,
               }}
-            />
-          </Tooltip>
-        </Box>
-        <Box
-          component="div"
-          sx={{
-            display: "flex",
-            overflow: "hidden",
-            width: 150,
-            minWidth: 150,
-          }}
-        >
-          {cardData?.image?.key && <S3CardMedia s3Key={cardData.image.key} />}
-        </Box>
-      </Card>
+            >
+              <Tooltip title="Preview part">
+                <VisibilityIcon
+                  sx={{ marginBottom: 2 }}
+                  onClick={onClickToPreview}
+                />
+              </Tooltip>
+              <Tooltip title="Download">
+                <DownloadIcon onClick={onDownload} />
+              </Tooltip>
+              <Tooltip title="Delete">
+                <DeleteIcon
+                  sx={{ marginTop: 2 }}
+                  onClick={(event) => {
+                    event.stopPropagation();
+                    open();
+                  }}
+                />
+              </Tooltip>
+            </Box>
+            <Box
+              component="div"
+              sx={{
+                display: "flex",
+                overflow: "hidden",
+                width: 150,
+                minWidth: 150,
+              }}
+            >
+              {cardData?.image?.key && (
+                <S3CardMedia s3Key={cardData.image.key} />
+              )}
+            </Box>
+          </Card>
+        )}
+      </CustomDialog>
     </>
   );
 }

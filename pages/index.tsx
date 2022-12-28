@@ -59,8 +59,7 @@ export default function Home(props: any) {
 export const navigatorCards: INavigatorCardProps[] = [
   {
     title: "Recipes and meal planner",
-    description:
-      "Recipes, with ingredients, method, and search functionality. Meal planning is only available on larger size screens",
+    description: "Recipes, with ingredients, method, and search functionality.",
     imageSrc: "/images/ChilliConCarne.jpg",
     href: "/food",
   },
@@ -69,12 +68,6 @@ export const navigatorCards: INavigatorCardProps[] = [
     description: "3D model uploader, storage, and visualisation.",
     imageSrc: "/images/printing.jpg",
     href: "/printing",
-  },
-  {
-    title: "Meal Plan",
-    description: "Mobile available meal plan created from meal planner.",
-    imageSrc: "/images/food.jpg",
-    href: "/meal_plan",
   },
   {
     title: "Library",

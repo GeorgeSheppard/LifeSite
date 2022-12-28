@@ -1,6 +1,6 @@
-import { Box, Container, Grid } from "@mui/material";
+import { Box, Grid, Typography, useMediaQuery, useTheme } from "@mui/material";
 import OutlinedInput from "@mui/material/OutlinedInput";
-import { useState } from "react";
+import { CSSProperties, useState } from "react";
 import { headerHeight } from "../../components/core/header";
 import { Planner } from "../../components/pages/recipes/meal_planner/calendar";
 import { useRecipeSearch } from "../../components/pages/recipes/search/search_bar";
@@ -22,6 +22,17 @@ const Recipes = () => {
   const [shoppingListData, setShoppingListData] = useState<IQuantitiesAndMeals>(
     {}
   );
+  const theme = useTheme();
+  const mobileLayout = useMediaQuery(theme.breakpoints.down("lg"));
+
+  const plannerSx: CSSProperties = mobileLayout
+    ? {}
+    : {
+        height: `calc(100vh - 64px - ${headerHeight}px - 40px)`,
+        position: "sticky",
+        top: 0,
+        overflowY: "scroll",
+      };
 
   return (
     <main>
@@ -30,9 +41,13 @@ const Recipes = () => {
         on={on}
         turnOff={turnOff}
       />
-      <Container sx={{ py: 8 }} maxWidth="xl">
-        <div style={{ display: "flex", flexDirection: "row" }}>
-          <Box component="div" width="100%">
+      <Grid
+        container
+        sx={{ py: 8, margin: "auto", display: "flex", px: 2 }}
+        maxWidth="xl"
+      >
+        <Grid item xs={12} sm={12} md={12} lg={8} xl={9}>
+          <Box component="div">
             <Grid item key={"Search"}>
               <SearchChips keys={keys} setKeys={setKeys} />
               <OutlinedInput
@@ -48,49 +63,34 @@ const Recipes = () => {
               loading={recipes.isFetching && !recipes.isRefetching}
             />
           </Box>
-          <Box
-            sx={{
-              display: {
-                xs: "none",
-                sm: "none",
-                md: "none",
-                lg: "block",
-                xl: "block",
-              },
-              pl: 3,
-              flexGrow: 1,
-            }}
-            component="div"
-          >
-            <div
-              className="noSelect"
-              style={{
-                flexGrow: 1,
-                minWidth: 100,
-                height: `calc(100vh - 64px - ${headerHeight}px - 40px)`,
-                maxWidth: "400px",
-                position: "sticky",
-                top: 0,
-                overflowY: "scroll",
-              }}
-            >
+        </Grid>
+        {mobileLayout && (
+          <Typography variant="h3" sx={{ py: 3, pl: 2 }}>
+            Meal plan
+          </Typography>
+        )}
+        <Grid
+          item
+          xs={12}
+          sm={12}
+          md={12}
+          lg={4}
+          xl={3}
+          sx={{ pl: !mobileLayout ? 2 : 0 }}
+        >
+          <Box component="div">
+            <div className="noSelect" style={plannerSx}>
               <CreateShoppingListButton
                 selected={selected}
                 setSelected={setSelected}
                 openListDialog={turnOn}
                 setShoppingList={setShoppingListData}
               />
-              <div
-                style={{
-                  height: "100vh",
-                }}
-              >
-                <Planner selected={selected} setSelected={setSelected} />
-              </div>
+              <Planner selected={selected} setSelected={setSelected} />
             </div>
           </Box>
-        </div>
-      </Container>
+        </Grid>
+      </Grid>
     </main>
   );
 };

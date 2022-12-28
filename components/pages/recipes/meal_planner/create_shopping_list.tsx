@@ -44,7 +44,7 @@ export const CreateShoppingListButton = (
       }
       placement="bottom"
     >
-      <ButtonGroup sx={{ marginLeft: 2, width: 332, marginBottom: 2 }}>
+      <ButtonGroup sx={{ width: "100%", marginBottom: 2 }}>
         <Button variant="outlined" onClick={selectOrUnselect}>
           {allSelected ? <CheckBoxIcon /> : <CheckBoxOutlineBlankIcon />}
         </Button>

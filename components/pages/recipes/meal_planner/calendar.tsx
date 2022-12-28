@@ -59,8 +59,6 @@ export const Planner = (props: ICalendarRowProps) => {
       container
       direction="column"
       spacing={2}
-      paddingLeft={2}
-      paddingRight={2}
       marginTop={0}
       marginBottom={0}
       flexGrow={1}

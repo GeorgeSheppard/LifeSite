@@ -79,7 +79,7 @@ export const DroppableCard = (props: {
       <div
         style={{
           minHeight: 30,
-          width: 300,
+          width: 270,
           flexGrow: 1,
           marginLeft: 16,
           marginRight: 16,

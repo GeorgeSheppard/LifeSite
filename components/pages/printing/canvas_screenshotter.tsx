@@ -2,7 +2,7 @@ import { useThree } from "@react-three/fiber";
 import { forwardRef, Ref, useCallback, useImperativeHandle } from "react";
 import { ICameraParams } from "../../../store/reducers/printing/types";
 
-export interface ICanvasScreenshotter {}
+export interface ICanvasScreenshotterProps {}
 
 export interface ICanvasScreenshotterRef {
   takeScreenshot(): string;
@@ -11,7 +11,7 @@ export interface ICanvasScreenshotterRef {
 }
 
 export const CanvasScreenshotter = forwardRef(function CanvasScreenshot(
-  props: ICanvasScreenshotter,
+  props: ICanvasScreenshotterProps,
   ref: Ref<ICanvasScreenshotterRef>
 ) {
   const { gl, camera } = useThree();
