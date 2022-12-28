@@ -5,14 +5,12 @@ import {
   DateString,
   IDailyMealPlan,
 } from "../../store/reducers/food/meal_plan/types";
-import { RecipeCardWithDeleteDialog } from "../../components/pages/recipes/recipe_card/recipe_card";
-import { useRouter } from "next/router";
 import Card from "@mui/material/Card";
 import { useMealPlan } from "../../components/hooks/use_data";
+import { RecipeCardWithDeleteDialog } from "../../components/pages/recipes/recipes/recipe_card";
 
 export default function MealPlan() {
   const mealPlan = useMealPlan().data;
-  const router = useRouter();
 
   return (
     <main>
