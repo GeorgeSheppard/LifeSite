@@ -37,11 +37,11 @@ export default function Header() {
       <Toolbar
         id="toolbar"
         sx={{
+          display: "flex",
+          justifyContent: "space-between",
           height: headerHeight,
-          maxWidth: "lg",
           minWidth: "sm",
-          marginRight: "10vw",
-          marginLeft: "10vw",
+          mx: "10vw",
         }}
       >
         <IconButton disableRipple onClick={() => router.push("/")}>
