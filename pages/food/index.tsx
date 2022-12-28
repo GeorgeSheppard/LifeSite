@@ -22,7 +22,7 @@ import { NextRouter, useRouter } from "next/router";
 import { useCallback, useState, useMemo } from "react";
 import { v4 as uuidv4 } from "uuid";
 import { headerHeight } from "../../components/core/header";
-import { RecipeCardWithDialog } from "../../components/pages/recipes/recipe_card";
+import { RecipeCardWithDeleteDialog } from "../../components/pages/recipes/recipe_card/recipe_card";
 import { Planner } from "../../components/pages/recipes/meal_planner/calendar";
 import { useRecipeSearch } from "../../components/pages/recipes/search/search_bar";
 import { SearchChips } from "../../components/pages/recipes/search/search_chip";
@@ -202,11 +202,7 @@ const RecipeGrid = (props: RecipeGridProps) => {
         <>
           {props.searchResults.map(({ uuid, visible }) => (
             <Grid key={uuid} item xs={12} sm={6} md={6} lg={6} xl={4}>
-              <RecipeCardWithDialog
-                uuid={uuid}
-                router={router}
-                visible={visible}
-              />
+              <RecipeCardWithDeleteDialog uuid={uuid} visible={visible} />
             </Grid>
           ))}
         </>

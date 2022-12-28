@@ -5,8 +5,8 @@ import {
   DateString,
   IDailyMealPlan,
 } from "../../store/reducers/food/meal_plan/types";
-import { RecipeCardWithDialog } from "../../components/pages/recipes/recipe_card";
-import { NextRouter, useRouter } from "next/router";
+import { RecipeCardWithDeleteDialog } from "../../components/pages/recipes/recipe_card/recipe_card";
+import { useRouter } from "next/router";
 import Card from "@mui/material/Card";
 import { useMealPlan } from "../../components/hooks/use_data";
 
@@ -19,9 +19,7 @@ export default function MealPlan() {
       <Container sx={{ py: 8 }} maxWidth="xl">
         <Grid container spacing={3}>
           {Object.entries(mealPlan).map(([date, plan]) => {
-            return (
-              <DailyPlan key={date} date={date} plan={plan} router={router} />
-            );
+            return <DailyPlan key={date} date={date} plan={plan} />;
           })}
         </Grid>
       </Container>
@@ -32,11 +30,10 @@ export default function MealPlan() {
 interface IDailyPlanProps {
   date: DateString;
   plan: IDailyMealPlan;
-  router: NextRouter;
 }
 
 function DailyPlan(props: IDailyPlanProps) {
-  const { date, plan, router } = props;
+  const { date, plan } = props;
 
   const recipes = Object.keys(plan);
 
@@ -51,11 +48,9 @@ function DailyPlan(props: IDailyPlanProps) {
         recipes.map((recipeId) => {
           return (
             <Grid key={recipeId} item xs={12} sm={6} md={4} lg={3} xl={3}>
-              <RecipeCardWithDialog
+              <RecipeCardWithDeleteDialog
                 key={recipeId}
                 uuid={recipeId}
-                router={router}
-                withIcons={false}
                 visible
               />
             </Grid>
