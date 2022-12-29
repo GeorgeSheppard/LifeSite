@@ -9,7 +9,6 @@ import Typography from "@mui/material/Typography";
 import { signIn, signOut, useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import { useCallback, useState } from "react";
-import { CenteredComponent } from "./centered_component";
 
 // TODO: Min height in MUI is set to 64 so don't go lower than this, make it so I can though
 export const headerHeight = 65;
@@ -35,52 +34,51 @@ export default function Header() {
 
   return (
     <AppBar position="relative">
-      <CenteredComponent>
-        <Toolbar
-          id="toolbar"
-          sx={{
-            height: headerHeight,
-            maxWidth: "lg",
-            minWidth: "sm",
-            flexGrow: 1,
-          }}
-        >
-          <IconButton disableRipple onClick={() => router.push("/")}>
-            <Typography variant="h6" color="white" noWrap>
-              LifeSite
-            </Typography>
+      <Toolbar
+        id="toolbar"
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          height: headerHeight,
+          minWidth: "sm",
+          mx: "10vw",
+        }}
+      >
+        <IconButton disableRipple onClick={() => router.push("/")}>
+          <Typography variant="h6" color="white" noWrap>
+            LifeSite
+          </Typography>
+        </IconButton>
+        <Box component="div" sx={{ flexGrow: 1 }} />
+        <Box component="div" sx={{ display: "flex" }}>
+          <IconButton
+            size="large"
+            color="inherit"
+            onClick={
+              session.status === "authenticated"
+                ? openDropdown
+                : () => signIn("cognito")
+            }
+          >
+            {session.status === "authenticated" ? (
+              <SettingsIcon />
+            ) : (
+              <AccountCircle />
+            )}
           </IconButton>
-          <Box component="div" sx={{ flexGrow: 1 }} />
-          <Box component="div" sx={{ display: "flex" }}>
-            <IconButton
-              size="large"
-              color="inherit"
-              onClick={
-                session.status === "authenticated"
-                  ? openDropdown
-                  : () => signIn("cognito")
-              }
-            >
-              {session.status === "authenticated" ? (
-                <SettingsIcon />
-              ) : (
-                <AccountCircle />
-              )}
-            </IconButton>
-            <Menu
-              id="basic-menu"
-              anchorEl={anchorEl}
-              open={!!anchorEl}
-              onClose={closeDropdown}
-              MenuListProps={{
-                "aria-labelledby": "basic-button",
-              }}
-            >
-              <MenuItem onClick={logout}>Logout</MenuItem>
-            </Menu>
-          </Box>
-        </Toolbar>
-      </CenteredComponent>
+          <Menu
+            id="basic-menu"
+            anchorEl={anchorEl}
+            open={!!anchorEl}
+            onClose={closeDropdown}
+            MenuListProps={{
+              "aria-labelledby": "basic-button",
+            }}
+          >
+            <MenuItem onClick={logout}>Logout</MenuItem>
+          </Menu>
+        </Box>
+      </Toolbar>
     </AppBar>
   );
 }

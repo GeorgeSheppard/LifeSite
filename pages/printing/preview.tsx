@@ -7,11 +7,11 @@ import { useState, createRef, MouseEvent, useEffect } from "react";
 import {
   CanvasScreenshotter,
   ICanvasScreenshotterRef,
-} from "../../components/printing/canvas_screenshotter";
-import Model from "../../components/printing/model";
-import { loadModel } from "../../components/printing/model_loader";
+} from "../../components/pages/printing/canvas_screenshotter";
+import Model from "../../components/pages/printing/model";
+import { loadModel } from "../../components/pages/printing/model_loader";
 import { KeyboardArrowDown } from "@mui/icons-material";
-import { PreviewPopper } from "../../components/printing/preview_popper";
+import { PreviewPopper } from "../../components/pages/printing/preview_popper";
 import { useRouter } from "next/router";
 import LinearProgress from "@mui/material/LinearProgress";
 import { ICameraParams } from "../../store/reducers/printing/types";

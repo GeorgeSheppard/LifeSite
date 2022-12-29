@@ -5,8 +5,8 @@ import Typography from "@mui/material/Typography";
 import Head from "next/head";
 import * as React from "react";
 import NavigatorCard, {
-  navigatorCards,
-} from "../components/index/navigator_card";
+  INavigatorCardProps,
+} from "../components/pages/index/navigator_card";
 
 export default function Home(props: any) {
   return (
@@ -55,3 +55,32 @@ export default function Home(props: any) {
     </main>
   );
 }
+
+export const navigatorCards: INavigatorCardProps[] = [
+  {
+    title: "Recipes and meal planner",
+    description: "Recipes, with ingredients, method, and search functionality.",
+    imageSrc: "/images/ChilliConCarne.jpg",
+    href: "/food",
+  },
+  {
+    title: "3D Printing",
+    description: "3D model uploader, storage, and visualisation.",
+    imageSrc: "/images/printing.jpg",
+    href: "/printing",
+  },
+  {
+    title: "Library",
+    description: "All the books I own, and what I rate them.",
+    imageSrc: "/images/bookshelf.jpg",
+    href: "/bookshelf",
+    disabled: true,
+  },
+  {
+    title: "Path Finder",
+    description: "Visualization of path finding algorithms.",
+    imageSrc: "/images/path-finder.jpg",
+    href: "/path_finder",
+    disabled: true,
+  },
+];
