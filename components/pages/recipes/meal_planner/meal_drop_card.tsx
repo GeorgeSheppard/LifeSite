@@ -16,6 +16,10 @@ import {
 import { RecipeUuid } from "../../../../store/reducers/food/recipes/types";
 import { useMealPlan, useRecipes } from "../../../hooks/use_data";
 import { useMutateAndStore } from "../../../hooks/user_data";
+import AddIcon from "@mui/icons-material/Add";
+import { Dialog, DialogContent, List, ListItem } from "@mui/material";
+import { useBoolean } from "../../../hooks/use_boolean";
+import { useIsMobileLayout } from "../hooks/is_mobile_layout";
 
 export const DroppableCard = (props: {
   day: DateString;
@@ -27,6 +31,7 @@ export const DroppableCard = (props: {
   const meals = useMealPlan().data[day];
   const recipes = useRecipes().data;
   const { mutate } = useMutateAndStore(addOrUpdatePlan);
+  const [dialogOpen, setters] = useBoolean(false);
 
   const toggleOnClick = useCallback(
     (event: MouseEvent<HTMLDivElement>) => {
@@ -35,26 +40,28 @@ export const DroppableCard = (props: {
     [onClick, day]
   );
 
+  const addRecipeToMealPlan = (item: { uuid: RecipeUuid }) => {
+    mutate({
+      date: day,
+      components: recipes[item.uuid].components.map((component) => ({
+        recipeId: item.uuid,
+        componentId: component.uuid,
+        servingsIncrease: component.servings ?? 1,
+      })),
+    });
+    if (!selected) {
+      setSelected((prevSelected) => {
+        const newSelected = new Set(prevSelected);
+        newSelected.add(day);
+        return newSelected;
+      });
+    }
+  };
+
   const [collected, drop] = useDrop(
     () => ({
       accept: "recipe",
-      drop: (item: { uuid: RecipeUuid }) => {
-        mutate({
-          date: day,
-          components: recipes[item.uuid].components.map((component) => ({
-            recipeId: item.uuid,
-            componentId: component.uuid,
-            servingsIncrease: component.servings ?? 1,
-          })),
-        });
-        if (!selected) {
-          setSelected((prevSelected) => {
-            const newSelected = new Set(prevSelected);
-            newSelected.add(day);
-            return newSelected;
-          });
-        }
-      },
+      drop: addRecipeToMealPlan,
       collect: (monitor) => ({
         isOver: !!monitor.isOver(),
       }),
@@ -62,40 +69,91 @@ export const DroppableCard = (props: {
     [day, recipes, setSelected]
   );
 
+  const mobileLayout = useIsMobileLayout();
+  const dayWithoutYear = day.slice(0, day.length - 5);
+
   return (
-    // Would like to use a class here for the hovered border but ran into this https://github.com/mui/material-ui/issues/25324
-    <Card
-      className="card"
-      ref={drop}
-      onClick={toggleOnClick}
-      sx={{
-        boxShadow:
-          collected.isOver || selected
-            ? "0 0 0 3px rgba(32, 125, 57, 0.3)"
-            : undefined,
-      }}
-    >
-      <CardHeader title={day} className="noSelect" />
-      <div
-        style={{
-          minHeight: 30,
-          width: 270,
-          flexGrow: 1,
-          marginLeft: 16,
-          marginRight: 16,
+    <>
+      <Dialog open={dialogOpen} onClose={setters.turnOff}>
+        <DialogContent>
+          {Object.values(recipes).length === 0 ? (
+            <Typography>No recipes available</Typography>
+          ) : (
+            <List>
+              {Object.values(recipes).map((recipe) => {
+                return (
+                  <ListItem key={recipe.uuid}>
+                    <Button
+                      onClick={() => {
+                        addRecipeToMealPlan({ uuid: recipe.uuid });
+                        setters.turnOff();
+                      }}
+                    >
+                      {recipe.name}
+                    </Button>
+                  </ListItem>
+                );
+              })}
+            </List>
+          )}
+        </DialogContent>
+      </Dialog>
+      {/* Would like to use a class here for the hovered border but ran into this
+      https://github.com/mui/material-ui/issues/25324 */}
+      <Card
+        className="card"
+        ref={drop}
+        onClick={toggleOnClick}
+        sx={{
+          boxShadow:
+            collected.isOver || selected
+              ? "0 0 0 3px rgba(32, 125, 57, 0.3)"
+              : undefined,
         }}
       >
-        {meals &&
-          Object.entries(meals).map(([recipeId, components]) => (
-            <RecipeName
-              key={recipeId}
-              components={components}
-              recipeId={recipeId}
-              day={day}
-            />
-          ))}
-      </div>
-    </Card>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            paddingRight: 8,
+          }}
+        >
+          <CardHeader title={dayWithoutYear} className="noSelect" />
+          {mobileLayout && (
+            <Button
+              variant="contained"
+              startIcon={<AddIcon fontSize="large" />}
+              onClick={(event) => {
+                event.stopPropagation();
+                setters.turnOn();
+              }}
+            >
+              Add
+            </Button>
+          )}
+        </div>
+        <div
+          style={{
+            minHeight: 30,
+            width: 270,
+            flexGrow: 1,
+            marginLeft: 16,
+            marginRight: 16,
+          }}
+        >
+          {meals &&
+            Object.entries(meals).map(([recipeId, components]) => (
+              <RecipeName
+                key={recipeId}
+                components={components}
+                recipeId={recipeId}
+                day={day}
+              />
+            ))}
+        </div>
+      </Card>
+    </>
   );
 };
 

@@ -15,6 +15,7 @@ import { EditRecipeButton } from "./edit_recipe";
 import { DeleteRecipeButton } from "./delete_recipe";
 import { CustomDialog } from "../../../core/dialog";
 import { ComponentAccordion } from "./component_accordion";
+import { useIsMobileLayout } from "../hooks/is_mobile_layout";
 
 export interface IRecipeCardWithDialogProps {
   uuid: RecipeUuid;
@@ -59,6 +60,7 @@ export const RecipeCard = (props: IRecipeCard) => {
 
   const recipe = useRecipes().data[uuid];
 
+  const mobileLayout = useIsMobileLayout();
   const [{ isDragging }, drag, preview] = useDrag(() => ({
     type: "recipe",
     item: { uuid },
@@ -67,6 +69,7 @@ export const RecipeCard = (props: IRecipeCard) => {
         isDragging: !!monitor.isDragging(),
       };
     },
+    canDrag: () => !mobileLayout,
   }));
 
   if (!recipe) {

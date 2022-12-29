@@ -7,6 +7,7 @@ import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import Tooltip from "@mui/material/Tooltip";
 import { useMemo, useState } from "react";
+import { useIsMobileLayout } from "../hooks/is_mobile_layout";
 import {
   createShoppingList,
   IQuantitiesAndMeals,
@@ -21,6 +22,7 @@ interface IShoppingListDialogProps {
 export const ShoppingListDialog = (props: IShoppingListDialogProps) => {
   const { quantityAndMeals, on, turnOff } = props;
 
+  const mobileLayout = useIsMobileLayout();
   const [options, setOptions] = useState({
     includeMeals: true,
   });
@@ -30,8 +32,10 @@ export const ShoppingListDialog = (props: IShoppingListDialogProps) => {
   }, [quantityAndMeals, options]);
 
   return (
-    <Dialog open={on} onClose={turnOff}>
-      <DialogTitle sx={{ minWidth: "600px" }}>Shopping list</DialogTitle>
+    <Dialog open={on} onClose={turnOff} fullScreen={mobileLayout}>
+      <DialogTitle sx={{ minWidth: mobileLayout ? "0px" : "600px" }}>
+        Shopping list
+      </DialogTitle>
       <DialogContent>
         <Chip
           label={"Include meals"}

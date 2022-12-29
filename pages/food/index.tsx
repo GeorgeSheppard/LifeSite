@@ -1,4 +1,4 @@
-import { Box, Grid, Typography, useMediaQuery, useTheme } from "@mui/material";
+import { Box, Grid, Typography } from "@mui/material";
 import OutlinedInput from "@mui/material/OutlinedInput";
 import { CSSProperties, useState } from "react";
 import { headerHeight } from "../../components/core/header";
@@ -12,6 +12,7 @@ import { useRecipes } from "../../components/hooks/use_data";
 import { CreateShoppingListButton } from "../../components/pages/recipes/meal_planner/create_shopping_list";
 import { ShoppingListDialog } from "../../components/pages/recipes/meal_planner/shopping_list";
 import { RecipeGrid } from "../../components/pages/recipes/recipes/recipe_grid";
+import { useIsMobileLayout } from "../../components/pages/recipes/hooks/is_mobile_layout";
 
 const Recipes = () => {
   const [keys, setKeys] = useState(() => new Set(["name"]));
@@ -22,8 +23,7 @@ const Recipes = () => {
   const [shoppingListData, setShoppingListData] = useState<IQuantitiesAndMeals>(
     {}
   );
-  const theme = useTheme();
-  const mobileLayout = useMediaQuery(theme.breakpoints.down("lg"));
+  const mobileLayout = useIsMobileLayout();
 
   const plannerSx: CSSProperties = mobileLayout
     ? {}

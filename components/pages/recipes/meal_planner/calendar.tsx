@@ -61,6 +61,7 @@ export const Planner = (props: ICalendarRowProps) => {
       spacing={2}
       marginTop={0}
       marginBottom={0}
+      px={1}
       flexGrow={1}
     >
       {Object.entries(mealPlan.data).map(([day], index) => {
