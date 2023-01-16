@@ -29,7 +29,7 @@ const Recipes = () => {
     ? {}
     : {
         height: `calc(100vh - 64px - ${headerHeight}px - 40px)`,
-        position: "sticky",
+        position: "fixed",
         top: 0,
         overflowY: "scroll",
       };
