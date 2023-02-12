@@ -43,6 +43,7 @@
     "react-dnd": "^16.0.1",
     "react-dnd-html5-backend": "^16.0.1",
     "react-dom": "^18.1.0",
+    "react-hook-form": "^7.43.1",
     "sass": "^1.45.0",
     "semver": "^7.3.7",
     "three": "^0.135.0",

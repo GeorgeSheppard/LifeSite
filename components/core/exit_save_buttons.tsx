@@ -7,7 +7,7 @@ import Box from "@mui/material/Box";
 export interface IExitSaveButtonsProps {
   exitOnClick: () => void;
   saveOnClick: () => void;
-  saveDisabled: boolean;
+  saveDisabled?: boolean;
   buttonSx?: SxProps<Theme> | undefined;
   boxSx?: SxProps<Theme> | undefined;
 }
@@ -36,6 +36,7 @@ export const ExitSaveButtons = (props: IExitSaveButtonsProps) => {
         sx={buttonSx}
         onClick={saveOnClick}
         disabled={saveDisabled}
+        type="submit"
       >
         Save
       </Button>
