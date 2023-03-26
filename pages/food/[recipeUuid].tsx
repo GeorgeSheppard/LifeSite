@@ -382,12 +382,12 @@ export const IngredientsList = ({
                       {
                         min: 0,
                         valueAsNumber: true,
-                        // validate: (value, formValues) =>
-                        //   formValues.components[index].ingredients[
-                        //     ingredientIndex
-                        //   ].quantity.unit === Unit.NO_UNIT
-                        //     ? !value || isNaN(value)
-                        //     : !!value,
+                        validate: (value, formValues) =>
+                          formValues.components[index].ingredients[
+                            ingredientIndex
+                          ].quantity.unit === Unit.NO_UNIT
+                            ? !value || isNaN(value)
+                            : !!value,
                       }
                     )}
                     error={
