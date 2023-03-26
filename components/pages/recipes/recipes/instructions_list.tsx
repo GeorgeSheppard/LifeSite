@@ -9,12 +9,14 @@ export interface IInstructionsListProps {
 export const InstructionsList = (props: IInstructionsListProps) => {
   return (
     <>
-      <ListItem key="method" sx={{ pb: 2, pl: 1, pt: 5 }}>
-        <ListItemText
-          primary="Method"
-          primaryTypographyProps={{ fontSize: "16px", fontWeight: 550 }}
-        />
-      </ListItem>
+      {props.instructions.length > 0 && (
+        <ListItem key="method" sx={{ pb: 2, pl: 1, pt: 5 }}>
+          <ListItemText
+            primary="Method"
+            primaryTypographyProps={{ fontSize: "16px", fontWeight: 550 }}
+          />
+        </ListItem>
+      )}
       {props.instructions.map(({ text, optional }, index) => {
         let visibleText = `${index + 1}. `;
         if (optional) {

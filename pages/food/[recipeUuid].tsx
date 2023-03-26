@@ -6,9 +6,11 @@ import { v4 as uuidv4 } from "uuid";
 import { addOrUpdateRecipe } from "../../store/reducers/food/recipes/recipes";
 import {
   Control,
+  FieldErrors,
   useFieldArray,
   useForm,
   UseFormRegister,
+  UseFormSetValue,
   UseFormWatch,
 } from "react-hook-form";
 import {
@@ -18,7 +20,7 @@ import {
 } from "../../store/reducers/food/recipes/types";
 import Container from "@mui/material/Container";
 import Card from "@mui/material/Card";
-import { AccordionDetails, Button, TextField } from "@mui/material";
+import { AccordionDetails, Alert, Button, TextField } from "@mui/material";
 import { ExitSaveButtons } from "../../components/core/exit_save_buttons";
 import { UploadDisplayImages } from "../../components/cards/upload_and_display_images";
 import LinearProgress from "@mui/material/LinearProgress";
@@ -45,6 +47,38 @@ import TableHead from "@mui/material/TableHead";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 
+const getDefaultRecipe = (uuid: string) => ({
+  uuid,
+  name: "",
+  description: "",
+  images: [],
+  components: [
+    {
+      name: "",
+      ingredients: [],
+      instructions: [],
+      storeable: false,
+      uuid: uuidv4(),
+      servings: 1,
+    },
+  ],
+});
+const getDefaultComponent = () => ({
+  uuid: uuidv4(),
+  name: "",
+  ingredients: [],
+  instructions: [],
+  storeable: false,
+  servings: 1,
+});
+const getDefaultIngredient = () => ({
+  name: "",
+  quantity: { unit: Unit.GRAM },
+});
+const getDefaultInstruction = () => ({
+  text: "",
+});
+
 export default function RecipeForm() {
   const router = useRouter();
   const uuid = router.query.recipeUuid as RecipeUuid | undefined;
@@ -58,37 +92,38 @@ export default function RecipeForm() {
     return <LinearProgress />;
   }
 
-  const recipeData = recipe.data[uuid] ?? {
-    uuid,
-    name: "",
-    description: "",
-    images: [],
-    components: [
-      {
-        name: "",
-        ingredients: [],
-        instructions: [],
-        storeable: false,
-        uuid: uuidv4(),
-      },
-    ],
-  };
+  const recipeData = recipe.data[uuid] ?? getDefaultRecipe(uuid);
 
   return <FormWithData recipe={recipeData} />;
 }
 
 export const FormWithData = ({ recipe }: { recipe: IRecipe }) => {
+  const router = useRouter();
   const { mutateAsync } = useMutateAndStore(addOrUpdateRecipe);
-  const { register, handleSubmit, control, watch } = useForm<IRecipe>({
+  const {
+    register,
+    handleSubmit,
+    control,
+    watch,
+    formState: { errors },
+    setValue,
+  } = useForm<IRecipe>({
     defaultValues: recipe,
   });
   const { fields, append, remove } = useFieldArray({
     control,
     name: "components",
+    rules: {
+      minLength: 1,
+      required: "At least one recipe component is required",
+    },
   });
   const [images, setImages] = useState(recipe.images);
 
-  const onSubmit = (data: IRecipe) => console.log(data);
+  const onSubmit = async (data: IRecipe) => {
+    await mutateAsync(data);
+    router.push("/food");
+  };
 
   return (
     <Container maxWidth="lg" sx={{ pt: 3, pb: 3 }}>
@@ -105,7 +140,11 @@ export const FormWithData = ({ recipe }: { recipe: IRecipe }) => {
             label="Name"
             variant="standard"
             margin="none"
-            {...register("name")}
+            {...register("name", {
+              required: "A recipe name is required",
+            })}
+            error={!!errors.name}
+            helperText={errors?.name?.message}
           />
           <TextField
             key="DescriptionTextField"
@@ -117,6 +156,9 @@ export const FormWithData = ({ recipe }: { recipe: IRecipe }) => {
             {...register("description")}
           />
           <UploadDisplayImages images={images} setImages={setImages} />
+          {errors?.components?.root && (
+            <Alert severity="error">{errors?.components.root.message}</Alert>
+          )}
           {fields.map((field, index) => {
             return (
               <Accordion key={index}>
@@ -127,7 +169,17 @@ export const FormWithData = ({ recipe }: { recipe: IRecipe }) => {
                     label="Name"
                     variant="standard"
                     margin="none"
-                    {...register(`components.${index}.name`)}
+                    {...register(`components.${index}.name`, {
+                      required: "A component name is required",
+                    })}
+                    error={
+                      !!errors.components?.[index]?.name ||
+                      !!errors.components?.[index]?.ingredients?.root
+                    }
+                    helperText={
+                      errors.components?.[index]?.name?.message ??
+                      errors.components?.[index]?.ingredients?.root?.message
+                    }
                   />
                   <div style={{ flexGrow: 1 }} />
                   <IconButton
@@ -148,6 +200,8 @@ export const FormWithData = ({ recipe }: { recipe: IRecipe }) => {
                     control={control}
                     register={register}
                     watch={watch}
+                    errors={errors}
+                    setValue={setValue}
                   />
                   <Divider textAlign="center" sx={{ pt: 5, pb: 1 }}>
                     Instructions
@@ -171,6 +225,7 @@ export const FormWithData = ({ recipe }: { recipe: IRecipe }) => {
                       sx={{ width: "100px" }}
                       {...register(`components.${index}.servings`, {
                         valueAsNumber: true,
+                        min: 1,
                       })}
                     />
                     <Tooltip title="Can it last in the cupboard, or freezer">
@@ -193,20 +248,16 @@ export const FormWithData = ({ recipe }: { recipe: IRecipe }) => {
           <Button
             className="center p8"
             sx={{ mt: 2, mb: 3 }}
-            onClick={() =>
-              append({
-                uuid: uuidv4(),
-                name: "",
-                ingredients: [],
-                instructions: [],
-                storeable: false,
-              })
-            }
+            onClick={() => append(getDefaultComponent())}
             startIcon={<AddIcon />}
           >
             Add new section
           </Button>
-          <ExitSaveButtons exitOnClick={() => {}} saveOnClick={() => {}} />
+          <ExitSaveButtons
+            exitOnClick={() => {}}
+            saveOnClick={() => {}}
+            boxSx={{ display: "flex", justifyContent: "space-between", pt: 1 }}
+          />
         </form>
       </Card>
     </Container>
@@ -218,15 +269,23 @@ export const IngredientsList = ({
   index,
   control,
   watch,
+  errors,
+  setValue,
 }: {
   register: UseFormRegister<IRecipe>;
   index: number;
   control: Control<IRecipe>;
   watch: UseFormWatch<IRecipe>;
+  errors: FieldErrors<IRecipe>;
+  setValue: UseFormSetValue<IRecipe>;
 }) => {
   const { fields, append, remove } = useFieldArray({
     control,
     name: `components.${index}.ingredients`,
+    rules: {
+      minLength: 1,
+      required: "At least one ingredient is required",
+    },
   });
 
   return (
@@ -256,8 +315,21 @@ export const IngredientsList = ({
                     variant="standard"
                     margin="none"
                     {...register(
-                      `components.${index}.ingredients.${ingredientIndex}.name`
+                      `components.${index}.ingredients.${ingredientIndex}.name`,
+                      {
+                        required: "The ingredient name is required",
+                      }
                     )}
+                    error={
+                      !!errors?.components?.[index]?.ingredients?.[
+                        ingredientIndex
+                      ]?.name
+                    }
+                    helperText={
+                      errors?.components?.[index]?.ingredients?.[
+                        ingredientIndex
+                      ]?.name?.message
+                    }
                   />
                 </TableCell>
                 <TableCell width="120px" align="left" size="small">
@@ -265,9 +337,30 @@ export const IngredientsList = ({
                     <Select
                       margin="none"
                       label="Unit"
+                      defaultValue={getDefaultIngredient().quantity.unit}
                       {...register(
-                        `components.${index}.ingredients.${ingredientIndex}.quantity.unit`
+                        `components.${index}.ingredients.${ingredientIndex}.quantity.unit`,
+                        {
+                          required: "A unit is required",
+                        }
                       )}
+                      onChange={(e) => {
+                        if (e.target.value === Unit.NO_UNIT) {
+                          setValue(
+                            `components.${index}.ingredients.${ingredientIndex}.quantity.value`,
+                            undefined
+                          );
+                        }
+                        setValue(
+                          `components.${index}.ingredients.${ingredientIndex}.quantity.unit`,
+                          e.target.value as Unit
+                        );
+                      }}
+                      error={
+                        !!errors?.components?.[index]?.ingredients?.[
+                          ingredientIndex
+                        ]?.quantity?.unit
+                      }
                     >
                       {Object.entries(Unit).map((value) => {
                         return (
@@ -283,10 +376,25 @@ export const IngredientsList = ({
                   <TextField
                     variant="standard"
                     margin="none"
+                    type="number"
                     {...register(
                       `components.${index}.ingredients.${ingredientIndex}.quantity.value`,
-                      { valueAsNumber: true }
+                      {
+                        min: 0,
+                        valueAsNumber: true,
+                        // validate: (value, formValues) =>
+                        //   formValues.components[index].ingredients[
+                        //     ingredientIndex
+                        //   ].quantity.unit === Unit.NO_UNIT
+                        //     ? !value || isNaN(value)
+                        //     : !!value,
+                      }
                     )}
+                    error={
+                      !!errors?.components?.[index]?.ingredients?.[
+                        ingredientIndex
+                      ]?.quantity?.value
+                    }
                     disabled={
                       watch(
                         `components.${index}.ingredients.${ingredientIndex}.quantity.unit`
@@ -308,10 +416,15 @@ export const IngredientsList = ({
           </TableBody>
         </Table>
       </TableContainer>
+      {errors?.components?.[index]?.ingredients?.root && (
+        <Alert severity="error">
+          {errors?.components?.[index]?.ingredients?.root?.message}
+        </Alert>
+      )}
       <Button
         className="center p8"
         sx={{ mt: 3 }}
-        onClick={() => append({ name: "", quantity: { unit: Unit.GRAM } })}
+        onClick={() => append(getDefaultIngredient())}
         startIcon={<AddIcon />}
       >
         New ingredient
@@ -364,7 +477,7 @@ export const InstructionsList = ({
       })}
       <Button
         className="center p8"
-        onClick={() => append({ text: "" })}
+        onClick={() => append(getDefaultInstruction())}
         startIcon={<AddIcon />}
       >
         Add instruction
