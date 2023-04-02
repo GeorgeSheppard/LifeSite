@@ -121,6 +121,7 @@ export const FormWithData = ({ recipe }: { recipe: IRecipe }) => {
   const [images, setImages] = useState(recipe.images);
 
   const onSubmit = async (data: IRecipe) => {
+    data.images = images;
     await mutateAsync(data);
     router.push("/food");
   };
@@ -254,7 +255,8 @@ export const FormWithData = ({ recipe }: { recipe: IRecipe }) => {
             Add new section
           </Button>
           <ExitSaveButtons
-            exitOnClick={() => {}}
+            exitOnClick={() => router.push('/food')}
+            // React hook form targets buttons with type="submit" so no handler is necessary
             saveOnClick={() => {}}
             boxSx={{ display: "flex", justifyContent: "space-between", pt: 1 }}
           />
