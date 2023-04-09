@@ -1,5 +1,5 @@
 import { ListObjectsCommand } from "@aws-sdk/client-s3";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, UseQueryResult } from "@tanstack/react-query";
 import clone from "just-clone";
 import { CustomSession } from "../../pages/api/auth/[...nextauth]";
 import { migrateMealPlan } from "../../store/reducers/food/meal_plan/meal_plan";
@@ -10,10 +10,13 @@ import { emptyStore, IFullStoreState, initialState } from "../../store/store";
 import { AwsS3Client } from "../aws/s3_client";
 import { getS3SignedUrl } from "../aws/s3_utilities";
 import { useAppSession } from "./use_app_session";
+import { WithDefined } from "../utilities/types";
 
 export const sessionQueryKey = (session: CustomSession) => [session?.id ?? ""];
 
-export const useData = <T>(select: (data: IFullStoreState) => T) => {
+export const useData = <T>(
+  select: (data: IFullStoreState) => T
+): WithDefined<UseQueryResult<T>, "data"> => {
   const session = useAppSession();
 
   const result = useQuery({

@@ -1,38 +1,168 @@
-import { Box, Grid, Typography } from "@mui/material";
+import { Box, Grid, Tab, Tabs } from "@mui/material";
 import OutlinedInput from "@mui/material/OutlinedInput";
-import { CSSProperties, useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import { headerHeight } from "../../components/core/header";
 import { Planner } from "../../components/pages/recipes/meal_planner/calendar";
-import { useRecipeSearch } from "../../components/pages/recipes/search/search_bar";
+import {
+  IRecipeSearcher,
+  useRecipeSearch,
+} from "../../components/pages/recipes/search/search_bar";
 import { SearchChips } from "../../components/pages/recipes/search/search_chip";
 import { IQuantitiesAndMeals } from "../../components/pages/recipes/meal_planner/shopping_list_creator";
 import { DateString } from "../../store/reducers/food/meal_plan/types";
-import { useBoolean } from "../../components/hooks/use_boolean";
+import { IUseBoolean, useBoolean } from "../../components/hooks/use_boolean";
 import { useRecipes } from "../../components/hooks/use_data";
 import { CreateShoppingListButton } from "../../components/pages/recipes/meal_planner/create_shopping_list";
 import { ShoppingListDialog } from "../../components/pages/recipes/meal_planner/shopping_list";
 import { RecipeGrid } from "../../components/pages/recipes/recipes/recipe_grid";
 import { useIsMobileLayout } from "../../components/pages/recipes/hooks/is_mobile_layout";
+import { IRecipe } from "../../store/reducers/food/recipes/types";
+import { UseQueryResult } from "@tanstack/react-query";
+import { WithDefined } from "../../components/utilities/types";
+
+const allSearchValues = new Set(["name", "description", "ingredients"])
 
 const Recipes = () => {
-  const [keys, setKeys] = useState(() => new Set(["name"]));
-  const { searchInput, setSearchInput, searchResults } = useRecipeSearch(keys);
+  const mobileLayout = useIsMobileLayout();
+
+  const [keys, setKeys] = useState(() => allSearchValues);
+  const recipeSearch = useRecipeSearch(
+    mobileLayout ? allSearchValues : keys
+  );
   const recipes = useRecipes();
   const [selected, setSelected] = useState<Set<DateString>>(() => new Set());
-  const [on, { turnOn, turnOff }] = useBoolean(false);
+  const booleanState = useBoolean(false);
   const [shoppingListData, setShoppingListData] = useState<IQuantitiesAndMeals>(
     {}
   );
-  const mobileLayout = useIsMobileLayout();
 
-  const plannerSx: CSSProperties = mobileLayout
-    ? {}
-    : {
-        height: `calc(100vh - 64px - ${headerHeight}px - 40px)`,
-        position: "fixed",
-        overflowY: "scroll",
-      };
+  return mobileLayout ? (
+    <MobileLayout
+      recipeSearch={recipeSearch}
+      recipes={recipes}
+      selected={selected}
+      setSelected={setSelected}
+      booleanState={booleanState}
+      shoppingListData={shoppingListData}
+      setShoppingListData={setShoppingListData}
+    />
+  ) : (
+    <DesktopLayout
+      keys={keys}
+      setKeys={setKeys}
+      recipeSearch={recipeSearch}
+      recipes={recipes}
+      selected={selected}
+      setSelected={setSelected}
+      booleanState={booleanState}
+      shoppingListData={shoppingListData}
+      setShoppingListData={setShoppingListData}
+    />
+  );
+};
 
+interface MobileStateProps {
+  recipeSearch: IRecipeSearcher;
+  recipes: WithDefined<
+    UseQueryResult<{
+      [key: string]: IRecipe;
+    }>,
+    "data"
+  >;
+  selected: Set<string>;
+  setSelected: Dispatch<SetStateAction<Set<string>>>;
+  booleanState: IUseBoolean;
+  shoppingListData: IQuantitiesAndMeals;
+  setShoppingListData: Dispatch<SetStateAction<IQuantitiesAndMeals>>;
+}
+
+type TabOptions = "recipes" | "mealplan";
+
+const MobileLayout = (props: MobileStateProps) => {
+  const {
+    recipeSearch: { searchInput, setSearchInput, searchResults },
+    recipes,
+    selected,
+    setSelected,
+    booleanState: [on, { turnOn, turnOff }],
+    shoppingListData,
+    setShoppingListData,
+  } = props;
+  const [tab, setTab] = useState<TabOptions>("recipes");
+
+  const changeTab = (event: React.SyntheticEvent, newValue: TabOptions) => {
+    setTab(newValue);
+  };
+
+  return (
+    <main>
+      <Grid
+        container
+        sx={{ py: 3, margin: "auto", display: "flex", px: 3 }}
+        maxWidth="xl"
+      >
+      <ShoppingListDialog
+        quantityAndMeals={shoppingListData}
+        on={on}
+        turnOff={turnOff}
+      />
+        <Grid item xs={12} sm={12} md={12}>
+          <Tabs value={tab} onChange={changeTab} variant="fullWidth" sx={{marginY: 3}}>
+            <Tab value="recipes" label="Recipes" />
+            <Tab value="mealplan" label="Meal Plan" />
+          </Tabs>
+          {tab === "recipes" ? 
+          
+          <Box component="div">
+            <Grid item key={"Search"} px={0}>
+              <OutlinedInput
+                value={searchInput}
+                onChange={setSearchInput}
+                sx={{ marginBottom: 3 }}
+                placeholder="Search"
+                fullWidth
+                />
+            </Grid>
+            <RecipeGrid
+              searchResults={searchResults}
+              loading={recipes.isFetching && !recipes.isRefetching}
+              />
+          </Box> :
+          <Box component="div">
+            <div className="noSelect">
+              <CreateShoppingListButton
+                selected={selected}
+                setSelected={setSelected}
+                openListDialog={turnOn}
+                setShoppingList={setShoppingListData}
+                />
+              <Planner selected={selected} setSelected={setSelected} />
+            </div>
+          </Box>
+              }
+  </Grid>
+      </Grid>
+    </main>
+  );
+};
+
+const DesktopLayout = (
+  props: MobileStateProps & {
+    keys: Set<string>;
+    setKeys: Dispatch<SetStateAction<Set<string>>>;
+  }
+) => {
+  const {
+    recipeSearch: { searchInput, setSearchInput, searchResults },
+    recipes,
+    selected,
+    setSelected,
+    booleanState: [on, { turnOn, turnOff }],
+    shoppingListData,
+    setShoppingListData,
+    keys,
+    setKeys,
+  } = props;
   return (
     <main>
       <ShoppingListDialog
@@ -63,22 +193,16 @@ const Recipes = () => {
             />
           </Box>
         </Grid>
-        {mobileLayout && (
-          <Typography variant="h3" sx={{ py: 3, pl: 2 }}>
-            Meal plan
-          </Typography>
-        )}
-        <Grid
-          item
-          xs={12}
-          sm={12}
-          md={12}
-          lg={4}
-          xl={3}
-          sx={{ pl: !mobileLayout ? 2 : 0 }}
-        >
+        <Grid item xs={12} sm={12} md={12} lg={4} xl={3} sx={{ pl: 2 }}>
           <Box component="div">
-            <div className="noSelect" style={plannerSx}>
+            <div
+              className="noSelect"
+              style={{
+                height: `calc(100vh - 64px - ${headerHeight}px - 40px)`,
+                position: "fixed",
+                overflowY: "scroll",
+              }}
+            >
               <CreateShoppingListButton
                 selected={selected}
                 setSelected={setSelected}

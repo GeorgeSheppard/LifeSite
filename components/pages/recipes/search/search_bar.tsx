@@ -14,13 +14,15 @@ export interface SearchableRecipe {
   ingredients: IIngredientName[];
 }
 
-export const useRecipeSearch = (
-  keys: Set<string>
-): {
+export interface IRecipeSearcher {
   searchResults: { uuid: RecipeUuid; visible: boolean }[];
   setSearchInput: (event: ChangeEvent<HTMLInputElement>) => void;
   searchInput: string;
-} => {
+}
+
+export const useRecipeSearch = (
+  keys: Set<string>
+): IRecipeSearcher => {
   const recipes = useRecipes().data;
   const searchableRecipes = useMemo(() => {
     // Note: Fuse.js had trouble searching the nested structure for ingredients
