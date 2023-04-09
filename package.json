@@ -29,6 +29,7 @@
     "@mui/material": "^5.2.3",
     "@react-three/drei": "^8.2.1",
     "@react-three/fiber": "^7.0.24",
+    "@sentry/nextjs": "^7.47.0",
     "@tanstack/react-query": "^4.20.4",
     "@tanstack/react-query-devtools": "^4.20.4",
     "ajv": "^8.11.0",
