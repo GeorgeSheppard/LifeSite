@@ -41,7 +41,7 @@ export const SearchChips = memo(function RenderSearchChips(props: ISearchChipsPr
         sx={{ ml: 1, boxSizing: "border-box", width: 90 }}
       />
       <SearchChip
-        label="Ingredient"
+        label="Ingredients"
         keys={keys}
         removeOrAddKey={removeOrAddKey}
         property="ingredients"
