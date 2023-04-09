@@ -1,4 +1,4 @@
-import { Box, Grid, Tab, Tabs } from "@mui/material";
+import { Box, Button, Grid, Tab, Tabs } from "@mui/material";
 import OutlinedInput from "@mui/material/OutlinedInput";
 import { Dispatch, SetStateAction, useState } from "react";
 import { headerHeight } from "../../components/core/header";
@@ -19,6 +19,8 @@ import { useIsMobileLayout } from "../../components/pages/recipes/hooks/is_mobil
 import { IRecipe } from "../../store/reducers/food/recipes/types";
 import { UseQueryResult } from "@tanstack/react-query";
 import { WithDefined } from "../../components/utilities/types";
+import { AwsDynamoDocClient } from "../../components/aws/dynamo_client";
+import { PutCommand } from "@aws-sdk/lib-dynamodb";
 
 const allSearchValues = new Set(["name", "description", "ingredients"])
 
@@ -94,8 +96,24 @@ const MobileLayout = (props: MobileStateProps) => {
     setTab(newValue);
   };
 
+  const uploadToDynamo2 = () => {
+    AwsDynamoDocClient.send(
+      new PutCommand({
+        TableName: process.env.ENV_AWS_DYNAMO_NAME,
+        Item: {
+          ...Object.values(recipes.data ?? {})[0],
+          UserId: "fakeUserId",
+          Item: "R-fakeRecipeId"
+        }
+      })
+    )
+  }
+
   return (
     <main>
+      <Button onClick={uploadToDynamo2}>
+        Test DynamoDB button 2
+      </Button>
       <Grid
         container
         sx={{ py: 3, margin: "auto", display: "flex", px: 3 }}
