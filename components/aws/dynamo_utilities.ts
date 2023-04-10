@@ -44,25 +44,38 @@ export const uploadToDynamo = async (item: Item, userId: string) => {
 };
 
 export const getFromDynamo = async (key: Keys, userId: string) => {
-  return await AwsDynamoDocClient.get({
+  const result = await AwsDynamoDocClient.get({
     TableName: process.env.ENV_AWS_DYNAMO_NAME,
     Key: {
       UserId: userId,
       Item: getSortKey(key),
     },
   });
+  if (result.$metadata.httpStatusCode !== 200) {
+    throw new Error(`Error fetching recipe: ${result.$metadata.httpStatusCode}`);
+  }
+  if (!result.Item) {
+    throw new Error(`Cannot find item ${getSortKey(key)}`)
+  }
+  return result;
 };
 
-// TODO: Should this be IRecipe | undefined, what is dynamo behaviour when it can't find a value?
 export const getRecipe = async (recipeId: RecipeUuid, userId: string): Promise<IRecipe> => {
   const result = await getFromDynamo({ type: "R-", id: recipeId }, userId);
   return result.Item as IRecipe;
 }
 
-// TODO: Same again
+export const putRecipe = async (recipe: IRecipe, userId: string) => {
+  return await uploadToDynamo({ type: "R-", item: recipe, id: recipe.uuid }, userId)
+}
+
 export const getModel = async (modelId: ModelUuid, userId: string): Promise<IModelProps> => {
   const result = await getFromDynamo({ type: "M-", id: modelId }, userId);
   return result.Item as IModelProps;
+}
+
+export const putModel = async (model: IModelProps, userId: string) => {
+  return await uploadToDynamo({ type: "M-", item: model, id: model.uuid }, userId);
 }
 
 export const deleteFromDynamo = async (key: Keys, userId: string) => {
@@ -112,3 +125,6 @@ export const getMealPlanForAUser = async(
   return result.Item ?? mealPlanEmptyState.plan;
 }
 
+export const putMealPlanForUser = async (mealPlan: IMealPlan, userId: string) => {
+  return await uploadToDynamo({ type: "MP", item: mealPlan }, userId);
+}

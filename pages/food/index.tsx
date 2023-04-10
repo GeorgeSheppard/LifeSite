@@ -11,7 +11,7 @@ import { SearchChips } from "../../components/pages/recipes/search/search_chip";
 import { IQuantitiesAndMeals } from "../../components/pages/recipes/meal_planner/shopping_list_creator";
 import { DateString } from "../../store/reducers/food/meal_plan/types";
 import { IUseBoolean, useBoolean } from "../../components/hooks/use_boolean";
-import { useRecipes } from "../../components/hooks/use_data";
+import { useRecipe, useRecipes } from "../../components/hooks/use_data";
 import { CreateShoppingListButton } from "../../components/pages/recipes/meal_planner/create_shopping_list";
 import { ShoppingListDialog } from "../../components/pages/recipes/meal_planner/shopping_list";
 import { RecipeGrid } from "../../components/pages/recipes/recipes/recipe_grid";

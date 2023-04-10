@@ -1,7 +1,7 @@
 import { useRouter } from "next/router";
 import { useState, MouseEvent } from "react";
 import { useMutateAndStore } from "../../components/hooks/user_data";
-import { useRecipes } from "../../components/hooks/use_data";
+import { useRecipe } from "../../components/hooks/use_data";
 import { v4 as uuidv4 } from "uuid";
 import { addOrUpdateRecipe } from "../../store/reducers/food/recipes/recipes";
 import {
@@ -79,22 +79,29 @@ const getDefaultInstruction = () => ({
   text: "",
 });
 
+export const NewRecipe = "newRecipe"
+
 export default function RecipeForm() {
   const router = useRouter();
   const uuid = router.query.recipeUuid as RecipeUuid | undefined;
-  const recipe = useRecipes();
+  const recipe = useRecipe(uuid ?? "");
+  if (!uuid) {
+    return <LinearProgress />
+  }
+  if (uuid === NewRecipe) {
+    return <FormWithData recipe={getDefaultRecipe(uuidv4())} />
+  }
   if (recipe.isError) {
     console.error("Error: ", recipe.error);
     router.push("/food");
+    return;
   }
 
-  if (recipe.isLoading || !uuid) {
+  if (recipe.isLoading) {
     return <LinearProgress />;
   }
 
-  const recipeData = recipe.data[uuid] ?? getDefaultRecipe(uuid);
-
-  return <FormWithData recipe={recipeData} />;
+  return <FormWithData recipe={recipe.data} />;
 }
 
 export const FormWithData = ({ recipe }: { recipe: IRecipe }) => {
