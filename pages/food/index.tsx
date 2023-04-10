@@ -20,7 +20,6 @@ import { IRecipe } from "../../store/reducers/food/recipes/types";
 import { UseQueryResult } from "@tanstack/react-query";
 import { WithDefined } from "../../components/utilities/types";
 import { AwsDynamoDocClient } from "../../components/aws/dynamo_client";
-import { PutCommand } from "@aws-sdk/lib-dynamodb";
 
 const allSearchValues = new Set(["name", "description", "ingredients"])
 
@@ -96,23 +95,68 @@ const MobileLayout = (props: MobileStateProps) => {
     setTab(newValue);
   };
 
-  const uploadToDynamo2 = () => {
-    AwsDynamoDocClient.send(
-      new PutCommand({
-        TableName: process.env.ENV_AWS_DYNAMO_NAME,
+  const uploadToDynamo = () => {
+    AwsDynamoDocClient.put({
+      TableName: process.env.ENV_AWS_DYNAMO_NAME,
+      Item: {
+        ...Object.values(recipes.data ?? {})[3],
+        UserId: "fakeUserId",
+        Item: "R-fakeRecipeId4"
+      }
+    })
+  }
+
+  const getFromDynamo = async () => {
+    const output = await AwsDynamoDocClient.get({
+      TableName: process.env.ENV_AWS_DYNAMO_NAME,
+      Key: {
+        UserId: "fakeUserId",
+        Item: "R-fakeRecipeId"
+      }
+    })
+    console.log('output', output)
+  }
+
+  const deleteFromDynamo = () => {
+    AwsDynamoDocClient.delete({
+      TableName: process.env.ENV_AWS_DYNAMO_NAME,
+      Key: {
+        UserId: "fakeUserId",
+        Item: "R-fakeRecipeId"
+      }
+    })
+  }
+
+  const getAllRecipesForAUser = async () => {
+    const output = await AwsDynamoDocClient.query({
+      TableName: process.env.ENV_AWS_DYNAMO_NAME,
+      KeyConditions: {
+        UserId: {
+          ComparisonOperator: "EQ",
+          AttributeValueList: ["fakeUserId"]
+        },
         Item: {
-          ...Object.values(recipes.data ?? {})[0],
-          UserId: "fakeUserId",
-          Item: "R-fakeRecipeId"
+          ComparisonOperator: "BEGINS_WITH",
+          AttributeValueList: ["R-"]
         }
-      })
-    )
+      }
+    })
+    console.log('all recipes output', output)
   }
 
   return (
     <main>
-      <Button onClick={uploadToDynamo2}>
-        Test DynamoDB button 2
+      <Button onClick={uploadToDynamo}>
+        Upload to Dynamo
+      </Button>
+      <Button onClick={getFromDynamo}>
+        Get from Dynamo
+      </Button>
+      <Button onClick={deleteFromDynamo}>
+        Delete from Dynamo
+      </Button>
+      <Button onClick={getAllRecipesForAUser}>
+        Get All Recipes
       </Button>
       <Grid
         container
