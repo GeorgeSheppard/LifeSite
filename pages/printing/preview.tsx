@@ -25,8 +25,8 @@ export default function Preview(props: IPreview) {
   const screenshotRef = createRef<ICanvasScreenshotterRef>();
   const [popperOpen, setPopperOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
-  const models = usePrinting().data.models;
-  const existingData = uuid?.length > 0 ? models[uuid] : undefined;
+  const models = usePrinting().data;
+  const existingData = uuid?.length > 0 ? models.find(model => model.uuid === uuid) : undefined;
   const [cameraParams] = useState<ICameraParams>(() => {
     return (
       existingData?.cameraParams ?? {
