@@ -1,9 +1,7 @@
 import { useRouter } from "next/router";
 import { useState, MouseEvent } from "react";
-import { useMutateAndStore } from "../../components/hooks/user_data";
 import { useRecipe } from "../../components/hooks/use_data";
 import { v4 as uuidv4 } from "uuid";
-import { addOrUpdateRecipe } from "../../store/reducers/food/recipes/recipes";
 import {
   Control,
   FieldErrors,
@@ -46,6 +44,7 @@ import TableBody from "@mui/material/TableBody";
 import TableHead from "@mui/material/TableHead";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
+import { usePutRecipeToDynamo } from '../../components/aws/dynamo_utilities';
 
 const getDefaultRecipe = (uuid: string) => ({
   uuid,
@@ -106,7 +105,7 @@ export default function RecipeForm() {
 
 export const FormWithData = ({ recipe }: { recipe: IRecipe }) => {
   const router = useRouter();
-  const { mutateAsync } = useMutateAndStore(addOrUpdateRecipe);
+  const { mutateAsync } = usePutRecipeToDynamo()
   const {
     register,
     handleSubmit,

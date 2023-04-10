@@ -13,14 +13,13 @@ import {
   useState,
   useEffect,
 } from "react";
-import { addModel } from "../../../store/reducers/printing/printing";
 import { v4 as uuidv4 } from "uuid";
 import { ICanvasScreenshotterRef } from "./canvas_screenshotter";
 import { ExitSaveButtons } from "../../core/exit_save_buttons";
 import useUploadToS3 from "../../hooks/upload_to_s3";
 import { IS3ValidUploadResponse } from "../../hooks/upload_to_s3";
 import { IModelProps } from "../../../store/reducers/printing/types";
-import { useMutateAndStore } from "../../hooks/user_data";
+import { usePutModelToDynamo } from "../../aws/dynamo_utilities";
 
 export interface IPreviewPopperProps {
   open: boolean;
@@ -32,7 +31,7 @@ export interface IPreviewPopperProps {
 
 export const PreviewPopper = (props: IPreviewPopperProps) => {
   const { screenshotRef, existingData } = props;
-  const { mutateAsync } = useMutateAndStore(addModel);
+  const { mutateAsync } = usePutModelToDynamo();
   const [screenshot, setScreenshot] = useState<string | undefined>();
 
   useEffect(() => {

@@ -19,6 +19,7 @@ import { IRecipe, RecipeUuid } from "../../store/reducers/food/recipes/types";
 import { getAllModelsForAUser, getAllRecipesForAUser, getMealPlanForAUser, getModel, getRecipe } from "../aws/dynamo_utilities";
 import { IModelProps, ModelUuid } from "../../store/reducers/printing/types";
 import { IMealPlan } from "../../store/reducers/food/meal_plan/types";
+import { NewRecipe } from "../../pages/food/[recipeUuid]";
 
 export const sessionQueryKey = (session: CustomSession) => [session?.id ?? ""];
 export const recipesQueryKey = (session: CustomSession) => [
@@ -149,7 +150,7 @@ export const useRecipe = (id: RecipeUuid) => {
   const recipes = useQuery({
     queryKey: recipeQueryKey(session, id),
     queryFn: () => getRecipe(id, session?.id),
-    enabled: !!session?.id && !!id
+    enabled: !!session?.id && !!id && id !== NewRecipe
   });
 
   return recipes;
