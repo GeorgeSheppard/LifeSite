@@ -20,21 +20,21 @@ export interface IRecipeSearcher {
   searchInput: string;
 }
 
-export const useRecipeSearch = (
-  keys: Set<string>
-): IRecipeSearcher => {
+export const useRecipeSearch = (keys: Set<string>): IRecipeSearcher => {
   const recipes = useRecipes().data;
   const searchableRecipes = useMemo(() => {
     // Note: Fuse.js had trouble searching the nested structure for ingredients
     // so I flatten out the recipes here
-    return Object.values(recipes).map((recipe) => ({
-      uuid: recipe.uuid,
-      name: recipe.name,
-      description: recipe.description,
-      ingredients: recipe.components.flatMap((component) =>
-        component.ingredients.map((ingredient) => ingredient.name)
-      ),
-    }));
+    return (
+      recipes?.map((recipe) => ({
+        uuid: recipe.uuid,
+        name: recipe.name,
+        description: recipe.description,
+        ingredients: recipe.components.flatMap((component) =>
+          component.ingredients.map((ingredient) => ingredient.name)
+        ),
+      })) ?? []
+    );
   }, [recipes]);
   const options = useMemo(
     () => ({
@@ -47,8 +47,8 @@ export const useRecipeSearch = (
   const defaultSearchResults = useMemo(
     () =>
       new Set(
-        Object.values(recipes)
-          .sort((recipeA, recipeB) => {
+        recipes
+          ?.sort((recipeA, recipeB) => {
             return recipeB.images.length - recipeA.images.length;
           })
           .map((recipe) => recipe.uuid)
@@ -83,9 +83,10 @@ export const useRecipeSearch = (
       uuid: result,
       visible: true,
     }));
-    const invisibleRecipes = Object.keys(recipes)
-      .filter((uuid) => !searchResults.has(uuid))
-      .map((result) => ({ uuid: result, visible: false }));
+    const invisibleRecipes =
+      recipes
+        ?.filter(({ uuid }) => !searchResults.has(uuid))
+        .map(({ uuid }) => ({ uuid, visible: false })) ?? [];
     return [...visibleRecipes, ...invisibleRecipes];
   }, [searchResults, recipes]);
 

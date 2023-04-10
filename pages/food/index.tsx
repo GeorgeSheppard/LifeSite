@@ -1,4 +1,4 @@
-import { Box, Button, Grid, Tab, Tabs } from "@mui/material";
+import { Box, Grid, Tab, Tabs } from "@mui/material";
 import OutlinedInput from "@mui/material/OutlinedInput";
 import { Dispatch, SetStateAction, useState } from "react";
 import { headerHeight } from "../../components/core/header";
@@ -18,8 +18,6 @@ import { RecipeGrid } from "../../components/pages/recipes/recipes/recipe_grid";
 import { useIsMobileLayout } from "../../components/pages/recipes/hooks/is_mobile_layout";
 import { IRecipe } from "../../store/reducers/food/recipes/types";
 import { UseQueryResult } from "@tanstack/react-query";
-import { WithDefined } from "../../components/utilities/types";
-import { AwsDynamoDocClient } from "../../components/aws/dynamo_client";
 
 const allSearchValues = new Set(["name", "description", "ingredients"])
 
@@ -64,12 +62,7 @@ const Recipes = () => {
 
 interface MobileStateProps {
   recipeSearch: IRecipeSearcher;
-  recipes: WithDefined<
-    UseQueryResult<{
-      [key: string]: IRecipe;
-    }>,
-    "data"
-  >;
+  recipes: UseQueryResult<IRecipe[]>,
   selected: Set<string>;
   setSelected: Dispatch<SetStateAction<Set<string>>>;
   booleanState: IUseBoolean;
@@ -95,69 +88,8 @@ const MobileLayout = (props: MobileStateProps) => {
     setTab(newValue);
   };
 
-  const uploadToDynamo = () => {
-    AwsDynamoDocClient.put({
-      TableName: process.env.ENV_AWS_DYNAMO_NAME,
-      Item: {
-        ...Object.values(recipes.data ?? {})[3],
-        UserId: "fakeUserId",
-        Item: "R-fakeRecipeId4"
-      }
-    })
-  }
-
-  const getFromDynamo = async () => {
-    const output = await AwsDynamoDocClient.get({
-      TableName: process.env.ENV_AWS_DYNAMO_NAME,
-      Key: {
-        UserId: "fakeUserId",
-        Item: "R-fakeRecipeId"
-      }
-    })
-    console.log('output', output)
-  }
-
-  const deleteFromDynamo = () => {
-    AwsDynamoDocClient.delete({
-      TableName: process.env.ENV_AWS_DYNAMO_NAME,
-      Key: {
-        UserId: "fakeUserId",
-        Item: "R-fakeRecipeId"
-      }
-    })
-  }
-
-  const getAllRecipesForAUser = async () => {
-    const output = await AwsDynamoDocClient.query({
-      TableName: process.env.ENV_AWS_DYNAMO_NAME,
-      KeyConditions: {
-        UserId: {
-          ComparisonOperator: "EQ",
-          AttributeValueList: ["fakeUserId"]
-        },
-        Item: {
-          ComparisonOperator: "BEGINS_WITH",
-          AttributeValueList: ["R-"]
-        }
-      }
-    })
-    console.log('all recipes output', output)
-  }
-
   return (
     <main>
-      <Button onClick={uploadToDynamo}>
-        Upload to Dynamo
-      </Button>
-      <Button onClick={getFromDynamo}>
-        Get from Dynamo
-      </Button>
-      <Button onClick={deleteFromDynamo}>
-        Delete from Dynamo
-      </Button>
-      <Button onClick={getAllRecipesForAUser}>
-        Get All Recipes
-      </Button>
       <Grid
         container
         sx={{ py: 3, margin: "auto", display: "flex", px: 3 }}

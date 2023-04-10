@@ -5,7 +5,7 @@ import PreviewCard from "../../components/pages/printing/preview_card";
 import UploadCard from "../../components/pages/printing/upload_model_card";
 
 export default function Printing() {
-  const cardUuids = usePrinting().data.cards;
+  const cardUuids = usePrinting().data.map(card => card.uuid);
 
   return (
     <main>

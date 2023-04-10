@@ -13,9 +13,9 @@ import { MouseEvent } from "react";
 import { deleteModel } from "../../../store/reducers/printing/printing";
 import { getS3SignedUrl } from "../../aws/s3_utilities";
 import { S3CardMedia } from "../../cards/s3_card_media";
-import { usePrinting } from "../../hooks/use_data";
 import { useMutateAndStore } from "../../hooks/user_data";
 import { CustomDialog } from "../../core/dialog";
+import { usePrint } from "../../hooks/use_data";
 
 export interface IPreviewCardProps {
   uuid: string;
@@ -26,7 +26,7 @@ export default function PreviewCard(props: IPreviewCardProps) {
   const { mutate } = useMutateAndStore(deleteModel);
   const { uuid } = props;
 
-  const cardData = usePrinting().data.models[uuid];
+  const cardData = usePrint(uuid).data;
   if (!cardData) {
     return null;
   }

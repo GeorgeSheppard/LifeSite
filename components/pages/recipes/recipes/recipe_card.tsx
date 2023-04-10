@@ -8,7 +8,7 @@ import { useDrag } from "react-dnd";
 import { deleteRecipe } from "../../../../store/reducers/food/recipes/recipes";
 import { RecipeUuid } from "../../../../store/reducers/food/recipes/types";
 import { WrappedCardMedia } from "../../../cards/wrapped_card_media";
-import { useRecipes } from "../../../hooks/use_data";
+import { useRecipe } from "../../../hooks/use_data";
 import { useMutateAndStore } from "../../../hooks/user_data";
 import { CopyIngredientsButton } from "./copy_ingredients";
 import { EditRecipeButton } from "./edit_recipe";
@@ -58,7 +58,7 @@ export interface IRecipeCard {
 export const RecipeCard = (props: IRecipeCard) => {
   const { uuid } = props;
 
-  const recipe = useRecipes().data[uuid];
+  const recipe = useRecipe(uuid).data;
 
   const mobileLayout = useIsMobileLayout();
   const [{ isDragging }, drag, preview] = useDrag(() => ({

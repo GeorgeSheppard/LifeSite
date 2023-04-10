@@ -14,7 +14,7 @@ import {
   IComponentItem,
 } from "../../../../store/reducers/food/meal_plan/types";
 import { RecipeUuid } from "../../../../store/reducers/food/recipes/types";
-import { useMealPlan, useRecipes } from "../../../hooks/use_data";
+import { useMealPlan, useRecipe, useRecipes } from "../../../hooks/use_data";
 import { useMutateAndStore } from "../../../hooks/user_data";
 import AddIcon from "@mui/icons-material/Add";
 import { Dialog, DialogContent, List, ListItem } from "@mui/material";
@@ -43,11 +43,11 @@ export const DroppableCard = (props: {
   const addRecipeToMealPlan = (item: { uuid: RecipeUuid }) => {
     mutate({
       date: day,
-      components: recipes[item.uuid].components.map((component) => ({
+      components: recipes?.find(rec => rec.uuid === item.uuid)?.components.map((component) => ({
         recipeId: item.uuid,
         componentId: component.uuid,
         servingsIncrease: component.servings ?? 1,
-      })),
+      })) ?? [],
     });
     if (!selected) {
       setSelected((prevSelected) => {
@@ -76,11 +76,11 @@ export const DroppableCard = (props: {
     <>
       <Dialog open={dialogOpen} onClose={setters.turnOff}>
         <DialogContent>
-          {Object.values(recipes).length === 0 ? (
+          {recipes?.length === 0 ? (
             <Typography>No recipes available</Typography>
           ) : (
             <List>
-              {Object.values(recipes).map((recipe) => {
+              {recipes?.map((recipe) => {
                 return (
                   <ListItem key={recipe.uuid}>
                     <Button
@@ -166,7 +166,7 @@ const RecipeName = ({
   recipeId: RecipeUuid;
   day: DateString;
 }) => {
-  const recipe = useRecipes().data[recipeId];
+  const recipe = useRecipe(recipeId).data;
   const { mutate } = useMutateAndStore(addOrUpdatePlan);
 
   if (!recipe) {

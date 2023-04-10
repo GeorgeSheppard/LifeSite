@@ -7,7 +7,6 @@ import {
   IIngredientName,
   IQuantity,
   IRecipe,
-  RecipeUuid,
   Unit,
 } from "../../../../store/reducers/food/recipes/types";
 
@@ -19,7 +18,7 @@ export interface IQuantitiesAndMeals {
 }
 
 export function createShoppingListData(
-  recipes: { [key: RecipeUuid]: IRecipe },
+  recipes: IRecipe[],
   mealPlan: { [index: DateString]: IDailyMealPlan },
   selectedDays: Set<DateString>
 ): IQuantitiesAndMeals {
@@ -32,7 +31,10 @@ export function createShoppingListData(
 
     const dayMealPlan = mealPlan[date];
     for (const [recipeId, components] of Object.entries(dayMealPlan)) {
-      const recipe = recipes[recipeId];
+      const recipe = recipes.find(rec => rec.uuid === recipeId);
+      if (!recipe) {
+        continue;
+      }
 
       for (const component of components) {
         if (component.servings === 0) {

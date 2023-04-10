@@ -53,7 +53,7 @@ export const CreateShoppingListButton = (
           fullWidth
           onClick={() => {
             props.setShoppingList(
-              createShoppingListData(recipes.data, mealPlan.data, selected)
+              createShoppingListData(recipes.data ?? [], mealPlan.data, selected)
             );
             props.openListDialog();
           }}

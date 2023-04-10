@@ -3,9 +3,11 @@ import { ComponentUuid, RecipeUuid } from "../recipes/types";
 
 export type DateString = string;
 
+export type IMealPlan = { [index: DateString]: IDailyMealPlan }
+
 export interface IMealPlanState {
   version: IVersion;
-  plan: { [index: DateString]: IDailyMealPlan };
+  plan: IMealPlan;
 }
 
 export interface IDailyMealPlan {
