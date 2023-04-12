@@ -105,7 +105,7 @@ export default function RecipeForm() {
 
 export const FormWithData = ({ recipe }: { recipe: IRecipe }) => {
   const router = useRouter();
-  const { mutateAsync } = usePutRecipeToDynamo()
+  const { mutateAsync, disabled } = usePutRecipeToDynamo()
   const {
     register,
     handleSubmit,
@@ -261,6 +261,7 @@ export const FormWithData = ({ recipe }: { recipe: IRecipe }) => {
             Add new section
           </Button>
           <ExitSaveButtons
+            saveDisabled={disabled}
             exitOnClick={() => router.push('/food')}
             // React hook form targets buttons with type="submit" so no handler is necessary
             saveOnClick={() => {}}

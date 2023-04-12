@@ -30,21 +30,23 @@ export default function UploadCard() {
         navigateToPreview(router, response.key);
       }}
     >
-      <Card sx={{ display: "flex", height: 150 }} className="cardWithHover">
-        {uploading ? (
-          <Box component="div" sx={{ width: "80%", margin: "auto" }}>
-            <LinearProgress />
-          </Box>
-        ) : (
-          <>
-            <Box component="div" sx={{ flexGrow: 0.5 }} />
-            <Box component="div" sx={{ display: "flex", margin: "auto" }}>
-              <UploadIcon fontSize="large" />
+      {(loading) => (
+        <Card sx={{ display: "flex", height: 150 }} className="cardWithHover">
+          {(uploading || loading) ? (
+            <Box component="div" sx={{ width: "80%", margin: "auto" }}>
+              <LinearProgress />
             </Box>
-            <Box component="div" sx={{ flexGrow: 0.5 }} />
-          </>
-        )}
-      </Card>
+          ) : (
+            <>
+              <Box component="div" sx={{ flexGrow: 0.5 }} />
+              <Box component="div" sx={{ display: "flex", margin: "auto" }}>
+                <UploadIcon fontSize="large" />
+              </Box>
+              <Box component="div" sx={{ flexGrow: 0.5 }} />
+            </>
+          )}
+        </Card>
+      )}
     </ClickToUpload>
   );
 }

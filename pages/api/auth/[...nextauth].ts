@@ -1,7 +1,7 @@
 import NextAuth, { Session } from "next-auth";
 import CognitoProvider from "next-auth/providers/cognito";
 
-export type CustomSession = Session & { id: string };
+export type CustomSession = Session & { id?: string };
 
 export default NextAuth({
   providers: [

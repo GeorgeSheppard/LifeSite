@@ -8,6 +8,7 @@ import {
   modelsQueryKey,
   recipeQueryKey,
   recipesQueryKey,
+  shared,
 } from "./query_keys";
 import {
   IRecipe,
@@ -15,49 +16,67 @@ import {
 } from "../../../store/reducers/food/recipes/types";
 
 export const useDeleteModelFromDynamo = () => {
-  const session = useAppSession();
+  const { id, loading } = useAppSession();
+  const userId = id ?? shared;
   const queryClient = useQueryClient();
 
-  return useMutation(
-    (id: ModelUuid) => deleteFromDynamo({ type: "M-", id }, session.id ?? ""),
-    {
-      onSuccess: (data: DeleteCommandOutput, id: ModelUuid) => {
-        const mQueryKey = modelQueryKey(session, id);
-        const msQueryKey = modelsQueryKey(session);
-
-        queryClient.removeQueries({ queryKey: mQueryKey });
-        const previousModelsValue: IModelProps[] | undefined =
-          queryClient.getQueryData(msQueryKey);
-        if (previousModelsValue) {
-          queryClient.setQueryData(msQueryKey, () => {
-            return previousModelsValue.filter((model) => model.uuid !== id);
-          });
+  return {
+    ...useMutation(
+      (modelId: ModelUuid) => {
+        if (loading) {
+          throw new Error("User loading");
         }
+        return deleteFromDynamo({ type: "M-", id: modelId }, userId);
       },
-    }
-  );
+      {
+        onSuccess: (data: DeleteCommandOutput, modelId: ModelUuid) => {
+          const mQueryKey = modelQueryKey(modelId, userId);
+          const msQueryKey = modelsQueryKey(userId);
+
+          queryClient.removeQueries({ queryKey: mQueryKey });
+          const previousModelsValue: IModelProps[] | undefined =
+            queryClient.getQueryData(msQueryKey);
+          if (previousModelsValue) {
+            queryClient.setQueryData(msQueryKey, () => {
+              return previousModelsValue.filter((model) => model.uuid !== id);
+            });
+          }
+        },
+      }
+    ),
+    disabled: loading,
+  };
 };
 
 export const useDeleteRecipeFromDynamo = () => {
-  const session = useAppSession();
+  const { id, loading } = useAppSession();
+  const userId = id ?? shared;
   const queryClient = useQueryClient();
 
-  return useMutation(
-    (id: RecipeUuid) => deleteFromDynamo({ type: "R-", id }, session.id ?? ""),
-    {
-      onSuccess: (data: DeleteCommandOutput, id: RecipeUuid) => {
-        const rQueryKey = recipeQueryKey(session, id);
-        const rsQueryKey = recipesQueryKey(session);
-
-        queryClient.removeQueries({ queryKey: rQueryKey });
-        const previousRecipesValue: IRecipe[] | undefined =
-          queryClient.getQueryData(rsQueryKey);
-        if (previousRecipesValue) {
-          queryClient.setQueryData(rsQueryKey, () => {
-            return previousRecipesValue.filter((rec) => rec.uuid !== id);
-          });
+  return {
+    ...useMutation(
+      (recipeId: RecipeUuid) => {
+        if (loading) {
+          throw new Error("User loading");
         }
+        return deleteFromDynamo({ type: "R-", id: recipeId }, userId);
       },
-    }
-  );
+      {
+        onSuccess: (data: DeleteCommandOutput, recipeId: RecipeUuid) => {
+          const rQueryKey = recipeQueryKey(recipeId, userId);
+          const rsQueryKey = recipesQueryKey(userId);
+
+          queryClient.removeQueries({ queryKey: rQueryKey });
+          const previousRecipesValue: IRecipe[] | undefined =
+            queryClient.getQueryData(rsQueryKey);
+          if (previousRecipesValue) {
+            queryClient.setQueryData(rsQueryKey, () => {
+              return previousRecipesValue.filter((rec) => rec.uuid !== id);
+            });
+          }
+        },
+      }
+    ),
+    disabled: loading,
+  };
 };

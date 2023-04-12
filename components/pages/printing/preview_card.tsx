@@ -22,7 +22,7 @@ export interface IPreviewCardProps {
 
 export default function PreviewCard(props: IPreviewCardProps) {
   const router = useRouter();
-  const { mutate } = useDeleteModelFromDynamo();
+  const { mutate, disabled } = useDeleteModelFromDynamo();
   const { uuid } = props;
 
   const cardData = usePrint(uuid).data;
@@ -61,6 +61,7 @@ export default function PreviewCard(props: IPreviewCardProps) {
         confirmMessage="Yes, I'm sure"
         cancelMessage="No, cancel"
         confirmOnClick={deleteModelOnClick}
+        confirmDisabled={disabled}
       >
         {(open) => (
           <Card

@@ -4,6 +4,7 @@ import { v4 as uuidv4 } from "uuid";
 import { AwsS3Client } from "../aws/s3/s3_client";
 import { S3Key } from "../../store/reducers/types";
 import { useAppSession } from "./use_app_session";
+import { shared } from "./user_data/query_keys";
 
 export interface IS3ValidUploadResponse {
   key: S3Key;
@@ -31,15 +32,18 @@ export interface IUseUploadToS3Props {
  * @param folder?: string - S3 doesn't really have folders but helps to organise
  */
 export default function useUploadToS3(props: IUseUploadToS3Props) {
-  const session = useAppSession();
-
-  const userFolder = session?.id ?? "shared";
+  const { id, loading } = useAppSession();
 
   const uploadFile = useCallback(
     async (file: File) => {
       const onStartUpload = props.onStartUpload;
       const onUploadError = props.onUploadError;
       const onUploadFinished = props.onUploadFinished;
+
+      if (loading) {
+        onUploadError?.({ error: "User is loading" });
+        return;
+      }
 
       if (!file) {
         onUploadError?.({ error: "No file attached to upload" });
@@ -53,7 +57,8 @@ export default function useUploadToS3(props: IUseUploadToS3Props) {
         fileKey = uuidv4() + "_" + fileKey;
       }
 
-      let pathToFile = `${userFolder}/`;
+      // If there is no user logged in place in the shared folder
+      let pathToFile = `${id ?? shared}/`;
       if (props.folder) {
         pathToFile += `${props.folder}/`;
       }
@@ -82,11 +87,12 @@ export default function useUploadToS3(props: IUseUploadToS3Props) {
       props.onStartUpload,
       props.onUploadError,
       props.onUploadFinished,
-      userFolder,
       props.folder,
       props.makeKeyUnique,
+      loading,
+      id
     ]
   );
 
-  return { uploadFile };
+  return { uploadFile, loading };
 }

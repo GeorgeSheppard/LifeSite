@@ -31,7 +31,7 @@ export interface IPreviewPopperProps {
 
 export const PreviewPopper = (props: IPreviewPopperProps) => {
   const { screenshotRef, existingData } = props;
-  const { mutateAsync } = usePutModelToDynamo();
+  const { mutateAsync, disabled } = usePutModelToDynamo();
   const [screenshot, setScreenshot] = useState<string | undefined>();
 
   useEffect(() => {
@@ -41,7 +41,7 @@ export const PreviewPopper = (props: IPreviewPopperProps) => {
   }, [screenshotRef, setScreenshot]);
 
   const router = useRouter();
-  const { uploadFile } = useUploadToS3({
+  const { uploadFile, loading } = useUploadToS3({
     folder: "images",
     onUploadFinished: async (response: IS3ValidUploadResponse) => {
       await mutateAsync({
@@ -141,7 +141,7 @@ export const PreviewPopper = (props: IPreviewPopperProps) => {
           <ExitSaveButtons
             exitOnClick={onExit}
             saveOnClick={() => screenshotRef.current?.getBlob(onSave)}
-            saveDisabled={name.length === 0}
+            saveDisabled={name.length === 0 || loading || disabled}
             buttonSx={{
               width: "25vw",
               maxWidth: 240,

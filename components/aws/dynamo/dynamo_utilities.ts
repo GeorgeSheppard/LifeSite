@@ -153,7 +153,7 @@ export const getMealPlanForAUser = async (
     return result.Item!;
   } catch (err) {
     if (err instanceof NotFoundError) {
-      return mealPlanEmptyState.plan;
+      return mealPlanEmptyState;
     } else {
       throw err;
     }

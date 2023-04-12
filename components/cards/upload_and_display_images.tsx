@@ -64,22 +64,24 @@ export const UploadDisplayImages = (props: IUploadDisplayImagesProps) => {
           setters.turnOff();
         }}
       >
-        <div style={{ paddingTop: 15 }}>
-          <Paper
-            elevation={1}
-            sx={{ width: 100, height: 100, display: "flex" }}
-          >
-            <Box component="div" sx={{ flexGrow: 0.5 }} />
-            <Box component="div" sx={{ display: "flex", margin: "auto" }}>
-              {uploading ? (
-                <CircularProgress />
-              ) : (
-                <UploadIcon fontSize="large" />
-              )}
-            </Box>
-            <Box component="div" sx={{ flexGrow: 0.5 }} />
-          </Paper>
-        </div>
+        {(loading) => (
+          <div style={{ paddingTop: 15 }}>
+            <Paper
+              elevation={1}
+              sx={{ width: 100, height: 100, display: "flex" }}
+            >
+              <Box component="div" sx={{ flexGrow: 0.5 }} />
+              <Box component="div" sx={{ display: "flex", margin: "auto" }}>
+                {uploading || loading ? (
+                  <CircularProgress />
+                ) : (
+                  <UploadIcon fontSize="large" />
+                )}
+              </Box>
+              <Box component="div" sx={{ flexGrow: 0.5 }} />
+            </Paper>
+          </div>
+        )}
       </ClickToUpload>
       {props.images.map((image, index) => {
         return (

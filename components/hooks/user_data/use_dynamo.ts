@@ -12,58 +12,62 @@ import { IModelProps, ModelUuid } from "../../../store/reducers/printing/types";
 import { IMealPlan } from "../../../store/reducers/food/meal_plan/types";
 import { NewRecipe } from "../../../pages/food/[recipeUuid]";
 import clone from "just-clone";
-import { mealPlanQueryKey, modelQueryKey, modelsQueryKey, recipeQueryKey, recipesQueryKey } from "./query_keys";
+import { mealPlanQueryKey, modelQueryKey, modelsQueryKey, recipeQueryKey, recipesQueryKey, shared } from "./query_keys";
 
 
 export const useRecipes = () => {
-  const session = useAppSession();
+  const { id, loading } = useAppSession();
   const queryClient = useQueryClient();
-  const queryKey = recipesQueryKey(session);
+
+  const userId = id ?? shared;
+  const queryKey = recipesQueryKey(userId);
 
   const recipes = useQuery({
     queryKey,
-    queryFn: () => getAllRecipesForAUser(session?.id),
+    queryFn: () => getAllRecipesForAUser(userId),
     placeholderData: [],
-    enabled: !!session?.id
+    enabled: !loading
   });
 
   // We fetch all recipes for a user together, but we want to make sure that if a recipe
   // is individually queried that it uses the cached result
   recipes.data?.forEach((recipe: IRecipe) =>
-    queryClient.setQueryData(recipeQueryKey(session, recipe.uuid), recipe)
+    queryClient.setQueryData(recipeQueryKey(recipe.uuid, userId), recipe)
   );
 
   return recipes;
 };
 
-export const useRecipe = (id: RecipeUuid) => {
-  const session = useAppSession();
+export const useRecipe = (recipeId: RecipeUuid) => {
+  const { id, loading } = useAppSession();
+  const userId = id ?? shared;
 
   const recipes = useQuery({
-    queryKey: recipeQueryKey(session, id),
-    queryFn: () => getRecipe(id, session?.id),
-    enabled: !!session?.id && !!id && id !== NewRecipe
+    queryKey: recipeQueryKey(recipeId, userId),
+    queryFn: () => getRecipe(recipeId, userId),
+    enabled: !loading && !!recipeId && recipeId !== NewRecipe
   });
 
   return recipes;
 }
 
 export const usePrinting = (): WithDefined<UseQueryResult<IModelProps[]>, "data"> => {
-  const session = useAppSession();
+  const { id, loading } = useAppSession();
+  const userId = id ?? shared;
   const queryClient = useQueryClient();
-  const queryKey = modelsQueryKey(session);
+  const queryKey = modelsQueryKey(userId);
 
   const models = useQuery({
     queryKey,
-    queryFn: () => getAllModelsForAUser(session?.id),
+    queryFn: () => getAllModelsForAUser(userId),
     placeholderData: [],
-    enabled: !!session?.id
+    enabled: !loading
   });
 
   // We fetch all models for a user together, but we want to make sure that if a model
   // is individually queried that it uses the cached result
   models.data?.forEach((model: IModelProps) =>
-    queryClient.setQueryData(modelQueryKey(session, model.uuid), model)
+    queryClient.setQueryData(modelQueryKey(model.uuid, userId), model)
   );
 
   return {
@@ -72,25 +76,27 @@ export const usePrinting = (): WithDefined<UseQueryResult<IModelProps[]>, "data"
   };
 };
 
-export const usePrint = (id: ModelUuid) => {
-  const session = useAppSession();
+export const usePrint = (modelId: ModelUuid) => {
+  const { id, loading } = useAppSession();
+  const userId = id ?? shared;
 
   const recipes = useQuery({
-    queryKey: modelQueryKey(session, id),
-    queryFn: () => getModel(id, session?.id),
-    enabled: !!session?.id && !!id
+    queryKey: modelQueryKey(modelId, userId),
+    queryFn: () => getModel(modelId, userId),
+    enabled: !loading && !!modelId
   });
 
   return recipes;
 }
 
 export const useMealPlan = (): WithDefined<UseQueryResult<IMealPlan>, "data"> => {
-  const session = useAppSession();
+  const { id, loading } = useAppSession();
+  const userId = id ?? shared;
 
   const recipes = useQuery({
-    queryKey: mealPlanQueryKey(session),
-    queryFn: () => getMealPlanForAUser(session?.id),
-    enabled: !!session?.id,
+    queryKey: mealPlanQueryKey(userId),
+    queryFn: () => getMealPlanForAUser(userId),
+    enabled: !loading,
     placeholderData: mealPlanEmptyState,
     select: (mealPlan: IMealPlan) => {
       let newDatesMealPlan = clone(mealPlanEmptyState);

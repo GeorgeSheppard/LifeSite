@@ -25,7 +25,7 @@ export const RecipeCardWithDeleteDialog = (
   props: IRecipeCardWithDialogProps
 ) => {
   const { uuid } = props;
-  const { mutate } = useDeleteRecipeFromDynamo();
+  const { mutate, disabled } = useDeleteRecipeFromDynamo();
   const deleteRecipeOnClick = () => mutate(uuid);
 
   return (
@@ -36,6 +36,7 @@ export const RecipeCardWithDeleteDialog = (
       confirmMessage="Yes I'm sure"
       cancelMessage="No, cancel"
       confirmOnClick={deleteRecipeOnClick}
+      confirmDisabled={disabled}
     >
       {(openDialog) => (
         <RecipeCard
