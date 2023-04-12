@@ -19,7 +19,7 @@ import { ExitSaveButtons } from "../../core/exit_save_buttons";
 import useUploadToS3 from "../../hooks/upload_to_s3";
 import { IS3ValidUploadResponse } from "../../hooks/upload_to_s3";
 import { IModelProps } from "../../../store/reducers/printing/types";
-import { usePutModelToDynamo } from "../../aws/dynamo_utilities";
+import { usePutModelToDynamo } from "../../hooks/user_data/use_dynamo_put";
 
 export interface IPreviewPopperProps {
   open: boolean;

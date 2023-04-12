@@ -15,7 +15,7 @@ import { PreviewPopper } from "../../components/pages/printing/preview_popper";
 import { useRouter } from "next/router";
 import LinearProgress from "@mui/material/LinearProgress";
 import { ICameraParams } from "../../store/reducers/printing/types";
-import { usePrinting } from "../../components/hooks/use_data";
+import { usePrinting } from "../../components/hooks/user_data/use_dynamo";
 
 export interface IPreview {}
 

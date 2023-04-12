@@ -1,6 +1,6 @@
 import { useRouter } from "next/router";
 import { useState, MouseEvent } from "react";
-import { useRecipe } from "../../components/hooks/use_data";
+import { useRecipe } from "../../components/hooks/user_data/use_dynamo";
 import { v4 as uuidv4 } from "uuid";
 import {
   Control,
@@ -44,7 +44,7 @@ import TableBody from "@mui/material/TableBody";
 import TableHead from "@mui/material/TableHead";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
-import { usePutRecipeToDynamo } from '../../components/aws/dynamo_utilities';
+import { usePutRecipeToDynamo } from "../../components/hooks/user_data/use_dynamo_put";
 
 const getDefaultRecipe = (uuid: string) => ({
   uuid,

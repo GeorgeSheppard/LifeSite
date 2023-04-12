@@ -2,7 +2,7 @@ import Button from "@mui/material/Button";
 import ButtonGroup from "@mui/material/ButtonGroup";
 import Tooltip from "@mui/material/Tooltip";
 import React, { useCallback } from "react";
-import { useMealPlan, useRecipes } from "../../../hooks/use_data";
+import { useMealPlan, useRecipes } from "../../../hooks/user_data/use_dynamo";
 import {
   createShoppingListData,
   IQuantitiesAndMeals,

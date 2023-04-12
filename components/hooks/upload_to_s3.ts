@@ -1,7 +1,7 @@
 import { useCallback } from "react";
 import { PutObjectCommand } from "@aws-sdk/client-s3";
 import { v4 as uuidv4 } from "uuid";
-import { AwsS3Client } from "../aws/s3_client";
+import { AwsS3Client } from "../aws/s3/s3_client";
 import { S3Key } from "../../store/reducers/types";
 import { useAppSession } from "./use_app_session";
 

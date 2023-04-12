@@ -1,4 +1,3 @@
-import { IVersion } from "../../migration/types";
 import { S3Key, Image } from "../types";
 
 export type ModelUuid = string;
@@ -22,7 +21,6 @@ export interface IModelProps {
 }
 
 export interface IPrintingState {
-  version: IVersion;
   /**
    * The array of uuids corresponding to each card
    */

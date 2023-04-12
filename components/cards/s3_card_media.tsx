@@ -1,7 +1,7 @@
 import CardMedia, { CardMediaProps } from "@mui/material/CardMedia";
 import { useQuery } from "@tanstack/react-query";
 import { S3Key } from "../../store/reducers/types";
-import { getS3SignedUrl } from "../aws/s3_utilities";
+import { getS3SignedUrl } from "../aws/s3/s3_utilities";
 
 export interface IS3CardMediaProps extends CardMediaProps<"img"> {
   s3Key: S3Key;

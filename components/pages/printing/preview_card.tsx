@@ -10,12 +10,11 @@ import VisibilityIcon from "@mui/icons-material/Visibility";
 import DownloadIcon from "@mui/icons-material/Download";
 import Tooltip from "@mui/material/Tooltip";
 import { MouseEvent } from "react";
-import { deleteModel } from "../../../store/reducers/printing/printing";
-import { getS3SignedUrl } from "../../aws/s3_utilities";
+import { getS3SignedUrl } from "../../aws/s3/s3_utilities";
 import { S3CardMedia } from "../../cards/s3_card_media";
-import { useMutateAndStore } from "../../hooks/user_data";
 import { CustomDialog } from "../../core/dialog";
-import { usePrint } from "../../hooks/use_data";
+import { usePrint } from "../../hooks/user_data/use_dynamo";
+import { useDeleteModelFromDynamo } from "../../hooks/user_data/use_dynamo_delete";
 
 export interface IPreviewCardProps {
   uuid: string;
@@ -23,7 +22,7 @@ export interface IPreviewCardProps {
 
 export default function PreviewCard(props: IPreviewCardProps) {
   const router = useRouter();
-  const { mutate } = useMutateAndStore(deleteModel);
+  const { mutate } = useDeleteModelFromDynamo();
   const { uuid } = props;
 
   const cardData = usePrint(uuid).data;

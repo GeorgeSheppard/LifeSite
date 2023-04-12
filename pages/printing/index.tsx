@@ -1,6 +1,6 @@
 import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid";
-import { usePrinting } from "../../components/hooks/use_data";
+import { usePrinting } from "../../components/hooks/user_data/use_dynamo";
 import PreviewCard from "../../components/pages/printing/preview_card";
 import UploadCard from "../../components/pages/printing/upload_model_card";
 

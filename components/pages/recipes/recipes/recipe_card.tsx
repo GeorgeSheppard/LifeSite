@@ -7,14 +7,14 @@ import Typography from "@mui/material/Typography";
 import { useDrag } from "react-dnd";
 import { RecipeUuid } from "../../../../store/reducers/food/recipes/types";
 import { WrappedCardMedia } from "../../../cards/wrapped_card_media";
-import { useRecipe } from "../../../hooks/use_data";
+import { useRecipe } from "../../../hooks/user_data/use_dynamo";
 import { CopyIngredientsButton } from "./copy_ingredients";
 import { EditRecipeButton } from "./edit_recipe";
 import { DeleteRecipeButton } from "./delete_recipe";
 import { CustomDialog } from "../../../core/dialog";
 import { ComponentAccordion } from "./component_accordion";
 import { useIsMobileLayout } from "../hooks/is_mobile_layout";
-import { useDeleteRecipeFromDynamo } from "../../../aws/dynamo_utilities";
+import { useDeleteRecipeFromDynamo } from "../../../hooks/user_data/use_dynamo_delete";
 
 export interface IRecipeCardWithDialogProps {
   uuid: RecipeUuid;

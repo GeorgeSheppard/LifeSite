@@ -1,7 +1,6 @@
 import ButtonGroup from "@mui/material/ButtonGroup";
 import Card from "@mui/material/Card";
 import CardHeader from "@mui/material/CardHeader";
-import { addOrUpdatePlan } from "../../../../store/reducers/food/meal_plan/meal_plan";
 import PersonIcon from "@mui/icons-material/Person";
 import Typography from "@mui/material/Typography";
 import Tooltip from "@mui/material/Tooltip";
@@ -14,8 +13,8 @@ import {
   IComponentItem,
 } from "../../../../store/reducers/food/meal_plan/types";
 import { RecipeUuid } from "../../../../store/reducers/food/recipes/types";
-import { useMealPlan, useRecipe, useRecipes } from "../../../hooks/use_data";
-import { useMutateAndStore } from "../../../hooks/user_data";
+import { useMealPlan, useRecipe, useRecipes } from "../../../hooks/user_data/use_dynamo";
+import { usePutMealPlanToDynamo } from "../../../hooks/user_data/use_dynamo_put";
 import AddIcon from "@mui/icons-material/Add";
 import { Dialog, DialogContent, List, ListItem } from "@mui/material";
 import { useBoolean } from "../../../hooks/use_boolean";
@@ -30,7 +29,7 @@ export const DroppableCard = (props: {
   const { day, selected, onClick, setSelected } = props;
   const meals = useMealPlan().data[day];
   const recipes = useRecipes().data;
-  const { mutate } = useMutateAndStore(addOrUpdatePlan);
+  const { mutate } = usePutMealPlanToDynamo();
   const [dialogOpen, setters] = useBoolean(false);
 
   const toggleOnClick = useCallback(
@@ -167,7 +166,7 @@ const RecipeName = ({
   day: DateString;
 }) => {
   const recipe = useRecipe(recipeId).data;
-  const { mutate } = useMutateAndStore(addOrUpdatePlan);
+  const { mutate } = usePutMealPlanToDynamo();
 
   if (!recipe) {
     return null;

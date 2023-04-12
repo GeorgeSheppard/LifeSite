@@ -3,7 +3,7 @@ import {
   IIngredientName,
   RecipeUuid,
 } from "../../../../store/reducers/food/recipes/types";
-import { useRecipes } from "../../../hooks/use_data";
+import { useRecipes } from "../../../hooks/user_data/use_dynamo";
 import { useDebounce } from "../../../hooks/use_debounce";
 import { useSearch } from "../../../hooks/use_search";
 
