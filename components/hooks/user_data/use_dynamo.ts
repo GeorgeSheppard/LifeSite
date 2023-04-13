@@ -7,12 +7,11 @@ import { mealPlanEmptyState } from "../../../store/reducers/food/meal_plan/meal_
 import { useAppSession } from "../use_app_session";
 import { WithDefined } from "../../utilities/types";
 import { IRecipe, RecipeUuid } from "../../../store/reducers/food/recipes/types";
-import { getAllModelsForAUser, getAllRecipesForAUser, getMealPlanForAUser, getModel, getRecipe } from "../../aws/dynamo/dynamo_utilities";
-import { IModelProps, ModelUuid } from "../../../store/reducers/printing/types";
+import { getAllRecipesForAUser, getMealPlanForAUser, getRecipe } from "../../aws/dynamo/dynamo_utilities";
 import { IMealPlan } from "../../../store/reducers/food/meal_plan/types";
 import { NewRecipe } from "../../../pages/food/[recipeUuid]";
 import clone from "just-clone";
-import { mealPlanQueryKey, modelQueryKey, modelsQueryKey, recipeQueryKey, recipesQueryKey, shared } from "./query_keys";
+import { mealPlanQueryKey, recipeQueryKey, recipesQueryKey, shared } from "./query_keys";
 
 
 export const useRecipes = () => {
@@ -51,44 +50,6 @@ export const useRecipe = (recipeId: RecipeUuid) => {
   return recipes;
 }
 
-export const usePrinting = (): WithDefined<UseQueryResult<IModelProps[]>, "data"> => {
-  const { id, loading } = useAppSession();
-  const userId = id ?? shared;
-  const queryClient = useQueryClient();
-  const queryKey = modelsQueryKey(userId);
-
-  const models = useQuery({
-    queryKey,
-    queryFn: () => getAllModelsForAUser(userId),
-    placeholderData: [],
-    enabled: !loading
-  });
-
-  // We fetch all models for a user together, but we want to make sure that if a model
-  // is individually queried that it uses the cached result
-  models.data?.forEach((model: IModelProps) =>
-    queryClient.setQueryData(modelQueryKey(model.uuid, userId), model)
-  );
-
-  return {
-    ...models,
-    data: models.data!
-  };
-};
-
-export const usePrint = (modelId: ModelUuid) => {
-  const { id, loading } = useAppSession();
-  const userId = id ?? shared;
-
-  const recipes = useQuery({
-    queryKey: modelQueryKey(modelId, userId),
-    queryFn: () => getModel(modelId, userId),
-    enabled: !loading && !!modelId
-  });
-
-  return recipes;
-}
-
 export const useMealPlan = (): WithDefined<UseQueryResult<IMealPlan>, "data"> => {
   const { id, loading } = useAppSession();
   const userId = id ?? shared;
@@ -97,7 +58,7 @@ export const useMealPlan = (): WithDefined<UseQueryResult<IMealPlan>, "data"> =>
     queryKey: mealPlanQueryKey(userId),
     queryFn: () => getMealPlanForAUser(userId),
     enabled: !loading,
-    placeholderData: mealPlanEmptyState,
+    initialData: mealPlanEmptyState,
     select: (mealPlan: IMealPlan) => {
       let newDatesMealPlan = clone(mealPlanEmptyState);
 

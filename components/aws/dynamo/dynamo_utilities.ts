@@ -1,7 +1,6 @@
 import { mealPlanEmptyState } from "../../../store/reducers/food/meal_plan/meal_plan";
 import { IMealPlan } from "../../../store/reducers/food/meal_plan/types";
 import { IRecipe, RecipeUuid } from "../../../store/reducers/food/recipes/types";
-import { IModelProps, ModelUuid } from "../../../store/reducers/printing/types";
 import { AwsDynamoDocClient } from "./dynamo_client";
 
 // Recipe, Meal Plan, or Print. Note meal plan does not have a dash after because there is only one
@@ -10,16 +9,14 @@ export type ItemType = "R-" | "MP" | "M-";
 
 type RecipeKey = { type: "R-"; id: RecipeUuid };
 type MealPlanKey = { type: "MP" };
-type ModelKey = { type: "M-"; id: ModelUuid };
 
-type Keys = RecipeKey | MealPlanKey | ModelKey;
+type Keys = RecipeKey | MealPlanKey;
 
 type Item =
   | (RecipeKey & {
       item: IRecipe;
     })
   | (MealPlanKey & { item: IMealPlan })
-  | (ModelKey & { item: IModelProps });
 
 class NotFoundError extends Error {
   constructor(msg: string) {
@@ -35,8 +32,6 @@ const getSortKey = (key: Keys) => {
       return `R-${key.id}`;
     case "MP":
       return "MP";
-    case "M-":
-      return `M-${key.id}`;
   }
 };
 
@@ -85,21 +80,6 @@ export const putRecipe = async (recipe: IRecipe, userId: string) => {
   );
 };
 
-export const getModel = async (
-  modelId: ModelUuid,
-  userId: string
-): Promise<IModelProps> => {
-  const result = await getFromDynamo({ type: "M-", id: modelId }, userId);
-  return result.Item as IModelProps;
-};
-
-export const putModel = async (model: IModelProps, userId: string) => {
-  return await uploadToDynamo(
-    { type: "M-", item: model, id: model.uuid },
-    userId
-  );
-};
-
 export const deleteFromDynamo = async (key: Keys, userId: string) => {
   return await AwsDynamoDocClient.delete({
     TableName: process.env.ENV_AWS_DYNAMO_NAME,
@@ -134,15 +114,6 @@ export const getAllRecipesForAUser = async (
 ): Promise<IRecipe[]> => {
   const result = await getAllItemsForAUser(userId, "R-");
   return result.Items?.map(({ Item, UserId, ...obj }) => obj as IRecipe) ?? [];
-};
-
-export const getAllModelsForAUser = async (
-  userId: string
-): Promise<IModelProps[]> => {
-  const result = await getAllItemsForAUser(userId, "M-");
-  return (
-    result.Items?.map(({ Item, UserId, ...obj }) => obj as IModelProps) ?? []
-  );
 };
 
 export const getMealPlanForAUser = async (
