@@ -1,9 +1,7 @@
 import { useRouter } from "next/router";
 import { useState, MouseEvent } from "react";
-import { useMutateAndStore } from "../../components/hooks/user_data";
-import { useRecipes } from "../../components/hooks/use_data";
+import { useRecipe } from "../../components/hooks/user_data/use_dynamo";
 import { v4 as uuidv4 } from "uuid";
-import { addOrUpdateRecipe } from "../../store/reducers/food/recipes/recipes";
 import {
   Control,
   FieldErrors,
@@ -46,6 +44,7 @@ import TableBody from "@mui/material/TableBody";
 import TableHead from "@mui/material/TableHead";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
+import { usePutRecipeToDynamo } from "../../components/hooks/user_data/use_dynamo_put";
 
 const getDefaultRecipe = (uuid: string) => ({
   uuid,
@@ -79,27 +78,34 @@ const getDefaultInstruction = () => ({
   text: "",
 });
 
+export const NewRecipe = "newRecipe";
+
 export default function RecipeForm() {
   const router = useRouter();
   const uuid = router.query.recipeUuid as RecipeUuid | undefined;
-  const recipe = useRecipes();
+  const recipe = useRecipe(uuid ?? "");
+  if (!uuid) {
+    return <LinearProgress />;
+  }
+  if (uuid === NewRecipe) {
+    return <FormWithData recipe={getDefaultRecipe(uuidv4())} />;
+  }
   if (recipe.isError) {
     console.error("Error: ", recipe.error);
     router.push("/food");
+    return;
   }
 
-  if (recipe.isLoading || !uuid) {
+  if (recipe.isLoading) {
     return <LinearProgress />;
   }
 
-  const recipeData = recipe.data[uuid] ?? getDefaultRecipe(uuid);
-
-  return <FormWithData recipe={recipeData} />;
+  return <FormWithData recipe={recipe.data} />;
 }
 
 export const FormWithData = ({ recipe }: { recipe: IRecipe }) => {
   const router = useRouter();
-  const { mutateAsync } = useMutateAndStore(addOrUpdateRecipe);
+  const { mutateAsync, disabled } = usePutRecipeToDynamo();
   const {
     register,
     handleSubmit,
@@ -255,7 +261,8 @@ export const FormWithData = ({ recipe }: { recipe: IRecipe }) => {
             Add new section
           </Button>
           <ExitSaveButtons
-            exitOnClick={() => router.push('/food')}
+            saveDisabled={disabled}
+            exitOnClick={() => router.push("/food")}
             // React hook form targets buttons with type="submit" so no handler is necessary
             saveOnClick={() => {}}
             boxSx={{ display: "flex", justifyContent: "space-between", pt: 1 }}

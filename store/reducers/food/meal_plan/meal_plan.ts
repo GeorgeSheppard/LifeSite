@@ -1,10 +1,6 @@
 import clone from "just-clone";
-import { Migrator } from "../../../migration/migrator";
-import { IFullStoreState, MutateFunc } from "../../../store";
 import { ComponentUuid, RecipeUuid } from "../recipes/types";
-import { latestVersion, migrations } from "./migrations";
-import { isMealPlanValid } from "./schema";
-import { DateString, IMealPlanState } from "./types";
+import { DateString, IMealPlan } from "./types";
 
 export function addDays(theDate: Date, days: number) {
   return new Date(theDate.getTime() + days * 24 * 60 * 60 * 1000);
@@ -44,23 +40,16 @@ export function currentDate(): Date {
   return new Date(time);
 }
 
-export const mealPlanEmptyState: IMealPlanState = {
-  version: latestVersion,
-  plan: createDates(currentDate(), 14, 14).reduce(
-    (previous, current) => ({
-      ...previous,
-      [current]: {},
-    }),
-    {}
-  ),
-};
-
-export const mealPlanInitialState = mealPlanEmptyState;
-
-const migrator = new Migrator<IMealPlanState>(
-  migrations,
-  latestVersion,
-  isMealPlanValid
+export const mealPlanEmptyState: IMealPlan = createDates(
+  currentDate(),
+  14,
+  14
+).reduce(
+  (previous, current) => ({
+    ...previous,
+    [current]: {},
+  }),
+  {}
 );
 
 export interface IAddOrUpdatePlan {
@@ -72,40 +61,40 @@ export interface IAddOrUpdatePlan {
   }[];
 }
 
-export const addOrUpdatePlan: MutateFunc<IAddOrUpdatePlan> = (
-  store: IFullStoreState,
+export const addOrUpdatePlan = (
+  currentPlan: IMealPlan,
   payload: IAddOrUpdatePlan
-) => {
-  const state = store.mealPlan;
+): IMealPlan => {
+  const mealPlan = clone(currentPlan);
 
   const { date, components } = payload;
   for (const { recipeId, componentId, servingsIncrease } of components) {
-    if (state.plan[date]) {
-      if (recipeId in state.plan[date]) {
-        const componentIndex = state.plan[date][recipeId].findIndex(
+    if (mealPlan[date]) {
+      if (recipeId in mealPlan[date]) {
+        const componentIndex = mealPlan[date][recipeId].findIndex(
           (mealPlanItem) => mealPlanItem.componentId === componentId
         );
         if (componentIndex > -1) {
-          const component = state.plan[date][recipeId][componentIndex];
+          const component = mealPlan[date][recipeId][componentIndex];
           const newServings = component.servings + servingsIncrease;
           // Note: We allow a component with zero servings, this allows the user to set that they are eating that
           // item in the meal plan, without having to buy ingredients for it, perhaps they have a portion in the freezer
           if (newServings >= 0) {
-            state.plan[date][recipeId][componentIndex].servings = newServings;
+            mealPlan[date][recipeId][componentIndex].servings = newServings;
           } else {
-            state.plan[date][recipeId].splice(componentIndex, 1);
-            if (state.plan[date][recipeId].length === 0) {
-              delete state.plan[date][recipeId];
+            mealPlan[date][recipeId].splice(componentIndex, 1);
+            if (mealPlan[date][recipeId].length === 0) {
+              delete mealPlan[date][recipeId];
             }
           }
         } else {
-          state.plan[date][recipeId].push({
+          mealPlan[date][recipeId].push({
             componentId,
             servings: servingsIncrease,
           });
         }
       } else {
-        state.plan[date][recipeId] = [
+        mealPlan[date][recipeId] = [
           {
             componentId,
             servings: servingsIncrease,
@@ -115,31 +104,5 @@ export const addOrUpdatePlan: MutateFunc<IAddOrUpdatePlan> = (
     }
   }
 
-  return store;
-};
-
-export const migrateMealPlan = (store: IFullStoreState): IFullStoreState => {
-  if (!store.mealPlan) {
-    store.mealPlan = clone(mealPlanEmptyState);
-  }
-
-  let migratedMealPlan: IMealPlanState = store.mealPlan;
-  if (migrator.needsMigrating(store.mealPlan.version)) {
-    migratedMealPlan = migrator.migrate(store.mealPlan);
-  }
-  if (!isMealPlanValid(migratedMealPlan)) {
-    throw new Error(
-      "Meal plan is invalid: " + JSON.stringify(migratedMealPlan)
-    );
-  }
-
-  let newDatesMealPlan = clone(mealPlanEmptyState);
-
-  for (const [date, plan] of Object.entries(migratedMealPlan.plan)) {
-    if (date in newDatesMealPlan.plan) {
-      newDatesMealPlan.plan[date] = plan;
-    }
-  }
-  store.mealPlan = newDatesMealPlan;
-  return store;
+  return mealPlan;
 };

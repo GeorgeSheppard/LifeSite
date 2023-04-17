@@ -11,14 +11,13 @@ import { SearchChips } from "../../components/pages/recipes/search/search_chip";
 import { IQuantitiesAndMeals } from "../../components/pages/recipes/meal_planner/shopping_list_creator";
 import { DateString } from "../../store/reducers/food/meal_plan/types";
 import { IUseBoolean, useBoolean } from "../../components/hooks/use_boolean";
-import { useRecipes } from "../../components/hooks/use_data";
+import { useRecipes } from "../../components/hooks/user_data/use_dynamo";
 import { CreateShoppingListButton } from "../../components/pages/recipes/meal_planner/create_shopping_list";
 import { ShoppingListDialog } from "../../components/pages/recipes/meal_planner/shopping_list";
 import { RecipeGrid } from "../../components/pages/recipes/recipes/recipe_grid";
 import { useIsMobileLayout } from "../../components/pages/recipes/hooks/is_mobile_layout";
 import { IRecipe } from "../../store/reducers/food/recipes/types";
 import { UseQueryResult } from "@tanstack/react-query";
-import { WithDefined } from "../../components/utilities/types";
 
 const allSearchValues = new Set(["name", "description", "ingredients"])
 
@@ -63,12 +62,7 @@ const Recipes = () => {
 
 interface MobileStateProps {
   recipeSearch: IRecipeSearcher;
-  recipes: WithDefined<
-    UseQueryResult<{
-      [key: string]: IRecipe;
-    }>,
-    "data"
-  >;
+  recipes: UseQueryResult<IRecipe[]>,
   selected: Set<string>;
   setSelected: Dispatch<SetStateAction<Set<string>>>;
   booleanState: IUseBoolean;

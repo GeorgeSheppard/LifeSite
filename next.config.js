@@ -2,7 +2,7 @@
 // with Sentry.
 // https://nextjs.org/docs/api-reference/next.config.js/introduction
 // https://docs.sentry.io/platforms/javascript/guides/nextjs/manual-setup/
-const { withSentryConfig } = require('@sentry/nextjs');
+const { withSentryConfig } = require("@sentry/nextjs");
 
 const path = require("path");
 const { PHASE_DEVELOPMENT_SERVER } = require("next/constants");
@@ -24,6 +24,11 @@ module.exports = (phase) => {
     ENV_AWS_COGNITO_CLIENT_SECRET: process.env.ENV_AWS_COGNITO_CLIENT_SECRET,
     ENV_AWS_COGNITO_DOMAIN_URL: process.env.ENV_AWS_COGNITO_DOMAIN_URL,
     ENV_AWS_COGNITO_CLIENT_ISSUER: process.env.ENV_AWS_COGNITO_CLIENT_ISSUER,
+    ENV_AWS_DYNAMO_REGION: process.env.ENV_AWS_DYNAMO_REGION,
+    ENV_AWS_DYNAMO_NAME: process.env.ENV_AWS_DYNAMO_NAME,
+    ENV_AWS_DYNAMO_ACCESS_KEY: process.env.ENV_AWS_DYNAMO_ACCESS_KEY,
+    ENV_AWS_DYNAMO_SECRET_ACCESS_KEY:
+      process.env.ENV_AWS_DYNAMO_SECRET_ACCESS_KEY,
   };
 
   if (phase !== PHASE_DEVELOPMENT_SERVER) {
@@ -39,6 +44,7 @@ module.exports = (phase) => {
       process.env.ENV_AWS_COGNITO_CLIENT_ISSUER_PROD;
     envVariables.ENV_AWS_COGNITO_DOMAIN_URL =
       process.env.ENV_AWS_COGNITO_DOMAIN_URL_PROD;
+    envVariables.ENV_AWS_DYNAMO_NAME = process.env.ENV_AWS_DYNAMO_NAME_PROD;
   }
 
   return {
@@ -53,5 +59,5 @@ module.exports = (phase) => {
 module.exports = withSentryConfig(
   module.exports,
   { silent: true },
-  { hideSourcemaps: true },
+  { hideSourcemaps: true }
 );

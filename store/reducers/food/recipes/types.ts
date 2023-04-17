@@ -1,4 +1,3 @@
-import { IVersion } from "../../../migration/types";
 import { Image } from "../../types";
 
 export type RecipeUuid = string;
@@ -68,7 +67,6 @@ export enum Unit {
 }
 
 export interface IRecipesState {
-  version: IVersion;
   cards: RecipeUuid[];
   recipes: { [key: RecipeUuid]: IRecipe };
   ingredients: IIngredientsDatabase;

@@ -64,12 +64,6 @@ export const navigatorCards: INavigatorCardProps[] = [
     href: "/food",
   },
   {
-    title: "3D Printing",
-    description: "3D model uploader, storage, and visualisation.",
-    imageSrc: "/images/printing.jpg",
-    href: "/printing",
-  },
-  {
     title: "Library",
     description: "All the books I own, and what I rate them.",
     imageSrc: "/images/bookshelf.jpg",

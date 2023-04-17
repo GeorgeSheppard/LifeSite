@@ -14,6 +14,7 @@ export interface IDialogProps {
   cancelMessage: string;
   confirmOnClick: MouseEventHandler<HTMLButtonElement>;
   children: (open: () => void) => JSX.Element;
+  confirmDisabled?: boolean;
 }
 
 export const CustomDialog = (props: IDialogProps) => {
@@ -28,7 +29,7 @@ export const CustomDialog = (props: IDialogProps) => {
         </DialogContent>
         <DialogActions>
           <Button onClick={setters.turnOff}>{props.cancelMessage}</Button>
-          <Button onClick={props.confirmOnClick} autoFocus color="error">
+          <Button onClick={props.confirmOnClick} disabled={props.confirmDisabled} autoFocus color="error">
             {props.confirmMessage}
           </Button>
         </DialogActions>

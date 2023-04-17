@@ -8,7 +8,7 @@ import {
   useState,
 } from "react";
 import { DateString } from "../../../../store/reducers/food/meal_plan/types";
-import { useMealPlan } from "../../../hooks/use_data";
+import { useMealPlan } from "../../../hooks/user_data/use_dynamo";
 
 export interface ICalendarRowProps {
   selected: Set<DateString>;

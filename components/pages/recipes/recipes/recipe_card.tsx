@@ -5,17 +5,16 @@ import AccordionSummary from "@mui/material/AccordionSummary";
 import Card from "@mui/material/Card";
 import Typography from "@mui/material/Typography";
 import { useDrag } from "react-dnd";
-import { deleteRecipe } from "../../../../store/reducers/food/recipes/recipes";
 import { RecipeUuid } from "../../../../store/reducers/food/recipes/types";
 import { WrappedCardMedia } from "../../../cards/wrapped_card_media";
-import { useRecipes } from "../../../hooks/use_data";
-import { useMutateAndStore } from "../../../hooks/user_data";
+import { useRecipe } from "../../../hooks/user_data/use_dynamo";
 import { CopyIngredientsButton } from "./copy_ingredients";
 import { EditRecipeButton } from "./edit_recipe";
 import { DeleteRecipeButton } from "./delete_recipe";
 import { CustomDialog } from "../../../core/dialog";
 import { ComponentAccordion } from "./component_accordion";
 import { useIsMobileLayout } from "../hooks/is_mobile_layout";
+import { useDeleteRecipeFromDynamo } from "../../../hooks/user_data/use_dynamo_delete";
 
 export interface IRecipeCardWithDialogProps {
   uuid: RecipeUuid;
@@ -26,7 +25,7 @@ export const RecipeCardWithDeleteDialog = (
   props: IRecipeCardWithDialogProps
 ) => {
   const { uuid } = props;
-  const { mutate } = useMutateAndStore(deleteRecipe);
+  const { mutate, disabled } = useDeleteRecipeFromDynamo();
   const deleteRecipeOnClick = () => mutate(uuid);
 
   return (
@@ -37,6 +36,7 @@ export const RecipeCardWithDeleteDialog = (
       confirmMessage="Yes I'm sure"
       cancelMessage="No, cancel"
       confirmOnClick={deleteRecipeOnClick}
+      confirmDisabled={disabled}
     >
       {(openDialog) => (
         <RecipeCard
@@ -58,7 +58,7 @@ export interface IRecipeCard {
 export const RecipeCard = (props: IRecipeCard) => {
   const { uuid } = props;
 
-  const recipe = useRecipes().data[uuid];
+  const recipe = useRecipe(uuid).data;
 
   const mobileLayout = useIsMobileLayout();
   const [{ isDragging }, drag, preview] = useDrag(() => ({

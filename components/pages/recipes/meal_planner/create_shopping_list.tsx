@@ -2,7 +2,7 @@ import Button from "@mui/material/Button";
 import ButtonGroup from "@mui/material/ButtonGroup";
 import Tooltip from "@mui/material/Tooltip";
 import React, { useCallback } from "react";
-import { useMealPlan, useRecipes } from "../../../hooks/use_data";
+import { useMealPlan, useRecipes } from "../../../hooks/user_data/use_dynamo";
 import {
   createShoppingListData,
   IQuantitiesAndMeals,
@@ -53,11 +53,20 @@ export const CreateShoppingListButton = (
           fullWidth
           onClick={() => {
             props.setShoppingList(
-              createShoppingListData(recipes.data, mealPlan.data, selected)
+              createShoppingListData(
+                recipes.data ?? [],
+                mealPlan.data,
+                selected
+              )
             );
             props.openListDialog();
           }}
-          disabled={props.selected.size === 0}
+          disabled={
+            props.selected.size === 0 ||
+            recipes.isLoading ||
+            mealPlan.isLoading ||
+            recipes.isError
+          }
         >
           Create shopping list
         </Button>

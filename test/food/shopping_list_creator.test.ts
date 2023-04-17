@@ -1,12 +1,8 @@
 import { createShoppingListData } from "../../components/pages/recipes/meal_planner/shopping_list_creator";
-import {
-  IRecipe,
-  RecipeUuid,
-  Unit,
-} from "../../store/reducers/food/recipes/types";
+import { IRecipe, Unit } from "../../store/reducers/food/recipes/types";
 
-const recipes: { [key: RecipeUuid]: IRecipe } = {
-  "1": {
+const recipes: IRecipe[] = [
+  {
     uuid: "1",
     name: "Recipe 1",
     description: "",
@@ -28,7 +24,7 @@ const recipes: { [key: RecipeUuid]: IRecipe } = {
       },
     ],
   },
-  "10": {
+  {
     uuid: "10",
     name: "Recipe 2",
     description: "",
@@ -50,7 +46,7 @@ const recipes: { [key: RecipeUuid]: IRecipe } = {
       },
     ],
   },
-  "100": {
+  {
     uuid: "100",
     name: "Recipe 3",
     description: "",
@@ -79,7 +75,7 @@ const recipes: { [key: RecipeUuid]: IRecipe } = {
       },
     ],
   },
-};
+];
 
 test("", () => {
   expect(

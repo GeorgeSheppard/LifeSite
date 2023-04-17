@@ -15,7 +15,7 @@ export interface IClickToUploadProps {
    * e.g. ["png", "jpg", "stl"]
    */
   fileFormatsAccepted: string[];
-  children: ReactElement | ReactElement[];
+  children: (loading: boolean) => ReactElement | ReactElement[];
 }
 
 /**
@@ -25,7 +25,7 @@ export interface IClickToUploadProps {
  * to upload.
  */
 export const ClickToUpload = (props: IClickToUploadProps) => {
-  const { uploadFile } = useUploadToS3({
+  const { uploadFile, loading } = useUploadToS3({
     onUploadFinished: props.onUploadFinished,
     onUploadError: props.onUploadError,
     onStartUpload: props.onStartUpload,
@@ -56,7 +56,7 @@ export const ClickToUpload = (props: IClickToUploadProps) => {
         onChange={getAndUploadFile}
         accept={fileFormats}
       />
-      <label htmlFor="upload-input">{props.children}</label>
+      <label htmlFor="upload-input">{props.children(loading)}</label>
     </>
   );
 };

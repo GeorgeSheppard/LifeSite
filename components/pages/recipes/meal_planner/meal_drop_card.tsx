@@ -1,7 +1,6 @@
 import ButtonGroup from "@mui/material/ButtonGroup";
 import Card from "@mui/material/Card";
 import CardHeader from "@mui/material/CardHeader";
-import { addOrUpdatePlan } from "../../../../store/reducers/food/meal_plan/meal_plan";
 import PersonIcon from "@mui/icons-material/Person";
 import Typography from "@mui/material/Typography";
 import Tooltip from "@mui/material/Tooltip";
@@ -14,8 +13,8 @@ import {
   IComponentItem,
 } from "../../../../store/reducers/food/meal_plan/types";
 import { RecipeUuid } from "../../../../store/reducers/food/recipes/types";
-import { useMealPlan, useRecipes } from "../../../hooks/use_data";
-import { useMutateAndStore } from "../../../hooks/user_data";
+import { useMealPlan, useRecipe, useRecipes } from "../../../hooks/user_data/use_dynamo";
+import { usePutMealPlanToDynamo } from "../../../hooks/user_data/use_dynamo_put";
 import AddIcon from "@mui/icons-material/Add";
 import { Dialog, DialogContent, List, ListItem } from "@mui/material";
 import { useBoolean } from "../../../hooks/use_boolean";
@@ -30,7 +29,7 @@ export const DroppableCard = (props: {
   const { day, selected, onClick, setSelected } = props;
   const meals = useMealPlan().data[day];
   const recipes = useRecipes().data;
-  const { mutate } = useMutateAndStore(addOrUpdatePlan);
+  const { mutate, disabled } = usePutMealPlanToDynamo();
   const [dialogOpen, setters] = useBoolean(false);
 
   const toggleOnClick = useCallback(
@@ -43,11 +42,11 @@ export const DroppableCard = (props: {
   const addRecipeToMealPlan = (item: { uuid: RecipeUuid }) => {
     mutate({
       date: day,
-      components: recipes[item.uuid].components.map((component) => ({
+      components: recipes?.find(rec => rec.uuid === item.uuid)?.components.map((component) => ({
         recipeId: item.uuid,
         componentId: component.uuid,
         servingsIncrease: component.servings ?? 1,
-      })),
+      })) ?? [],
     });
     if (!selected) {
       setSelected((prevSelected) => {
@@ -65,6 +64,7 @@ export const DroppableCard = (props: {
       collect: (monitor) => ({
         isOver: !!monitor.isOver(),
       }),
+      canDrop: () => !disabled
     }),
     [day, recipes, setSelected]
   );
@@ -76,11 +76,11 @@ export const DroppableCard = (props: {
     <>
       <Dialog open={dialogOpen} onClose={setters.turnOff}>
         <DialogContent>
-          {Object.values(recipes).length === 0 ? (
+          {recipes?.length === 0 ? (
             <Typography>No recipes available</Typography>
           ) : (
             <List>
-              {Object.values(recipes).map((recipe) => {
+              {recipes?.map((recipe) => {
                 return (
                   <ListItem key={recipe.uuid}>
                     <Button
@@ -88,6 +88,7 @@ export const DroppableCard = (props: {
                         addRecipeToMealPlan({ uuid: recipe.uuid });
                         setters.turnOff();
                       }}
+                      disabled={disabled}
                     >
                       {recipe.name}
                     </Button>
@@ -166,8 +167,8 @@ const RecipeName = ({
   recipeId: RecipeUuid;
   day: DateString;
 }) => {
-  const recipe = useRecipes().data[recipeId];
-  const { mutate } = useMutateAndStore(addOrUpdatePlan);
+  const recipe = useRecipe(recipeId).data;
+  const { mutate, disabled } = usePutMealPlanToDynamo();
 
   if (!recipe) {
     return null;
@@ -237,6 +238,7 @@ const RecipeName = ({
                       ],
                     });
                   }}
+                  disabled={disabled}
                 >
                   -
                 </Button>
@@ -254,6 +256,7 @@ const RecipeName = ({
                       ],
                     });
                   }}
+                  disabled={disabled}
                 >
                   +
                 </Button>

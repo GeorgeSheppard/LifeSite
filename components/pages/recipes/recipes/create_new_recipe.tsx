@@ -3,8 +3,8 @@ import Card from "@mui/material/Card";
 import Grid from "@mui/material/Grid";
 import { useRouter } from "next/router";
 import { useCallback } from "react";
-import { v4 as uuidv4 } from "uuid";
 import AddIcon from "@mui/icons-material/Add";
+import { NewRecipe } from "../../../../pages/food/[recipeUuid]";
 
 export interface ICreateNewRecipeCard {}
 
@@ -12,7 +12,7 @@ export const CreateNewRecipeCard = (props: ICreateNewRecipeCard) => {
   const router = useRouter();
 
   const uuidOnClick = useCallback(() => {
-    router.push(`/food/${uuidv4()}`);
+    router.push(`/food/${NewRecipe}`);
   }, [router]);
 
   return (
