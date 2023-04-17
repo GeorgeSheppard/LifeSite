@@ -122,7 +122,7 @@ export const usePutRecipeToDynamo = () => {
       },
       {
         onMutate: (recipe) => mutate(recipe, userId),
-        onError: (_, __, context) => context && reset(context),
+        onError: (_, __, context) => context && reset(context as any),
       }
     ),
     disabled: loading,
@@ -158,7 +158,7 @@ export const usePutMealPlanToDynamo = () => {
       },
       {
         onMutate: (update: IAddOrUpdatePlan) => mutate(update, userId),
-        onError: (_, __, context) => context && reset(context),
+        onError: (_, __, context) => context && reset(context as any),
       }
     ),
     disabled: loading,

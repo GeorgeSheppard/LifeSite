@@ -95,7 +95,7 @@ export const useDeleteRecipeFromDynamo = () => {
       },
       {
         onMutate: (recipeId) => mutate(recipeId, userId),
-        onError: (_, __, context) => context && reset(context),
+        onError: (_, __, context) => context && reset(context as any),
       }
     ),
     disabled: loading,
