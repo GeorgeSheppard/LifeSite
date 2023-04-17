@@ -1,11 +1,14 @@
 import { mealPlanEmptyState } from "../../../store/reducers/food/meal_plan/meal_plan";
 import { IMealPlan } from "../../../store/reducers/food/meal_plan/types";
-import { IRecipe, RecipeUuid } from "../../../store/reducers/food/recipes/types";
+import {
+  IRecipe,
+  RecipeUuid,
+} from "../../../store/reducers/food/recipes/types";
 import { AwsDynamoDocClient } from "./dynamo_client";
 
-// Recipe, Meal Plan, or Print. Note meal plan does not have a dash after because there is only one
+// Recipe, or Meal Plan. Note meal plan does not have a dash after because there is only one
 // meal plan per account
-export type ItemType = "R-" | "MP" | "M-";
+export type ItemType = "R-" | "MP";
 
 type RecipeKey = { type: "R-"; id: RecipeUuid };
 type MealPlanKey = { type: "MP" };
@@ -16,7 +19,7 @@ type Item =
   | (RecipeKey & {
       item: IRecipe;
     })
-  | (MealPlanKey & { item: IMealPlan })
+  | (MealPlanKey & { item: IMealPlan });
 
 class NotFoundError extends Error {
   constructor(msg: string) {
@@ -55,9 +58,7 @@ export const getFromDynamo = async (key: Keys, userId: string) => {
     },
   });
   if (result.$metadata.httpStatusCode !== 200) {
-    throw new Error(
-      `Error fetching recipe: ${result.$metadata.httpStatusCode}`
-    );
+    throw new Error(`Error fetching: ${result.$metadata.httpStatusCode}`);
   }
   if (!result.Item) {
     throw new NotFoundError(`Cannot find item ${getSortKey(key)}`);

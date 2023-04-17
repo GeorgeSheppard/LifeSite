@@ -17,7 +17,7 @@ import {
   addOrUpdatePlan,
 } from "../../../store/reducers/food/meal_plan/meal_plan";
 
-interface IRecipeCacheContext {
+export interface IRecipeCacheContext {
   rQueryKey: string[];
   previousRecipeValue: IRecipe | undefined;
   rsQueryKey: string[];
@@ -74,7 +74,7 @@ const useMutateRecipeInCache = () => {
 };
 
 interface IMealPlanCacheContext {
-  mQueryKey: QueryKey,
+  mQueryKey: QueryKey;
   previousMealPlan: IMealPlan | undefined;
 }
 
@@ -85,24 +85,24 @@ const useMutateMealPlanInCache = () => {
     mutate: (update: IAddOrUpdatePlan, userId: string) => {
       const mQueryKey = mealPlanQueryKey(userId);
       // Meal plan is always defined because we use initial data
-      const previousMealPlan: IMealPlan = queryClient.getQueryData(mQueryKey)!
+      const previousMealPlan: IMealPlan = queryClient.getQueryData(mQueryKey)!;
       queryClient.setQueryData(mQueryKey, () =>
         addOrUpdatePlan(previousMealPlan, update)
       );
 
-      return { mQueryKey, previousMealPlan }
+      return { mQueryKey, previousMealPlan };
     },
     reset: (context: IMealPlanCacheContext) => {
-      queryClient.setQueryData(context.mQueryKey, context.previousMealPlan)
-    }
-  }
-}
+      queryClient.setQueryData(context.mQueryKey, context.previousMealPlan);
+    },
+  };
+};
 
 type SharedUpload = any;
 // When a user is not logged in and is just trying the website, they read from a shared account on dynamo
 // DB. When they make put operations we don't actually make modifications to the database but instead just
 // update the query client cache. This means it is all wiped when they refresh without making changes to the database.
-const sharedUpload: SharedUpload = [];
+export const sharedUpload: SharedUpload = [];
 
 export const usePutRecipeToDynamo = () => {
   const { id, loading } = useAppSession();
@@ -128,7 +128,6 @@ export const usePutRecipeToDynamo = () => {
     disabled: loading,
   };
 };
-
 
 export const usePutMealPlanToDynamo = () => {
   const { id, loading } = useAppSession();
@@ -159,7 +158,7 @@ export const usePutMealPlanToDynamo = () => {
       },
       {
         onMutate: (update: IAddOrUpdatePlan) => mutate(update, userId),
-        onError: (_, __, context) => context && reset(context)
+        onError: (_, __, context) => context && reset(context),
       }
     ),
     disabled: loading,

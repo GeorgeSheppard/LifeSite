@@ -78,17 +78,17 @@ const getDefaultInstruction = () => ({
   text: "",
 });
 
-export const NewRecipe = "newRecipe"
+export const NewRecipe = "newRecipe";
 
 export default function RecipeForm() {
   const router = useRouter();
   const uuid = router.query.recipeUuid as RecipeUuid | undefined;
   const recipe = useRecipe(uuid ?? "");
   if (!uuid) {
-    return <LinearProgress />
+    return <LinearProgress />;
   }
   if (uuid === NewRecipe) {
-    return <FormWithData recipe={getDefaultRecipe(uuidv4())} />
+    return <FormWithData recipe={getDefaultRecipe(uuidv4())} />;
   }
   if (recipe.isError) {
     console.error("Error: ", recipe.error);
@@ -105,7 +105,7 @@ export default function RecipeForm() {
 
 export const FormWithData = ({ recipe }: { recipe: IRecipe }) => {
   const router = useRouter();
-  const { mutateAsync, disabled } = usePutRecipeToDynamo()
+  const { mutateAsync, disabled } = usePutRecipeToDynamo();
   const {
     register,
     handleSubmit,
@@ -262,7 +262,7 @@ export const FormWithData = ({ recipe }: { recipe: IRecipe }) => {
           </Button>
           <ExitSaveButtons
             saveDisabled={disabled}
-            exitOnClick={() => router.push('/food')}
+            exitOnClick={() => router.push("/food")}
             // React hook form targets buttons with type="submit" so no handler is necessary
             saveOnClick={() => {}}
             boxSx={{ display: "flex", justifyContent: "space-between", pt: 1 }}

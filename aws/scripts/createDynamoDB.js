@@ -1,7 +1,4 @@
-import {
-  DynamoDBClient,
-  CreateTableCommand,
-} from "@aws-sdk/client-dynamodb";
+import { DynamoDBClient, CreateTableCommand } from "@aws-sdk/client-dynamodb";
 import * as DotEnv from "dotenv";
 DotEnv.config({ path: "../.env.local" });
 

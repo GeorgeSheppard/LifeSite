@@ -1,5 +1,6 @@
 import CardMedia, { CardMediaProps } from "@mui/material/CardMedia";
 import { useQuery } from "@tanstack/react-query";
+import { useState } from "react";
 import { S3Key } from "../../store/reducers/types";
 import { getS3SignedUrl } from "../aws/s3/s3_utilities";
 
@@ -13,6 +14,7 @@ export interface IS3CardMediaProps extends CardMediaProps<"img"> {
  */
 export const S3CardMedia = (props: IS3CardMediaProps) => {
   const { s3Key, ...mediaProps } = props;
+  const [show, setShow] = useState(true);
   const signedUrl = useQuery({
     queryKey: [s3Key],
     queryFn: () => getS3SignedUrl(s3Key),
@@ -22,5 +24,16 @@ export const S3CardMedia = (props: IS3CardMediaProps) => {
     return null;
   }
 
-  return <CardMedia src={signedUrl.data} component="img" {...mediaProps} />;
+  if (!show) {
+    return null;
+  }
+
+  return (
+    <CardMedia
+      src={signedUrl.data}
+      component="img"
+      {...mediaProps}
+      onError={() => setShow(false)}
+    ></CardMedia>
+  );
 };
