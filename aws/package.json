@@ -15,6 +15,7 @@
   "scripts": {
     "createUserPool": "node scripts/createCognitoUserPool.js",
     "createS3Bucket": "node scripts/createS3Bucket.js",
-    "createDynamoDB": "node scripts/createDynamoDB.js"
+    "createDynamoDB": "node scripts/createDynamoDB.js",
+    "migrateS3ToDynamo": "node scripts/migrateS3ToDynamo.js"
   }
 }
