@@ -78,6 +78,7 @@ export const Planner = (props: ICalendarRowProps) => {
               selected={selected.has(day)}
               setSelected={setSelected}
               onClick={onClick}
+              loading={mealPlan.isFetching && mealPlan.isPlaceholderData}
             />
           </Grid>
         );

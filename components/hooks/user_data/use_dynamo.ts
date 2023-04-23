@@ -72,7 +72,6 @@ export const useMealPlan = (): WithDefined<
     queryKey: mealPlanQueryKey(userId),
     queryFn: () => getMealPlanForAUser(userId),
     enabled: !loading,
-    // initialData: mealPlanEmptyState,
     placeholderData: mealPlanEmptyState,
     select: (mealPlan: IMealPlan) => {
       let newDatesMealPlan = clone(mealPlanEmptyState);
