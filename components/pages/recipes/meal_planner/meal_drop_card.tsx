@@ -6,17 +6,27 @@ import Typography from "@mui/material/Typography";
 import Tooltip from "@mui/material/Tooltip";
 import Button from "@mui/material/Button";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { Dispatch, MouseEvent, SetStateAction, useCallback } from "react";
+import {
+  Dispatch,
+  MouseEvent,
+  SetStateAction,
+  useCallback,
+  useState,
+} from "react";
 import { useDrop } from "react-dnd";
 import {
   DateString,
   IComponentItem,
 } from "../../../../store/reducers/food/meal_plan/types";
 import { RecipeUuid } from "../../../../store/reducers/food/recipes/types";
-import { useMealPlan, useRecipe, useRecipes } from "../../../hooks/user_data/use_dynamo";
+import {
+  useMealPlan,
+  useRecipe,
+  useRecipes,
+} from "../../../hooks/user_data/use_dynamo";
 import { usePutMealPlanToDynamo } from "../../../hooks/user_data/use_dynamo_put";
 import AddIcon from "@mui/icons-material/Add";
-import { Dialog, DialogContent, List, ListItem } from "@mui/material";
+import { Dialog, DialogContent, List, ListItem, Skeleton } from "@mui/material";
 import { useBoolean } from "../../../hooks/use_boolean";
 import { useIsMobileLayout } from "../hooks/is_mobile_layout";
 
@@ -25,8 +35,9 @@ export const DroppableCard = (props: {
   selected: boolean;
   setSelected: Dispatch<SetStateAction<Set<DateString>>>;
   onClick: (day: DateString) => (event: MouseEvent<HTMLDivElement>) => void;
+  loading: boolean;
 }) => {
-  const { day, selected, onClick, setSelected } = props;
+  const { day, selected, onClick, setSelected, loading } = props;
   const meals = useMealPlan().data[day];
   const recipes = useRecipes().data;
   const { mutate, disabled } = usePutMealPlanToDynamo();
@@ -42,11 +53,14 @@ export const DroppableCard = (props: {
   const addRecipeToMealPlan = (item: { uuid: RecipeUuid }) => {
     mutate({
       date: day,
-      components: recipes?.find(rec => rec.uuid === item.uuid)?.components.map((component) => ({
-        recipeId: item.uuid,
-        componentId: component.uuid,
-        servingsIncrease: component.servings ?? 1,
-      })) ?? [],
+      components:
+        recipes
+          ?.find((rec) => rec.uuid === item.uuid)
+          ?.components.map((component) => ({
+            recipeId: item.uuid,
+            componentId: component.uuid,
+            servingsIncrease: component.servings ?? 1,
+          })) ?? [],
     });
     if (!selected) {
       setSelected((prevSelected) => {
@@ -64,7 +78,7 @@ export const DroppableCard = (props: {
       collect: (monitor) => ({
         isOver: !!monitor.isOver(),
       }),
-      canDrop: () => !disabled
+      canDrop: () => !disabled && !loading,
     }),
     [day, recipes, setSelected]
   );
@@ -117,10 +131,14 @@ export const DroppableCard = (props: {
             display: "flex",
             justifyContent: "space-between",
             alignItems: "center",
-            paddingRight: 8,
+            padding: "8px 16px",
           }}
         >
-          <CardHeader title={dayWithoutYear} className="noSelect" />
+          <CardHeader
+            title={dayWithoutYear}
+            className="noSelect"
+            sx={{ padding: 0 }}
+          />
           {mobileLayout && (
             <Button
               variant="contained"
@@ -129,6 +147,7 @@ export const DroppableCard = (props: {
                 event.stopPropagation();
                 setters.turnOn();
               }}
+              disabled={loading}
             >
               Add
             </Button>
@@ -143,6 +162,7 @@ export const DroppableCard = (props: {
             marginRight: 16,
           }}
         >
+          {loading && <LoadingMealComponents />}
           {meals &&
             Object.entries(meals).map(([recipeId, components]) => (
               <RecipeName
@@ -154,6 +174,54 @@ export const DroppableCard = (props: {
             ))}
         </div>
       </Card>
+    </>
+  );
+};
+
+function weightedRandom(min: number, max: number) {
+  return Math.round(max / (Math.random() * max + min));
+}
+
+const LoadingMealComponents = () => {
+  const [numComponents, _] = useState(weightedRandom(1, 3));
+
+  return (
+    <>
+      {Array.from(Array(numComponents).keys()).map((num) => (
+        <div style={{ marginBottom: 16 }} key={num}>
+          <Skeleton
+            variant="text"
+            sx={{
+              fontSize: 12,
+              width: 120,
+              marginLeft: 0,
+              marginTop: 1,
+            }}
+          />
+          <LoadingComponentLines />
+        </div>
+      ))}
+    </>
+  );
+};
+
+const LoadingComponentLines = () => {
+  const [numLines, _] = useState(weightedRandom(1, 5));
+
+  return (
+    <>
+      {Array.from(Array(numLines).keys()).map((num) => (
+        <Skeleton
+          key={num}
+          variant="text"
+          sx={{
+            fontSize: 12,
+            width: 250,
+            marginLeft: 2,
+            marginTop: 1,
+          }}
+        />
+      ))}
     </>
   );
 };
@@ -192,11 +260,13 @@ const RecipeName = ({
       style={{
         display: "flex",
         justifyContent: "space-between",
-        paddingBottom: 10,
+        paddingBottom: 8,
         flexDirection: "column",
       }}
     >
-      <p style={{ marginTop: 10, marginBottom: 10 }}>{recipe.name}</p>
+      <Typography style={{ marginTop: 8, marginBottom: 12, fontSize: 18 }}>
+        {recipe.name}
+      </Typography>
       {componentProperties.map(({ name, servings, componentId }) => {
         return (
           <div
@@ -205,9 +275,10 @@ const RecipeName = ({
               display: "flex",
               alignItems: "center",
               justifyContent: "space-between",
+              marginBottom: 12,
             }}
           >
-            <p style={{ marginLeft: 20 }}>{name}</p>
+            <Typography style={{ marginLeft: 20 }}>{name}</Typography>
             <div style={{ display: "flex" }}>
               <Tooltip title={`${servings} serving`}>
                 {/* div instead of fragment as tooltip doesn't work with fragment */}

@@ -19,15 +19,13 @@ import { useIsMobileLayout } from "../../components/pages/recipes/hooks/is_mobil
 import { IRecipe } from "../../store/reducers/food/recipes/types";
 import { UseQueryResult } from "@tanstack/react-query";
 
-const allSearchValues = new Set(["name", "description", "ingredients"])
+const allSearchValues = new Set(["name", "description", "ingredients"]);
 
 const Recipes = () => {
   const mobileLayout = useIsMobileLayout();
 
   const [keys, setKeys] = useState(() => allSearchValues);
-  const recipeSearch = useRecipeSearch(
-    mobileLayout ? allSearchValues : keys
-  );
+  const recipeSearch = useRecipeSearch(mobileLayout ? allSearchValues : keys);
   const recipes = useRecipes();
   const [selected, setSelected] = useState<Set<DateString>>(() => new Set());
   const booleanState = useBoolean(false);
@@ -62,7 +60,7 @@ const Recipes = () => {
 
 interface MobileStateProps {
   recipeSearch: IRecipeSearcher;
-  recipes: UseQueryResult<IRecipe[]>,
+  recipes: UseQueryResult<IRecipe[]>;
   selected: Set<string>;
   setSelected: Dispatch<SetStateAction<Set<string>>>;
   booleanState: IUseBoolean;
@@ -95,46 +93,51 @@ const MobileLayout = (props: MobileStateProps) => {
         sx={{ py: 3, margin: "auto", display: "flex", px: 3 }}
         maxWidth="xl"
       >
-      <ShoppingListDialog
-        quantityAndMeals={shoppingListData}
-        on={on}
-        turnOff={turnOff}
-      />
+        <ShoppingListDialog
+          quantityAndMeals={shoppingListData}
+          on={on}
+          turnOff={turnOff}
+        />
         <Grid item xs={12} sm={12} md={12}>
-          <Tabs value={tab} onChange={changeTab} variant="fullWidth" sx={{marginY: 3}}>
+          <Tabs
+            value={tab}
+            onChange={changeTab}
+            variant="fullWidth"
+            sx={{ marginY: 3 }}
+          >
             <Tab value="recipes" label="Recipes" />
             <Tab value="mealplan" label="Meal Plan" />
           </Tabs>
-          {tab === "recipes" ? 
-          
-          <Box component="div">
-            <Grid item key={"Search"} px={0}>
-              <OutlinedInput
-                value={searchInput}
-                onChange={setSearchInput}
-                sx={{ marginBottom: 3 }}
-                placeholder="Search"
-                fullWidth
+          {tab === "recipes" ? (
+            <Box component="div">
+              <Grid item key={"Search"} px={0}>
+                <OutlinedInput
+                  value={searchInput}
+                  onChange={setSearchInput}
+                  sx={{ marginBottom: 3 }}
+                  placeholder="Search"
+                  fullWidth
                 />
-            </Grid>
-            <RecipeGrid
-              searchResults={searchResults}
-              loading={recipes.isFetching && !recipes.isRefetching}
+              </Grid>
+              <RecipeGrid
+                searchResults={searchResults}
+                loading={recipes.isFetching && !recipes.isRefetching}
               />
-          </Box> :
-          <Box component="div">
-            <div className="noSelect">
-              <CreateShoppingListButton
-                selected={selected}
-                setSelected={setSelected}
-                openListDialog={turnOn}
-                setShoppingList={setShoppingListData}
+            </Box>
+          ) : (
+            <Box component="div">
+              <div className="noSelect">
+                <CreateShoppingListButton
+                  selected={selected}
+                  setSelected={setSelected}
+                  openListDialog={turnOn}
+                  setShoppingList={setShoppingListData}
                 />
-              <Planner selected={selected} setSelected={setSelected} />
-            </div>
-          </Box>
-              }
-  </Grid>
+                <Planner selected={selected} setSelected={setSelected} />
+              </div>
+            </Box>
+          )}
+        </Grid>
       </Grid>
     </main>
   );
@@ -195,6 +198,8 @@ const DesktopLayout = (
                 height: `calc(100vh - 64px - ${headerHeight}px - 40px)`,
                 position: "fixed",
                 overflowY: "scroll",
+                paddingLeft: 8,
+                paddingRight: 8,
               }}
             >
               <CreateShoppingListButton
