@@ -29,6 +29,7 @@ module.exports = (phase) => {
     ENV_AWS_DYNAMO_ACCESS_KEY: process.env.ENV_AWS_DYNAMO_ACCESS_KEY,
     ENV_AWS_DYNAMO_SECRET_ACCESS_KEY:
       process.env.ENV_AWS_DYNAMO_SECRET_ACCESS_KEY,
+    ENV_OPENAI_SECRET_ACCESS_KEY: process.env.ENV_OPENAI_SECRET
   };
 
   if (phase !== PHASE_DEVELOPMENT_SERVER) {
