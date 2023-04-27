@@ -72,7 +72,7 @@ const getDefaultComponent = () => ({
 });
 const getDefaultIngredient = () => ({
   name: "",
-  quantity: { unit: Unit.GRAM },
+  quantity: { unit: Unit.GRAM, value: 1 },
 });
 const getDefaultInstruction = () => ({
   text: "",
@@ -227,13 +227,20 @@ export const FormWithData = ({ recipe }: { recipe: IRecipe }) => {
                     <TextField
                       label="Servings"
                       variant="standard"
-                      type="number"
                       margin="none"
                       sx={{ width: "100px" }}
                       {...register(`components.${index}.servings`, {
-                        valueAsNumber: true,
                         min: 1,
+                        pattern: /^(0|[1-9]\d*)(\.\d+)?$/,
+                        validate: (num) => !!num && num > 0,
+                        required: "A servings value is required"
                       })}
+                      error={
+                        !!errors.components?.[index]?.servings
+                      }
+                      helperText={
+                        errors.components?.[index]?.servings?.message
+                      }
                     />
                     <Tooltip title="Can it last in the cupboard, or freezer">
                       <FormControlLabel
@@ -346,7 +353,9 @@ export const IngredientsList = ({
                     <Select
                       margin="none"
                       label="Unit"
-                      defaultValue={getDefaultIngredient().quantity.unit}
+                      value={watch(
+                        `components.${index}.ingredients.${ingredientIndex}.quantity.unit`
+                      ) ?? getDefaultIngredient().quantity.unit}
                       {...register(
                         `components.${index}.ingredients.${ingredientIndex}.quantity.unit`,
                         {
@@ -385,12 +394,11 @@ export const IngredientsList = ({
                   <TextField
                     variant="standard"
                     margin="none"
-                    type="number"
                     {...register(
                       `components.${index}.ingredients.${ingredientIndex}.quantity.value`,
                       {
                         min: 0,
-                        valueAsNumber: true,
+                        pattern: /^(0|[1-9]\d*)(\.\d+)?$/,
                         validate: (value, formValues) =>
                           formValues.components[index].ingredients[
                             ingredientIndex

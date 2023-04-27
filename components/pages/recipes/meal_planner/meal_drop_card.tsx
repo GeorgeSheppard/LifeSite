@@ -178,7 +178,7 @@ export const DroppableCard = (props: {
   );
 };
 
-function weightedRandom(min: number, max: number) {
+export function weightedRandom(min: number, max: number) {
   return Math.round(max / (Math.random() * max + min));
 }
 
