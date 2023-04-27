@@ -1,4 +1,4 @@
-import { useMemo, useState, useCallback, ChangeEvent } from "react";
+import { useMemo, useState, useCallback, ChangeEvent } from 'react';
 import {
   IIngredientName,
   RecipeUuid,
@@ -21,18 +21,18 @@ export interface IRecipeSearcher {
 }
 
 export const useRecipeSearch = (keys: Set<string>): IRecipeSearcher => {
-  const recipes = useRecipes().data;
+  const { data: recipes } = useRecipes();
   const searchableRecipes = useMemo(() => {
     // Note: Fuse.js had trouble searching the nested structure for ingredients
     // so I flatten out the recipes here
     return (
-      recipes?.map((recipe) => ({
+      recipes?.sort((recipeA, recipeB) => recipeB.images.length - recipeA.images.length).map((recipe) => ({
         uuid: recipe.uuid,
         name: recipe.name,
         description: recipe.description,
         ingredients: recipe.components.flatMap((component) =>
           component.ingredients.map((ingredient) => ingredient.name)
-        ),
+        )
       })) ?? []
     );
   }, [recipes]);
@@ -47,13 +47,10 @@ export const useRecipeSearch = (keys: Set<string>): IRecipeSearcher => {
   const defaultSearchResults = useMemo(
     () =>
       new Set(
-        recipes
-          ?.sort((recipeA, recipeB) => {
-            return recipeB.images.length - recipeA.images.length;
-          })
+        searchableRecipes
           .map((recipe) => recipe.uuid)
       ),
-    [recipes]
+    [searchableRecipes]
   );
 
   const getSearchResults = useCallback(() => {
@@ -66,18 +63,12 @@ export const useRecipeSearch = (keys: Set<string>): IRecipeSearcher => {
   }, [search, searchInput, defaultSearchResults]);
 
   const searchResults = useDebounce(
-    defaultSearchResults,
     getSearchResults,
     300
   );
 
-  const setSearchInputCallback = useCallback(
-    (event: ChangeEvent<HTMLInputElement>) => {
-      setSearchInput(event.target.value);
-    },
-    [setSearchInput]
-  );
 
+  // Visible recipes need to be sorted first
   const uuidsWithVisibility = useMemo(() => {
     const visibleRecipes = Array.from(searchResults).map((result) => ({
       uuid: result,
@@ -93,6 +84,6 @@ export const useRecipeSearch = (keys: Set<string>): IRecipeSearcher => {
   return {
     searchResults: uuidsWithVisibility,
     searchInput,
-    setSearchInput: setSearchInputCallback,
+    setSearchInput: (event: ChangeEvent<HTMLInputElement>) => setSearchInput(event.target.value)
   };
 };
