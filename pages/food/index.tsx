@@ -1,4 +1,4 @@
-import { Box, Grid, Tab, Tabs } from "@mui/material";
+import { Box, Grid, NoSsr, Tab, Tabs } from "@mui/material";
 import OutlinedInput from "@mui/material/OutlinedInput";
 import { Dispatch, SetStateAction, useState } from "react";
 import { headerHeight } from "../../components/core/header";
@@ -33,28 +33,33 @@ const Recipes = () => {
     {}
   );
 
-  return mobileLayout ? (
-    <MobileLayout
-      recipeSearch={recipeSearch}
-      recipes={recipes}
-      selected={selected}
-      setSelected={setSelected}
-      booleanState={booleanState}
-      shoppingListData={shoppingListData}
-      setShoppingListData={setShoppingListData}
-    />
-  ) : (
-    <DesktopLayout
-      keys={keys}
-      setKeys={setKeys}
-      recipeSearch={recipeSearch}
-      recipes={recipes}
-      selected={selected}
-      setSelected={setSelected}
-      booleanState={booleanState}
-      shoppingListData={shoppingListData}
-      setShoppingListData={setShoppingListData}
-    />
+  // NoSsr because of media query used to determine mobile layout or not
+  return (
+    <NoSsr>
+      {mobileLayout ? (
+        <MobileLayout
+          recipeSearch={recipeSearch}
+          recipes={recipes}
+          selected={selected}
+          setSelected={setSelected}
+          booleanState={booleanState}
+          shoppingListData={shoppingListData}
+          setShoppingListData={setShoppingListData}
+        />
+      ) : (
+        <DesktopLayout
+          keys={keys}
+          setKeys={setKeys}
+          recipeSearch={recipeSearch}
+          recipes={recipes}
+          selected={selected}
+          setSelected={setSelected}
+          booleanState={booleanState}
+          shoppingListData={shoppingListData}
+          setShoppingListData={setShoppingListData}
+        />
+      )}
+    </NoSsr>
   );
 };
 
