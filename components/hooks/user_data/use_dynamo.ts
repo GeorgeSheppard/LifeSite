@@ -35,7 +35,6 @@ export const useRecipes = () => {
   const recipes = useQuery({
     queryKey,
     queryFn: () => getAllRecipesForAUser(userId),
-    placeholderData: [],
     enabled: !loading,
   });
 

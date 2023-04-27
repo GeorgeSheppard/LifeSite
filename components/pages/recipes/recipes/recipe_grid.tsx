@@ -23,7 +23,7 @@ export const RecipeGrid = (props: RecipeGridProps) => {
         </>
       ) : (
         <>
-          {Array.from(Array(8)).map((_, index) => {
+          {Array.from(Array(15)).map((_, index) => {
             return <LoadingRecipeItem key={index} />;
           })}
         </>

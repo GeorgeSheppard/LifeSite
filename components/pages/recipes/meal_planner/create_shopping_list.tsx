@@ -64,7 +64,7 @@ export const CreateShoppingListButton = (
           disabled={
             props.selected.size === 0 ||
             recipes.isLoading ||
-            mealPlan.isLoading ||
+            mealPlan.isPlaceholderData ||
             recipes.isError
           }
         >

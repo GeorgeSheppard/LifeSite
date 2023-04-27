@@ -117,11 +117,12 @@ const MobileLayout = (props: MobileStateProps) => {
                   sx={{ marginBottom: 3 }}
                   placeholder="Search"
                   fullWidth
+                  disabled={recipes.isLoading}
                 />
               </Grid>
               <RecipeGrid
                 searchResults={searchResults}
-                loading={recipes.isFetching && !recipes.isRefetching}
+                loading={recipes.isLoading}
               />
             </Box>
           ) : (
@@ -182,11 +183,12 @@ const DesktopLayout = (
                 sx={{ marginBottom: 3, mt: 1 }}
                 placeholder="Search"
                 fullWidth
+                disabled={recipes.isLoading}
               />
             </Grid>
             <RecipeGrid
               searchResults={searchResults}
-              loading={recipes.isFetching && !recipes.isRefetching}
+              loading={recipes.isLoading}
             />
           </Box>
         </Grid>

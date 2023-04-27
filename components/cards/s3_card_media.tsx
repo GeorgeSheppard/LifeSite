@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { S3Key } from "../../store/reducers/types";
 import { getS3SignedUrl } from "../aws/s3/s3_utilities";
+import { Skeleton } from "@mui/material";
 
 export interface IS3CardMediaProps extends CardMediaProps<"img"> {
   s3Key: S3Key;
@@ -15,6 +16,7 @@ export interface IS3CardMediaProps extends CardMediaProps<"img"> {
 export const S3CardMedia = (props: IS3CardMediaProps) => {
   const { s3Key, ...mediaProps } = props;
   const [show, setShow] = useState(true);
+  const [imageLoading, setImageLoading] = useState(true);
   const signedUrl = useQuery({
     queryKey: [s3Key],
     queryFn: () => getS3SignedUrl(s3Key),
@@ -29,11 +31,18 @@ export const S3CardMedia = (props: IS3CardMediaProps) => {
   }
 
   return (
-    <CardMedia
-      src={signedUrl.data}
-      component="img"
-      {...mediaProps}
-      onError={() => setShow(false)}
-    ></CardMedia>
+    <>
+      {(signedUrl.isLoading || imageLoading) && (
+        <Skeleton variant="rectangular" height={300} width="100%" />
+      )}
+      <CardMedia
+        src={signedUrl.data}
+        component="img"
+        {...mediaProps}
+        onError={() => setShow(false)}
+        onLoad={() => setImageLoading(false)}
+        height={imageLoading ? 0 : mediaProps.height}
+      />
+    </>
   );
 };
