@@ -16,6 +16,7 @@ import {
   IAddOrUpdatePlan,
   addOrUpdatePlan,
 } from "../../../store/reducers/food/meal_plan/meal_plan";
+import { useMealPlan } from "./use_dynamo";
 
 export interface IRecipeCacheContext {
   rQueryKey: string[];
@@ -80,12 +81,13 @@ interface IMealPlanCacheContext {
 
 const useMutateMealPlanInCache = () => {
   const queryClient = useQueryClient();
+  const mealPlan = useMealPlan();
 
   return {
     mutate: (update: IAddOrUpdatePlan, userId: string) => {
       const mQueryKey = mealPlanQueryKey(userId);
       // Meal plan is always defined because we use initial data
-      const previousMealPlan: IMealPlan = queryClient.getQueryData(mQueryKey)!;
+      const previousMealPlan: IMealPlan = mealPlan.data;
       queryClient.setQueryData(mQueryKey, () =>
         addOrUpdatePlan(previousMealPlan, update)
       );
@@ -132,8 +134,8 @@ export const usePutRecipeToDynamo = () => {
 export const usePutMealPlanToDynamo = () => {
   const { id, loading } = useAppSession();
   const userId = id ?? shared;
-  const queryClient = useQueryClient();
   const { mutate, reset } = useMutateMealPlanInCache();
+  const mealPlan = useMealPlan();
 
   return {
     ...useMutation(
@@ -141,9 +143,7 @@ export const usePutMealPlanToDynamo = () => {
         if (loading) {
           throw new Error("User loading");
         }
-        const currentMealPlan: IMealPlan | undefined = queryClient.getQueryData(
-          mealPlanQueryKey(userId)
-        );
+        const currentMealPlan: IMealPlan | undefined = mealPlan.data
         if (!currentMealPlan) {
           throw new Error("No current meal plan");
         }

@@ -122,7 +122,8 @@ export const getMealPlanForAUser = async (
 ): Promise<IMealPlan> => {
   try {
     const result = await getFromDynamo({ type: "MP" }, userId);
-    return result.Item!;
+    const { Item, UserId, ...obj } = result.Item!;
+    return obj;
   } catch (err) {
     if (err instanceof NotFoundError) {
       return mealPlanEmptyState;
