@@ -1,8 +1,8 @@
 import Grid from "@mui/material/Grid";
-import { RecipeUuid } from "../../../../core/types/recipes";
-import { CreateNewRecipeCard } from "./create_new_recipe";
-import { LoadingRecipeItem } from "./loading_skeleton";
 import { RecipeCardWithDeleteDialog } from "./recipe_card";
+import { CreateNewRecipeCard } from "./card_components/create_new_recipe";
+import { RecipeUuid } from "../../../../../core/types/recipes";
+import { LoadingRecipeCard } from "./card_components/loading_skeleton";
 
 interface RecipeGridProps {
   searchResults: { uuid: RecipeUuid; visible: boolean }[];
@@ -24,7 +24,7 @@ export const RecipeGrid = (props: RecipeGridProps) => {
       ) : (
         <>
           {Array.from(Array(15)).map((_, index) => {
-            return <LoadingRecipeItem key={index} />;
+            return <LoadingRecipeCard key={index} />;
           })}
         </>
       )}

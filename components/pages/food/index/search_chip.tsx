@@ -1,16 +1,17 @@
 import Chip, { ChipProps } from "@mui/material/Chip";
 import { useCallback, useMemo, SetStateAction, Dispatch, memo } from 'react';
+import { SearchableAttributes } from "../../../../core/recipes/hooks/use_recipe_search";
 
 export interface ISearchChipsProps {
-  setKeys: Dispatch<SetStateAction<Set<string>>>;
-  keys: Set<string>;
+  setKeys: Dispatch<SetStateAction<Set<SearchableAttributes>>>;
+  keys: Set<SearchableAttributes>;
 }
 
 export const SearchChips = memo(function RenderSearchChips(props: ISearchChipsProps) {
   const { setKeys, keys } = props;
 
   const removeOrAddKey = useCallback(
-    (key: string) => {
+    (key: SearchableAttributes) => {
       setKeys((prevSet) => {
         const newSet = new Set(prevSet);
         if (newSet.has(key)) {
@@ -53,9 +54,9 @@ export const SearchChips = memo(function RenderSearchChips(props: ISearchChipsPr
 
 export interface ISearchChipProps extends ChipProps {
   label: string;
-  property: string;
-  removeOrAddKey: (key: string) => void;
-  keys: Set<string>;
+  property: SearchableAttributes;
+  removeOrAddKey: (key: SearchableAttributes) => void;
+  keys: Set<SearchableAttributes>;
 }
 
 export const SearchChip = (props: ISearchChipProps) => {

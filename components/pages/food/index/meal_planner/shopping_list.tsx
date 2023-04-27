@@ -7,11 +7,11 @@ import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import Tooltip from "@mui/material/Tooltip";
 import { useMemo, useState } from "react";
-import { useIsMobileLayout } from "../../../hooks/is_mobile_layout";
+import { useIsMobileLayout } from "../../../../hooks/is_mobile_layout";
 import {
   createShoppingList,
   IQuantitiesAndMeals,
-} from "./shopping_list_creator";
+} from "../../../../../core/meal_plan/shopping_list_creator";
 
 interface IShoppingListDialogProps {
   quantityAndMeals: IQuantitiesAndMeals;

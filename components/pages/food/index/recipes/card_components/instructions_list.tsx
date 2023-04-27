@@ -1,6 +1,6 @@
 import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
-import { IInstruction } from "../../../../core/types/recipes";
+import { IInstruction } from "../../../../../../core/types/recipes";
 
 export interface IInstructionsListProps {
   instructions: IInstruction[];

@@ -2,7 +2,7 @@ import IconButton from "@mui/material/IconButton";
 import Tooltip from "@mui/material/Tooltip";
 import EditIcon from "@mui/icons-material/Edit";
 import { useRouter } from "next/router";
-import { RecipeUuid } from "../../../../core/types/recipes";
+import { RecipeUuid } from "../../../../../../core/types/recipes";
 
 export interface IEditRecipeButtonProps {
   uuid: RecipeUuid;

@@ -5,16 +5,16 @@ import AccordionSummary from "@mui/material/AccordionSummary";
 import Card from "@mui/material/Card";
 import Typography from "@mui/material/Typography";
 import { useDrag } from "react-dnd";
-import { RecipeUuid } from "../../../../core/types/recipes";
-import { WrappedCardMedia } from "../../../core/cards/wrapped_card_media";
-import { CopyIngredientsButton } from "./copy_ingredients";
-import { EditRecipeButton } from "./edit_recipe";
-import { DeleteRecipeButton } from "./delete_recipe";
-import { CustomDialog } from "../../../core/dialog";
-import { ComponentAccordion } from "./component_accordion";
-import { useIsMobileLayout } from "../../../hooks/is_mobile_layout";
-import { useDeleteRecipeFromDynamo } from "../../../../core/dynamo/hooks/use_dynamo_delete";
-import { useRecipe } from "../../../../core/dynamo/hooks/use_dynamo_get";
+import { ComponentAccordion } from "./card_components/component_accordion";
+import { RecipeUuid } from "../../../../../core/types/recipes";
+import { CustomDialog } from "../../../../core/dialog";
+import { useDeleteRecipeFromDynamo } from "../../../../../core/dynamo/hooks/use_dynamo_delete";
+import { useRecipe } from "../../../../../core/dynamo/hooks/use_dynamo_get";
+import { useIsMobileLayout } from "../../../../hooks/is_mobile_layout";
+import { WrappedCardMedia } from "../../../../core/cards/wrapped_card_media";
+import { CopyIngredientsButton } from "./card_components/copy_ingredients";
+import { EditRecipeButton } from "./card_components/edit_recipe";
+import { DeleteRecipeButton } from "./card_components/delete_recipe";
 
 export interface IRecipeCardWithDialogProps {
   uuid: RecipeUuid;

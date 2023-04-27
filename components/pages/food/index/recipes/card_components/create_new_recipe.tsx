@@ -3,8 +3,8 @@ import Card from "@mui/material/Card";
 import Grid from "@mui/material/Grid";
 import { useRouter } from "next/router";
 import { useCallback } from "react";
-import { NewRecipe } from "../../../../pages/food/[recipeUuid]";
 import { Typography } from "@mui/material";
+import { NewRecipe } from "../../../../../../pages/food/[recipeUuid]";
 
 export interface ICreateNewRecipeCard {}
 

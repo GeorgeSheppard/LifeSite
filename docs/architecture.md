@@ -6,17 +6,14 @@
 - React Query
 - Material UI
 - NextAuth
-- ThreeJS and React Three Fiber
 
 ## Backend
 
 - AWS
   - Cognito
   - S3
-    - User - Each user is given their own folder which is their user ID
-      - Images - Folder for any images the user uploads
-      - Models - Folder for any models for the printing page the user uploads e.g. STL, 3MF
-      - profile.json - As of the time of writing, all user data is stored in one json file. The json is separated by pages, e.g. data required for printing page will be under the property 'printing'. The json connects with other resources in S3 using the object key. To retrieve an object we create a signed URL from the object key.
+    - User - Each user is given their own folder which is their user ID, this contains any images they upload
+  - DynamoDB
 - Vercel
   - Any public static files are placed under the `public` folder.
 

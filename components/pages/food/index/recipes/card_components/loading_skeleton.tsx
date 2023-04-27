@@ -5,9 +5,9 @@ import Grid from "@mui/material/Grid";
 import Skeleton from "@mui/material/Skeleton";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { useState } from "react";
-import { weightedRandom } from "../meal_planner/meal_drop_card";
+import { weightedRandom } from "../../../../../../core/utilities";
 
-export const LoadingRecipeItem = () => {
+export const LoadingRecipeCard = () => {
   const [numComponents, _] = useState(weightedRandom(1, 5));
   return (
     <Grid item xs={12} sm={6} md={6} lg={6} xl={4}>

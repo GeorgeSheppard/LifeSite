@@ -7,8 +7,8 @@ import {
   useCallback,
   useState,
 } from "react";
-import { DateString } from "../../../../core/types/meal_plan";
-import { useMealPlan } from "../../../../core/dynamo/hooks/use_dynamo_get";
+import { DateString } from "../../../../../core/types/meal_plan";
+import { useMealPlan } from "../../../../../core/dynamo/hooks/use_dynamo_get";
 
 export interface ICalendarRowProps {
   selected: Set<DateString>;

@@ -1,4 +1,4 @@
-import { createShoppingListData } from "../../components/pages/food/meal_planner/shopping_list_creator";
+import { createShoppingListData } from "../../core/meal_plan/shopping_list_creator";
 import { IRecipe, Unit } from "../../core/types/recipes";
 
 const recipes: IRecipe[] = [

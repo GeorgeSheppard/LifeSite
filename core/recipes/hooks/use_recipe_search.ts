@@ -13,6 +13,7 @@ export interface SearchableRecipe {
   description: string;
   ingredients: IIngredientName[];
 }
+export type SearchableAttributes = keyof Omit<SearchableRecipe, "uuid">
 
 export interface IRecipeSearcher {
   searchResults: { uuid: RecipeUuid; visible: boolean }[];
@@ -20,7 +21,7 @@ export interface IRecipeSearcher {
   searchInput: string;
 }
 
-export const useRecipeSearch = (keys: Set<string>): IRecipeSearcher => {
+export const useRecipeSearch = (keys: Set<SearchableAttributes>): IRecipeSearcher => {
   const { data: recipes } = useRecipes();
   const searchableRecipes = useMemo(() => {
     // Note: Fuse.js had trouble searching the nested structure for ingredients

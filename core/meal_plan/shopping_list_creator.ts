@@ -1,11 +1,11 @@
-import { Quantities } from "../../../../core/recipes/units";
-import { DateString, IDailyMealPlan } from "../../../../core/types/meal_plan";
+import { Quantities } from "../recipes/units";
+import { DateString, IDailyMealPlan } from "../types/meal_plan";
 import {
   IIngredientName,
   IQuantity,
   IRecipe,
   Unit,
-} from "../../../../core/types/recipes";
+} from "../types/recipes";
 
 export interface IQuantitiesAndMeals {
   [index: IIngredientName]: {

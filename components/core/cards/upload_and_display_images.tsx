@@ -5,7 +5,6 @@ import UploadIcon from "@mui/icons-material/Upload";
 import IconButton from "@mui/material/IconButton";
 
 import { ClickToUpload } from "../click_to_upload";
-import { useBoolean } from "../hooks/use_boolean";
 import { Image } from "../../../core/types/general";
 import { SetStateAction, Dispatch, useCallback } from "react";
 import {
@@ -14,6 +13,7 @@ import {
 } from "../../../core/s3/hooks/upload_to_s3";
 import { S3CardMedia } from "./s3_card_media";
 import { Delete } from "@mui/icons-material";
+import { useBoolean } from "../../../core/hooks/use_boolean";
 
 export interface IUploadDisplayImagesProps {
   images: Image[];

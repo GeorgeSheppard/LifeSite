@@ -1,6 +1,5 @@
 import Accordion from "@mui/material/Accordion";
 import AccordionSummary from "@mui/material/AccordionSummary";
-import { IRecipeComponent } from "../../../../core/types/recipes";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import Typography from "@mui/material/Typography";
 import InventoryIcon from "@mui/icons-material/Inventory";
@@ -11,6 +10,7 @@ import List from "@mui/material/List";
 import { IngredientsList } from "./ingredients_list";
 import { InstructionsList } from "./instructions_list";
 import Divider from "@mui/material/Divider";
+import { IRecipeComponent } from "../../../../../../core/types/recipes";
 
 export interface IComponentAccordionProps {
   component: IRecipeComponent;

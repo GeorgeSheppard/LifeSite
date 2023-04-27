@@ -5,13 +5,14 @@ import React, { useCallback } from "react";
 import {
   createShoppingListData,
   IQuantitiesAndMeals,
-} from "./shopping_list_creator";
+} from "../../../../../core/meal_plan/shopping_list_creator";
 import CheckBoxIcon from "@mui/icons-material/CheckBox";
 import CheckBoxOutlineBlankIcon from "@mui/icons-material/CheckBoxOutlineBlank";
-import { useMealPlan, useRecipes } from "../../../../core/dynamo/hooks/use_dynamo_get";
+import { useMealPlan, useRecipes } from "../../../../../core/dynamo/hooks/use_dynamo_get";
+import { DateString } from "../../../../../core/types/meal_plan";
 
 export interface ICreateShoppingListButtonProps {
-  selected: Set<string>;
+  selected: Set<DateString>;
   openListDialog: () => void;
   setShoppingList: (data: IQuantitiesAndMeals) => void;
   setSelected: React.Dispatch<React.SetStateAction<Set<string>>>;
@@ -54,7 +55,7 @@ export const CreateShoppingListButton = (
           onClick={() => {
             props.setShoppingList(
               createShoppingListData(
-                recipes.data ?? [],
+                recipes.data!,
                 mealPlan.data,
                 selected
               )
@@ -63,9 +64,8 @@ export const CreateShoppingListButton = (
           }}
           disabled={
             props.selected.size === 0 ||
-            recipes.isLoading ||
-            mealPlan.isPlaceholderData ||
-            recipes.isError
+            !recipes.data ||
+            mealPlan.isPlaceholderData
           }
         >
           Create shopping list
