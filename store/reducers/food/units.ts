@@ -15,7 +15,7 @@ export const Quantities = {
       return `${quantity.value}`;
     }
 
-    return `${quantity.value}${unit}`;
+    return `${quantity.value?.toFixed(2)}${unit}`;
   },
   toStringWithIngredient: (
     ingredientName: IIngredientName,
