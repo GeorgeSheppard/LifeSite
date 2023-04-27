@@ -19,7 +19,7 @@ export const FormServings = ({
       variant="standard"
       margin="none"
       type="number"
-      inputProps={{ step: 0.01 }}
+      inputProps={{ step: 1 }}
       sx={{ width: "100px" }}
       {...register(`components.${index}.servings`, {
         min: 1,

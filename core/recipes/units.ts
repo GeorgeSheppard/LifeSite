@@ -15,11 +15,11 @@ export const Quantities = {
       return `${quantity.value}`;
     }
 
-    return `${quantity.value?.toFixed(2)}${unit}`;
+    return `${parseFloat(quantity.value!.toFixed(2))}${unit}`;
   },
   toStringWithIngredient: (
     ingredientName: IIngredientName,
-    quantity?: IQuantity
+    quantity?: IQuantity,
   ) => {
     {
       const quantityString = Quantities.toString(quantity);
