@@ -45,6 +45,7 @@ import TableHead from "@mui/material/TableHead";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import { usePutRecipeToDynamo } from "../../components/hooks/user_data/use_dynamo_put";
+import { DeleteFromS3 } from "../../components/aws/s3/s3_utilities";
 
 const getDefaultRecipe = (uuid: string) => ({
   uuid,
@@ -128,6 +129,7 @@ export const FormWithData = ({ recipe }: { recipe: IRecipe }) => {
 
   const onSubmit = async (data: IRecipe) => {
     data.images = images;
+    recipe.images.filter(image => images.findIndex(img => img.key === image.key) === -1).forEach(async image => await DeleteFromS3(image.key));
     await mutateAsync(data);
     router.push("/food");
   };

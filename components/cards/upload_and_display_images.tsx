@@ -14,7 +14,6 @@ import {
 } from "../hooks/upload_to_s3";
 import { S3CardMedia } from "./s3_card_media";
 import { Delete } from "@mui/icons-material";
-import { DeleteFromS3 } from "../aws/s3/s3_utilities";
 
 export interface IUploadDisplayImagesProps {
   images: Image[];
@@ -108,10 +107,7 @@ export const UploadDisplayImages = (props: IUploadDisplayImagesProps) => {
                 <S3CardMedia s3Key={image.key} height="100px" />
                 <IconButton
                   sx={{ position: "absolute", top: "0%", right: "0%" }}
-                  onClick={async () => {
-                    deleteImage(index)
-                    await DeleteFromS3(image.key);
-                  }}
+                  onClick={() => deleteImage(index)}
                 >
                   <Delete htmlColor="white" />
                 </IconButton>
