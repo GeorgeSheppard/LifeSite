@@ -1,9 +1,0 @@
-- Add notification service to inform of errors
-- System for adding keyboard shortcuts
-- Animations
-- Use food database to get macros for recipes (https://developer.edamam.com/food-database-api-docs)
-- Better fallback loading for card media
-- If there is a new user who has logged in for the first time after modifying the default profile then their progress shouldn't be wiped.
-- Switch to Chakra UI and work on core theme
-- Make core theme better so that dark theme isn't needed
-- Files that are no longer needed should be deleted.

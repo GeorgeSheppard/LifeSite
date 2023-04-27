@@ -63,18 +63,4 @@ export const navigatorCards: INavigatorCardProps[] = [
     imageSrc: "/images/ChilliConCarne.jpg",
     href: "/food",
   },
-  {
-    title: "Library",
-    description: "All the books I own, and what I rate them.",
-    imageSrc: "/images/bookshelf.jpg",
-    href: "/bookshelf",
-    disabled: true,
-  },
-  {
-    title: "Path Finder",
-    description: "Visualization of path finding algorithms.",
-    imageSrc: "/images/path-finder.jpg",
-    href: "/path_finder",
-    disabled: true,
-  },
 ];

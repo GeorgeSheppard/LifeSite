@@ -2,22 +2,22 @@ import { Box, Grid, NoSsr, Tab, Tabs } from "@mui/material";
 import OutlinedInput from "@mui/material/OutlinedInput";
 import { Dispatch, SetStateAction, useState } from "react";
 import { headerHeight } from "../../components/core/header";
-import { Planner } from "../../components/pages/recipes/meal_planner/calendar";
+import { Planner } from "../../components/pages/food/meal_planner/calendar";
 import {
   IRecipeSearcher,
   useRecipeSearch,
-} from "../../components/pages/recipes/search/search_bar";
-import { SearchChips } from "../../components/pages/recipes/search/search_chip";
-import { IQuantitiesAndMeals } from "../../components/pages/recipes/meal_planner/shopping_list_creator";
-import { DateString } from "../../store/reducers/food/meal_plan/types";
-import { IUseBoolean, useBoolean } from "../../components/hooks/use_boolean";
-import { useRecipes } from "../../components/hooks/user_data/use_dynamo";
-import { CreateShoppingListButton } from "../../components/pages/recipes/meal_planner/create_shopping_list";
-import { ShoppingListDialog } from "../../components/pages/recipes/meal_planner/shopping_list";
-import { RecipeGrid } from "../../components/pages/recipes/recipes/recipe_grid";
-import { useIsMobileLayout } from "../../components/pages/recipes/hooks/is_mobile_layout";
-import { IRecipe } from "../../store/reducers/food/recipes/types";
+} from "../../core/recipes/hooks/use_recipe_search";
+import { SearchChips } from "../../components/pages/food/search_chip";
+import { IQuantitiesAndMeals } from "../../components/pages/food/meal_planner/shopping_list_creator";
+import { CreateShoppingListButton } from "../../components/pages/food/meal_planner/create_shopping_list";
+import { ShoppingListDialog } from "../../components/pages/food/meal_planner/shopping_list";
+import { RecipeGrid } from "../../components/pages/food/recipes/recipe_grid";
+import { useIsMobileLayout } from "../../components/hooks/is_mobile_layout";
+import { IRecipe } from "../../core/types/recipes";
 import { UseQueryResult } from "@tanstack/react-query";
+import { useRecipes } from "../../core/dynamo/hooks/use_dynamo_get";
+import { DateString } from "../../core/types/meal_plan";
+import { IUseBoolean, useBoolean } from "../../core/hooks/use_boolean";
 
 const allSearchValues = new Set(["name", "description", "ingredients"]);
 

@@ -1,6 +1,5 @@
 import { useRouter } from "next/router";
 import { useState, MouseEvent } from "react";
-import { useRecipe } from "../../components/hooks/user_data/use_dynamo";
 import { v4 as uuidv4 } from "uuid";
 import {
   Control,
@@ -15,12 +14,12 @@ import {
   IRecipe,
   RecipeUuid,
   Unit,
-} from "../../store/reducers/food/recipes/types";
+} from "../../core/types/recipes";
 import Container from "@mui/material/Container";
 import Card from "@mui/material/Card";
 import { AccordionDetails, Alert, Button, TextField } from "@mui/material";
 import { ExitSaveButtons } from "../../components/core/exit_save_buttons";
-import { UploadDisplayImages } from "../../components/cards/upload_and_display_images";
+import { UploadDisplayImages } from "../../components/core/cards/upload_and_display_images";
 import LinearProgress from "@mui/material/LinearProgress";
 import AddIcon from "@mui/icons-material/Add";
 import IconButton from "@mui/material/IconButton";
@@ -44,8 +43,9 @@ import TableBody from "@mui/material/TableBody";
 import TableHead from "@mui/material/TableHead";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
-import { usePutRecipeToDynamo } from "../../components/hooks/user_data/use_dynamo_put";
-import { DeleteFromS3 } from "../../components/aws/s3/s3_utilities";
+import { useRecipe } from "../../core/dynamo/hooks/use_dynamo_get";
+import { usePutRecipeToDynamo } from "../../core/dynamo/hooks/use_dynamo_put";
+import { DeleteFromS3 } from "../../core/s3/s3_utilities";
 
 const getDefaultRecipe = (uuid: string) => ({
   uuid,
