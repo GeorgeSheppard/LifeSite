@@ -1,5 +1,5 @@
 import { useCallback, ChangeEvent, useMemo, ReactElement } from "react";
-import useUploadToS3, { IS3ErrorUploadResponse, IS3ValidUploadResponse } from "../hooks/upload_to_s3";
+import useUploadToS3, { IS3ErrorUploadResponse, IS3ValidUploadResponse } from "../../core/s3/hooks/upload_to_s3";
 
 export interface IClickToUploadProps {
   onUploadFinished?: (response: IS3ValidUploadResponse) => void;

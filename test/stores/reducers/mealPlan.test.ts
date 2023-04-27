@@ -1,4 +1,4 @@
-import { addOrUpdatePlan } from "../../../store/reducers/food/meal_plan/meal_plan";
+import { addOrUpdatePlan } from "../../../core/meal_plan/meal_plan_utilities";
 
 test("can add a recipe", () => {
   expect(

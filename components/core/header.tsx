@@ -1,6 +1,6 @@
 import AccountCircle from "@mui/icons-material/AccountCircle";
 import SettingsIcon from "@mui/icons-material/Settings";
-import { Menu, MenuItem } from "@mui/material";
+import { CircularProgress, Menu, MenuItem } from "@mui/material";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import IconButton from "@mui/material/IconButton";
@@ -59,12 +59,11 @@ export default function Header() {
                 ? openDropdown
                 : () => signIn("cognito")
             }
+            disabled={session.status === "loading"}
           >
-            {session.status === "authenticated" ? (
-              <SettingsIcon />
-            ) : (
-              <AccountCircle />
-            )}
+            {session.status === "loading" && <CircularProgress color="inherit" size={20} />}
+            {session.status === "authenticated" && <SettingsIcon />}
+            {session.status === "unauthenticated" && <AccountCircle />}
           </IconButton>
           <Menu
             id="basic-menu"

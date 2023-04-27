@@ -1,5 +1,5 @@
-import { createShoppingListData } from "../../components/pages/recipes/meal_planner/shopping_list_creator";
-import { IRecipe, Unit } from "../../store/reducers/food/recipes/types";
+import { createShoppingListData } from "../../core/meal_plan/shopping_list_creator";
+import { IRecipe, Unit } from "../../core/types/recipes";
 
 const recipes: IRecipe[] = [
   {
