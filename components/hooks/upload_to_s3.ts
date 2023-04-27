@@ -1,10 +1,9 @@
 import { useCallback } from "react";
-import { PutObjectCommand } from "@aws-sdk/client-s3";
 import { v4 as uuidv4 } from "uuid";
-import { AwsS3Client } from "../aws/s3/s3_client";
 import { S3Key } from "../../store/reducers/types";
 import { useAppSession } from "./use_app_session";
 import { shared } from "./user_data/query_keys";
+import { PutToS3 } from "../aws/s3/s3_utilities";
 
 export interface IS3ValidUploadResponse {
   key: S3Key;
@@ -66,13 +65,7 @@ export default function useUploadToS3(props: IUseUploadToS3Props) {
 
       let upload;
       try {
-        upload = await AwsS3Client.send(
-          new PutObjectCommand({
-            Body: file,
-            Bucket: process.env.ENV_AWS_S3_BUCKET_NAME,
-            Key: pathToFile,
-          })
-        );
+        upload = await PutToS3(pathToFile, file);
       } catch (err) {
         onUploadError?.({ error: "unknown" });
       }
