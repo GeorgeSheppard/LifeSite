@@ -230,12 +230,14 @@ export const FormWithData = ({ recipe }: { recipe: IRecipe }) => {
                       label="Servings"
                       variant="standard"
                       margin="none"
+                      type="number"
+                      inputProps={{ step: 0.01 }}
                       sx={{ width: "100px" }}
                       {...register(`components.${index}.servings`, {
                         min: 1,
-                        pattern: /^(0|[1-9]\d*)(\.\d+)?$/,
                         validate: (num) => !!num && num > 0,
-                        required: "A servings value is required"
+                        required: "A servings value is required",
+                        valueAsNumber: true
                       })}
                       error={
                         !!errors.components?.[index]?.servings
@@ -396,11 +398,13 @@ export const IngredientsList = ({
                   <TextField
                     variant="standard"
                     margin="none"
+                    type="number"
+                      inputProps={{step: 0.01}}
                     {...register(
                       `components.${index}.ingredients.${ingredientIndex}.quantity.value`,
                       {
                         min: 0,
-                        pattern: /^(0|[1-9]\d*)(\.\d+)?$/,
+                        valueAsNumber: true,
                         validate: (value, formValues) =>
                           formValues.components[index].ingredients[
                             ingredientIndex
