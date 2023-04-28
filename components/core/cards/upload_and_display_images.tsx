@@ -93,26 +93,16 @@ export const UploadDisplayImages = (props: IUploadDisplayImagesProps) => {
                 height: 100,
                 minWidth: 100,
                 display: "flex",
+                position: "relative"
               }}
             >
-              <Box component="div" sx={{ flexGrow: 0.5 }} />
-              <Box
-                component="div"
-                sx={{
-                  display: "flex",
-                  margin: "auto",
-                  position: "relative",
-                }}
-              >
-                <S3CardMedia s3Key={image.key} height="100px" />
+                <S3CardMedia s3Key={image.key} />
                 <IconButton
-                  sx={{ position: "absolute", top: "0%", right: "0%" }}
+                  sx={{ position: "absolute", top: "0px", right: "0px" }}
                   onClick={() => deleteImage(index)}
                 >
                   <Delete htmlColor="white" />
                 </IconButton>
-              </Box>
-              <Box component="div" sx={{ flexGrow: 0.5 }} />
             </Paper>
           </div>
         );

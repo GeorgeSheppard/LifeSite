@@ -19,7 +19,6 @@ export const EditRecipeButton = (props: IEditRecipeButtonProps) => {
           router.push(`/food/${props.uuid}`);
         }}
         size="small"
-        sx={{ alignSelf: "center", mr: 1 }}
       >
         <EditIcon fontSize="small" htmlColor="#212121" />
       </IconButton>

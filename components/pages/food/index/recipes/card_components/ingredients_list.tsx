@@ -12,14 +12,15 @@ export const IngredientsList = (props: IIngredientsListProps) => {
     <>
       <ListItem key="ingredients" sx={{ pb: 2, pl: 1 }}>
         <ListItemText
+          primaryTypographyProps={{ variant: "subtitle2" }}
           primary="Ingredients"
-          primaryTypographyProps={{ fontSize: "16px", fontWeight: 550 }}
         />
       </ListItem>
       {props.ingredients.map(({ name, quantity }) => {
         return (
           <ListItem key={name} sx={{ p: 0, pl: 3 }}>
             <ListItemText
+              primaryTypographyProps={{ variant: "body2" }}
               primary={"- " + Quantities.toStringWithIngredient(name, quantity)}
             />
           </ListItem>

@@ -68,7 +68,6 @@ export const useRecipeSearch = (keys: Set<SearchableAttributes>): IRecipeSearche
     300
   );
 
-
   // Visible recipes need to be sorted first
   const uuidsWithVisibility = useMemo(() => {
     const visibleRecipes = Array.from(searchResults).map((result) => ({

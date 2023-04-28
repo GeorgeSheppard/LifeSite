@@ -54,6 +54,14 @@ module.exports = (phase) => {
       includePaths: [path.join(__dirname, "styles")],
     },
     env: envVariables,
+    images: {
+      remotePatterns: [
+        {
+          protocol: "https",
+          hostname: `${envVariables.ENV_AWS_S3_BUCKET_NAME}.s3.${envVariables.ENV_AWS_S3_REGION}.amazonaws.com`
+        }
+      ]
+    }
   };
 };
 

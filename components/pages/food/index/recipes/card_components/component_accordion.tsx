@@ -1,6 +1,5 @@
 import Accordion from "@mui/material/Accordion";
 import AccordionSummary from "@mui/material/AccordionSummary";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import Typography from "@mui/material/Typography";
 import InventoryIcon from "@mui/icons-material/Inventory";
 import { ServingsIcon } from "./servings_icon";
@@ -11,6 +10,7 @@ import { IngredientsList } from "./ingredients_list";
 import { InstructionsList } from "./instructions_list";
 import Divider from "@mui/material/Divider";
 import { IRecipeComponent } from "../../../../../../core/types/recipes";
+import { IconButton } from "@mui/material";
 
 export interface IComponentAccordionProps {
   component: IRecipeComponent;
@@ -20,20 +20,24 @@ export const ComponentAccordion = (props: IComponentAccordionProps) => {
   const { component } = props;
   return (
     <Accordion key={component.name}>
-      <AccordionSummary
-        expandIcon={<ExpandMoreIcon htmlColor="#212121" />}
-        sx={{ display: "flex" }}
-      >
-        <Typography>{component.name ?? "Optional"}</Typography>
-        <div style={{ flexGrow: 1 }} />
-        {component.servings && component.servings > 1 && (
-          <ServingsIcon servings={component.servings} />
-        )}
-        {component.storeable && (
-          <Tooltip title="Can be stored">
-            <InventoryIcon sx={{ paddingRight: 1, marginRight: 0.3 }} />
-          </Tooltip>
-        )}
+      <AccordionSummary className="flex justify-center">
+        <Typography variant="subtitle2" className="grow my-auto">
+          {component.name}
+        </Typography>
+        <div className="flex space-x-2">
+          {component.servings && component.servings > 1 && (
+            <IconButton size="small">
+            <ServingsIcon servings={component.servings} />
+            </IconButton>
+          )}
+          {component.storeable && (
+            <Tooltip title="Can be stored">
+              <IconButton size="small">
+              <InventoryIcon fontSize="small" htmlColor="#212121" />
+              </IconButton>
+            </Tooltip>
+          )}
+        </div>
       </AccordionSummary>
       <AccordionDetails>
         <List dense>

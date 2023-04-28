@@ -1,4 +1,3 @@
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import Accordion from "@mui/material/Accordion";
 import AccordionDetails from "@mui/material/AccordionDetails";
 import AccordionSummary from "@mui/material/AccordionSummary";
@@ -86,26 +85,19 @@ export const RecipeCard = (props: IRecipeCard) => {
       <div ref={preview} style={{ width: 0, height: 0 }} />
       {recipe.images && <WrappedCardMedia images={recipe.images} />}
       <Accordion key="name">
-        <AccordionSummary
-          expandIcon={
-            recipe.description?.length > 0 && (
-              <ExpandMoreIcon htmlColor="#212121" />
-            )
-          }
-          sx={{ display: "flex" }}
-        >
-          <Typography fontSize={24} fontWeight={400}>
+        <AccordionSummary>
+          <Typography variant="h6" className="grow">
             {recipe?.name}
           </Typography>
-          <div style={{ flexGrow: 1, paddingRight: 2 }} />
-          <div style={{ paddingLeft: 2 }} />
-          <CopyIngredientsButton recipe={recipe} />
-          <EditRecipeButton uuid={uuid} />
-          <DeleteRecipeButton onClick={props.openDialog} />
+          <div className="space-x-2 my-auto">
+            <CopyIngredientsButton recipe={recipe} />
+            <EditRecipeButton uuid={uuid} />
+            <DeleteRecipeButton onClick={props.openDialog} />
+          </div>
         </AccordionSummary>
         {recipe.description?.length > 0 && (
           <AccordionDetails>
-            <Typography>{recipe.description}</Typography>
+            <Typography variant="body2">{recipe.description}</Typography>
           </AccordionDetails>
         )}
       </Accordion>

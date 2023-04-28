@@ -13,7 +13,7 @@ export const InstructionsList = (props: IInstructionsListProps) => {
         <ListItem key="method" sx={{ pb: 2, pl: 1, pt: 5 }}>
           <ListItemText
             primary="Method"
-            primaryTypographyProps={{ fontSize: "16px", fontWeight: 550 }}
+            primaryTypographyProps={{ variant: "subtitle2" }}
           />
         </ListItem>
       )}
@@ -25,7 +25,7 @@ export const InstructionsList = (props: IInstructionsListProps) => {
         visibleText += text;
         return (
           <ListItem key={text} sx={{ p: 0, pl: 3 }}>
-            <ListItemText primary={visibleText} />
+            <ListItemText primary={visibleText} primaryTypographyProps={{ variant: "body2"}} />
           </ListItem>
         );
       })}

@@ -69,6 +69,7 @@ export const DesktopLayout = (
                 overflowY: "scroll",
                 paddingLeft: 8,
                 paddingRight: 8,
+                minWidth: 350
               }}
             >
               <CreateShoppingListButton

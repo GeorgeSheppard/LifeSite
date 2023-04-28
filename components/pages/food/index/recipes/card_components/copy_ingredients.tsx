@@ -28,7 +28,6 @@ export const CopyIngredientsButton = (props: ICopyIngredientsButtonProps) => {
       <IconButton
         onClick={copyIngredients}
         size="small"
-        sx={{ alignSelf: "center", mr: 1 }}
       >
         <ContentCopyIcon fontSize="small" htmlColor="#212121" />
       </IconButton>

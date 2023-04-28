@@ -15,7 +15,6 @@ export const DeleteRecipeButton = (props: IDeleteRecipeButtonProps) => {
           props.onClick();
         }}
         size="small"
-        sx={{ alignSelf: "center", mr: 1 }}
       >
         <DeleteIcon fontSize="small" htmlColor="#7d2020" />
       </IconButton>

@@ -60,18 +60,15 @@ export const Planner = (props: ICalendarRowProps) => {
       direction="column"
       spacing={2}
       marginTop={0}
-      marginBottom={0}
+      marginBottom={1}
       px={0}
-      flexGrow={1}
     >
-      {Object.entries(mealPlan.data).map(([day], index) => {
+      {Object.entries(mealPlan.data).map(([day]) => {
         return (
-          // TODO: CSS selector instead of this fast hack
           <Grid
             item
             columns={1}
             key={day}
-            style={{ paddingTop: index === 0 ? 0 : 16 }}
           >
             <DroppableCard
               day={day}

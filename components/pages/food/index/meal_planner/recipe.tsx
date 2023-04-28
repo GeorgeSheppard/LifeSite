@@ -6,11 +6,10 @@ import {
   IComponentItem,
 } from "../../../../../core/types/meal_plan";
 import { RecipeUuid } from "../../../../../core/types/recipes";
-import Tooltip from "@mui/material/Tooltip";
-import PersonIcon from "@mui/icons-material/Person";
 import ButtonGroup from "@mui/material/ButtonGroup";
 import Button from "@mui/material/Button";
 import DeleteIcon from "@mui/icons-material/Delete";
+import { ServingsIcon } from "../recipes/card_components/servings_icon";
 
 export const RecipeName = ({
   components,
@@ -43,44 +42,22 @@ export const RecipeName = ({
 
   return (
     <div
-      style={{
-        display: "flex",
-        justifyContent: "space-between",
-        paddingBottom: 8,
-        flexDirection: "column",
-      }}
+      className="flex place-content-between flex-col"
     >
-      <Typography style={{ marginTop: 8, marginBottom: 12, fontSize: 18 }}>
+      <Typography variant="subtitle1">
         {recipe.name}
       </Typography>
+      <div className="space-y-1">
       {componentProperties.map(({ name, servings, componentId }) => {
         return (
           <div
             key={componentId}
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
-              marginBottom: 12,
-            }}
+            className="flex place-content-between w-full"
           >
-            <Typography style={{ marginLeft: 20 }}>{name}</Typography>
-            <div style={{ display: "flex" }}>
-              <Tooltip title={`${servings} serving`}>
-                {/* div instead of fragment as tooltip doesn't work with fragment */}
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    paddingRight: 6.5,
-                    marginLeft: 15,
-                  }}
-                >
-                  <Typography>{servings}</Typography>
-                  <PersonIcon sx={{ paddingRight: 0.5 }} />
-                </div>
-              </Tooltip>
-              <ButtonGroup variant="outlined" sx={{ height: 25 }}>
+            <Typography variant="body2" className="ml-5 my-auto">{name}</Typography>
+            <div className="flex">
+              <ServingsIcon servings={servings} />
+              <ButtonGroup variant="outlined" className="my-auto h-6">
                 <Button
                   onClick={(event) => {
                     event.stopPropagation();
@@ -119,7 +96,6 @@ export const RecipeName = ({
                 </Button>
               </ButtonGroup>
               <DeleteIcon
-                sx={{ margin: "auto", marginLeft: "10px" }}
                 onClick={(event) => {
                   event.stopPropagation();
                   mutate({
@@ -135,11 +111,14 @@ export const RecipeName = ({
                 }}
                 fontSize="small"
                 htmlColor="#7d2020"
+                className="my-auto"
               />
-            </div>
+              </div>
           </div>
         );
       })}
+      </div>
+        
     </div>
   );
 };
