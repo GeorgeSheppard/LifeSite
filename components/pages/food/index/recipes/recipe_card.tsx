@@ -94,7 +94,7 @@ export const RecipeCard = (props: IRecipeCard) => {
           }
           sx={{ display: "flex" }}
         >
-          <Typography fontSize={24} fontWeight={400}>
+          <Typography variant="h6">
             {recipe?.name}
           </Typography>
           <div style={{ flexGrow: 1, paddingRight: 2 }} />
@@ -105,7 +105,7 @@ export const RecipeCard = (props: IRecipeCard) => {
         </AccordionSummary>
         {recipe.description?.length > 0 && (
           <AccordionDetails>
-            <Typography>{recipe.description}</Typography>
+            <Typography variant="body2">{recipe.description}</Typography>
           </AccordionDetails>
         )}
       </Accordion>

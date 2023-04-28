@@ -10,6 +10,10 @@ export const createThemeFromThemeKey = () => {
         light: "#207d39"
       }
     },
+    typography: {
+      fontFamily: `"Helvetica", sans-serif`,
+      fontSize: 14,
+    }
   });
 };
 

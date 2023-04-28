@@ -22,7 +22,7 @@ export default function NavigatorCard(props: INavigatorCardProps) {
       <CardMedia src={props.imageSrc} component="img" height="300px" />
       {/* TODO: All cards expand to be the size of the maximum card on that row */}
       <CardContent className={"content"}>
-        <Typography>{props.description}</Typography>
+        <Typography variant="body1">{props.description}</Typography>
       </CardContent>
     </>
   );
@@ -46,6 +46,7 @@ export default function NavigatorCard(props: INavigatorCardProps) {
             zIndex: 100,
             opacity: 0.8,
           }}
+          variant="subtitle1"
         >
           Coming soon
         </Typography>

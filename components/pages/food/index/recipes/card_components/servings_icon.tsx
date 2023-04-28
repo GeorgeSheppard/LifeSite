@@ -14,10 +14,11 @@ export const ServingsIcon = (props: IServingsIconProps) => {
         style={{
           display: "flex",
           alignItems: "center",
-          paddingRight: 6.5,
+          marginLeft: 8,
+          marginRight: 8
         }}
       >
-        <Typography>{props.servings}</Typography>
+        <Typography variant="button">{props.servings}</Typography>
         <PersonIcon sx={{ paddingRight: 0.5 }} />
       </div>
     </Tooltip>

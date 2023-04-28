@@ -24,7 +24,7 @@ export const ComponentAccordion = (props: IComponentAccordionProps) => {
         expandIcon={<ExpandMoreIcon htmlColor="#212121" />}
         sx={{ display: "flex" }}
       >
-        <Typography>{component.name ?? "Optional"}</Typography>
+        <Typography variant="subtitle2">{component.name ?? "Optional"}</Typography>
         <div style={{ flexGrow: 1 }} />
         {component.servings && component.servings > 1 && (
           <ServingsIcon servings={component.servings} />

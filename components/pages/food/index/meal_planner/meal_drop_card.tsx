@@ -80,7 +80,7 @@ export const DroppableCard = (props: {
     <>
       <Dialog open={dialogOpen} onClose={setters.turnOff}>
         <DialogContent>
-          {recipes?.length === 0 ? (
+          {recipes?.length !== 0 ? (
             <Typography>No recipes available</Typography>
           ) : (
             <List>
@@ -128,6 +128,7 @@ export const DroppableCard = (props: {
             title={dayWithoutYear}
             className="noSelect"
             sx={{ padding: 0 }}
+            titleTypographyProps={{variant: "h6"}}
           />
           {mobileLayout && (
             <Button

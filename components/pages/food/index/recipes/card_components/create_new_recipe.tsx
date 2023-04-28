@@ -30,7 +30,7 @@ export const CreateNewRecipeCard = (props: ICreateNewRecipeCard) => {
         >
         <Box component="div" sx={{ flexGrow: 0.5 }} />
         <Box component="div" sx={{ display: "flex", margin: "auto" }}>
-          <Typography fontSize={22}>Create New Recipe</Typography>
+          <Typography variant="button">Create New Recipe</Typography>
         </Box>
         <Box component="div" sx={{ flexGrow: 0.5 }} />
       </Card>
@@ -46,7 +46,7 @@ export const CreateNewRecipeCard = (props: ICreateNewRecipeCard) => {
       >
         <Box component="div" sx={{ flexGrow: 0.5 }} />
         <Box component="div" sx={{ display: "flex", margin: "auto" }}>
-        <Typography fontSize={22}>Upload Existing Recipe</Typography>
+        <Typography variant="button">Upload Existing Recipe</Typography>
         </Box>
         <Box component="div" sx={{ flexGrow: 0.5 }} />
       </Card>

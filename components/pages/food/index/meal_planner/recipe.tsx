@@ -6,11 +6,10 @@ import {
   IComponentItem,
 } from "../../../../../core/types/meal_plan";
 import { RecipeUuid } from "../../../../../core/types/recipes";
-import Tooltip from "@mui/material/Tooltip";
-import PersonIcon from "@mui/icons-material/Person";
 import ButtonGroup from "@mui/material/ButtonGroup";
 import Button from "@mui/material/Button";
 import DeleteIcon from "@mui/icons-material/Delete";
+import { ServingsIcon } from "../recipes/card_components/servings_icon";
 
 export const RecipeName = ({
   components,
@@ -50,7 +49,7 @@ export const RecipeName = ({
         flexDirection: "column",
       }}
     >
-      <Typography style={{ marginTop: 8, marginBottom: 12, fontSize: 18 }}>
+      <Typography variant="subtitle1" style={{ marginTop: 8, marginBottom: 12 }}>
         {recipe.name}
       </Typography>
       {componentProperties.map(({ name, servings, componentId }) => {
@@ -62,24 +61,13 @@ export const RecipeName = ({
               alignItems: "center",
               justifyContent: "space-between",
               marginBottom: 12,
+              flexDirection: "row",
+              width: "100%"
             }}
           >
-            <Typography style={{ marginLeft: 20 }}>{name}</Typography>
+            <Typography variant="body2" style={{ marginLeft: 20 }}>{name}</Typography>
             <div style={{ display: "flex" }}>
-              <Tooltip title={`${servings} serving`}>
-                {/* div instead of fragment as tooltip doesn't work with fragment */}
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    paddingRight: 6.5,
-                    marginLeft: 15,
-                  }}
-                >
-                  <Typography>{servings}</Typography>
-                  <PersonIcon sx={{ paddingRight: 0.5 }} />
-                </div>
-              </Tooltip>
+              <ServingsIcon servings={servings} />
               <ButtonGroup variant="outlined" sx={{ height: 25 }}>
                 <Button
                   onClick={(event) => {
@@ -136,7 +124,7 @@ export const RecipeName = ({
                 fontSize="small"
                 htmlColor="#7d2020"
               />
-            </div>
+              </div>
           </div>
         );
       })}
