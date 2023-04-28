@@ -9,8 +9,10 @@ import "../styles/global_card.scss";
 import "../styles/scrollbar.scss";
 import "../styles/utilities.scss";
 import "../styles/padding.scss";
+import "../styles/globals.css";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import { StyledEngineProvider } from "@mui/material/styles";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -31,17 +33,19 @@ export default function LifeSite(props: ILifeSiteProps) {
   const { session, ...pageProps } = props.pageProps;
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <ReactQueryDevtools initialIsOpen={false} />
-      <DndProvider backend={HTML5Backend}>
-        <ThemeController>
-          <SessionProvider session={session}>
-            <Layout>
-              <Component {...pageProps} />
-            </Layout>
-          </SessionProvider>
-        </ThemeController>
-      </DndProvider>
-    </QueryClientProvider>
+    <StyledEngineProvider injectFirst>
+      <QueryClientProvider client={queryClient}>
+        <ReactQueryDevtools initialIsOpen={false} />
+        <DndProvider backend={HTML5Backend}>
+          <ThemeController>
+            <SessionProvider session={session}>
+              <Layout>
+                <Component {...pageProps} />
+              </Layout>
+            </SessionProvider>
+          </ThemeController>
+        </DndProvider>
+      </QueryClientProvider>
+    </StyledEngineProvider>
   );
 }

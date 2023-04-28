@@ -42,33 +42,22 @@ export const RecipeName = ({
 
   return (
     <div
-      style={{
-        display: "flex",
-        justifyContent: "space-between",
-        paddingBottom: 8,
-        flexDirection: "column",
-      }}
+      className="flex place-content-between flex-col"
     >
-      <Typography variant="subtitle1" style={{ marginTop: 8, marginBottom: 12 }}>
+      <Typography variant="subtitle1">
         {recipe.name}
       </Typography>
+      <div className="space-y-1">
       {componentProperties.map(({ name, servings, componentId }) => {
         return (
           <div
             key={componentId}
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
-              marginBottom: 12,
-              flexDirection: "row",
-              width: "100%"
-            }}
+            className="flex place-content-between w-full"
           >
-            <Typography variant="body2" style={{ marginLeft: 20 }}>{name}</Typography>
-            <div style={{ display: "flex" }}>
+            <Typography variant="body2" className="ml-5 my-auto">{name}</Typography>
+            <div className="flex">
               <ServingsIcon servings={servings} />
-              <ButtonGroup variant="outlined" sx={{ height: 25 }}>
+              <ButtonGroup variant="outlined" className="my-auto h-6">
                 <Button
                   onClick={(event) => {
                     event.stopPropagation();
@@ -107,7 +96,6 @@ export const RecipeName = ({
                 </Button>
               </ButtonGroup>
               <DeleteIcon
-                sx={{ margin: "auto", marginLeft: "10px" }}
                 onClick={(event) => {
                   event.stopPropagation();
                   mutate({
@@ -123,11 +111,14 @@ export const RecipeName = ({
                 }}
                 fontSize="small"
                 htmlColor="#7d2020"
+                className="my-auto"
               />
               </div>
           </div>
         );
       })}
+      </div>
+        
     </div>
   );
 };

@@ -2,11 +2,13 @@ import { ThemeProvider } from "@mui/material/styles";
 import { useMemo } from "react";
 import { createTheme } from "@mui/material/styles";
 
+export const mainGreen = "#207d39"
+
 export const createThemeFromThemeKey = () => {
   return createTheme({
     palette: {
       primary: {
-        main: "#207d39",
+        main: mainGreen,
         light: "#207d39"
       }
     },

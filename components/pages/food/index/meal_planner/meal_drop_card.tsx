@@ -4,14 +4,12 @@ import Button from "@mui/material/Button";
 import Card from "@mui/material/Card";
 import CardHeader from "@mui/material/CardHeader";
 import Typography from "@mui/material/Typography";
-import {
-  Dispatch,
-  MouseEvent,
-  SetStateAction,
-  useCallback,
-} from "react";
+import { Dispatch, MouseEvent, SetStateAction, useCallback } from "react";
 import { useDrop } from "react-dnd";
-import { useMealPlan, useRecipes } from "../../../../../core/dynamo/hooks/use_dynamo_get";
+import {
+  useMealPlan,
+  useRecipes,
+} from "../../../../../core/dynamo/hooks/use_dynamo_get";
 import { usePutMealPlanToDynamo } from "../../../../../core/dynamo/hooks/use_dynamo_put";
 import { useBoolean } from "../../../../../core/hooks/use_boolean";
 import { DateString } from "../../../../../core/types/meal_plan";
@@ -106,7 +104,7 @@ export const DroppableCard = (props: {
       {/* Would like to use a class here for the hovered border but ran into this
       https://github.com/mui/material-ui/issues/25324 */}
       <Card
-        className="card"
+        className="card px-4 py-2 space-y-4"
         ref={drop}
         onClick={toggleOnClick}
         sx={{
@@ -116,19 +114,11 @@ export const DroppableCard = (props: {
               : undefined,
         }}
       >
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            padding: "8px 16px",
-          }}
-        >
+        <div className="flex grow place-content-between">
           <CardHeader
             title={dayWithoutYear}
-            className="noSelect"
-            sx={{ padding: 0 }}
-            titleTypographyProps={{variant: "h6"}}
+            className="noSelect p-0"
+            titleTypographyProps={{ variant: "h6" }}
           />
           {mobileLayout && (
             <Button
@@ -144,16 +134,8 @@ export const DroppableCard = (props: {
             </Button>
           )}
         </div>
-        <div
-          style={{
-            minHeight: 30,
-            width: 270,
-            flexGrow: 1,
-            marginLeft: 16,
-            marginRight: 16,
-          }}
-        >
-          {loading && <RecipeLoading />}
+        {loading && <RecipeLoading />}
+        <div className="space-y-2">
           {meals &&
             Object.entries(meals).map(([recipeId, components]) => (
               <RecipeName
@@ -168,4 +150,3 @@ export const DroppableCard = (props: {
     </>
   );
 };
-

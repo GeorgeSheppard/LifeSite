@@ -46,7 +46,7 @@ export const WrappedCardMedia = (props: ICardMediaProps) => {
 
   return (
     <div style={{ position: "relative" }}>
-      <S3CardMedia s3Key={images[imageIndex].key} height={300} />
+      <S3CardMedia s3Key={images[imageIndex].key} />
       {images.length > 1 && (
         <>
           <IconButton
