@@ -2,7 +2,6 @@ import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
 import { IRecipeIngredient } from "../../../../../../core/types/recipes";
 import { Quantities } from "../../../../../../core/recipes/units";
-import { Typography } from "@mui/material";
 
 export interface IIngredientsListProps {
   ingredients: IRecipeIngredient[];
