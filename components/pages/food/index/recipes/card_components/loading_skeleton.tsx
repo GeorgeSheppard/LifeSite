@@ -10,7 +10,7 @@ export const LoadingRecipeCard = () => {
   const [divider, __] = useState(Math.random() > 0.5);
 
   return (
-    <Grid item xs={12} sm={6} md={6} lg={6} xl={4}>
+    // <Grid item xs={12} sm={6} md={6} lg={6} xl={4}>
       <Card>
         <Skeleton variant="rectangular" height={300} />
         <div className="m-4 space-y-4">
@@ -35,6 +35,6 @@ export const LoadingRecipeCard = () => {
           )}
         </div>
       </Card>
-    </Grid>
+    // </Grid>
   );
 };

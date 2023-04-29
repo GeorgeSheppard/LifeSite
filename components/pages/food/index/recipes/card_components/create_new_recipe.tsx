@@ -18,17 +18,17 @@ export const CreateNewRecipeCard = (props: ICreateNewRecipeCard) => {
 
   return (
     <>
-      <Grid item key={"CreateRecipe"} xs={12} sm={6} md={6} lg={6} xl={4}>
-        <div
-          className="flex hover:shadow-xl ease-in duration-200 flex-grow shadow rounded-lg h-40"
-          onClick={uuidOnClick}
-        >
-          <Typography variant="button" className="m-auto">
-            Create New Recipe
-          </Typography>
-        </div>
-      </Grid>
-      <Grid
+      {/* <Grid item key={"CreateRecipe"} xs={12} sm={6} md={6} lg={6} xl={4}> */}
+      <div
+        className="flex hover:shadow-xl ease-in duration-200 flex-grow shadow rounded-lg h-40"
+        onClick={uuidOnClick}
+      >
+        <Typography variant="button" className="m-auto">
+          Create New Recipe
+        </Typography>
+      </div>
+      {/* </Grid> */}
+      {/* <Grid
         item
         key={"UploadExistingRecipe"}
         xs={12}
@@ -36,16 +36,15 @@ export const CreateNewRecipeCard = (props: ICreateNewRecipeCard) => {
         md={6}
         lg={6}
         xl={4}
+      > */}
+      <div
+        className="flex hover:shadow-xl ease-in duration-200 flex-grow shadow rounded-lg h-40"
+        onClick={uploadExistingOnClick}
       >
-        <div
-          className="flex hover:shadow-xl ease-in duration-200 flex-grow shadow rounded-lg h-40"
-          onClick={uploadExistingOnClick}
-        >
-          <Typography variant="button" className="m-auto">
-            Upload Existing Recipe
-          </Typography>
-        </div>
-      </Grid>
+        <Typography variant="button" className="m-auto">
+          Upload Existing Recipe
+        </Typography>
+      </div>
     </>
   );
 };
