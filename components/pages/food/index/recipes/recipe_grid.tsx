@@ -19,12 +19,13 @@ export const RecipeGrid = (props: RecipeGridProps) => {
       <Dialog
         open={!!fullRecipe}
         onClose={() => setFullRecipe(null)}
-        className="flex m-auto max-w-md"
+        fullWidth
+        PaperProps={{className: "bg-transparent max-w-lg" }}
       >
         <RecipeCard
           uuid={fullRecipe!}
           visible
-          isPreview={false}
+          isPreview={false} 
           onDelete={() => setFullRecipe(null)}
         />
       </Dialog>

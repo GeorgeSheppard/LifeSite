@@ -11,6 +11,8 @@ import InventoryIcon from "@mui/icons-material/Inventory";
 import { OptionsDropdownButton } from "./card_components/options_dropdown";
 import { Divider } from "@mui/material";
 import { WithDeleteDialog } from "./card_components/with_delete_dialog";
+import { IngredientsList } from "./card_components/ingredients_list";
+import { InstructionsList } from "./card_components/instructions_list";
 
 export interface IRecipeCard {
   uuid: RecipeUuid;
@@ -44,7 +46,7 @@ const RecipeCardContent = (props: IRecipeCard) => {
   return (
     <div
       onClick={props.onClick}
-      className="hover:shadow-xl ease-in duration-200"
+      className="hover:shadow-xl ease-in duration-200 flex-grow"
     >
       {recipe.images && (
         <WrappedCardMedia
@@ -69,29 +71,47 @@ const RecipeCardContent = (props: IRecipeCard) => {
         </div>
         <div className="m-2 space-y-2">
           {recipe.components.map((component) => (
-            <div key={component.name} className="flex flex-row">
-              <Typography
-                variant="subtitle2"
-                className="grow my-auto"
-                color="#717171"
-              >
-                {component.name}
-              </Typography>
-              <div className="flex my-auto space-x-2">
-                {component.servings && component.servings > 1 && (
-                  <ServingsIcon servings={component.servings} />
-                )}
-                {component.storeable && (
-                  <Tooltip title="Can be stored">
-                    <InventoryIcon
-                      fontSize="small"
-                      htmlColor="#212121"
-                      className="block m-auto"
-                    />
-                  </Tooltip>
+            <>
+              <div key={component.name} className="flex flex-row">
+                <Typography
+                  variant="subtitle2"
+                  className="grow my-auto"
+                  color="#717171"
+                >
+                  {component.name}
+                </Typography>
+                {!props.isPreview && (
+                  <div className="flex my-auto space-x-2">
+                    {component.servings && (
+                      <ServingsIcon servings={component.servings} />
+                    )}
+                    <Tooltip
+                      title={
+                        component.storeable
+                          ? "Can be stored"
+                          : "Can't be stored"
+                      }
+                    >
+                      <InventoryIcon
+                        fontSize="small"
+                        htmlColor="#212121"
+                        className={`block m-auto ${
+                          component.storeable ? "opacity-100" : "opacity-20"
+                        }`}
+                      />
+                    </Tooltip>
+                  </div>
                 )}
               </div>
-            </div>
+              {!props.isPreview && (
+                <div className="ml-4 space-y-3">
+                  <IngredientsList ingredients={component.ingredients} />
+                  {component.instructions.length > 0 && (
+                    <InstructionsList instructions={component.instructions} />
+                  )}
+                </div>
+              )}
+            </>
           ))}
         </div>
         {recipe.description?.length > 0 && (
