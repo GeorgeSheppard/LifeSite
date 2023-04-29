@@ -1,16 +1,14 @@
+import { Divider } from "@mui/material";
 import Card from "@mui/material/Card";
-import Grid from "@mui/material/Grid";
 import Skeleton from "@mui/material/Skeleton";
 import { useState } from "react";
 import { weightedRandom } from "../../../../../../core/utilities";
-import { Divider } from "@mui/material";
 
 export const LoadingRecipeCard = () => {
   const [numComponents, _] = useState(weightedRandom(1, 5));
   const [divider, __] = useState(Math.random() > 0.5);
 
   return (
-    // <Grid item xs={12} sm={6} md={6} lg={6} xl={4}>
       <Card>
         <Skeleton variant="rectangular" height={300} />
         <div className="m-4 space-y-4">
@@ -35,6 +33,5 @@ export const LoadingRecipeCard = () => {
           )}
         </div>
       </Card>
-    // </Grid>
   );
 };
