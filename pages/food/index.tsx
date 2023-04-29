@@ -11,6 +11,9 @@ import {
   useRecipeSearch,
 } from "../../core/recipes/hooks/use_recipe_search";
 import { DateString } from "../../core/types/meal_plan";
+import { useRouter } from "next/router";
+import { ParsedUrlQuery } from "querystring";
+import { RecipeUuid } from "../../core/types/recipes";
 
 const allSearchValues = new Set<SearchableAttributes>([
   "name",
@@ -18,8 +21,23 @@ const allSearchValues = new Set<SearchableAttributes>([
   "ingredients",
 ]);
 
+export type PreviewRecipe = {
+  recipe: RecipeUuid;
+  user?: string;
+};
+
+const getPreviewRecipe = (query: ParsedUrlQuery): PreviewRecipe | undefined => {
+  const { recipe, user } = query;
+  if (recipe instanceof Array || user instanceof Array) return;
+  if (!recipe) return;
+  if (!user) return { recipe };
+  return { recipe, user };
+};
+
 const Recipes = () => {
   const mobileLayout = useIsMobileLayout();
+  const router = useRouter();
+  const previewRecipe = getPreviewRecipe(router.query);
 
   const [keys, setKeys] = useState(() => allSearchValues);
   const recipeSearch = useRecipeSearch(mobileLayout ? allSearchValues : keys);
@@ -33,29 +51,31 @@ const Recipes = () => {
   // NoSsr because of media query used to determine mobile layout or not
   return (
     <NoSsr>
-        {mobileLayout ? (
-          <MobileLayout
-            recipeSearch={recipeSearch}
-            recipes={recipes}
-            selected={selected}
-            setSelected={setSelected}
-            booleanState={booleanState}
-            shoppingListData={shoppingListData}
-            setShoppingListData={setShoppingListData}
-          />
-        ) : (
-          <DesktopLayout
-            keys={keys}
-            setKeys={setKeys}
-            recipeSearch={recipeSearch}
-            recipes={recipes}
-            selected={selected}
-            setSelected={setSelected}
-            booleanState={booleanState}
-            shoppingListData={shoppingListData}
-            setShoppingListData={setShoppingListData}
-          />
-        )}
+      {mobileLayout ? (
+        <MobileLayout
+          recipeSearch={recipeSearch}
+          recipes={recipes}
+          selected={selected}
+          setSelected={setSelected}
+          booleanState={booleanState}
+          shoppingListData={shoppingListData}
+          setShoppingListData={setShoppingListData}
+          previewRecipe={previewRecipe}
+        />
+      ) : (
+        <DesktopLayout
+          keys={keys}
+          setKeys={setKeys}
+          recipeSearch={recipeSearch}
+          recipes={recipes}
+          selected={selected}
+          setSelected={setSelected}
+          booleanState={booleanState}
+          shoppingListData={shoppingListData}
+          setShoppingListData={setShoppingListData}
+          previewRecipe={previewRecipe}
+        />
+      )}
     </NoSsr>
   );
 };

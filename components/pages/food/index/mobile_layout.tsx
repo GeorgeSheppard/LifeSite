@@ -1,18 +1,19 @@
+import Box from "@mui/material/Box";
+import Grid from "@mui/material/Grid";
+import OutlinedInput from "@mui/material/OutlinedInput";
+import Tab from "@mui/material/Tab";
+import Tabs from "@mui/material/Tabs";
 import { UseQueryResult } from "@tanstack/react-query";
-import { IRecipeSearcher } from "../../../../core/recipes/hooks/use_recipe_search";
-import { IRecipe } from "../../../../core/types/recipes";
 import { Dispatch, SetStateAction, useState } from "react";
 import { IUseBoolean } from "../../../../core/hooks/use_boolean";
 import { IQuantitiesAndMeals } from "../../../../core/meal_plan/shopping_list_creator";
-import Grid from "@mui/material/Grid";
-import { ShoppingListDialog } from "./meal_planner/shopping_list";
-import Tabs from "@mui/material/Tabs";
-import Tab from "@mui/material/Tab";
-import Box from "@mui/material/Box";
-import OutlinedInput from "@mui/material/OutlinedInput";
-import { CreateShoppingListButton } from "./meal_planner/create_shopping_list";
-import { Planner } from "./meal_planner/calendar";
+import { IRecipeSearcher } from "../../../../core/recipes/hooks/use_recipe_search";
 import { DateString } from "../../../../core/types/meal_plan";
+import { IRecipe } from "../../../../core/types/recipes";
+import { PreviewRecipe } from "../../../../pages/food";
+import { Planner } from "./meal_planner/calendar";
+import { CreateShoppingListButton } from "./meal_planner/create_shopping_list";
+import { ShoppingListDialog } from "./meal_planner/shopping_list";
 import { RecipeGrid } from "./recipes/recipe_grid";
 
 export interface MobileStateProps {
@@ -23,6 +24,7 @@ export interface MobileStateProps {
   booleanState: IUseBoolean;
   shoppingListData: IQuantitiesAndMeals;
   setShoppingListData: Dispatch<SetStateAction<IQuantitiesAndMeals>>;
+  previewRecipe?: PreviewRecipe;
 }
 
 type TabOptions = "recipes" | "mealplan";
@@ -36,6 +38,7 @@ export const MobileLayout = (props: MobileStateProps) => {
     booleanState: [on, { turnOn, turnOff }],
     shoppingListData,
     setShoppingListData,
+    previewRecipe
   } = props;
   const [tab, setTab] = useState<TabOptions>("recipes");
 
@@ -80,6 +83,7 @@ export const MobileLayout = (props: MobileStateProps) => {
               <RecipeGrid
                 searchResults={searchResults}
                 loading={recipes.isLoading}
+                previewRecipe={previewRecipe}
               />
             </Box>
           ) : (

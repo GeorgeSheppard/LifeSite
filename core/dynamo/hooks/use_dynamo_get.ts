@@ -43,9 +43,9 @@ export const useRecipes = () => {
   return recipes;
 };
 
-export const useRecipe = (recipeId: RecipeUuid) => {
+export const useRecipe = (recipeId: RecipeUuid, user?: string) => {
   const { id, loading } = useAppSession();
-  const userId = id ?? shared;
+  const userId = user ?? id ?? shared;
 
   const recipes = useQuery({
     queryKey: recipeQueryKey(recipeId, userId),
