@@ -14,43 +14,38 @@ export const CreateNewRecipeCard = (props: ICreateNewRecipeCard) => {
   const uuidOnClick = useCallback(() => {
     router.push(`/food/${NewRecipe}`);
   }, [router]);
-  const uploadExistingOnClick = () => router.push('/food/existingUpload'
-  )
+  const uploadExistingOnClick = () => router.push("/food/existingUpload");
 
   return (
     <>
-    <Grid item key={"CreateRecipe"} xs={12} sm={6} md={6} lg={6} xl={4}>
-      <Card
-        sx={{
-          height: "150px",
-          display: "flex",
-        }}
-        className="cardWithHover"
-        onClick={uuidOnClick}
+      <Grid item key={"CreateRecipe"} xs={12} sm={6} md={6} lg={6} xl={4}>
+        <div
+          className="flex hover:shadow-xl ease-in duration-200 flex-grow shadow rounded-lg h-40"
+          onClick={uuidOnClick}
         >
-        <Box component="div" sx={{ flexGrow: 0.5 }} />
-        <Box component="div" sx={{ display: "flex", margin: "auto" }}>
-          <Typography variant="button">Create New Recipe</Typography>
-        </Box>
-        <Box component="div" sx={{ flexGrow: 0.5 }} />
-      </Card>
+          <Typography variant="button" className="m-auto">
+            Create New Recipe
+          </Typography>
+        </div>
       </Grid>
-      <Grid item key={"UploadExistingRecipe"} xs={12} sm={6} md={6} lg={6} xl={4}>
-      <Card
-        sx={{
-          height: "150px",
-          display: "flex",
-        }}
-        className="cardWithHover"
-        onClick={uploadExistingOnClick}
+      <Grid
+        item
+        key={"UploadExistingRecipe"}
+        xs={12}
+        sm={6}
+        md={6}
+        lg={6}
+        xl={4}
       >
-        <Box component="div" sx={{ flexGrow: 0.5 }} />
-        <Box component="div" sx={{ display: "flex", margin: "auto" }}>
-        <Typography variant="button">Upload Existing Recipe</Typography>
-        </Box>
-        <Box component="div" sx={{ flexGrow: 0.5 }} />
-      </Card>
-    </Grid>
-        </>
+        <div
+          className="flex hover:shadow-xl ease-in duration-200 flex-grow shadow rounded-lg h-40"
+          onClick={uploadExistingOnClick}
+        >
+          <Typography variant="button" className="m-auto">
+            Upload Existing Recipe
+          </Typography>
+        </div>
+      </Grid>
+    </>
   );
 };

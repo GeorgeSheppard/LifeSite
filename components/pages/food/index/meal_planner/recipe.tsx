@@ -44,7 +44,7 @@ export const RecipeName = ({
     <div
       className="flex place-content-between flex-col"
     >
-      <Typography variant="subtitle1">
+      <Typography variant="subtitle1" color="#222222">
         {recipe.name}
       </Typography>
       <div className="space-y-1">
@@ -54,7 +54,7 @@ export const RecipeName = ({
             key={componentId}
             className="flex place-content-between w-full"
           >
-            <Typography variant="body2" className="ml-5 my-auto">{name}</Typography>
+            <Typography variant="subtitle2" className="ml-5 my-auto font-[500]" color="#717171">{name}</Typography>
             <div className="flex">
               <ServingsIcon servings={servings} />
               <ButtonGroup variant="outlined" className="my-auto h-6">
