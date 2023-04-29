@@ -1,8 +1,6 @@
 import AddIcon from "@mui/icons-material/Add";
 import { Dialog, DialogContent, List, ListItem } from "@mui/material";
 import Button from "@mui/material/Button";
-import Card from "@mui/material/Card";
-import CardHeader from "@mui/material/CardHeader";
 import Typography from "@mui/material/Typography";
 import { Dispatch, MouseEvent, SetStateAction, useCallback } from "react";
 import { useDrop } from "react-dnd";
@@ -78,7 +76,7 @@ export const DroppableCard = (props: {
     <>
       <Dialog open={dialogOpen} onClose={setters.turnOff}>
         <DialogContent>
-          {recipes?.length !== 0 ? (
+          {recipes?.length === 0 ? (
             <Typography>No recipes available</Typography>
           ) : (
             <List>
@@ -103,23 +101,25 @@ export const DroppableCard = (props: {
       </Dialog>
       {/* Would like to use a class here for the hovered border but ran into this
       https://github.com/mui/material-ui/issues/25324 */}
-      <Card
-        className="card px-4 py-2 space-y-4"
+      <div
+        className="card px-4 py-2 space-y-4 hover:shadow-xl ease-in duration-200 flex-grow rounded-lg shadow"
         ref={drop}
         onClick={toggleOnClick}
-        sx={{
+        style={{
           boxShadow:
-            collected.isOver || selected
+            selected || collected.isOver
               ? "0 0 0 3px rgba(32, 125, 57, 0.3)"
               : undefined,
         }}
       >
         <div className="flex grow place-content-between">
-          <CardHeader
-            title={dayWithoutYear}
-            className="noSelect p-0"
-            titleTypographyProps={{ variant: "h6" }}
-          />
+          <Typography
+            variant="subtitle1"
+            className="grow my-auto font-[500] noSelect underline"
+            color="#222222"
+          >
+            {dayWithoutYear}
+          </Typography>
           {mobileLayout && (
             <Button
               variant="contained"
@@ -146,7 +146,7 @@ export const DroppableCard = (props: {
               />
             ))}
         </div>
-      </Card>
+      </div>
     </>
   );
 };

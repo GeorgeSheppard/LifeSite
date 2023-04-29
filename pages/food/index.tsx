@@ -8,11 +8,15 @@ import { useRecipes } from "../../core/dynamo/hooks/use_dynamo_get";
 import { useBoolean } from "../../core/hooks/use_boolean";
 import {
   SearchableAttributes,
-  useRecipeSearch
+  useRecipeSearch,
 } from "../../core/recipes/hooks/use_recipe_search";
 import { DateString } from "../../core/types/meal_plan";
 
-const allSearchValues = new Set<SearchableAttributes>(["name", "description", "ingredients"]);
+const allSearchValues = new Set<SearchableAttributes>([
+  "name",
+  "description",
+  "ingredients",
+]);
 
 const Recipes = () => {
   const mobileLayout = useIsMobileLayout();
@@ -29,29 +33,29 @@ const Recipes = () => {
   // NoSsr because of media query used to determine mobile layout or not
   return (
     <NoSsr>
-      {mobileLayout ? (
-        <MobileLayout
-          recipeSearch={recipeSearch}
-          recipes={recipes}
-          selected={selected}
-          setSelected={setSelected}
-          booleanState={booleanState}
-          shoppingListData={shoppingListData}
-          setShoppingListData={setShoppingListData}
-        />
-      ) : (
-        <DesktopLayout
-          keys={keys}
-          setKeys={setKeys}
-          recipeSearch={recipeSearch}
-          recipes={recipes}
-          selected={selected}
-          setSelected={setSelected}
-          booleanState={booleanState}
-          shoppingListData={shoppingListData}
-          setShoppingListData={setShoppingListData}
-        />
-      )}
+        {mobileLayout ? (
+          <MobileLayout
+            recipeSearch={recipeSearch}
+            recipes={recipes}
+            selected={selected}
+            setSelected={setSelected}
+            booleanState={booleanState}
+            shoppingListData={shoppingListData}
+            setShoppingListData={setShoppingListData}
+          />
+        ) : (
+          <DesktopLayout
+            keys={keys}
+            setKeys={setKeys}
+            recipeSearch={recipeSearch}
+            recipes={recipes}
+            selected={selected}
+            setSelected={setSelected}
+            booleanState={booleanState}
+            shoppingListData={shoppingListData}
+            setShoppingListData={setShoppingListData}
+          />
+        )}
     </NoSsr>
   );
 };
