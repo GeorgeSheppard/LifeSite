@@ -14,7 +14,7 @@ export default function Header() {
   const session = useSession();
   const router = useRouter();
 
-  const logout = () => signOut();
+  const logout = () => signOut({ callbackUrl: `http://localhost:3000/api/auth/logout` });
   const login = () => signIn("cognito");
 
   return (

@@ -1,21 +1,25 @@
+import InventoryIcon from "@mui/icons-material/Inventory";
+import { Divider } from "@mui/material";
+import Tooltip from "@mui/material/Tooltip";
+import Typography from "@mui/material/Typography";
 import { useRecipe } from "../../../../../core/dynamo/hooks/use_dynamo_get";
+import { useAppSession } from "../../../../../core/hooks/use_app_session";
 import { RecipeUuid } from "../../../../../core/types/recipes";
 import { WrappedCardMedia } from "../../../../core/cards/wrapped_card_media";
-import Typography from "@mui/material/Typography";
 import { CopyIngredientsButton } from "./card_components/copy_ingredients";
-import { EditRecipeButton } from "./card_components/edit_recipe";
+import { CopyShareableLink } from "./card_components/copy_shareable_link";
 import { DeleteRecipeButton } from "./card_components/delete_recipe";
-import { ServingsIcon } from "./card_components/servings_icon";
-import Tooltip from "@mui/material/Tooltip";
-import InventoryIcon from "@mui/icons-material/Inventory";
-import { OptionsDropdownButton } from "./card_components/options_dropdown";
-import { Divider } from "@mui/material";
-import { WithDeleteDialog } from "./card_components/with_delete_dialog";
+import { DownloadSharedRecipe } from "./card_components/download_shared_recipe";
+import { EditRecipeButton } from "./card_components/edit_recipe";
 import { IngredientsList } from "./card_components/ingredients_list";
 import { InstructionsList } from "./card_components/instructions_list";
+import { OptionsDropdownButton } from "./card_components/options_dropdown";
+import { ServingsIcon } from "./card_components/servings_icon";
+import { WithDeleteDialog } from "./card_components/with_delete_dialog";
 
 export interface IRecipeCard {
   uuid: RecipeUuid;
+  user?: string;
   visible: boolean;
   openDialog: () => void;
   isPreview: boolean;
@@ -35,13 +39,10 @@ export const RecipeCard = (
 };
 
 const RecipeCardContent = (props: IRecipeCard) => {
-  const { uuid } = props;
-
-  const recipe = useRecipe(uuid).data;
-
-  if (!recipe) {
-    return null;
-  }
+  const { uuid, user } = props;
+  const session = useAppSession()
+  const recipe = useRecipe(uuid, user).data
+  if (!recipe) return null;
 
   return (
     <div
@@ -63,7 +64,9 @@ const RecipeCardContent = (props: IRecipeCard) => {
           >
             {recipe?.name}
           </Typography>
+          {user && user !== session.id && <DownloadSharedRecipe recipe={recipe} />}
           <OptionsDropdownButton uuid={uuid}>
+            {!user && <CopyShareableLink uuid={uuid} />}
             <CopyIngredientsButton recipe={recipe} />
             <EditRecipeButton uuid={uuid} />
             <DeleteRecipeButton onClick={props.openDialog} />

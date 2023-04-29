@@ -27,6 +27,7 @@ export const DesktopLayout = (
     setShoppingListData,
     keys,
     setKeys,
+    previewRecipe
   } = props;
   return (
     <main>
@@ -56,6 +57,7 @@ export const DesktopLayout = (
             <RecipeGrid
               searchResults={searchResults}
               loading={recipes.isLoading}
+              previewRecipe={previewRecipe}
             />
           </Box>
         </Grid>
