@@ -12,6 +12,7 @@ import { S3CardMedia } from "./s3_card_media";
 
 export interface ICardMediaProps {
   images: Image[];
+  mediaClassName?: string;
 }
 
 /**
@@ -19,7 +20,7 @@ export interface ICardMediaProps {
  * other images if they exist
  */
 export const WrappedCardMedia = (props: ICardMediaProps) => {
-  const { images } = props;
+  const { images, mediaClassName } = props;
 
   const [imageIndex, setImageIndex] = useState(0);
 
@@ -46,7 +47,7 @@ export const WrappedCardMedia = (props: ICardMediaProps) => {
 
   return (
     <div style={{ position: "relative" }}>
-      <S3CardMedia s3Key={images[imageIndex].key} />
+      <S3CardMedia s3Key={images[imageIndex].key} className={mediaClassName} />
       {images.length > 1 && (
         <>
           <IconButton

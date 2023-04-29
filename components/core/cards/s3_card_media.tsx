@@ -7,6 +7,7 @@ import Image from "next/image";
 
 export interface IS3CardMediaProps {
   s3Key: S3Key;
+  className?: string
 }
 
 /**
@@ -14,7 +15,7 @@ export interface IS3CardMediaProps {
  * when the s3Key changes
  */
 export const S3CardMedia = (props: IS3CardMediaProps) => {
-  const { s3Key } = props;
+  const { s3Key, className } = props;
   const [show, setShow] = useState(true);
   const [imageLoading, setImageLoading] = useState(true);
   const signedUrl = useQuery({
@@ -42,6 +43,7 @@ export const S3CardMedia = (props: IS3CardMediaProps) => {
         layout="fill"
         objectFit="cover"
         alt=""
+        className={className}
       />
     </div>
   );
