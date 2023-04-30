@@ -14,6 +14,7 @@ import { DateString } from "../../core/types/meal_plan";
 import { useRouter } from "next/router";
 import { ParsedUrlQuery } from "querystring";
 import { RecipeUuid } from "../../core/types/recipes";
+import { useSearchDebounce } from "../../core/hooks/use_search_debounce";
 
 const allSearchValues = new Set<SearchableAttributes>([
   "name",
@@ -40,7 +41,11 @@ const Recipes = () => {
   const previewRecipe = getPreviewRecipe(router.query);
 
   const [keys, setKeys] = useState(() => allSearchValues);
-  const recipeSearch = useRecipeSearch(mobileLayout ? allSearchValues : keys);
+  const [searchString, debouncedValue, setSearchString] = useSearchDebounce("");
+  const searchResults = useRecipeSearch(
+    debouncedValue,
+    mobileLayout ? allSearchValues : keys
+  );
   const recipes = useRecipes();
   const [selected, setSelected] = useState<Set<DateString>>(() => new Set());
   const booleanState = useBoolean(false);
@@ -53,7 +58,7 @@ const Recipes = () => {
     <NoSsr>
       {mobileLayout ? (
         <MobileLayout
-          recipeSearch={recipeSearch}
+          searchResults={searchResults}
           recipes={recipes}
           selected={selected}
           setSelected={setSelected}
@@ -61,12 +66,14 @@ const Recipes = () => {
           shoppingListData={shoppingListData}
           setShoppingListData={setShoppingListData}
           previewRecipe={previewRecipe}
+          searchString={searchString}
+          setSearchString={setSearchString}
         />
       ) : (
         <DesktopLayout
           keys={keys}
           setKeys={setKeys}
-          recipeSearch={recipeSearch}
+          searchResults={searchResults}
           recipes={recipes}
           selected={selected}
           setSelected={setSelected}
@@ -74,6 +81,8 @@ const Recipes = () => {
           shoppingListData={shoppingListData}
           setShoppingListData={setShoppingListData}
           previewRecipe={previewRecipe}
+          searchString={searchString}
+          setSearchString={setSearchString}
         />
       )}
     </NoSsr>

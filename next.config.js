@@ -70,5 +70,5 @@ module.exports = (phase) => {
 module.exports = withSentryConfig(
   module.exports,
   { silent: true },
-  { hideSourcemaps: true }
+  { hideSourcemaps: false }
 );

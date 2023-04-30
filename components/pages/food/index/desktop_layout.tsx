@@ -18,7 +18,7 @@ export const DesktopLayout = (
   }
 ) => {
   const {
-    recipeSearch: { searchInput, setSearchInput, searchResults },
+    searchResults,
     recipes,
     selected,
     setSelected,
@@ -27,7 +27,9 @@ export const DesktopLayout = (
     setShoppingListData,
     keys,
     setKeys,
-    previewRecipe
+    previewRecipe,
+    searchString,
+    setSearchString
   } = props;
   return (
     <main>
@@ -46,8 +48,8 @@ export const DesktopLayout = (
             <Grid item key={"Search"}>
               <SearchChips keys={keys} setKeys={setKeys} />
               <OutlinedInput
-                value={searchInput}
-                onChange={setSearchInput}
+                value={searchString}
+                onChange={(event) => setSearchString(event.target.value)}
                 sx={{ marginBottom: 3, mt: 1 }}
                 placeholder="Search"
                 fullWidth

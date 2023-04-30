@@ -7,7 +7,6 @@ import { UseQueryResult } from "@tanstack/react-query";
 import { Dispatch, SetStateAction, useState } from "react";
 import { IUseBoolean } from "../../../../core/hooks/use_boolean";
 import { IQuantitiesAndMeals } from "../../../../core/meal_plan/shopping_list_creator";
-import { IRecipeSearcher } from "../../../../core/recipes/hooks/use_recipe_search";
 import { DateString } from "../../../../core/types/meal_plan";
 import { IRecipe } from "../../../../core/types/recipes";
 import { PreviewRecipe } from "../../../../pages/food";
@@ -15,9 +14,10 @@ import { Planner } from "./meal_planner/calendar";
 import { CreateShoppingListButton } from "./meal_planner/create_shopping_list";
 import { ShoppingListDialog } from "./meal_planner/shopping_list";
 import { RecipeGrid } from "./recipes/recipe_grid";
+import { SearchResult } from "../../../../core/recipes/hooks/use_recipe_search";
 
 export interface MobileStateProps {
-  recipeSearch: IRecipeSearcher;
+  searchResults: SearchResult[];
   recipes: UseQueryResult<IRecipe[]>;
   selected: Set<DateString>;
   setSelected: Dispatch<SetStateAction<Set<DateString>>>;
@@ -25,20 +25,24 @@ export interface MobileStateProps {
   shoppingListData: IQuantitiesAndMeals;
   setShoppingListData: Dispatch<SetStateAction<IQuantitiesAndMeals>>;
   previewRecipe?: PreviewRecipe;
+  searchString: string;
+  setSearchString: (value: string) => void;
 }
 
 type TabOptions = "recipes" | "mealplan";
 
 export const MobileLayout = (props: MobileStateProps) => {
   const {
-    recipeSearch: { searchInput, setSearchInput, searchResults },
+    searchResults,
     recipes,
     selected,
     setSelected,
     booleanState: [on, { turnOn, turnOff }],
     shoppingListData,
     setShoppingListData,
-    previewRecipe
+    previewRecipe,
+    searchString,
+    setSearchString
   } = props;
   const [tab, setTab] = useState<TabOptions>("recipes");
 
@@ -72,8 +76,8 @@ export const MobileLayout = (props: MobileStateProps) => {
             <Box component="div">
               <Grid item key={"Search"} px={0}>
                 <OutlinedInput
-                  value={searchInput}
-                  onChange={setSearchInput}
+                  value={searchString}
+                  onChange={(event) => setSearchString(event.target.value)}
                   sx={{ marginBottom: 3 }}
                   placeholder="Search"
                   fullWidth
