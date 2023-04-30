@@ -47,7 +47,7 @@ const RecipeCardContent = (props: IRecipeCard) => {
   return (
     <div
       onClick={props.onClick}
-      className="hover:shadow-xl ease-in duration-200 flex-grow"
+      className="hover:shadow-xl ease-in duration-200 flex-grow hover:cursor-pointer"
     >
       {recipe.images && (
         <WrappedCardMedia

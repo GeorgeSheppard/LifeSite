@@ -10,11 +10,9 @@ export const DeleteRecipeButton = (props: IDeleteRecipeButtonProps) => {
   return (
     <Tooltip title="Delete">
       <IconButton
-        onClick={(event) => {
-          event?.stopPropagation();
-          props.onClick();
-        }}
+        onClick={props.onClick}
         size="small"
+        disableRipple
       >
         <DeleteIcon fontSize="small" htmlColor="#7d2020" />
       </IconButton>
