@@ -3,6 +3,7 @@ import { RecipeUuid } from "../../../../../../core/types/recipes";
 import { MoreHoriz } from "@mui/icons-material";
 import React, { useState } from "react";
 import Popover from "@mui/material/Popover";
+import { Button } from "@mui/material";
 
 export type IEditRecipeButtonProps = React.PropsWithChildren<{
   uuid: RecipeUuid;
@@ -13,15 +14,13 @@ export const OptionsDropdownButton = (props: IEditRecipeButtonProps) => {
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
-    event.stopPropagation();
   };
-  const handleClose = (event: React.MouseEvent<HTMLButtonElement>) => {
+  const handleClose = () => {
     setAnchorEl(null);
-    event.stopPropagation();
   };
 
   return (
-    <>
+    <div onClick={(event) => event.stopPropagation()}>
       <IconButton onClick={handleClick} size="medium" className="p-0 m-2">
         <MoreHoriz fontSize="medium" htmlColor="#212121" />
       </IconButton>
@@ -41,6 +40,6 @@ export const OptionsDropdownButton = (props: IEditRecipeButtonProps) => {
       >
         {props.children}
       </Popover>
-    </>
+    </div>
   );
 };

@@ -14,11 +14,9 @@ export const EditRecipeButton = (props: IEditRecipeButtonProps) => {
   return (
     <Tooltip title="Edit">
       <IconButton
-        onClick={(event) => {
-          event?.stopPropagation();
-          router.push(`/food/${props.uuid}`);
-        }}
+        onClick={() => router.push(`/food/${props.uuid}`)}
         size="small"
+        disableRipple
       >
         <EditIcon fontSize="small" htmlColor="#212121" />
       </IconButton>

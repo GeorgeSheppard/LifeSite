@@ -1,17 +1,16 @@
-import IconButton from "@mui/material/IconButton";
-import Tooltip from "@mui/material/Tooltip";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
-import { MouseEvent } from "react";
 import { IRecipe } from "../../../../../../core/types/recipes";
 import { Quantities } from "../../../../../../core/recipes/units";
+import { useTemporaryState } from "../../../../../../core/hooks/use_temporary_state";
+import IconButton from "@mui/material/IconButton";
+import Tooltip from "@mui/material/Tooltip";
 
 export interface ICopyIngredientsButtonProps {
   recipe: IRecipe;
 }
 
 export const CopyIngredientsButton = (props: ICopyIngredientsButtonProps) => {
-  const copyIngredients = (event: MouseEvent) => {
-    event?.stopPropagation();
+  const copyIngredients = () => {
     const ingredients = props.recipe.components.flatMap(
       (component) => component.ingredients
     );
@@ -23,11 +22,17 @@ export const CopyIngredientsButton = (props: ICopyIngredientsButtonProps) => {
     navigator.clipboard.writeText(text);
   };
 
+  const [tooltip, iconOnClick] = useTemporaryState("Copy ingredients", "Copied!");
+
   return (
-    <Tooltip title="Copy ingredients">
+    <Tooltip title={tooltip}>
       <IconButton
-        onClick={copyIngredients}
+        onClick={() => {
+          copyIngredients();
+          iconOnClick();
+        }}
         size="small"
+        disableRipple
       >
         <ContentCopyIcon fontSize="small" htmlColor="#212121" />
       </IconButton>
