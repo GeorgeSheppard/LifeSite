@@ -29,7 +29,8 @@ module.exports = (phase) => {
     ENV_AWS_DYNAMO_ACCESS_KEY: process.env.ENV_AWS_DYNAMO_ACCESS_KEY,
     ENV_AWS_DYNAMO_SECRET_ACCESS_KEY:
       process.env.ENV_AWS_DYNAMO_SECRET_ACCESS_KEY,
-    ENV_OPENAI_SECRET_ACCESS_KEY: process.env.ENV_OPENAI_SECRET
+    ENV_OPENAI_SECRET_ACCESS_KEY: process.env.ENV_OPENAI_SECRET,
+    ENV_DOMAIN: "localhost:3000"
   };
 
   if (phase !== PHASE_DEVELOPMENT_SERVER) {
@@ -46,6 +47,7 @@ module.exports = (phase) => {
     envVariables.ENV_AWS_COGNITO_DOMAIN_URL =
       process.env.ENV_AWS_COGNITO_DOMAIN_URL_PROD;
     envVariables.ENV_AWS_DYNAMO_NAME = process.env.ENV_AWS_DYNAMO_NAME_PROD;
+    envVariables.ENV_DOMAIN = process.env.ENV_DOMAIN;
   }
 
   return {

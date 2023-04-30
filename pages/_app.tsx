@@ -10,6 +10,7 @@ import "../styles/scrollbar.scss";
 import "../styles/utilities.scss";
 import "../styles/padding.scss";
 import "../styles/globals.css";
+import 'tailwindcss/tailwind.css'
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { StyledEngineProvider } from "@mui/material/styles";
@@ -23,12 +24,12 @@ const queryClient = new QueryClient({
   },
 });
 
-export interface ILifeSiteProps {
+export interface IKitchenCalmProps {
   Component: React.JSXElementConstructor<ILayoutProps>;
   pageProps: ILayoutProps & { session: Session };
 }
 
-export default function LifeSite(props: ILifeSiteProps) {
+export default function KitchenCalm(props: IKitchenCalmProps) {
   const { Component } = props;
   const { session, ...pageProps } = props.pageProps;
 
