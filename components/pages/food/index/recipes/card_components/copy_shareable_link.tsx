@@ -13,7 +13,7 @@ export const CopyShareableLink = (props: ICopyIngredientsButtonProps) => {
   const session = useAppSession();
 
   const copyLink = (event: MouseEvent<HTMLButtonElement>) => {
-    const baseUrl = process.env.NODE_ENV ==="development" ? "localhost:3000" : "lifesite.vercel.app"
+    const baseUrl = process.env.ENV_DOMAIN;
     const url = new URL(`${baseUrl}/food`)
     url.searchParams.append('recipe', props.uuid);
     if (!session.id) throw new Error("Session loading");

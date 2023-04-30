@@ -19,7 +19,6 @@ export default function Header() {
 
   return (
     <div
-      style={{ backgroundColor: mainGreen }}
       className="flex place-content-center h-16 px-8 align-middle"
     >
       <div className="max-w-6xl flex place-content-between grow">
@@ -27,16 +26,17 @@ export default function Header() {
           disableRipple
           onClick={() => router.push("/")}
         >
-          <Typography variant="h6" color="white" noWrap>
-            LifeSite
+          {/* <Image src="/static/images/KitchenCalm.png" alt="KitchenCalm" width="100" height="50" /> */}
+          <Typography variant="h6" color={mainGreen} noWrap fontFamily="monospace">
+            KitchenCalm
           </Typography>
         </IconButton>
         <IconButton
           size="large"
           onClick={session.status === "authenticated" ? logout : login}
           disabled={session.status === "loading"}
-          sx={{ color: "white" }}
           className="my-auto"
+          sx={{color: mainGreen}}
         >
           {session.status === "loading" && (
             <CircularProgress color="inherit" size={20} />
