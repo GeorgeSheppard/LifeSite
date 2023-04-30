@@ -1,9 +1,8 @@
-import IconButton from "@mui/material/IconButton";
-import { RecipeUuid } from "../../../../../../core/types/recipes";
 import { MoreHoriz } from "@mui/icons-material";
-import React, { useState } from "react";
+import IconButton from "@mui/material/IconButton";
 import Popover from "@mui/material/Popover";
-import { Button } from "@mui/material";
+import React, { useState } from "react";
+import { RecipeUuid } from "../../../../../../core/types/recipes";
 
 export type IEditRecipeButtonProps = React.PropsWithChildren<{
   uuid: RecipeUuid;
