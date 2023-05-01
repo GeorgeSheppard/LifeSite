@@ -1,11 +1,7 @@
-import { useMemo, useState, useCallback, ChangeEvent } from 'react';
-import {
-  IIngredientName,
-  RecipeUuid,
-} from "../../types/recipes";
+import { useMemo } from "react";
+import { IIngredientName, RecipeUuid } from "../../types/recipes";
 import { useRecipes } from "../../dynamo/hooks/use_dynamo_get";
 import { useSearch } from "../../hooks/use_search";
-import { useDebounce } from "../../hooks/use_debounce";
 
 export interface SearchableRecipe {
   uuid: RecipeUuid;
@@ -13,28 +9,34 @@ export interface SearchableRecipe {
   description: string;
   ingredients: IIngredientName[];
 }
-export type SearchableAttributes = keyof Omit<SearchableRecipe, "uuid">
+export type SearchableAttributes = keyof Omit<SearchableRecipe, "uuid">;
 
-export interface IRecipeSearcher {
-  searchResults: { uuid: RecipeUuid; visible: boolean }[];
-  setSearchInput: (event: ChangeEvent<HTMLInputElement>) => void;
-  searchInput: string;
+export interface SearchResult {
+  uuid: RecipeUuid;
+  visible: boolean;
 }
 
-export const useRecipeSearch = (keys: Set<SearchableAttributes>): IRecipeSearcher => {
+export const useRecipeSearch = (
+  searchInput: string,
+  keys: Set<SearchableAttributes>
+): SearchResult[] => {
   const { data: recipes } = useRecipes();
   const searchableRecipes = useMemo(() => {
     // Note: Fuse.js had trouble searching the nested structure for ingredients
     // so I flatten out the recipes here
     return (
-      recipes?.sort((recipeA, recipeB) => recipeB.images.length - recipeA.images.length).map((recipe) => ({
-        uuid: recipe.uuid,
-        name: recipe.name,
-        description: recipe.description,
-        ingredients: recipe.components.flatMap((component) =>
-          component.ingredients.map((ingredient) => ingredient.name)
+      recipes
+        ?.sort(
+          (recipeA, recipeB) => recipeB.images.length - recipeA.images.length
         )
-      })) ?? []
+        .map((recipe) => ({
+          uuid: recipe.uuid,
+          name: recipe.name,
+          description: recipe.description,
+          ingredients: recipe.components.flatMap((component) =>
+            component.ingredients.map((ingredient) => ingredient.name)
+          ),
+        })) ?? []
     );
   }, [recipes]);
   const options = useMemo(
@@ -44,17 +46,12 @@ export const useRecipeSearch = (keys: Set<SearchableAttributes>): IRecipeSearche
     [keys]
   );
   const search = useSearch<SearchableRecipe>(searchableRecipes, options);
-  const [searchInput, setSearchInput] = useState("");
   const defaultSearchResults = useMemo(
-    () =>
-      new Set(
-        searchableRecipes
-          .map((recipe) => recipe.uuid)
-      ),
+    () => new Set(searchableRecipes.map((recipe) => recipe.uuid)),
     [searchableRecipes]
   );
 
-  const getSearchResults = useCallback(() => {
+  const searchResults = useMemo(() => {
     if (searchInput.length === 0) {
       return defaultSearchResults;
     }
@@ -62,11 +59,6 @@ export const useRecipeSearch = (keys: Set<SearchableAttributes>): IRecipeSearche
     const results = search(searchInput);
     return new Set(results.map((result) => result.item.uuid));
   }, [search, searchInput, defaultSearchResults]);
-
-  const searchResults = useDebounce(
-    getSearchResults,
-    300
-  );
 
   // Visible recipes need to be sorted first
   const uuidsWithVisibility = useMemo(() => {
@@ -81,9 +73,5 @@ export const useRecipeSearch = (keys: Set<SearchableAttributes>): IRecipeSearche
     return [...visibleRecipes, ...invisibleRecipes];
   }, [searchResults, recipes]);
 
-  return {
-    searchResults: uuidsWithVisibility,
-    searchInput,
-    setSearchInput: (event: ChangeEvent<HTMLInputElement>) => setSearchInput(event.target.value)
-  };
+  return uuidsWithVisibility;
 };
