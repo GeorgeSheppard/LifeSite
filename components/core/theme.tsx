@@ -1,7 +1,6 @@
 import { ThemeProvider } from "@mui/material/styles";
 import { useMemo } from "react";
 import { createTheme } from "@mui/material/styles";
-import "@fontsource/roboto";
 
 export const mainGreen = "#207d39";
 
