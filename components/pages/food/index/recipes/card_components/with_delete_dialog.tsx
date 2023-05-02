@@ -1,3 +1,4 @@
+import { useCallback } from "react";
 import { useDeleteRecipeFromDynamo } from "../../../../../../core/dynamo/hooks/use_dynamo_delete";
 import { RecipeUuid } from "../../../../../../core/types/recipes";
 import { CustomDialog } from "../../../../../core/dialog";
@@ -11,12 +12,12 @@ export interface IRecipeCardWithDialogProps {
 export const WithDeleteDialog = (
   props: IRecipeCardWithDialogProps
 ) => {
-  const { uuid } = props;
+  const { uuid, onDelete } = props;
   const { mutate, disabled } = useDeleteRecipeFromDynamo();
-  const deleteRecipeOnClick = () => {
-    props.onDelete?.(uuid);
+  const deleteRecipeOnClick = useCallback(() => {
+    onDelete?.(uuid);
     mutate(uuid)
-  };
+  }, [onDelete, mutate, uuid]);
 
   return (
     <CustomDialog

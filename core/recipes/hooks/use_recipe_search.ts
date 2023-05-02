@@ -11,15 +11,10 @@ export interface SearchableRecipe {
 }
 export type SearchableAttributes = keyof Omit<SearchableRecipe, "uuid">;
 
-export interface SearchResult {
-  uuid: RecipeUuid;
-  visible: boolean;
-}
-
 export const useRecipeSearch = (
   searchInput: string,
   keys: Set<SearchableAttributes>
-): SearchResult[] => {
+): RecipeUuid[] => {
   const { data: recipes } = useRecipes();
   const searchableRecipes = useMemo(() => {
     // Note: Fuse.js had trouble searching the nested structure for ingredients
@@ -47,7 +42,7 @@ export const useRecipeSearch = (
   );
   const search = useSearch<SearchableRecipe>(searchableRecipes, options);
   const defaultSearchResults = useMemo(
-    () => new Set(searchableRecipes.map((recipe) => recipe.uuid)),
+    () => Array.from(new Set(searchableRecipes.map((recipe) => recipe.uuid))),
     [searchableRecipes]
   );
 
@@ -57,21 +52,8 @@ export const useRecipeSearch = (
     }
 
     const results = search(searchInput);
-    return new Set(results.map((result) => result.item.uuid));
+    return Array.from(new Set(results.map((result) => result.item.uuid)));
   }, [search, searchInput, defaultSearchResults]);
 
-  // Visible recipes need to be sorted first
-  const uuidsWithVisibility = useMemo(() => {
-    const visibleRecipes = Array.from(searchResults).map((result) => ({
-      uuid: result,
-      visible: true,
-    }));
-    const invisibleRecipes =
-      recipes
-        ?.filter(({ uuid }) => !searchResults.has(uuid))
-        .map(({ uuid }) => ({ uuid, visible: false })) ?? [];
-    return [...visibleRecipes, ...invisibleRecipes];
-  }, [searchResults, recipes]);
-
-  return uuidsWithVisibility;
+  return searchResults;
 };

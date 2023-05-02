@@ -9,13 +9,14 @@ import {
 } from "react";
 import { DateString } from "../../../../../core/types/meal_plan";
 import { useMealPlan } from "../../../../../core/dynamo/hooks/use_dynamo_get";
+import { memo } from 'react';
 
 export interface ICalendarRowProps {
   selected: Set<DateString>;
   setSelected: Dispatch<SetStateAction<Set<DateString>>>;
 }
 
-export const Planner = (props: ICalendarRowProps) => {
+export const Planner = memo(function MemoPlanner(props: ICalendarRowProps) {
   const { setSelected, selected } = props;
   const [lastSelected, setLastSelected] = useState<DateString | null>(null);
   const mealPlan = useMealPlan();
@@ -82,4 +83,4 @@ export const Planner = (props: ICalendarRowProps) => {
       })}
     </Grid>
   );
-};
+});
