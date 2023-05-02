@@ -8,16 +8,15 @@ import { Dispatch, SetStateAction, useState } from "react";
 import { IUseBoolean } from "../../../../core/hooks/use_boolean";
 import { IQuantitiesAndMeals } from "../../../../core/meal_plan/shopping_list_creator";
 import { DateString } from "../../../../core/types/meal_plan";
-import { IRecipe } from "../../../../core/types/recipes";
+import { IRecipe, RecipeUuid } from "../../../../core/types/recipes";
 import { PreviewRecipe } from "../../../../pages/food";
 import { Planner } from "./meal_planner/calendar";
 import { CreateShoppingListButton } from "./meal_planner/create_shopping_list";
 import { ShoppingListDialog } from "./meal_planner/shopping_list";
 import { RecipeGrid } from "./recipes/recipe_grid";
-import { SearchResult } from "../../../../core/recipes/hooks/use_recipe_search";
 
 export interface MobileStateProps {
-  searchResults: SearchResult[];
+  searchResults: RecipeUuid[];
   recipes: UseQueryResult<IRecipe[]>;
   selected: Set<DateString>;
   setSelected: Dispatch<SetStateAction<Set<DateString>>>;

@@ -16,14 +16,15 @@ import { InstructionsList } from "./card_components/instructions_list";
 import { OptionsDropdownButton } from "./card_components/options_dropdown";
 import { ServingsIcon } from "./card_components/servings_icon";
 import { WithDeleteDialog } from "./card_components/with_delete_dialog";
+import { Dispatch, SetStateAction, memo } from 'react';
+import { PreviewRecipe } from "../../../../../pages/food";
 
 export interface IRecipeCard {
   uuid: RecipeUuid;
   user?: string;
-  visible: boolean;
   openDialog: () => void;
   isPreview: boolean;
-  onClick?: () => void;
+  openFullRecipe?: Dispatch<SetStateAction<PreviewRecipe | null>>;
 }
 
 export const RecipeCard = (
@@ -38,7 +39,7 @@ export const RecipeCard = (
   );
 };
 
-const RecipeCardContent = (props: IRecipeCard) => {
+const RecipeCardContent = memo(function MemoRecipeCardContent(props: IRecipeCard) {
   const { uuid, user } = props;
   const session = useAppSession()
   const recipe = useRecipe(uuid, user).data
@@ -46,9 +47,12 @@ const RecipeCardContent = (props: IRecipeCard) => {
 
   return (
     <div
-      onClick={props.onClick}
+      onClick={() => {
+        if (props.isPreview) {
+          props.openFullRecipe?.({ recipe: uuid });
+        }
+      }}
       className="hover:shadow-xl ease-in duration-200 flex-grow hover:cursor-pointer"
-      style={{opacity: props.visible ? 1 : 0}}
     >
       {recipe.images && (
         <WrappedCardMedia
@@ -129,4 +133,4 @@ const RecipeCardContent = (props: IRecipeCard) => {
       </div>
     </div>
   );
-};
+});

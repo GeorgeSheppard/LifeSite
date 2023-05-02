@@ -1,7 +1,7 @@
 import Button from "@mui/material/Button";
 import ButtonGroup from "@mui/material/ButtonGroup";
 import Tooltip from "@mui/material/Tooltip";
-import React, { useCallback } from "react";
+import React, { memo, useCallback } from "react";
 import {
   createShoppingListData,
   IQuantitiesAndMeals,
@@ -18,9 +18,9 @@ export interface ICreateShoppingListButtonProps {
   setSelected: React.Dispatch<React.SetStateAction<Set<string>>>;
 }
 
-export const CreateShoppingListButton = (
+export const CreateShoppingListButton = memo(function MemoCreateShoppingList(
   props: ICreateShoppingListButtonProps
-) => {
+) {
   const { selected, setSelected } = props;
 
   const recipes = useRecipes();
@@ -73,4 +73,4 @@ export const CreateShoppingListButton = (
       </ButtonGroup>
     </Tooltip>
   );
-};
+});

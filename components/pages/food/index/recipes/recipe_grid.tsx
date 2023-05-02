@@ -10,7 +10,7 @@ import { PreviewRecipe } from "../../../../../pages/food";
 import { useOneTimeEffect } from "../../../../../core/hooks/use_one_time_effect";
 
 interface RecipeGridProps {
-  searchResults: { uuid: RecipeUuid; visible: boolean }[];
+  searchResults: RecipeUuid[];
   loading: boolean;
   previewRecipe?: PreviewRecipe;
 }
@@ -42,7 +42,6 @@ export const RecipeGrid = (props: RecipeGridProps) => {
           <RecipeCard
             uuid={fullRecipe.recipe}
             user={fullRecipe.user}
-            visible
             isPreview={false}
             onDelete={() => setFullRecipe(null)}
           />
@@ -54,12 +53,11 @@ export const RecipeGrid = (props: RecipeGridProps) => {
         columnClassName="my-masonry-grid_column"
       >
         <CreateNewRecipeCard />
-        {props.searchResults.map(({ uuid, visible }) => (
+        {props.searchResults.map(uuid => (
           <WithDragging key={uuid} uuid={uuid}>
             <RecipeCard
               uuid={uuid}
-              visible={visible}
-              onClick={() => setFullRecipe({ recipe: uuid })}
+              openFullRecipe={setFullRecipe}
               isPreview
             />
           </WithDragging>

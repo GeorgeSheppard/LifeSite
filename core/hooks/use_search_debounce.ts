@@ -15,7 +15,7 @@ export function useSearchDebounce(
   const updateValue = (newValue: string) => {
     setLatestValue(newValue);
     if (timerRef.current) clearTimeout(timerRef.current);
-    const timer = setTimeout(() => setDebouncedValue(newValue), time ?? 300);
+    const timer = setTimeout(() => setDebouncedValue(newValue), time ?? 500);
     timerRef.current = timer;
   }
 
