@@ -57,6 +57,17 @@ module.exports = withSentryConfig(
         includePaths: [path.join(__dirname, "styles")],
       },
       env: envVariables,
+      async rewrites() {
+        return {
+          beforeFiles: [
+          
+            {
+              source: '/',
+              destination: '/food'
+            }
+          ]
+        }
+      },
       images: {
         remotePatterns: [
           {
