@@ -102,15 +102,13 @@ export const DroppableCard = (props: {
       {/* Would like to use a class here for the hovered border but ran into this
       https://github.com/mui/material-ui/issues/25324 */}
       <div
-        className="card px-4 py-2 space-y-4 hover:shadow-xl ease-in duration-200 flex-grow rounded-lg shadow"
+        className={`card px-4 py-2 space-y-4 ease-in duration-200 flex-grow rounded-lg ${
+          selected || collected.isOver
+            ? "shadow-[0_0_0_3px_rgba(32,125,57,0.3)]"
+            : "shadow"
+        }`}
         ref={drop}
         onClick={toggleOnClick}
-        style={{
-          boxShadow:
-            selected || collected.isOver
-              ? "0 0 0 3px rgba(32, 125, 57, 0.3)"
-              : undefined,
-        }}
       >
         <div className="flex grow place-content-between">
           <Typography
