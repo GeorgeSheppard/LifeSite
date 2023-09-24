@@ -6,6 +6,8 @@ import {
   IRecipe,
   Unit,
 } from "../types/recipes";
+import foodGroups from "./combinedGroups.json"
+import groupDescriptions from "./groupDescriptions.json"
 
 export interface IQuantitiesAndMeals {
   [index: IIngredientName]: {
@@ -89,20 +91,43 @@ export function createShoppingList(
   quantityAndMeals: IQuantitiesAndMeals,
   options: {
     includeMeals: boolean;
+    categorise: boolean;
   }
 ): string {
-  return Object.entries(quantityAndMeals)
+  const ingredientsWithQuantities = Object.entries(quantityAndMeals)
     .map(([ingredient, { meals, quantities }]) => {
       const quantityString = quantities.map((quantity) => {
         // We display extra for when there is no unit
         return Quantities.toString(quantity) ?? "extra";
       });
 
+      const group: string | undefined = (foodGroups as any)[ingredient.toUpperCase()]
+      const groupDesc: string = group ? (groupDescriptions as any)[group] : 'Unknown'
+
       let text = `${ingredient} (${quantityString.join(" + ")})`;
       if (options.includeMeals) {
         text += ` [${Array.from(meals).join(", ")}]`;
       }
-      return text;
+      return [text, groupDesc] as const;
     })
-    .join("\n");
+  
+  if (!options.categorise) {
+    return ingredientsWithQuantities.sort((a, b) => a[0].localeCompare(b[0])).map(([text, _]) => text).join('\n')
+  }
+  
+  const categoriesWithIngredients = ingredientsWithQuantities.reduce((categories, [text, category]) => { 
+    if (category in categories) {
+      categories[category].push(text)
+    } else {
+      categories[category] = [text]
+    }
+    return categories
+  }, {} as { [index: string]: string[] })
+  
+  const list = Object.entries(categoriesWithIngredients).sort(([a], [b]) => a.localeCompare(b)).map(([category, ingredients]) => {
+    const sortedIngredients = ingredients.sort((a, b) => a.localeCompare(b))
+    return `${category}\n${sortedIngredients.join('\n')}`
+  })
+
+  return list.join("\n\n");
 }

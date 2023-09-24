@@ -25,6 +25,7 @@ export const ShoppingListDialog = (props: IShoppingListDialogProps) => {
   const mobileLayout = useIsMobileLayout();
   const [options, setOptions] = useState({
     includeMeals: true,
+    categorise: true,
   });
 
   const shoppingList = useMemo(() => {
@@ -37,18 +38,32 @@ export const ShoppingListDialog = (props: IShoppingListDialogProps) => {
         Shopping list
       </DialogTitle>
       <DialogContent>
-        <Chip
-          label={"Include meals"}
-          size="small"
-          variant={options.includeMeals ? "filled" : "outlined"}
-          color={options.includeMeals ? "primary" : "default"}
-          onClick={() =>
-            setOptions((prevOptions) => ({
-              ...prevOptions,
-              includeMeals: !prevOptions.includeMeals,
-            }))
-          }
-        />
+        <div className="flex gap-1">
+          <Chip
+            label={"Include meals"}
+            size="small"
+            variant={options.includeMeals ? "filled" : "outlined"}
+            color={options.includeMeals ? "primary" : "default"}
+            onClick={() =>
+              setOptions((prevOptions) => ({
+                ...prevOptions,
+                includeMeals: !prevOptions.includeMeals,
+              }))
+            }
+          />
+          <Chip
+            label={"Categorise"}
+            size="small"
+            variant={options.categorise ? "filled" : "outlined"}
+            color={options.categorise ? "primary" : "default"}
+            onClick={() =>
+              setOptions((prevOptions) => ({
+                ...prevOptions,
+                categorise: !prevOptions.categorise,
+              }))
+            }
+          />
+        </div>
         <DialogContentText sx={{ whiteSpace: "pre-wrap", marginTop: "24px" }}>
           {shoppingList.length > 0
             ? shoppingList
