@@ -15,6 +15,8 @@ import { RecipeUuid } from "../../../../../core/types/recipes";
 import { useIsMobileLayout } from "../../../../hooks/is_mobile_layout";
 import { RecipeName } from "./recipe";
 import { RecipeLoading } from "./recipe_loading";
+import { currentDate, dateToDateString } from "../../../../../core/meal_plan/meal_plan_utilities";
+import { mainGreen } from "../../../../core/theme";
 
 export const DroppableCard = (props: {
   day: DateString;
@@ -72,6 +74,8 @@ export const DroppableCard = (props: {
   const mobileLayout = useIsMobileLayout();
   const dayWithoutYear = day.slice(0, day.length - 5);
 
+  const currentDay = dateToDateString(currentDate())
+  const isCurrentDay = day === currentDay
   return (
     <>
       <Dialog open={dialogOpen} onClose={setters.turnOff}>
@@ -114,7 +118,7 @@ export const DroppableCard = (props: {
           <Typography
             variant="subtitle1"
             className="grow my-auto font-[500] noSelect underline"
-            color="#222222"
+            color={isCurrentDay ? mainGreen : "#222222"}
           >
             {dayWithoutYear}
           </Typography>
