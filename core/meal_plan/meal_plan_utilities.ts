@@ -17,6 +17,11 @@ const weekdays = [
   "Sunday",
 ];
 
+export const dateToDateString = (date: Date): DateString =>
+  `${weekdays[date.getDay()]} - ${date.getDate()}/${
+    date.getMonth() + 1
+  }/${date.getFullYear()}`;
+
 export function createDates(
   centreDate: Date,
   pastDays: number,
@@ -29,9 +34,7 @@ export function createDates(
   return offsets.map((dayOffset) => {
     const date = addDays(centreDate, dayOffset);
     // getMonth has indices from 0
-    return `${weekdays[date.getDay()]} - ${date.getDate()}/${
-      date.getMonth() + 1
-    }/${date.getFullYear()}`;
+    return dateToDateString(date);
   });
 }
 
