@@ -14,6 +14,7 @@ import { HTML5Backend } from "react-dnd-html5-backend";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { StyledEngineProvider } from "@mui/material/styles";
+import { trpc } from "../client";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -29,7 +30,7 @@ export interface IKitchenCalmProps {
   pageProps: ILayoutProps & { session: Session };
 }
 
-export default function KitchenCalm(props: IKitchenCalmProps) {
+function KitchenCalm(props: IKitchenCalmProps) {
   const { Component } = props;
   const { session, ...pageProps } = props.pageProps;
 
@@ -50,3 +51,5 @@ export default function KitchenCalm(props: IKitchenCalmProps) {
     </StyledEngineProvider>
   );
 }
+
+export default trpc.withTRPC(KitchenCalm)

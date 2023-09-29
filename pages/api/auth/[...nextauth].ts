@@ -1,9 +1,9 @@
-import NextAuth, { Session } from "next-auth";
+import NextAuth, { NextAuthOptions, Session } from "next-auth";
 import CognitoProvider from "next-auth/providers/cognito";
 
 export type CustomSession = Session & { id?: string };
 
-export default NextAuth({
+export const authOptions: NextAuthOptions = {
   providers: [
     CognitoProvider({
       clientId: process.env.ENV_AWS_COGNITO_CLIENT_ID ?? "",
@@ -18,4 +18,6 @@ export default NextAuth({
       return session;
     },
   },
-});
+}
+
+export default NextAuth(authOptions);
