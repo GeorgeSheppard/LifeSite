@@ -5,7 +5,9 @@ import {  CustomSession, authOptions } from "../pages/api/auth/[...nextauth]";
 
 export async function createContext(ctx: trpcNext.CreateNextContextOptions) {
   const { req, res } = ctx;
+  console.log('context time', new Date().getTime())
   const session: CustomSession | null = await getServerSession(req, res, authOptions);
+  console.log('after getting session', new Date().getTime())
 
   return {
     req,
