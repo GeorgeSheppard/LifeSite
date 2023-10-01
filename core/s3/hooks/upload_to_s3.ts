@@ -2,8 +2,7 @@ import { useCallback } from "react";
 import { v4 as uuidv4 } from "uuid";
 import { S3Key } from "../../types/general";
 import { useAppSession } from "../../hooks/use_app_session";
-import { PutToS3 } from "../s3_utilities";
-import { shared } from "../../dynamo/dynamo_utilities";
+import { trpc } from "../../../client";
 
 export interface IS3ValidUploadResponse {
   key: S3Key;
@@ -32,6 +31,7 @@ export interface IUseUploadToS3Props {
  */
 export default function useUploadToS3(props: IUseUploadToS3Props) {
   const { id, loading } = useAppSession();
+  const putToS3 = trpc.s3.put.useMutation()
 
   const uploadFile = useCallback(
     async (file: File) => {
@@ -56,34 +56,39 @@ export default function useUploadToS3(props: IUseUploadToS3Props) {
         fileKey = uuidv4() + "_" + fileKey;
       }
 
-      // If there is no user logged in place in the shared folder
-      let pathToFile = `${id ?? shared}/`;
-      if (props.folder) {
-        pathToFile += `${props.folder}/`;
-      }
-      pathToFile += fileKey;
+      // TODO: Fix the upload
+      // // If there is no user logged in place in the shared folder
+      // let pathToFile = `${id ?? shared}/`;
+      // if (props.folder) {
+      //   pathToFile += `${props.folder}/`;
+      // }
+      // pathToFile += fileKey;
 
-      let upload;
-      try {
-        upload = await PutToS3(pathToFile, file);
-      } catch (err) {
-        onUploadError?.({ error: "unknown" });
-      }
+      // let upload;
+      // try {
+      //   // TODO: Fix this over TRPC
+      //   const fileString = await file.text()
+      //   upload = await putToS3.mutateAsync({ key: pathToFile, file: fileString });
+      // } catch (err) {
+      //   onUploadError?.({ error: "unknown" });
+      // }
 
-      if (upload?.$metadata.httpStatusCode === 200) {
-        onUploadFinished?.({ key: pathToFile });
-      } else {
-        onUploadError?.({ error: "unknown" });
-      }
+      // // TODO: Fix this too
+      // // if (upload?.$metadata.httpStatusCode === 200) {
+      // //   onUploadFinished?.({ key: pathToFile });
+      // // } else {
+      // //   onUploadError?.({ error: "unknown" });
+      // // }
     },
     [
       props.onStartUpload,
       props.onUploadError,
       props.onUploadFinished,
-      props.folder,
+      // props.folder,
       props.makeKeyUnique,
+      // putToS3,
       loading,
-      id
+      // id
     ]
   );
 

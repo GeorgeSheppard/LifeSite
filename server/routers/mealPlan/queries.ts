@@ -2,7 +2,7 @@ import clone from "just-clone";
 import { getMealPlanForAUser } from "../../../core/dynamo/dynamo_utilities";
 import { IMealPlan } from "../../../core/types/meal_plan";
 import { mealPlanEmptyState } from "../../../core/meal_plan/meal_plan_utilities";
-import { UserId } from "../../../pages/api/auth/[...nextauth]";
+import { UserId } from "../../../core/types/utilities";
 
 const mealPlanWithUpdatedDates = (mealPlan: IMealPlan): IMealPlan => {
   let newDatesMealPlan = clone(mealPlanEmptyState);

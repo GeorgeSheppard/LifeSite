@@ -37,7 +37,7 @@ const getPreviewRecipe = (query: ParsedUrlQuery): PreviewRecipe | undefined => {
 };
 
 const Recipes = () => {
-  trpc.testData.useQuery()
+  console.log('test', trpc.testData.useQuery().data)
   const mobileLayout = useIsMobileLayout();
   const router = useRouter();
   const previewRecipe = getPreviewRecipe(router.query);

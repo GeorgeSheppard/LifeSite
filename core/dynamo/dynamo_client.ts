@@ -1,6 +1,13 @@
-import { DynamoDBClient } from "@aws-sdk/client-dynamodb"
+import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import { DynamoDBDocument } from "@aws-sdk/lib-dynamodb";
 
+console.log(
+  "dynamo client",
+  process.env.ENV_AWS_DYNAMO_REGION,
+  process.env.ENV_AWS_DYNAMO_ACCESS_KEY,
+  process.env.ENV_AWS_DYNAMO_SECRET_ACCESS_KEY,
+  typeof window === 'undefined'
+);
 export const AwsDynamoClient = new DynamoDBClient({
   region: process.env.ENV_AWS_DYNAMO_REGION,
   credentials: {
@@ -11,6 +18,6 @@ export const AwsDynamoClient = new DynamoDBClient({
 
 export const AwsDynamoDocClient = DynamoDBDocument.from(AwsDynamoClient, {
   marshallOptions: {
-    removeUndefinedValues: true
-  }
+    removeUndefinedValues: true,
+  },
 });

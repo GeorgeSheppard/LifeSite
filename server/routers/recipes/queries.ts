@@ -3,7 +3,7 @@ import {
   getRecipe,
 } from "../../../core/dynamo/dynamo_utilities";
 import { IRecipe, IRecipes, RecipeUuid } from "../../../core/types/recipes";
-import { UserId } from "../../../pages/api/auth/[...nextauth]";
+import { UserId } from "../../../core/types/utilities";
 
 export const getRecipeForUser = async ({
   user,
@@ -20,7 +20,8 @@ export const getRecipesForUser = async ({
   user,
 }: {
   user: UserId;
-}): Promise<IRecipes> => {
+  }): Promise<IRecipes> => {
+  console.log('getting recipes', user)
   const recipes = await getAllRecipesForAUser(user);
   return recipes.reduce((prev, curr) => prev.set(curr.uuid, curr), new Map());
 };
