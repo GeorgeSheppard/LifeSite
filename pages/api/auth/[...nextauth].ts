@@ -1,9 +1,17 @@
-import NextAuth, { Session } from "next-auth";
+import NextAuth, { NextAuthOptions, Session } from "next-auth";
 import CognitoProvider from "next-auth/providers/cognito";
+import { Flavor } from "../../../core/types/utilities";
+import { Shared } from "../../../core/dynamo/dynamo_utilities";
 
-export type CustomSession = Session & { id?: string };
+/**
+ * We restrict certain calls so that the "shared" user cannot make modifications
+ * to the database
+ */
+export type RealUserId = Flavor<string, "UserId">
+export type UserId = RealUserId | Shared
+export type CustomSession = Session & { id?: RealUserId };
 
-export default NextAuth({
+export const authOptions: NextAuthOptions = {
   providers: [
     CognitoProvider({
       clientId: process.env.ENV_AWS_COGNITO_CLIENT_ID ?? "",
@@ -18,4 +26,6 @@ export default NextAuth({
       return session;
     },
   },
-});
+}
+
+export default NextAuth(authOptions);

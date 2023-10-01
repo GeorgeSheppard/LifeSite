@@ -1,22 +1,29 @@
 import { useDrag } from "react-dnd";
 import { useIsMobileLayout } from "../../../../../hooks/is_mobile_layout";
 import { RecipeUuid } from "../../../../../../core/types/recipes";
+import { useRecipe } from "../../../../../../core/dynamo/hooks/use_dynamo_get";
 
 export type WithDraggingProps = React.PropsWithChildren<{
   uuid: RecipeUuid;
 }>;
 
+
 export const WithDragging = ({ uuid, children }: WithDraggingProps) => {
   const mobileLayout = useIsMobileLayout();
+  const recipe = useRecipe(uuid);
   const [{ isDragging }, drag, preview] = useDrag(() => ({
     type: "recipe",
-    item: { uuid },
+    item: recipe.data?.components.map((component) => ({
+      recipeId: uuid,
+      componentId: component.uuid,
+      servingsIncrease: component.servings ?? 1,
+    })) ?? [],
     collect: (monitor) => {
       return {
         isDragging: !!monitor.isDragging(),
       };
     },
-    canDrag: () => !mobileLayout,
+    canDrag: () => !mobileLayout && !!recipe.data,
   }));
 
   return (

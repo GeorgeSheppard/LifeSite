@@ -149,6 +149,7 @@ export function createShoppingList(
   // We always put "Unknown" at the end
   const list = [...Object.entries(rest)
     .sort(([a], [b]) => a.localeCompare(b)), ["Unknown", Unknown ?? []] as const]
+    .filter(([_, ingredients]) => ingredients.length > 0)
     .map(([category, ingredients]) => {
       const sortedIngredients = ingredients.sort((a, b) => a.localeCompare(b));
       return `${category}\n${sortedIngredients.join("\n")}`;

@@ -1,87 +1,74 @@
-import {
-  useQuery,
-  useQueryClient,
-  UseQueryResult,
-} from "@tanstack/react-query";
 import { mealPlanEmptyState } from "../../meal_plan/meal_plan_utilities";
-import {
-  IRecipe,
-  RecipeUuid,
-} from "../../types/recipes";
-import clone from "just-clone";
-import {
-  mealPlanQueryKey,
-  recipeQueryKey,
-  recipesQueryKey,
-  shared,
-} from "../query_keys";
+import { IRecipe, IRecipes, RecipeUuid } from "../../types/recipes";
 import { NewRecipe } from "../../../pages/food/[recipeUuid]";
-import { IMealPlan } from "../../types/meal_plan";
 import { useAppSession } from "../../hooks/use_app_session";
-import { getAllRecipesForAUser, getMealPlanForAUser, getRecipe } from "../dynamo_utilities";
-import { WithDefined } from "../../types/utilities";
+import { trpc } from "../../../client";
+import { RealUserId } from "../../../pages/api/auth/[...nextauth]";
+
+const useRecipesBase = <T>({
+  select,
+  enabled,
+}: {
+  enabled?: boolean;
+  select?: (data: IRecipes) => T;
+}) => {
+  const { loading } = useAppSession();
+  return trpc.recipes.getRecipes.useQuery<Map<RecipeUuid, IRecipe>, T>(
+    undefined,
+    {
+      enabled: !loading && (enabled ?? true),
+      select,
+    }
+  );
+};
 
 export const useRecipes = () => {
-  const { id, loading } = useAppSession();
-  const queryClient = useQueryClient();
-
-  const userId = id ?? shared;
-  const queryKey = recipesQueryKey(userId);
-
-  const recipes = useQuery({
-    queryKey,
-    queryFn: () => getAllRecipesForAUser(userId),
-    enabled: !loading,
+  return useRecipesBase({
+    select: (data) => Array.from(data.values()),
   });
+};
 
-  // We fetch all recipes for a user together, but we want to make sure that if a recipe
-  // is individually queried that it uses the cached result
-  recipes.data?.forEach((recipe: IRecipe) =>
-    queryClient.setQueryData(recipeQueryKey(recipe.uuid, userId), recipe)
+export const useRecipeIds = () => {
+  return useRecipesBase({
+    select: (data) => Array.from(data.keys()),
+  });
+};
+
+export const useRecipe = (recipeId?: RecipeUuid, enabled?: boolean) => {
+  return useRecipesBase({
+    select: (data) => {
+      const recipe = data.get(recipeId!);
+      return recipe;
+    },
+    enabled: enabled && !!recipeId && recipeId !== NewRecipe,
+  });
+};
+
+export const usePossiblyExternalRecipe = (
+  recipeId?: RecipeUuid,
+  user?: RealUserId
+) => {
+  const externalUserRecipe = trpc.recipes.getExternalRecipe.useQuery(
+    {
+      recipeId: recipeId!,
+      user: user!,
+    },
+    {
+      enabled: !!user && !!recipeId,
+    }
   );
-
-  return recipes;
+  const userRecipe = useRecipe(recipeId, !user);
+  return !!user ? externalUserRecipe : userRecipe
 };
 
-export const useRecipe = (recipeId: RecipeUuid, user?: string) => {
-  const { id, loading } = useAppSession();
-  const userId = user ?? id ?? shared;
-
-  const recipes = useQuery({
-    queryKey: recipeQueryKey(recipeId, userId),
-    queryFn: () => getRecipe(recipeId, userId),
-    enabled: !loading && !!recipeId && recipeId !== NewRecipe,
-  });
-
-  return recipes;
-};
-
-export const useMealPlan = (): WithDefined<
-  UseQueryResult<IMealPlan>,
-  "data"
-> => {
-  const { id, loading } = useAppSession();
-  const userId = id ?? shared;
-
-  const recipes = useQuery({
-    queryKey: mealPlanQueryKey(userId),
-    queryFn: () => getMealPlanForAUser(userId),
+export const useMealPlan = () => {
+  const { loading } = useAppSession();
+  const mealPlan = trpc.mealPlan.getMealPlan.useQuery(undefined, {
     enabled: !loading,
     placeholderData: mealPlanEmptyState,
-    select: (mealPlan: IMealPlan) => {
-      let newDatesMealPlan = clone(mealPlanEmptyState);
-
-      for (const [date, plan] of Object.entries(mealPlan)) {
-        if (date in newDatesMealPlan) {
-          newDatesMealPlan[date] = plan;
-        }
-      }
-      return newDatesMealPlan;
-    },
   });
-
   return {
-    ...recipes,
-    data: recipes.data!,
+    ...mealPlan,
+    data: mealPlan.data!,
   };
 };

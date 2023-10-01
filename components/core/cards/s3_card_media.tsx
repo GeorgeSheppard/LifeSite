@@ -14,6 +14,7 @@ export interface IS3CardMediaProps {
  * Takes an s3Key and creates a CardMedia component from it, will refresh
  * when the s3Key changes
  */
+// TODO: Prevent flicking while things load....
 export const S3CardMedia = (props: IS3CardMediaProps) => {
   const { s3Key, className } = props;
   const [show, setShow] = useState(true);

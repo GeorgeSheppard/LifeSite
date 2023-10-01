@@ -4,7 +4,7 @@ import { useIsMobileLayout } from "../../components/hooks/is_mobile_layout";
 import { DesktopLayout } from "../../components/pages/food/index/desktop_layout";
 import { MobileLayout } from "../../components/pages/food/index/mobile_layout";
 import { IQuantitiesAndMeals } from "../../core/meal_plan/shopping_list_creator";
-import { useRecipes } from "../../core/dynamo/hooks/use_dynamo_get";
+import { useRecipeIds } from "../../core/dynamo/hooks/use_dynamo_get";
 import { useBoolean } from "../../core/hooks/use_boolean";
 import {
   SearchableAttributes,
@@ -46,7 +46,7 @@ const Recipes = () => {
     debouncedValue,
     mobileLayout ? allSearchValues : keys
   );
-  const recipes = useRecipes();
+  const recipeIds = useRecipeIds();
   const [selected, setSelected] = useState<Set<DateString>>(() => new Set());
   const booleanState = useBoolean(false);
   const [shoppingListData, setShoppingListData] = useState<IQuantitiesAndMeals>(
@@ -59,7 +59,7 @@ const Recipes = () => {
       {mobileLayout ? (
         <MobileLayout
           searchResults={searchResults}
-          recipes={recipes}
+          recipeIds={recipeIds}
           selected={selected}
           setSelected={setSelected}
           booleanState={booleanState}
@@ -74,7 +74,7 @@ const Recipes = () => {
           keys={keys}
           setKeys={setKeys}
           searchResults={searchResults}
-          recipes={recipes}
+          recipeIds={recipeIds}
           selected={selected}
           setSelected={setSelected}
           booleanState={booleanState}

@@ -19,7 +19,7 @@ export const DesktopLayout = (
 ) => {
   const {
     searchResults,
-    recipes,
+    recipeIds,
     selected,
     setSelected,
     booleanState: [on, { turnOn, turnOff }],
@@ -29,7 +29,7 @@ export const DesktopLayout = (
     setKeys,
     previewRecipe,
     searchString,
-    setSearchString
+    setSearchString,
   } = props;
   return (
     <main>
@@ -53,18 +53,18 @@ export const DesktopLayout = (
                 sx={{ marginBottom: 3, mt: 1 }}
                 placeholder="Search"
                 fullWidth
-                disabled={recipes.isLoading}
+                disabled={recipeIds.isLoading}
               />
             </Grid>
             <RecipeGrid
               searchResults={searchResults}
-              loading={recipes.isLoading}
+              loading={recipeIds.isLoading}
               previewRecipe={previewRecipe}
             />
           </Box>
         </Grid>
         <Grid item xs={12} sm={12} md={12} lg={4} xl={3} sx={{ pl: 2 }}>
-          <Box component="div">
+          {/* <Box component="div"> */}
             <div
               className="noSelect"
               style={{
@@ -73,7 +73,7 @@ export const DesktopLayout = (
                 overflowY: "scroll",
                 paddingLeft: 8,
                 paddingRight: 8,
-                minWidth: 350
+                minWidth: 350,
               }}
             >
               <CreateShoppingListButton
@@ -84,7 +84,7 @@ export const DesktopLayout = (
               />
               <Planner selected={selected} setSelected={setSelected} />
             </div>
-          </Box>
+          {/* </Box> */}
         </Grid>
       </Grid>
     </main>

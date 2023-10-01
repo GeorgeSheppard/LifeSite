@@ -11,15 +11,13 @@ export default function ExistingUpload() {
   const { mutateAsync, disabled } = usePutRecipeToDynamo();
   const router = useRouter();
   const onUpload = async () => {
-    console.log('recipe', recipe)
     const resp = await convertUploadToRecipe(recipe);
-    console.log('response', resp)
     const recipeString = resp.data.choices[0].message?.content
     if (!recipeString) throw new Error('No recipe returned');
     const recipeJson: IRecipe = JSON.parse(recipeString)
     recipeJson.uuid = uuidv4()
     recipeJson.components.forEach(component => component.uuid = uuidv4())
-    await mutateAsync(recipeJson)
+    await mutateAsync({ recipe: recipeJson })
     router.push('/food');
   }
   return (

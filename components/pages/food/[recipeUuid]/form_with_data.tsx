@@ -35,7 +35,7 @@ export const FormWithData = ({ recipe }: { recipe: IRecipe }) => {
         )
         .map(async (image) => await DeleteFromS3(image.key))
     );
-    await mutateAsync(data);
+    await mutateAsync({ recipe: data });
     router.push("/food");
   };
 
