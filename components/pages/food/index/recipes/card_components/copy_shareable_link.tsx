@@ -34,7 +34,7 @@ export const CopyShareableLink = (props: ICopyIngredientsButtonProps) => {
           iconOnClick();
         }}
         size="small"
-        disabled={session.loading}
+        disabled={session.loading || !session.id}
         disableRipple
       >
         <ShareIcon fontSize="small" htmlColor="#212121" />

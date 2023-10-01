@@ -2,8 +2,8 @@ import { useCallback } from "react";
 import { v4 as uuidv4 } from "uuid";
 import { S3Key } from "../../types/general";
 import { useAppSession } from "../../hooks/use_app_session";
-import { shared } from "../../dynamo/query_keys";
 import { PutToS3 } from "../s3_utilities";
+import { shared } from "../../dynamo/dynamo_utilities";
 
 export interface IS3ValidUploadResponse {
   key: S3Key;

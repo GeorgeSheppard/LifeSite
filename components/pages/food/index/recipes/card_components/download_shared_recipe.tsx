@@ -10,7 +10,7 @@ export interface ICopyIngredientsButtonProps {
 
 export const DownloadSharedRecipe = (props: ICopyIngredientsButtonProps) => {
   const { mutate, isLoading } = usePutRecipeToDynamo();
-  const downloadSharedRecipe = () => mutate(props.recipe)
+  const downloadSharedRecipe = () => mutate({ recipe: props.recipe })
 
   return (
     <Tooltip title="Download shared recipe">

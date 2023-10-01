@@ -22,7 +22,7 @@
 }
 
 html {
-  overflow-y: scroll;
+  overflow-y: scroll !important;
 }
 
 @supports (overflow-y: overlay) {

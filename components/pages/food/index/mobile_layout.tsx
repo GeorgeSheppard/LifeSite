@@ -8,7 +8,7 @@ import { Dispatch, SetStateAction, useState } from "react";
 import { IUseBoolean } from "../../../../core/hooks/use_boolean";
 import { IQuantitiesAndMeals } from "../../../../core/meal_plan/shopping_list_creator";
 import { DateString } from "../../../../core/types/meal_plan";
-import { IRecipe, RecipeUuid } from "../../../../core/types/recipes";
+import { RecipeUuid } from "../../../../core/types/recipes";
 import { PreviewRecipe } from "../../../../pages/food";
 import { Planner } from "./meal_planner/calendar";
 import { CreateShoppingListButton } from "./meal_planner/create_shopping_list";
@@ -17,7 +17,7 @@ import { RecipeGrid } from "./recipes/recipe_grid";
 
 export interface MobileStateProps {
   searchResults: RecipeUuid[];
-  recipes: UseQueryResult<IRecipe[]>;
+  recipeIds: UseQueryResult<RecipeUuid[]>;
   selected: Set<DateString>;
   setSelected: Dispatch<SetStateAction<Set<DateString>>>;
   booleanState: IUseBoolean;
@@ -33,7 +33,7 @@ type TabOptions = "recipes" | "mealplan";
 export const MobileLayout = (props: MobileStateProps) => {
   const {
     searchResults,
-    recipes,
+    recipeIds,
     selected,
     setSelected,
     booleanState: [on, { turnOn, turnOff }],
@@ -80,12 +80,12 @@ export const MobileLayout = (props: MobileStateProps) => {
                   sx={{ marginBottom: 3 }}
                   placeholder="Search"
                   fullWidth
-                  disabled={recipes.isLoading}
+                  disabled={recipeIds.isLoading}
                 />
               </Grid>
               <RecipeGrid
                 searchResults={searchResults}
-                loading={recipes.isLoading}
+                loading={recipeIds.isLoading}
                 previewRecipe={previewRecipe}
               />
             </Box>

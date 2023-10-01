@@ -1,19 +1,21 @@
 import { Image } from "./general";
 
+export enum Unit {
+  NO_UNIT = "none",
+  MILLILITER = "mL",
+  LITER = "L",
+  GRAM = "g",
+  KILOGRAM = "kg",
+  CUP = "cup",
+  TEASPOON = "tsp",
+  TABLESPOON = "tbsp",
+  NUMBER = "quantity",
+}
+
 export type RecipeUuid = string;
 export type ComponentUuid = string;
 export type IngredientUuid = string;
 export type IIngredientName = string;
-
-export interface INutritionData {}
-
-export interface IIngredient {
-  /**
-   * Name acts as uuid
-   */
-  name: IIngredientName;
-  nutritionData?: INutritionData;
-}
 
 export interface IInstruction {
   text: string;
@@ -50,24 +52,4 @@ export interface IRecipe {
   components: IRecipeComponent[];
 }
 
-export type IIngredientsDatabase = {
-  [index: IIngredientName]: IIngredient;
-};
-
-export enum Unit {
-  NO_UNIT = "none",
-  MILLILITER = "mL",
-  LITER = "L",
-  GRAM = "g",
-  KILOGRAM = "kg",
-  CUP = "cup",
-  TEASPOON = "tsp",
-  TABLESPOON = "tbsp",
-  NUMBER = "quantity",
-}
-
-export interface IRecipesState {
-  cards: RecipeUuid[];
-  recipes: { [key: RecipeUuid]: IRecipe };
-  ingredients: IIngredientsDatabase;
-}
+export type IRecipes = Map<RecipeUuid, IRecipe>

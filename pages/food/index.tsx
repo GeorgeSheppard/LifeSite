@@ -4,7 +4,7 @@ import { useIsMobileLayout } from "../../components/hooks/is_mobile_layout";
 import { DesktopLayout } from "../../components/pages/food/index/desktop_layout";
 import { MobileLayout } from "../../components/pages/food/index/mobile_layout";
 import { IQuantitiesAndMeals } from "../../core/meal_plan/shopping_list_creator";
-import { useRecipes } from "../../core/dynamo/hooks/use_dynamo_get";
+import { useRecipeIds } from "../../core/dynamo/hooks/use_dynamo_get";
 import { useBoolean } from "../../core/hooks/use_boolean";
 import {
   SearchableAttributes,
@@ -15,7 +15,6 @@ import { useRouter } from "next/router";
 import { ParsedUrlQuery } from "querystring";
 import { RecipeUuid } from "../../core/types/recipes";
 import { useSearchDebounce } from "../../core/hooks/use_search_debounce";
-import { trpc } from "../../client";
 
 const allSearchValues = new Set<SearchableAttributes>([
   "name",
@@ -37,8 +36,6 @@ const getPreviewRecipe = (query: ParsedUrlQuery): PreviewRecipe | undefined => {
 };
 
 const Recipes = () => {
-  trpc.testData.useQuery()
-  trpc.recipes.getRecipes.useQuery()
   const mobileLayout = useIsMobileLayout();
   const router = useRouter();
   const previewRecipe = getPreviewRecipe(router.query);
@@ -49,7 +46,7 @@ const Recipes = () => {
     debouncedValue,
     mobileLayout ? allSearchValues : keys
   );
-  const recipes = useRecipes();
+  const recipeIds = useRecipeIds();
   const [selected, setSelected] = useState<Set<DateString>>(() => new Set());
   const booleanState = useBoolean(false);
   const [shoppingListData, setShoppingListData] = useState<IQuantitiesAndMeals>(
@@ -62,7 +59,7 @@ const Recipes = () => {
       {mobileLayout ? (
         <MobileLayout
           searchResults={searchResults}
-          recipes={recipes}
+          recipeIds={recipeIds}
           selected={selected}
           setSelected={setSelected}
           booleanState={booleanState}
@@ -77,7 +74,7 @@ const Recipes = () => {
           keys={keys}
           setKeys={setKeys}
           searchResults={searchResults}
-          recipes={recipes}
+          recipeIds={recipeIds}
           selected={selected}
           setSelected={setSelected}
           booleanState={booleanState}

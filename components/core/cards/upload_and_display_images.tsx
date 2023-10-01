@@ -3,7 +3,6 @@ import Box from "@mui/material/Box";
 import Paper from "@mui/material/Paper";
 import UploadIcon from "@mui/icons-material/Upload";
 import IconButton from "@mui/material/IconButton";
-
 import { ClickToUpload } from "../click_to_upload";
 import { Image } from "../../../core/types/general";
 import { SetStateAction, Dispatch, useCallback } from "react";

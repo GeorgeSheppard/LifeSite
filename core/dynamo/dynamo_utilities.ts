@@ -1,11 +1,18 @@
+import { RealUserId, UserId } from "../../pages/api/auth/[...nextauth]";
 import { mealPlanEmptyState } from "../meal_plan/meal_plan_utilities";
 import { IMealPlan } from "../types/meal_plan";
 import { IRecipe, RecipeUuid } from "../types/recipes";
 import { AwsDynamoDocClient } from "./dynamo_client";
+import { Flavor } from "../types/utilities";
 
 // Recipe, or Meal Plan. Note meal plan does not have a dash after because there is only one
 // meal plan per account
 export type ItemType = "R-" | "MP";
+
+export type Shared = Flavor<string, "Shared">
+export const shared: Shared = "shared";
+
+export const isSharedUser = (userId: UserId): userId is Shared => userId === shared
 
 type RecipeKey = { type: "R-"; id: RecipeUuid };
 type MealPlanKey = { type: "MP" };
@@ -35,7 +42,7 @@ const getSortKey = (key: Keys) => {
   }
 };
 
-export const uploadToDynamo = async (item: Item, userId: string) => {
+export const uploadToDynamo = async (item: Item, userId: RealUserId) => {
   return await AwsDynamoDocClient.put({
     TableName: process.env.ENV_AWS_DYNAMO_NAME,
     Item: {
@@ -46,7 +53,7 @@ export const uploadToDynamo = async (item: Item, userId: string) => {
   });
 };
 
-export const getFromDynamo = async (key: Keys, userId: string) => {
+export const getFromDynamo = async (key: Keys, userId: UserId) => {
   const result = await AwsDynamoDocClient.get({
     TableName: process.env.ENV_AWS_DYNAMO_NAME,
     Key: {
@@ -65,20 +72,20 @@ export const getFromDynamo = async (key: Keys, userId: string) => {
 
 export const getRecipe = async (
   recipeId: RecipeUuid,
-  userId: string
+  userId: UserId
 ): Promise<IRecipe> => {
   const result = await getFromDynamo({ type: "R-", id: recipeId }, userId);
   return result.Item as IRecipe;
 };
 
-export const putRecipe = async (recipe: IRecipe, userId: string) => {
+export const putRecipe = async (recipe: IRecipe, userId: RealUserId) => {
   return await uploadToDynamo(
     { type: "R-", item: recipe, id: recipe.uuid },
     userId
   );
 };
 
-export const deleteFromDynamo = async (key: Keys, userId: string) => {
+export const deleteFromDynamo = async (key: Keys, userId: RealUserId) => {
   return await AwsDynamoDocClient.delete({
     TableName: process.env.ENV_AWS_DYNAMO_NAME,
     Key: {
@@ -89,7 +96,7 @@ export const deleteFromDynamo = async (key: Keys, userId: string) => {
 };
 
 export const getAllItemsForAUser = async (
-  userId: string,
+  userId: UserId,
   itemType: ItemType
 ) => {
   return await AwsDynamoDocClient.query({
@@ -108,14 +115,14 @@ export const getAllItemsForAUser = async (
 };
 
 export const getAllRecipesForAUser = async (
-  userId: string
+  userId: UserId
 ): Promise<IRecipe[]> => {
   const result = await getAllItemsForAUser(userId, "R-");
   return result.Items?.map(({ Item, UserId, ...obj }) => obj as IRecipe) ?? [];
 };
 
 export const getMealPlanForAUser = async (
-  userId: string
+  userId: UserId
 ): Promise<IMealPlan> => {
   try {
     const result = await getFromDynamo({ type: "MP" }, userId);
@@ -132,7 +139,7 @@ export const getMealPlanForAUser = async (
 
 export const putMealPlanForUser = async (
   mealPlan: IMealPlan,
-  userId: string
+  userId: RealUserId
 ) => {
   return await uploadToDynamo({ type: "MP", item: mealPlan }, userId);
 };

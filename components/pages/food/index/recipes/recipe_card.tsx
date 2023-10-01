@@ -2,7 +2,7 @@ import InventoryIcon from "@mui/icons-material/Inventory";
 import { Divider } from "@mui/material";
 import Tooltip from "@mui/material/Tooltip";
 import Typography from "@mui/material/Typography";
-import { useRecipe } from "../../../../../core/dynamo/hooks/use_dynamo_get";
+import { usePossiblyExternalRecipe } from "../../../../../core/dynamo/hooks/use_dynamo_get";
 import { useAppSession } from "../../../../../core/hooks/use_app_session";
 import { RecipeUuid } from "../../../../../core/types/recipes";
 import { WrappedCardMedia } from "../../../../core/cards/wrapped_card_media";
@@ -16,7 +16,7 @@ import { InstructionsList } from "./card_components/instructions_list";
 import { OptionsDropdownButton } from "./card_components/options_dropdown";
 import { ServingsIcon } from "./card_components/servings_icon";
 import { WithDeleteDialog } from "./card_components/with_delete_dialog";
-import { Dispatch, SetStateAction, memo } from 'react';
+import { Dispatch, SetStateAction, memo } from "react";
 import { PreviewRecipe } from "../../../../../pages/food";
 
 export interface IRecipeCard {
@@ -39,11 +39,15 @@ export const RecipeCard = (
   );
 };
 
-const RecipeCardContent = memo(function MemoRecipeCardContent(props: IRecipeCard) {
+const RecipeCardContent = memo(function MemoRecipeCardContent(
+  props: IRecipeCard
+) {
   const { uuid, user } = props;
-  const session = useAppSession()
-  const recipe = useRecipe(uuid, user).data
+  const session = useAppSession();
+  const recipe = usePossiblyExternalRecipe(uuid, user).data;
   if (!recipe) return null;
+
+  const sharedRecipe = user && user !== session.id;
 
   return (
     <div
@@ -69,13 +73,17 @@ const RecipeCardContent = memo(function MemoRecipeCardContent(props: IRecipeCard
           >
             {recipe?.name}
           </Typography>
-          {user && user !== session.id && <DownloadSharedRecipe recipe={recipe} />}
-          <OptionsDropdownButton uuid={uuid}>
-            {!user && <CopyShareableLink uuid={uuid} />}
-            <CopyIngredientsButton recipe={recipe} />
-            <EditRecipeButton uuid={uuid} />
-            <DeleteRecipeButton onClick={props.openDialog} />
-          </OptionsDropdownButton>
+          {sharedRecipe && <DownloadSharedRecipe recipe={recipe} />}
+          {!sharedRecipe && (
+            <>
+              <OptionsDropdownButton uuid={uuid}>
+                <CopyShareableLink uuid={uuid} />
+                <CopyIngredientsButton recipe={recipe} />
+                <EditRecipeButton uuid={uuid} />
+                <DeleteRecipeButton onClick={props.openDialog} />
+              </OptionsDropdownButton>
+            </>
+          )}
         </div>
         <div className="m-2 space-y-2">
           {recipe.components.map((component) => (

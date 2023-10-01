@@ -6,17 +6,22 @@ import { Dispatch, MouseEvent, SetStateAction, useCallback } from "react";
 import { useDrop } from "react-dnd";
 import {
   useMealPlan,
-  useRecipes,
+  useRecipeIds,
 } from "../../../../../core/dynamo/hooks/use_dynamo_get";
 import { usePutMealPlanToDynamo } from "../../../../../core/dynamo/hooks/use_dynamo_put";
 import { useBoolean } from "../../../../../core/hooks/use_boolean";
 import { DateString } from "../../../../../core/types/meal_plan";
-import { RecipeUuid } from "../../../../../core/types/recipes";
+import { ComponentUuid, RecipeUuid } from "../../../../../core/types/recipes";
 import { useIsMobileLayout } from "../../../../hooks/is_mobile_layout";
 import { RecipeName } from "./recipe";
 import { RecipeLoading } from "./recipe_loading";
-import { currentDate, dateToDateString } from "../../../../../core/meal_plan/meal_plan_utilities";
+import {
+  IAddOrUpdatePlan,
+  currentDate,
+  dateToDateString,
+} from "../../../../../core/meal_plan/meal_plan_utilities";
 import { mainGreen } from "../../../../core/theme";
+import { useRecipe } from "../../../../../core/dynamo/hooks/use_dynamo_get";
 
 export const DroppableCard = (props: {
   day: DateString;
@@ -27,7 +32,7 @@ export const DroppableCard = (props: {
 }) => {
   const { day, selected, onClick, setSelected, loading } = props;
   const meals = useMealPlan().data[day];
-  const recipes = useRecipes().data;
+  const recipeIds = useRecipeIds().data;
   const { mutate, disabled } = usePutMealPlanToDynamo();
   const [dialogOpen, setters] = useBoolean(false);
 
@@ -38,17 +43,16 @@ export const DroppableCard = (props: {
     [onClick, day]
   );
 
-  const addRecipeToMealPlan = (item: { uuid: RecipeUuid }) => {
+  const addRecipeToMealPlan = (
+    item: {
+      recipeId: RecipeUuid;
+      componentId: ComponentUuid;
+      servingsIncrease: number;
+    }[]
+  ) => {
     mutate({
       date: day,
-      components:
-        recipes
-          ?.find((rec) => rec.uuid === item.uuid)
-          ?.components.map((component) => ({
-            recipeId: item.uuid,
-            componentId: component.uuid,
-            servingsIncrease: component.servings ?? 1,
-          })) ?? [],
+      components: item,
     });
     if (!selected) {
       setSelected((prevSelected) => {
@@ -57,6 +61,7 @@ export const DroppableCard = (props: {
         return newSelected;
       });
     }
+    setters.turnOff();
   };
 
   const [collected, drop] = useDrop(
@@ -68,37 +73,30 @@ export const DroppableCard = (props: {
       }),
       canDrop: () => !disabled && !loading,
     }),
-    [day, recipes, setSelected]
+    [day, setSelected]
   );
 
   const mobileLayout = useIsMobileLayout();
   const dayWithoutYear = day.slice(0, day.length - 5);
 
-  const currentDay = dateToDateString(currentDate())
-  const isCurrentDay = day === currentDay
+  const currentDay = dateToDateString(currentDate());
+  const isCurrentDay = day === currentDay;
   return (
     <>
       <Dialog open={dialogOpen} onClose={setters.turnOff}>
         <DialogContent>
-          {recipes?.length === 0 ? (
+          {recipeIds?.length === 0 ? (
             <Typography>No recipes available</Typography>
           ) : (
             <List>
-              {recipes?.map((recipe) => {
-                return (
-                  <ListItem key={recipe.uuid}>
-                    <Button
-                      onClick={() => {
-                        addRecipeToMealPlan({ uuid: recipe.uuid });
-                        setters.turnOff();
-                      }}
-                      disabled={disabled}
-                    >
-                      {recipe.name}
-                    </Button>
-                  </ListItem>
-                );
-              })}
+              {recipeIds?.map((recipeId) => (
+                <PossibleMealPlanRecipe
+                  key={recipeId}
+                  recipeId={recipeId}
+                  addRecipeToMealPlan={addRecipeToMealPlan}
+                  disabled={disabled}
+                />
+              ))}
             </List>
           )}
         </DialogContent>
@@ -142,7 +140,7 @@ export const DroppableCard = (props: {
             Object.entries(meals).map(([recipeId, components]) => (
               <RecipeName
                 key={recipeId}
-                components={components}
+                components={components ?? []}
                 recipeId={recipeId}
                 day={day}
               />
@@ -150,5 +148,38 @@ export const DroppableCard = (props: {
         </div>
       </div>
     </>
+  );
+};
+
+const PossibleMealPlanRecipe = ({
+  recipeId,
+  addRecipeToMealPlan,
+  disabled,
+}: {
+  recipeId: RecipeUuid;
+  addRecipeToMealPlan: (components: IAddOrUpdatePlan["components"]) => void;
+  disabled: boolean;
+}) => {
+  const { data: recipe } = useRecipe(recipeId);
+
+  if (!recipe) return null;
+
+  return (
+    <ListItem key={recipeId}>
+      <Button
+        onClick={() => {
+          addRecipeToMealPlan(
+            recipe.components.map((component) => ({
+              recipeId: recipe.uuid,
+              componentId: component.uuid,
+              servingsIncrease: component.servings ?? 1,
+            })) ?? []
+          );
+        }}
+        disabled={disabled}
+      >
+        {recipe.name}
+      </Button>
+    </ListItem>
   );
 };
