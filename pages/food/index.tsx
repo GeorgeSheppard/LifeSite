@@ -15,6 +15,7 @@ import { useRouter } from "next/router";
 import { ParsedUrlQuery } from "querystring";
 import { RecipeUuid } from "../../core/types/recipes";
 import { useSearchDebounce } from "../../core/hooks/use_search_debounce";
+import { trpc } from "../../client";
 
 const allSearchValues = new Set<SearchableAttributes>([
   "name",
@@ -36,6 +37,7 @@ const getPreviewRecipe = (query: ParsedUrlQuery): PreviewRecipe | undefined => {
 };
 
 const Recipes = () => {
+  trpc.testData.useQuery()
   const mobileLayout = useIsMobileLayout();
   const router = useRouter();
   const previewRecipe = getPreviewRecipe(router.query);
