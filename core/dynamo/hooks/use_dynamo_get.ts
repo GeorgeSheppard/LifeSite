@@ -3,7 +3,7 @@ import { IRecipe, IRecipes, RecipeUuid } from "../../types/recipes";
 import { NewRecipe } from "../../../pages/food/[recipeUuid]";
 import { useAppSession } from "../../hooks/use_app_session";
 import { trpc } from "../../../client";
-import { RealUserId } from "../../../pages/api/auth/[...nextauth]";
+import { RealUserId } from "../../types/utilities";
 
 const useRecipesBase = <T>({
   select,

@@ -1,9 +1,8 @@
-import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { S3Key } from "../../../core/types/general";
 import { Skeleton } from "@mui/material";
-import { getS3SignedUrl } from "../../../core/s3/s3_utilities";
 import Image from "next/image";
+import { trpc } from "../../../client";
 
 export interface IS3CardMediaProps {
   s3Key: S3Key;
@@ -19,10 +18,7 @@ export const S3CardMedia = (props: IS3CardMediaProps) => {
   const { s3Key, className } = props;
   const [show, setShow] = useState(true);
   const [imageLoading, setImageLoading] = useState(true);
-  const signedUrl = useQuery({
-    queryKey: [s3Key],
-    queryFn: () => getS3SignedUrl(s3Key),
-  });
+  const signedUrl = trpc.s3.getSignedUrl.useQuery({ key: s3Key })
 
   if (!signedUrl.isSuccess) {
     return null;

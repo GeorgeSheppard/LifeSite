@@ -1,9 +1,8 @@
-import { RealUserId, UserId } from "../../pages/api/auth/[...nextauth]";
 import { mealPlanEmptyState } from "../meal_plan/meal_plan_utilities";
 import { IMealPlan } from "../types/meal_plan";
 import { IRecipe, RecipeUuid } from "../types/recipes";
 import { AwsDynamoDocClient } from "./dynamo_client";
-import { Flavor } from "../types/utilities";
+import { Flavor, RealUserId, UserId } from "../types/utilities";
 
 // Recipe, or Meal Plan. Note meal plan does not have a dash after because there is only one
 // meal plan per account
@@ -99,6 +98,7 @@ export const getAllItemsForAUser = async (
   userId: UserId,
   itemType: ItemType
 ) => {
+  console.log('dynamo', process.env.ENV_AWS_DYNAMO_NAME, userId, itemType)
   return await AwsDynamoDocClient.query({
     TableName: process.env.ENV_AWS_DYNAMO_NAME,
     KeyConditions: {
@@ -118,6 +118,7 @@ export const getAllRecipesForAUser = async (
   userId: UserId
 ): Promise<IRecipe[]> => {
   const result = await getAllItemsForAUser(userId, "R-");
+  console.log('result', result.Items)
   return result.Items?.map(({ Item, UserId, ...obj }) => obj as IRecipe) ?? [];
 };
 

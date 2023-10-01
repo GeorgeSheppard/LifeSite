@@ -1,14 +1,7 @@
 import NextAuth, { NextAuthOptions, Session } from "next-auth";
 import CognitoProvider from "next-auth/providers/cognito";
-import { Flavor } from "../../../core/types/utilities";
-import { Shared } from "../../../core/dynamo/dynamo_utilities";
+import { RealUserId } from "../../../core/types/utilities";
 
-/**
- * We restrict certain calls so that the "shared" user cannot make modifications
- * to the database
- */
-export type RealUserId = Flavor<string, "UserId">
-export type UserId = RealUserId | Shared
 export type CustomSession = Session & { id?: RealUserId };
 
 export const authOptions: NextAuthOptions = {
