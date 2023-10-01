@@ -14,6 +14,7 @@ export const publicProcedure = t.procedure;
 const addUser = t.middleware(async (opts) => {
   const { ctx } = opts;
 
+  console.log('addUser time', new Date().getTime())
   const id = ctx.session?.id
 
   return opts.next({
