@@ -1,4 +1,5 @@
 import { S3Client } from "@aws-sdk/client-s3"
+import { getS3SignedUrl } from "./s3_utilities";
 
 console.log(
   "s3 client",
@@ -17,5 +18,6 @@ export const AwsS3Client = new S3Client({
   maxAttempts: 1,
 });
 
+getS3SignedUrl("test.json").then(() => console.log('S3 test query'))
 // TODO: Add a test entry, then query for it
 console.log('after s3 client')
