@@ -12,5 +12,8 @@ export const AwsS3Client = new S3Client({
   credentials: {
     accessKeyId: process.env.ENV_AWS_S3_ACCESS_KEY ?? "",
     secretAccessKey: process.env.ENV_AWS_S3_SECRET_ACCESS_KEY ?? "",
-  }
+  },
+  logger: console,
+  maxAttempts: 1,
 });
+console.log('after s3 client')
