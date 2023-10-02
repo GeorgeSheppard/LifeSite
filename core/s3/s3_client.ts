@@ -16,4 +16,6 @@ export const AwsS3Client = new S3Client({
   logger: console,
   maxAttempts: 1,
 });
+
+// TODO: Add a test entry, then query for it
 console.log('after s3 client')
