@@ -10,4 +10,7 @@ export default createNextApiHandler({
     console.error(`Error: ${opts}`);
     captureException(opts.error)
   },
+  batching: {
+    enabled: false
+  }
 });

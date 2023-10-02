@@ -16,7 +16,11 @@ const mealPlanWithUpdatedDates = (mealPlan: IMealPlan): IMealPlan => {
 }
 
 export const getMealPlan = async (userId: UserId): Promise<IMealPlan> => {
-  const existingMealPlan = await getMealPlanForAUser(userId)
-  const updatedMealPlan = mealPlanWithUpdatedDates(existingMealPlan)
-  return updatedMealPlan
+  try {
+    const existingMealPlan = await getMealPlanForAUser(userId)
+    const updatedMealPlan = mealPlanWithUpdatedDates(existingMealPlan)
+    return updatedMealPlan
+  } catch (e) {
+    console.error(`Error getMealPlan: ${e}`)
+  }
 }
