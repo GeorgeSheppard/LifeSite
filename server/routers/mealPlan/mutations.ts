@@ -8,7 +8,3 @@ export const updateMealPlan = async (user: UserId, mealPlan: IMealPlan) => {
 
   return await putMealPlanForUser(mealPlan, user)
 }
-
-// export const createShoppingList = async (user: UserId, mealPlan: IMealPlan): Promise<IQuantitiesAndMeals> => {
-  
-// }

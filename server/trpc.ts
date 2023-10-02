@@ -12,16 +12,14 @@ export const router = t.router;
 export const publicProcedure = t.procedure;
 
 const addUser = t.middleware(async (opts) => {
-  // const { ctx } = opts;
+  const { ctx } = opts;
 
-  console.log('addUser time', new Date().getTime())
-  // const id = ctx.session?.id
+  const id = ctx.session?.id
 
   return opts.next({
     ctx: {
       session: {
-        // id: id ?? shared
-        id: shared
+        id: id ?? shared
       }
     }
   })
