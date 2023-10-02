@@ -1,7 +1,7 @@
 import { deleteFromDynamo, isSharedUser, putRecipe } from "../../../core/dynamo/dynamo_utilities";
-import { sharedUpload } from "../../../core/dynamo/hooks/use_dynamo_put";
 import { IRecipe, RecipeUuid } from "../../../core/types/recipes";
 import { UserId } from "../../../core/types/utilities";
+import { sharedUpload } from "../shared_upload";
 
 export const deleteRecipe = async (user: UserId, recipeId: RecipeUuid) => {
   if (isSharedUser(user)) return Promise.resolve(sharedUpload)
