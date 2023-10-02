@@ -15,8 +15,9 @@ export const isSharedUser = (userId: UserId): userId is Shared => userId === sha
 
 type RecipeKey = { type: "R-"; id: RecipeUuid };
 type MealPlanKey = { type: "MP" };
+type TestKey = { type: "Test" };
 
-type Keys = RecipeKey | MealPlanKey;
+type Keys = RecipeKey | MealPlanKey | TestKey;
 
 type Item =
   | (RecipeKey & {
@@ -38,6 +39,8 @@ const getSortKey = (key: Keys) => {
       return `R-${key.id}`;
     case "MP":
       return "MP";
+    case "Test":
+      return "Test"
   }
 };
 
