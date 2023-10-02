@@ -11,7 +11,4 @@ export const mealPlanRouter = router({
     .mutation(({ ctx, input }) =>
       updateMealPlan(ctx.session.id, input.mealPlan)
   ),
-//   createShoppingList: withUser
-//     .input(z.object({ mealPlan: mealPlanValidator }
-// )).mutation(({ ctx, input }) => )
 });
