@@ -22,6 +22,11 @@ export const getRecipesForUser = async ({
   user: UserId;
   }): Promise<IRecipes> => {
   console.log('getRecipesForUser time', new Date().getTime())
-  const recipes = await getAllRecipesForAUser(user);
-  return recipes.reduce((prev, curr) => prev.set(curr.uuid, curr), new Map());
+  try {
+    const recipes = await getAllRecipesForAUser(user);
+    return recipes.reduce((prev, curr) => prev.set(curr.uuid, curr), new Map());
+  } catch (e) {
+    console.error(`Error getRecipesForUser: ${e}`)
+    throw e
+  }
 };
