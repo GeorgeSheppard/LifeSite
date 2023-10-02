@@ -22,5 +22,6 @@ export const getMealPlan = async (userId: UserId): Promise<IMealPlan> => {
     return updatedMealPlan
   } catch (e) {
     console.error(`Error getMealPlan: ${e}`)
+    throw e
   }
 }

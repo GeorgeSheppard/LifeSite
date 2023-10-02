@@ -27,5 +27,6 @@ export const getRecipesForUser = async ({
     return recipes.reduce((prev, curr) => prev.set(curr.uuid, curr), new Map());
   } catch (e) {
     console.error(`Error getRecipesForUser: ${e}`)
+    throw e
   }
 };
