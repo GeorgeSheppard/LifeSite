@@ -32,13 +32,6 @@ export async function PutToS3(
   );
 }
 
-// export async function getPresignedPostUrl(key: S3Key) {
-//   return createPresignedPost(AwsS3Client, {
-//     Bucket: process.env.ENV_AWS_S3_BUCKET_NAME!,
-//     Key: key,
-//   });
-// }
-
 export async function getS3SignedPostUrl(key: S3Key): Promise<S3SignedUrl> {
   return await getSignedUrl(
     AwsS3Client,
