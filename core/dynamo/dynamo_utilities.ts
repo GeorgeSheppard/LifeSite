@@ -101,7 +101,6 @@ export const getAllItemsForAUser = async (
   userId: UserId,
   itemType: ItemType
 ) => {
-  console.log('getAllItemsForAUser time', new Date().getTime())
   return await AwsDynamoDocClient.query({
     TableName: process.env.ENV_AWS_DYNAMO_NAME,
     KeyConditions: {
@@ -121,7 +120,6 @@ export const getAllRecipesForAUser = async (
   userId: UserId
 ): Promise<IRecipe[]> => {
   const result = await getAllItemsForAUser(userId, "R-");
-  console.log('after getAllItemsForAUser time', new Date().getTime())
   return result.Items?.map(({ Item, UserId, ...obj }) => obj as IRecipe) ?? [];
 };
 

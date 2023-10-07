@@ -3,7 +3,6 @@ import {
   IAddOrUpdatePlan,
   addOrUpdatePlan,
 } from "../../meal_plan/meal_plan_utilities";
-import { useMealPlan } from "./use_dynamo_get";
 import { IMealPlan } from "../../types/meal_plan";
 import { useAppSession } from "../../hooks/use_app_session";
 import { trpc } from "../../../client";
@@ -41,7 +40,9 @@ const useMutateMealPlanInCache = () => {
     queryClient.setQueryData(mealPlanKey, newMealPlan);
 
     return {
-      undo: () => queryClient.setQueryData(mealPlanKey, previousMealPlan),
+      undo: () => {
+        queryClient.setQueryData(mealPlanKey, previousMealPlan)
+      },
     };
   };
 };
@@ -60,9 +61,9 @@ export const usePutRecipeToDynamo = () => {
 };
 
 export const usePutMealPlanToDynamo = () => {
-  const { loading } = useAppSession();
   const mutate = useMutateMealPlanInCache();
-  const mealPlan = useMealPlan();
+  const queryClient = useQueryClient();
+  const mealPlanKey = getQueryKey(trpc.mealPlan.getMealPlan, undefined, "query")
 
   const updateMealPlan = trpc.mealPlan.updateMealPlan.useMutation({
     onMutate: ({ mealPlan: newMealPlan }) => mutate(newMealPlan),
@@ -72,10 +73,11 @@ export const usePutMealPlanToDynamo = () => {
   return {
     ...updateMealPlan,
     mutate: (update: IAddOrUpdatePlan) => {
+      const currentMealPlan = queryClient.getQueryData(mealPlanKey) as IMealPlan | undefined
+      if (!currentMealPlan) throw new Error('Cannot modify empty meal plan')
       updateMealPlan.mutate({
-        mealPlan: addOrUpdatePlan(mealPlan.data, update),
+        mealPlan: addOrUpdatePlan(currentMealPlan, update),
       });
     },
-    disabled: loading || mealPlan.isPlaceholderData,
   };
 };

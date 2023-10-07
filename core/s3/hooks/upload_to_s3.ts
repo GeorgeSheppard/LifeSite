@@ -30,8 +30,8 @@ export interface IUseUploadToS3Props {
  * @param folder?: string - S3 doesn't really have folders but helps to organise
  */
 export default function useUploadToS3(props: IUseUploadToS3Props) {
-  const { id, loading } = useAppSession();
-  const putToS3 = trpc.s3.put.useMutation()
+  const { loading } = useAppSession();
+  const putToS3 = trpc.s3.put.useMutation();
 
   const uploadFile = useCallback(
     async (file: File) => {
@@ -51,44 +51,34 @@ export default function useUploadToS3(props: IUseUploadToS3Props) {
 
       onStartUpload?.();
 
-      let fileKey = file.name;
+      let filename = file.name;
       if (props.makeKeyUnique ?? true) {
-        fileKey = uuidv4() + "_" + fileKey;
+        filename = uuidv4() + "_" + filename;
       }
 
-      // TODO: Fix the upload
-      // // If there is no user logged in place in the shared folder
-      // let pathToFile = `${id ?? shared}/`;
-      // if (props.folder) {
-      //   pathToFile += `${props.folder}/`;
-      // }
-      // pathToFile += fileKey;
-
-      // let upload;
-      // try {
-      //   // TODO: Fix this over TRPC
-      //   const fileString = await file.text()
-      //   upload = await putToS3.mutateAsync({ key: pathToFile, file: fileString });
-      // } catch (err) {
-      //   onUploadError?.({ error: "unknown" });
-      // }
-
-      // // TODO: Fix this too
-      // // if (upload?.$metadata.httpStatusCode === 200) {
-      // //   onUploadFinished?.({ key: pathToFile });
-      // // } else {
-      // //   onUploadError?.({ error: "unknown" });
-      // // }
+      try {
+        const { signedUrl, path } = await putToS3.mutateAsync({
+          filename,
+          folder: props.folder,
+        });
+        const upload = await fetch(signedUrl, { method: "PUT", body: file });
+        if (upload.ok) {
+          onUploadFinished?.({ key: path });
+        } else {
+          onUploadError?.({ error: "unknown" });
+        }
+      } catch (err) {
+        onUploadError?.({ error: "unknown" });
+      }
     },
     [
       props.onStartUpload,
       props.onUploadError,
       props.onUploadFinished,
-      // props.folder,
+      props.folder,
       props.makeKeyUnique,
-      // putToS3,
+      putToS3,
       loading,
-      // id
     ]
   );
 

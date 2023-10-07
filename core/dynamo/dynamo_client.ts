@@ -2,13 +2,6 @@ import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import { DynamoDBDocument } from "@aws-sdk/lib-dynamodb";
 import { getFromDynamo } from "./dynamo_utilities";
 
-console.log(
-  "dynamo client",
-  process.env.ENV_AWS_DYNAMO_REGION,
-  process.env.ENV_AWS_DYNAMO_ACCESS_KEY,
-  process.env.ENV_AWS_DYNAMO_SECRET_ACCESS_KEY,
-  typeof window === 'undefined'
-);
 export const AwsDynamoClient = new DynamoDBClient({
   region: process.env.ENV_AWS_DYNAMO_REGION,
   credentials: {
@@ -26,4 +19,3 @@ export const AwsDynamoDocClient = DynamoDBDocument.from(AwsDynamoClient, {
 });
 
 getFromDynamo({ type: "Test" }, "Test").then(() => console.log('Dynamo test query'))
-console.log('after dynamo client')

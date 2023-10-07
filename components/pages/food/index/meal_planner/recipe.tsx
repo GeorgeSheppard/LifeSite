@@ -21,7 +21,7 @@ export const RecipeName = ({
   day: DateString;
 }) => {
   const recipe = useRecipe(recipeId).data;
-  const { mutate, disabled } = usePutMealPlanToDynamo();
+  const { mutate } = usePutMealPlanToDynamo();
 
   if (!recipe) {
     return null;
@@ -72,7 +72,6 @@ export const RecipeName = ({
                       ],
                     });
                   }}
-                  disabled={disabled}
                 >
                   -
                 </Button>
@@ -90,7 +89,6 @@ export const RecipeName = ({
                       ],
                     });
                   }}
-                  disabled={disabled}
                 >
                   +
                 </Button>
