@@ -15,7 +15,6 @@ import { useRouter } from "next/router";
 import { ParsedUrlQuery } from "querystring";
 import { RecipeUuid } from "../../core/types/recipes";
 import { useSearchDebounce } from "../../core/hooks/use_search_debounce";
-import { trpc } from "../../client";
 
 const allSearchValues = new Set<SearchableAttributes>([
   "name",
