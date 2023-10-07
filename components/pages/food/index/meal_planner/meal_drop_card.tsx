@@ -33,7 +33,7 @@ export const DroppableCard = (props: {
   const { day, selected, onClick, setSelected, loading } = props;
   const meals = useMealPlan().data[day];
   const recipeIds = useRecipeIds().data;
-  const { mutate, disabled } = usePutMealPlanToDynamo();
+  const { mutate } = usePutMealPlanToDynamo();
   const [dialogOpen, setters] = useBoolean(false);
 
   const toggleOnClick = useCallback(
@@ -71,7 +71,7 @@ export const DroppableCard = (props: {
       collect: (monitor) => ({
         isOver: !!monitor.isOver(),
       }),
-      canDrop: () => !disabled && !loading,
+      canDrop: () => !loading,
     }),
     [day, setSelected]
   );
@@ -94,7 +94,6 @@ export const DroppableCard = (props: {
                   key={recipeId}
                   recipeId={recipeId}
                   addRecipeToMealPlan={addRecipeToMealPlan}
-                  disabled={disabled}
                 />
               ))}
             </List>
@@ -154,11 +153,9 @@ export const DroppableCard = (props: {
 const PossibleMealPlanRecipe = ({
   recipeId,
   addRecipeToMealPlan,
-  disabled,
 }: {
   recipeId: RecipeUuid;
   addRecipeToMealPlan: (components: IAddOrUpdatePlan["components"]) => void;
-  disabled: boolean;
 }) => {
   const { data: recipe } = useRecipe(recipeId);
 
@@ -176,7 +173,6 @@ const PossibleMealPlanRecipe = ({
             })) ?? []
           );
         }}
-        disabled={disabled}
       >
         {recipe.name}
       </Button>
