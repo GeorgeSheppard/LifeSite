@@ -11,7 +11,7 @@ import { RecipeCard, RecipeCardFromId } from "./recipe_card";
 interface RecipeGridProps {
   searchResults: RecipeUuid[];
   loading: boolean;
-  sharedRecipe?: IRecipe;
+  sharedRecipe: IRecipe | null;
 }
 
 export type FullRecipe = { recipe: IRecipe, shared: boolean }

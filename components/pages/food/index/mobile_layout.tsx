@@ -22,7 +22,7 @@ export interface MobileStateProps {
   booleanState: IUseBoolean;
   shoppingListData: IQuantitiesAndMeals;
   setShoppingListData: Dispatch<SetStateAction<IQuantitiesAndMeals>>;
-  sharedRecipe?: IRecipe;
+  sharedRecipe: IRecipe | null;
   searchString: string;
   setSearchString: (value: string) => void;
 }
