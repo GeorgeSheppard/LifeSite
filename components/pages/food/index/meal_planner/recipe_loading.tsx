@@ -17,6 +17,7 @@ export const RecipeLoading = () => {
               marginLeft: 0,
               marginTop: 1,
             }}
+            animation="wave"
           />
           <LoadingComponentLines />
         </div>
@@ -40,6 +41,7 @@ const LoadingComponentLines = () => {
             marginLeft: 2,
             marginTop: 1,
           }}
+          animation="wave"
         />
       ))}
     </>

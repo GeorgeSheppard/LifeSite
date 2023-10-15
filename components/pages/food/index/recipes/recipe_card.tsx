@@ -83,11 +83,12 @@ const RecipeCardContent = memo(function MemoRecipeCardContent(
       onClick={() => {
         props.openFullRecipe?.();
       }}
-      className="hover:shadow-xl drop-shadow-[0_0px_3px_rgba(0,0,0,0.25)] ease-in duration-200 flex-grow hover:cursor-pointer rounded-lg overflow-hidden"
+      className="hover:shadow-xl shadow ease-in duration-200 flex-grow hover:cursor-pointer rounded-lg"
     >
       {recipe.images && (
         <WrappedCardMedia
           images={recipe.images}
+          mediaClassName="rounded-t-lg"
         />
       )}
       <div className="flex-row p-3 space-y-3 shadow rounded-b-lg bg-white">
