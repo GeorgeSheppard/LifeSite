@@ -15,10 +15,7 @@ import { ParsedUrlQuery } from "querystring";
 import { useSearchDebounce } from "../../core/hooks/use_search_debounce";
 import { SharedRecipeId } from "../../core/dynamo/dynamo_utilities";
 import { GetServerSidePropsContext, GetServerSidePropsResult } from "next";
-import { appRouter } from "../../server";
 import { IRecipe } from "../../core/types/recipes";
-import { CustomSession, authOptions } from "../api/auth/[...nextauth]";
-import { getServerSession } from "next-auth";
 
 const allSearchValues = new Set<SearchableAttributes>([
   "name",
