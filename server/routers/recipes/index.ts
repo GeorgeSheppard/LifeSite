@@ -3,9 +3,11 @@ import { publicProcedure, router, withUser } from "../../trpc";
 import {
   getRecipeForUser,
   getRecipesForUser,
+  getSharedRecipe,
 } from "./queries";
-import { deleteRecipe, updateRecipe } from "./mutations";
+import { deleteRecipe, shareRecipe, updateRecipe } from "./mutations";
 import { recipeValidator } from "./validators/recipe";
+import { v4 as uuidv4 } from "uuid";
 
 export const recipesRouter = router({
   getExternalRecipe: publicProcedure
@@ -29,4 +31,10 @@ export const recipesRouter = router({
     .mutation(({ ctx, input: { recipe } }) =>
       updateRecipe(ctx.session.id, recipe)
     ),
+  createSharedRecipe: publicProcedure
+    .input(z.object({ recipe: recipeValidator }))
+    .mutation(({ input: { recipe } }) => shareRecipe(uuidv4(), recipe)),
+  getSharedRecipe: publicProcedure
+    .input(z.object({ share: z.string() }))
+    .query(({ input: { share } }) => getSharedRecipe({ id: share })),
 });

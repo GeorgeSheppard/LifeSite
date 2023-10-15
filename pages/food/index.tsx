@@ -13,8 +13,8 @@ import {
 import { DateString } from "../../core/types/meal_plan";
 import { useRouter } from "next/router";
 import { ParsedUrlQuery } from "querystring";
-import { RecipeUuid } from "../../core/types/recipes";
 import { useSearchDebounce } from "../../core/hooks/use_search_debounce";
+import { SharedRecipeId } from "../../core/dynamo/dynamo_utilities";
 
 const allSearchValues = new Set<SearchableAttributes>([
   "name",
@@ -22,23 +22,17 @@ const allSearchValues = new Set<SearchableAttributes>([
   "ingredients",
 ]);
 
-export type PreviewRecipe = {
-  recipe: RecipeUuid;
-  user?: string;
-};
-
-const getPreviewRecipe = (query: ParsedUrlQuery): PreviewRecipe | undefined => {
-  const { recipe, user } = query;
-  if (recipe instanceof Array || user instanceof Array) return;
-  if (!recipe) return;
-  if (!user) return { recipe };
-  return { recipe, user };
+const getSharedRecipe = (query: ParsedUrlQuery): SharedRecipeId | undefined => {
+  const { share } = query
+  if (share instanceof Array) return;
+  if (!share) return;
+  return share
 };
 
 const Recipes = () => {
   const mobileLayout = useIsMobileLayout();
   const router = useRouter();
-  const previewRecipe = getPreviewRecipe(router.query);
+  const sharedRecipe = getSharedRecipe(router.query);
 
   const [keys, setKeys] = useState(() => allSearchValues);
   const [searchString, debouncedValue, setSearchString] = useSearchDebounce("");
@@ -65,7 +59,7 @@ const Recipes = () => {
           booleanState={booleanState}
           shoppingListData={shoppingListData}
           setShoppingListData={setShoppingListData}
-          previewRecipe={previewRecipe}
+          sharedRecipe={sharedRecipe}
           searchString={searchString}
           setSearchString={setSearchString}
         />
@@ -80,7 +74,7 @@ const Recipes = () => {
           booleanState={booleanState}
           shoppingListData={shoppingListData}
           setShoppingListData={setShoppingListData}
-          previewRecipe={previewRecipe}
+          sharedRecipe={sharedRecipe}
           searchString={searchString}
           setSearchString={setSearchString}
         />

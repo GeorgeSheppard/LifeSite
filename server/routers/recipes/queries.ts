@@ -1,9 +1,11 @@
 import {
   getAllRecipesForAUser,
   getRecipe,
+  getSharedRecipe as getSharedRecipeFromDynamo
 } from "../../../core/dynamo/dynamo_utilities";
 import { IRecipe, IRecipes, RecipeUuid } from "../../../core/types/recipes";
 import { UserId } from "../../../core/types/utilities";
+import { SharedRecipeId } from '../../../core/dynamo/dynamo_utilities';
 
 export const getRecipeForUser = async ({
   user,
@@ -29,3 +31,12 @@ export const getRecipesForUser = async ({
     throw e
   }
 };
+
+export const getSharedRecipe = async({
+  id
+}: {
+  id: SharedRecipeId
+  }): Promise<IRecipe> => {
+  const recipe = await getSharedRecipeFromDynamo(id)
+  return recipe
+}

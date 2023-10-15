@@ -1,4 +1,4 @@
-import { deleteFromDynamo, isSharedUser, putRecipe } from "../../../core/dynamo/dynamo_utilities";
+import { deleteFromDynamo, isSharedUser, putRecipe, putShareableRecipe, SharedRecipeId } from '../../../core/dynamo/dynamo_utilities';
 import { IRecipe, RecipeUuid } from "../../../core/types/recipes";
 import { UserId } from "../../../core/types/utilities";
 import { sharedUpload } from "../shared_upload";
@@ -14,3 +14,8 @@ export const updateRecipe = async (user: UserId, recipe: IRecipe) => {
 
   return await putRecipe(recipe, user)
 } 
+
+export const shareRecipe = async (id: SharedRecipeId, recipe: IRecipe) => {
+  await putShareableRecipe(id, recipe)
+  return id
+}

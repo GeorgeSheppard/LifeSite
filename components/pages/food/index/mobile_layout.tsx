@@ -9,11 +9,11 @@ import { IUseBoolean } from "../../../../core/hooks/use_boolean";
 import { IQuantitiesAndMeals } from "../../../../core/meal_plan/shopping_list_creator";
 import { DateString } from "../../../../core/types/meal_plan";
 import { RecipeUuid } from "../../../../core/types/recipes";
-import { PreviewRecipe } from "../../../../pages/food";
 import { Planner } from "./meal_planner/calendar";
 import { CreateShoppingListButton } from "./meal_planner/create_shopping_list";
 import { ShoppingListDialog } from "./meal_planner/shopping_list";
 import { RecipeGrid } from "./recipes/recipe_grid";
+import { SharedRecipeId } from "../../../../core/dynamo/dynamo_utilities";
 
 export interface MobileStateProps {
   searchResults: RecipeUuid[];
@@ -23,7 +23,7 @@ export interface MobileStateProps {
   booleanState: IUseBoolean;
   shoppingListData: IQuantitiesAndMeals;
   setShoppingListData: Dispatch<SetStateAction<IQuantitiesAndMeals>>;
-  previewRecipe?: PreviewRecipe;
+  sharedRecipe?: SharedRecipeId;
   searchString: string;
   setSearchString: (value: string) => void;
 }
@@ -39,7 +39,7 @@ export const MobileLayout = (props: MobileStateProps) => {
     booleanState: [on, { turnOn, turnOff }],
     shoppingListData,
     setShoppingListData,
-    previewRecipe,
+    sharedRecipe,
     searchString,
     setSearchString
   } = props;
@@ -86,7 +86,7 @@ export const MobileLayout = (props: MobileStateProps) => {
               <RecipeGrid
                 searchResults={searchResults}
                 loading={recipeIds.isLoading}
-                previewRecipe={previewRecipe}
+                sharedRecipe={sharedRecipe}
               />
             </Box>
           ) : (
