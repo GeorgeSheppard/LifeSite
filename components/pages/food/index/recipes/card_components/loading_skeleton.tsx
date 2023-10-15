@@ -10,9 +10,9 @@ export const LoadingRecipeCard = () => {
 
   return (
       <Card>
-        <Skeleton variant="rectangular" height={300} />
+        <Skeleton variant="rectangular" height={300} animation="wave" />
         <div className="m-4 space-y-4">
-          <Skeleton variant="rectangular" width="60%" height={25} />
+          <Skeleton variant="rectangular" width="60%" height={25} animation="wave" />
           <div className="space-y-2">
             {Array.from(Array(numComponents).keys()).map((num) => {
               return (
@@ -21,6 +21,7 @@ export const LoadingRecipeCard = () => {
                   variant="rectangular"
                   width="30%"
                   height={15}
+                  animation="wave"
                 />
               );
             })}
@@ -28,7 +29,7 @@ export const LoadingRecipeCard = () => {
           {divider && (
             <>
               <Divider />
-              <Skeleton variant="rectangular" width="100%" height={15} />
+              <Skeleton variant="rectangular" width="100%" height={15} animation="wave" />
             </>
           )}
         </div>
