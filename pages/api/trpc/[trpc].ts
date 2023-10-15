@@ -7,7 +7,7 @@ export default createNextApiHandler({
   router: appRouter,
   createContext,
   onError(opts) {
-    console.error(`Error: ${opts}`);
+    console.error(`Error: ${opts.error}`);
     captureException(opts.error)
   },
   batching: {
