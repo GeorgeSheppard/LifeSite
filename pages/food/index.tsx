@@ -15,6 +15,9 @@ import { useRouter } from "next/router";
 import { ParsedUrlQuery } from "querystring";
 import { useSearchDebounce } from "../../core/hooks/use_search_debounce";
 import { SharedRecipeId } from "../../core/dynamo/dynamo_utilities";
+import { GetServerSidePropsContext, GetServerSidePropsResult } from "next";
+import { appRouter } from "../../server";
+import { IRecipe } from '../../core/types/recipes';
 
 const allSearchValues = new Set<SearchableAttributes>([
   "name",
@@ -23,16 +26,32 @@ const allSearchValues = new Set<SearchableAttributes>([
 ]);
 
 const getSharedRecipe = (query: ParsedUrlQuery): SharedRecipeId | undefined => {
-  const { share } = query
+  const { share } = query;
   if (share instanceof Array) return;
   if (!share) return;
-  return share
+  return share;
 };
 
-const Recipes = () => {
+type Props = { sharedRecipe?: IRecipe }
+
+export const getServerSideProps = async (
+  context: GetServerSidePropsContext
+): Promise<GetServerSidePropsResult<{ sharedRecipe?: IRecipe }>> => {
+  const { query } = context
+
+  const sharedRecipe = getSharedRecipe(query)
+  if (!sharedRecipe) return { props: {} }
+
+  const caller = appRouter.createCaller({ req: undefined, res: undefined })
+  const recipe = await caller.recipes.getSharedRecipe({ share: sharedRecipe })
+
+  return {
+    props: { sharedRecipe: recipe },
+  };
+};
+
+const Recipes = (props: Props) => {
   const mobileLayout = useIsMobileLayout();
-  const router = useRouter();
-  const sharedRecipe = getSharedRecipe(router.query);
 
   const [keys, setKeys] = useState(() => allSearchValues);
   const [searchString, debouncedValue, setSearchString] = useSearchDebounce("");
@@ -59,7 +78,7 @@ const Recipes = () => {
           booleanState={booleanState}
           shoppingListData={shoppingListData}
           setShoppingListData={setShoppingListData}
-          sharedRecipe={sharedRecipe}
+          sharedRecipe={props.sharedRecipe}
           searchString={searchString}
           setSearchString={setSearchString}
         />
@@ -74,7 +93,7 @@ const Recipes = () => {
           booleanState={booleanState}
           shoppingListData={shoppingListData}
           setShoppingListData={setShoppingListData}
-          sharedRecipe={sharedRecipe}
+          sharedRecipe={props.sharedRecipe}
           searchString={searchString}
           setSearchString={setSearchString}
         />

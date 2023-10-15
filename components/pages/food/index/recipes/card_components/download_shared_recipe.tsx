@@ -6,11 +6,15 @@ import { usePutRecipeToDynamo } from "../../../../../../core/dynamo/hooks/use_dy
 
 export interface ICopyIngredientsButtonProps {
   recipe: IRecipe;
+  onDownload: (recipe: IRecipe) => void
 }
 
 export const DownloadSharedRecipe = (props: ICopyIngredientsButtonProps) => {
   const { mutate, isLoading } = usePutRecipeToDynamo();
-  const downloadSharedRecipe = () => mutate({ recipe: props.recipe })
+  const downloadSharedRecipe = async () => {
+    await mutate({ recipe: props.recipe })
+    props.onDownload(props.recipe)
+  }
 
   return (
     <Tooltip title="Download shared recipe">

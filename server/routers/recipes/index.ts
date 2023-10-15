@@ -1,7 +1,6 @@
 import { z } from "zod";
 import { publicProcedure, router, withUser } from "../../trpc";
 import {
-  getRecipeForUser,
   getRecipesForUser,
   getSharedRecipe,
 } from "./queries";
@@ -10,14 +9,6 @@ import { recipeValidator } from "./validators/recipe";
 import { v4 as uuidv4 } from "uuid";
 
 export const recipesRouter = router({
-  getExternalRecipe: publicProcedure
-    .input(
-      z.object({
-        recipeId: z.string(),
-        user: z.string(),
-      })
-    )
-    .query(({ input }) => getRecipeForUser(input)),
   getRecipes: withUser.query(({ ctx }) =>
     getRecipesForUser({ user: ctx.session.id })
   ),
