@@ -1,12 +1,11 @@
 import { useState } from "react";
 import { S3Key } from "../../../core/types/general";
-import { Skeleton } from "@mui/material";
-import Image from "next/image";
+import { CardMedia, Skeleton } from "@mui/material";
 import { trpc } from "../../../client";
 
 export interface IS3CardMediaProps {
   s3Key: S3Key;
-  className?: string
+  className?: string;
 }
 
 /**
@@ -18,9 +17,9 @@ export const S3CardMedia = (props: IS3CardMediaProps) => {
   const { s3Key, className } = props;
   const [show, setShow] = useState(true);
   const [imageLoading, setImageLoading] = useState(true);
-  const signedUrl = trpc.s3.getSignedUrl.useQuery({ key: s3Key })
+  const signedUrl = trpc.s3.getSignedUrl.useQuery({ key: s3Key });
 
-  if (!signedUrl.isSuccess) {
+  if (signedUrl.isError) {
     return null;
   }
 
@@ -33,7 +32,7 @@ export const S3CardMedia = (props: IS3CardMediaProps) => {
       {(signedUrl.isLoading || imageLoading) && (
         <Skeleton variant="rectangular" height="100%" />
       )}
-      <Image
+      {/* <Image
         src={signedUrl.data}
         onLoadingComplete={() => setImageLoading(false)}
         onError={() => setShow(false)}
@@ -41,6 +40,14 @@ export const S3CardMedia = (props: IS3CardMediaProps) => {
         objectFit="cover"
         alt=""
         className={className}
+      /> */}
+      <CardMedia
+        src={signedUrl.data}
+        component="img"
+        onError={() => setShow(false)}
+        onLoad={() => setImageLoading(false)}
+        className={className}
+        sx={{height: imageLoading ? 0 : "100%"}}
       />
     </div>
   );

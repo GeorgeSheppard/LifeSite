@@ -16,7 +16,7 @@ export const CreateNewRecipeCard = (props: ICreateNewRecipeCard) => {
   return (
     <>
       <div
-        className="flex hover:shadow-xl ease-in duration-200 flex-grow shadow rounded-lg h-40"
+        className="drop-shadow-[0_0px_5px_rgba(0,0,0,0.25)] flex hover:shadow-xl ease-in duration-200 flex-grow shadow rounded-lg h-40"
         onClick={uuidOnClick}
       >
         <Typography variant="button" className="m-auto">
@@ -24,7 +24,7 @@ export const CreateNewRecipeCard = (props: ICreateNewRecipeCard) => {
         </Typography>
       </div>
       <div
-        className="flex hover:shadow-xl ease-in duration-200 flex-grow shadow rounded-lg h-40"
+        className="drop-shadow-[0_0px_5px_rgba(0,0,0,0.25)] flex hover:shadow-xl ease-in duration-200 flex-grow shadow rounded-lg h-40"
         onClick={uploadExistingOnClick}
       >
         <Typography variant="button" className="m-auto">

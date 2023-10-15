@@ -6,9 +6,9 @@ export interface ILayoutProps {
 
 export default function Layout(props: ILayoutProps) {
   return (
-    <>
+    <div style={{backgroundColor: '#eee'}}>
       <Header />
       {props.children}
-    </>
+    </div>
   );
 }
