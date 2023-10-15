@@ -16,7 +16,9 @@ import { useSearchDebounce } from "../../core/hooks/use_search_debounce";
 import { SharedRecipeId } from "../../core/dynamo/dynamo_utilities";
 import { GetServerSidePropsContext, GetServerSidePropsResult } from "next";
 import { appRouter } from "../../server";
-import { IRecipe } from '../../core/types/recipes';
+import { IRecipe } from "../../core/types/recipes";
+import { CustomSession, authOptions } from "../api/auth/[...nextauth]";
+import { getServerSession } from "next-auth";
 
 const allSearchValues = new Set<SearchableAttributes>([
   "name",
@@ -31,18 +33,23 @@ const getSharedRecipe = (query: ParsedUrlQuery): SharedRecipeId | undefined => {
   return share;
 };
 
-type Props = { sharedRecipe?: IRecipe }
+type Props = { sharedRecipe?: IRecipe };
 
 export const getServerSideProps = async (
   context: GetServerSidePropsContext
 ): Promise<GetServerSidePropsResult<{ sharedRecipe?: IRecipe }>> => {
-  const { query } = context
+  const { query } = context;
 
-  const sharedRecipe = getSharedRecipe(query)
-  if (!sharedRecipe) return { props: {} }
+  const sharedRecipe = getSharedRecipe(query);
+  if (!sharedRecipe) return { props: {} };
 
-  const caller = appRouter.createCaller({ req: undefined, res: undefined })
-  const recipe = await caller.recipes.getSharedRecipe({ share: sharedRecipe })
+  const session: CustomSession | null = await getServerSession(
+    context.req,
+    context.res,
+    authOptions
+  );
+  const caller = appRouter.createCaller({ session });
+  const recipe = await caller.recipes.getSharedRecipe({ share: sharedRecipe });
 
   return {
     props: { sharedRecipe: recipe },
