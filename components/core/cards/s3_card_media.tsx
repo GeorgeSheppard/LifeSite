@@ -12,7 +12,6 @@ export interface IS3CardMediaProps {
  * Takes an s3Key and creates a CardMedia component from it, will refresh
  * when the s3Key changes
  */
-// TODO: Prevent flicking while things load....
 export const S3CardMedia = (props: IS3CardMediaProps) => {
   const { s3Key, className } = props;
   const [show, setShow] = useState(true);
@@ -32,15 +31,6 @@ export const S3CardMedia = (props: IS3CardMediaProps) => {
       {(signedUrl.isLoading || imageLoading) && (
         <Skeleton variant="rectangular" height="100%" animation="wave" />
       )}
-      {/* <Image
-        src={signedUrl.data}
-        onLoadingComplete={() => setImageLoading(false)}
-        onError={() => setShow(false)}
-        layout="fill"
-        objectFit="cover"
-        alt=""
-        className={className}
-      /> */}
       <CardMedia
         src={signedUrl.data}
         component="img"

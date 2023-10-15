@@ -3,7 +3,6 @@ import { IRecipe, IRecipes, RecipeUuid } from "../../types/recipes";
 import { NewRecipe } from "../../../pages/food/[recipeUuid]";
 import { useAppSession } from "../../hooks/use_app_session";
 import { trpc } from "../../../client";
-import { RealUserId } from "../../types/utilities";
 
 const useRecipesBase = <T>({
   select,
@@ -42,23 +41,6 @@ export const useRecipe = (recipeId?: RecipeUuid, enabled?: boolean) => {
     },
     enabled: enabled && !!recipeId && recipeId !== NewRecipe,
   });
-};
-
-export const usePossiblyExternalRecipe = (
-  recipeId?: RecipeUuid,
-  user?: RealUserId
-) => {
-  const externalUserRecipe = trpc.recipes.getExternalRecipe.useQuery(
-    {
-      recipeId: recipeId!,
-      user: user!,
-    },
-    {
-      enabled: !!user && !!recipeId,
-    }
-  );
-  const userRecipe = useRecipe(recipeId, !user);
-  return !!user ? externalUserRecipe : userRecipe
 };
 
 export const useMealPlan = () => {

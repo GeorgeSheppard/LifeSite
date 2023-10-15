@@ -1,26 +1,25 @@
 import Dialog from "@mui/material/Dialog";
 import { useState } from "react";
 import Masonry from "react-masonry-css";
-import { RecipeUuid } from "../../../../../core/types/recipes";
+import { IRecipe, RecipeUuid } from "../../../../../core/types/recipes";
 import { CreateNewRecipeCard } from "./card_components/create_new_recipe";
 import { LoadingRecipeCard } from "./card_components/loading_skeleton";
 import { WithDragging } from "./card_components/with_dragging";
-import { RecipeCard } from "./recipe_card";
 import { useOneTimeEffect } from "../../../../../core/hooks/use_one_time_effect";
-import { SharedRecipeId } from "../../../../../core/dynamo/dynamo_utilities";
+import { RecipeCard, RecipeCardFromId } from "./recipe_card";
 
 interface RecipeGridProps {
   searchResults: RecipeUuid[];
   loading: boolean;
-  sharedRecipe?: SharedRecipeId;
+  sharedRecipe?: IRecipe;
 }
 
-export type FullRecipe = { type: "Shared", id: SharedRecipeId } | { type: "Owned", id: RecipeUuid }
+export type FullRecipe = { recipe: IRecipe, shared: boolean }
 
 export const RecipeGrid = (props: RecipeGridProps) => {
   const [fullRecipe, setFullRecipe] = useState<FullRecipe | null>(null);
   useOneTimeEffect(
-    () => setFullRecipe({ id: props.sharedRecipe!, type: "Shared" }),
+    () => setFullRecipe({ recipe: props.sharedRecipe!, shared: true }),
     () => !!props.sharedRecipe
   );
 
@@ -42,8 +41,10 @@ export const RecipeGrid = (props: RecipeGridProps) => {
       >
         {fullRecipe && (
           <RecipeCard
-            fullRecipe={fullRecipe}
+            recipe={fullRecipe.recipe}
             isPreview={false}
+            shared={fullRecipe.shared}
+            openFullRecipe={setFullRecipe}
           />
         )}
       </Dialog>
@@ -55,8 +56,8 @@ export const RecipeGrid = (props: RecipeGridProps) => {
         <CreateNewRecipeCard />
         {props.searchResults.map(uuid => (
           <WithDragging key={uuid} uuid={uuid}>
-            <RecipeCard
-              fullRecipe={{ type: "Owned", id: uuid }}
+            <RecipeCardFromId
+              id={uuid}
               openFullRecipe={setFullRecipe}
               isPreview
             />
