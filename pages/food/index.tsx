@@ -33,27 +33,29 @@ const getSharedRecipe = (query: ParsedUrlQuery): SharedRecipeId | undefined => {
   return share;
 };
 
-type Props = { sharedRecipe?: IRecipe };
+type Props = { sharedRecipe: IRecipe | null };
 
 export const getServerSideProps = async (
   context: GetServerSidePropsContext
-): Promise<GetServerSidePropsResult<{ sharedRecipe?: IRecipe }>> => {
-  const { query } = context;
+): Promise<GetServerSidePropsResult<Props>> => {
+  return { props: { sharedRecipe: null }}
 
-  const sharedRecipe = getSharedRecipe(query);
-  if (!sharedRecipe) return { props: {} };
+  // const { query } = context;
 
-  const session: CustomSession | null = await getServerSession(
-    context.req,
-    context.res,
-    authOptions
-  );
-  const caller = appRouter.createCaller({ session });
-  const recipe = await caller.recipes.getSharedRecipe({ share: sharedRecipe });
+  // const sharedRecipe = getSharedRecipe(query);
+  // if (!sharedRecipe) return { props: { sharedRecipe: null } };
 
-  return {
-    props: { sharedRecipe: recipe },
-  };
+  // const session: CustomSession | null = await getServerSession(
+  //   context.req,
+  //   context.res,
+  //   authOptions
+  // );
+  // const caller = appRouter.createCaller({ session });
+  // const recipe = await caller.recipes.getSharedRecipe({ share: sharedRecipe });
+
+  // return {
+  //   props: { sharedRecipe: recipe },
+  // };
 };
 
 const Recipes = (props: Props) => {
