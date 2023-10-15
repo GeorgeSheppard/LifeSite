@@ -2,9 +2,10 @@ import InventoryIcon from "@mui/icons-material/Inventory";
 import { Divider } from "@mui/material";
 import Tooltip from "@mui/material/Tooltip";
 import Typography from "@mui/material/Typography";
-import { usePossiblyExternalRecipe } from "../../../../../core/dynamo/hooks/use_dynamo_get";
-import { useAppSession } from "../../../../../core/hooks/use_app_session";
-import { RecipeUuid } from "../../../../../core/types/recipes";
+import {
+  useRecipe,
+} from "../../../../../core/dynamo/hooks/use_dynamo_get";
+import { IRecipe } from "../../../../../core/types/recipes";
 import { WrappedCardMedia } from "../../../../core/cards/wrapped_card_media";
 import { CopyIngredientsButton } from "./card_components/copy_ingredients";
 import { CopyShareableLink } from "./card_components/copy_shareable_link";
@@ -17,44 +18,70 @@ import { OptionsDropdownButton } from "./card_components/options_dropdown";
 import { ServingsIcon } from "./card_components/servings_icon";
 import { WithDeleteDialog } from "./card_components/with_delete_dialog";
 import { Dispatch, SetStateAction, memo } from "react";
-import { PreviewRecipe } from "../../../../../pages/food";
+import { FullRecipe } from "./recipe_grid";
+import { trpc } from "../../../../../client";
 
 export interface IRecipeCard {
-  uuid: RecipeUuid;
-  user?: string;
-  openDialog: () => void;
-  isPreview: boolean;
-  openFullRecipe?: Dispatch<SetStateAction<PreviewRecipe | null>>;
+  openDeleteDialog?: () => void;
+  openFullRecipe?: Dispatch<SetStateAction<FullRecipe | null>>;
+  isPreview: boolean
 }
 
 export const RecipeCard = (
-  props: Omit<IRecipeCard, "openDialog"> & {
-    onDelete?: (uuid: RecipeUuid) => void;
-  }
+  props: Omit<IRecipeCard, "openDeleteDialog"> & { fullRecipe: FullRecipe }
 ) => {
+  const { fullRecipe } = props;
+
+  const sharedRecipe = trpc.recipes.getSharedRecipe.useQuery(
+    { share: props.fullRecipe.id },
+    { enabled: props.fullRecipe.type === "Shared" }
+  );
+  const ownedRecipe = useRecipe(
+    props.fullRecipe.id,
+    props.fullRecipe.type === "Owned"
+  );
+
+  if (fullRecipe.type === "Shared") {
+    return (
+      <RecipeCardContent
+        isPreview={props.isPreview}
+        recipe={sharedRecipe.data}
+        shared
+      />
+    );
+  }
+
   return (
-    <WithDeleteDialog uuid={props.uuid} onDelete={props.onDelete}>
-      {(openDialog) => <RecipeCardContent {...props} openDialog={openDialog} />}
+    <WithDeleteDialog
+      uuid={fullRecipe.id}
+      onDelete={() => props.openFullRecipe?.(null)}
+    >
+      {(openDeleteDialog) => (
+        <RecipeCardContent
+          isPreview={props.isPreview}
+          openDeleteDialog={openDeleteDialog}
+          openFullRecipe={() => {
+            const uuid = ownedRecipe.data?.uuid
+            if (!!uuid) props.openFullRecipe?.({ id: uuid, type: "Owned" })
+          }}
+          shared={false}
+          recipe={ownedRecipe.data}
+        />
+      )}
     </WithDeleteDialog>
   );
 };
 
 const RecipeCardContent = memo(function MemoRecipeCardContent(
-  props: IRecipeCard
+  props: Omit<IRecipeCard, "openFullRecipe"> & { shared: boolean; recipe?: IRecipe, openFullRecipe?: () => void }
 ) {
-  const { uuid, user } = props;
-  const session = useAppSession();
-  const recipe = usePossiblyExternalRecipe(uuid, user).data;
+  const { recipe, shared } = props;
   if (!recipe) return null;
-
-  const sharedRecipe = user && user !== session.id;
 
   return (
     <div
       onClick={() => {
-        if (props.isPreview) {
-          props.openFullRecipe?.({ recipe: uuid });
-        }
+        props.openFullRecipe?.();
       }}
       className="hover:shadow-xl ease-in duration-200 flex-grow hover:cursor-pointer"
     >
@@ -73,14 +100,14 @@ const RecipeCardContent = memo(function MemoRecipeCardContent(
           >
             {recipe?.name}
           </Typography>
-          {sharedRecipe && <DownloadSharedRecipe recipe={recipe} />}
-          {!sharedRecipe && (
+          {shared && <DownloadSharedRecipe recipe={recipe} />}
+          {!shared && (
             <>
-              <OptionsDropdownButton uuid={uuid}>
-                <CopyShareableLink uuid={uuid} />
+              <OptionsDropdownButton uuid={recipe.uuid}>
+                <CopyShareableLink recipe={recipe} />
                 <CopyIngredientsButton recipe={recipe} />
-                <EditRecipeButton uuid={uuid} />
-                <DeleteRecipeButton onClick={props.openDialog} />
+                <EditRecipeButton uuid={recipe.uuid} />
+                <DeleteRecipeButton onClick={props.openDeleteDialog!} />
               </OptionsDropdownButton>
             </>
           )}

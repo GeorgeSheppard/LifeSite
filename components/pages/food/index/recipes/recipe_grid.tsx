@@ -6,20 +6,22 @@ import { CreateNewRecipeCard } from "./card_components/create_new_recipe";
 import { LoadingRecipeCard } from "./card_components/loading_skeleton";
 import { WithDragging } from "./card_components/with_dragging";
 import { RecipeCard } from "./recipe_card";
-import { PreviewRecipe } from "../../../../../pages/food";
 import { useOneTimeEffect } from "../../../../../core/hooks/use_one_time_effect";
+import { SharedRecipeId } from "../../../../../core/dynamo/dynamo_utilities";
 
 interface RecipeGridProps {
   searchResults: RecipeUuid[];
   loading: boolean;
-  previewRecipe?: PreviewRecipe;
+  sharedRecipe?: SharedRecipeId;
 }
 
+export type FullRecipe = { type: "Shared", id: SharedRecipeId } | { type: "Owned", id: RecipeUuid }
+
 export const RecipeGrid = (props: RecipeGridProps) => {
-  const [fullRecipe, setFullRecipe] = useState<PreviewRecipe | null>(null);
+  const [fullRecipe, setFullRecipe] = useState<FullRecipe | null>(null);
   useOneTimeEffect(
-    () => setFullRecipe(props.previewRecipe!),
-    () => !!props.previewRecipe
+    () => setFullRecipe({ id: props.sharedRecipe!, type: "Shared" }),
+    () => !!props.sharedRecipe
   );
 
   const breakpoints = {
@@ -40,10 +42,8 @@ export const RecipeGrid = (props: RecipeGridProps) => {
       >
         {fullRecipe && (
           <RecipeCard
-            uuid={fullRecipe.recipe}
-            user={fullRecipe.user}
+            fullRecipe={fullRecipe}
             isPreview={false}
-            onDelete={() => setFullRecipe(null)}
           />
         )}
       </Dialog>
@@ -56,7 +56,7 @@ export const RecipeGrid = (props: RecipeGridProps) => {
         {props.searchResults.map(uuid => (
           <WithDragging key={uuid} uuid={uuid}>
             <RecipeCard
-              uuid={uuid}
+              fullRecipe={{ type: "Owned", id: uuid }}
               openFullRecipe={setFullRecipe}
               isPreview
             />

@@ -8,22 +8,26 @@ import { Flavor, RealUserId, UserId } from "../types/utilities";
 // meal plan per account
 export type ItemType = "R-" | "MP";
 
-export type Shared = Flavor<string, "Shared">
+export type Shared = Flavor<string, "Shared">;
+export type SharedRecipeId = Flavor<string, "SharedRecipeId">;
 export const shared: Shared = "shared";
 
-export const isSharedUser = (userId: UserId): userId is Shared => userId === shared
+export const isSharedUser = (userId: UserId): userId is Shared =>
+  userId === shared;
 
 type RecipeKey = { type: "R-"; id: RecipeUuid };
 type MealPlanKey = { type: "MP" };
+type SharedRecipeKey = { type: "S-"; };
 type TestKey = { type: "Test" };
 
-type Keys = RecipeKey | MealPlanKey | TestKey;
+type Keys = RecipeKey | MealPlanKey | SharedRecipeKey | TestKey;
 
 type Item =
   | (RecipeKey & {
       item: IRecipe;
     })
-  | (MealPlanKey & { item: IMealPlan });
+  | (MealPlanKey & { item: IMealPlan })
+  | (SharedRecipeKey & { item: IRecipe });
 
 class NotFoundError extends Error {
   constructor(msg: string) {
@@ -39,12 +43,17 @@ const getSortKey = (key: Keys) => {
       return `R-${key.id}`;
     case "MP":
       return "MP";
+    case "S-":
+      return "S";
     case "Test":
-      return "Test"
+      return "Test";
   }
 };
 
-export const uploadToDynamo = async (item: Item, userId: RealUserId) => {
+export const uploadToDynamo = async (
+  item: Item,
+  userId: RealUserId | SharedRecipeId
+) => {
   return await AwsDynamoDocClient.put({
     TableName: process.env.ENV_AWS_DYNAMO_NAME,
     Item: {
@@ -55,7 +64,7 @@ export const uploadToDynamo = async (item: Item, userId: RealUserId) => {
   });
 };
 
-export const getFromDynamo = async (key: Keys, userId: UserId) => {
+export const getFromDynamo = async (key: Keys, userId: UserId | SharedRecipeId) => {
   const result = await AwsDynamoDocClient.get({
     TableName: process.env.ENV_AWS_DYNAMO_NAME,
     Key: {
@@ -78,6 +87,20 @@ export const getRecipe = async (
 ): Promise<IRecipe> => {
   const result = await getFromDynamo({ type: "R-", id: recipeId }, userId);
   return result.Item as IRecipe;
+};
+
+export const getSharedRecipe = async(
+  id: SharedRecipeId,
+) => {
+  const result = await getFromDynamo({ type: "S-" }, id)
+  return result.Item as IRecipe
+}
+
+export const putShareableRecipe = async (
+  id: SharedRecipeId,
+  recipe: IRecipe
+) => {
+  return await uploadToDynamo({ type: "S-", item: recipe }, id);
 };
 
 export const putRecipe = async (recipe: IRecipe, userId: RealUserId) => {
