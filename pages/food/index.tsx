@@ -14,14 +14,13 @@ import { DateString } from "../../core/types/meal_plan";
 import { ParsedUrlQuery } from "querystring";
 import { useSearchDebounce } from "../../core/hooks/use_search_debounce";
 import { SharedRecipeId } from "../../core/dynamo/dynamo_utilities";
-// import { GetServerSidePropsContext, GetServerSidePropsResult } from "next";
 import { IRecipe } from "../../core/types/recipes";
-import { GetServerSidePropsResult } from "next";
-// import { createServerSideHelpers } from '@trpc/react-query/server';
-// import { appRouter } from "../../server";
-// import superjson from 'superjson';
-// import { getServerSession } from "next-auth";
-// import { CustomSession, authOptions } from "../api/auth/[...nextauth]";
+import { GetServerSidePropsContext, GetServerSidePropsResult } from "next";
+import { createServerSideHelpers } from '@trpc/react-query/server';
+import superjson from 'superjson';
+import { appRouter } from '../../server/index';
+import { CustomSession, authOptions } from "../api/auth/[...nextauth]";
+import { getServerSession } from "next-auth";
 
 const allSearchValues = new Set<SearchableAttributes>([
   "name",
@@ -38,42 +37,35 @@ const getSharedRecipe = (query: ParsedUrlQuery): SharedRecipeId | undefined => {
 
 type Props = { sharedRecipe: IRecipe | null };
 
-// export const getServerSideProps = async (
-//   context: GetServerSidePropsContext
-// ): Promise<GetServerSidePropsResult<Props>> => {
-//   const session: CustomSession | null = await getServerSession(
-//     context.req,
-//     context.res,
-//     authOptions
-//   );
+export const getServerSideProps = async (
+  context: GetServerSidePropsContext
+): Promise<GetServerSidePropsResult<Props>> => {
+  const session: CustomSession | null = await getServerSession(
+    context.req,
+    context.res,
+    authOptions
+  );
 
-//   const helpers = createServerSideHelpers({
-//     router: appRouter,
-//     ctx: { session },
-//     transformer: superjson,
-//   });
+  const helpers = createServerSideHelpers({
+    router: appRouter,
+    ctx: { session },
+    transformer: superjson,
+  });
 
-//   helpers.recipes.getSharedRecipe
-//   return { props: { sharedRecipe: null }}
+  return { props: { sharedRecipe: null }}
 
-//   // const { query } = context;
+  // const { query } = context;
 
-//   // const sharedRecipe = getSharedRecipe(query);
-//   // if (!sharedRecipe) return { props: { sharedRecipe: null } };
+  // const sharedRecipe = getSharedRecipe(query);
+  // if (!sharedRecipe) return { props: { sharedRecipe: null } };
 
-//   // const caller = appRouter.createCaller({ session });
-//   // const recipe = await caller.recipes.getSharedRecipe({ share: sharedRecipe });
+  // const caller = appRouter.createCaller({ session });
+  // const recipe = await caller.recipes.getSharedRecipe({ share: sharedRecipe });
 
-//   // return {
-//   //   props: { sharedRecipe: recipe },
-//   // };
-// };
-
-export const getServerSideProps = async (): Promise<GetServerSidePropsResult<Props>> => {
-  return {
-    props: { sharedRecipe: null}
-  }
-}
+  // return {
+  //   props: { sharedRecipe: recipe },
+  // };
+};
 
 const Recipes = (props: Props) => {
   const mobileLayout = useIsMobileLayout();
