@@ -16,6 +16,7 @@ import { useSearchDebounce } from "../../core/hooks/use_search_debounce";
 import { SharedRecipeId } from "../../core/dynamo/dynamo_utilities";
 // import { GetServerSidePropsContext, GetServerSidePropsResult } from "next";
 import { IRecipe } from "../../core/types/recipes";
+import { GetServerSidePropsContext, GetServerSidePropsResult } from "next";
 // import { createServerSideHelpers } from '@trpc/react-query/server';
 // import { appRouter } from "../../server";
 // import superjson from 'superjson';
@@ -67,6 +68,12 @@ type Props = { sharedRecipe: IRecipe | null };
 //   //   props: { sharedRecipe: recipe },
 //   // };
 // };
+
+export const getServerSideProps = async (): Promise<GetServerSidePropsResult<Props>> => {
+  return {
+    props: { sharedRecipe: null}
+  }
+}
 
 const Recipes = (props: Props) => {
   const mobileLayout = useIsMobileLayout();
