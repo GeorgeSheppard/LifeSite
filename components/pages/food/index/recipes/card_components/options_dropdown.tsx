@@ -1,4 +1,4 @@
-import { MoreHoriz } from "@mui/icons-material";
+import MoreHoriz from "@mui/icons-material/MoreHoriz";
 import IconButton from "@mui/material/IconButton";
 import Popover from "@mui/material/Popover";
 import React, { useState } from "react";

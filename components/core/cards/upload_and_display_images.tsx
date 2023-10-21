@@ -11,7 +11,7 @@ import {
   IS3ValidUploadResponse,
 } from "../../../core/s3/hooks/upload_to_s3";
 import { S3CardMedia } from "./s3_card_media";
-import { Delete } from "@mui/icons-material";
+import Delete from "@mui/icons-material/Delete";
 import { useBoolean } from "../../../core/hooks/use_boolean";
 
 export interface IUploadDisplayImagesProps {
