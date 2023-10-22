@@ -44,13 +44,18 @@ export const DesktopLayout = (
         maxWidth="xl"
       >
         <Grid item xs={12} sm={12} md={12} lg={8} xl={9}>
-          <Box component="div">
+          <Box
+            component="div"
+            style={{
+              height: `calc(100vh - 64px - ${headerHeight}px - 40px)`,
+            }}
+          >
             <Grid item key={"Search"}>
               <SearchChips keys={keys} setKeys={setKeys} />
               <OutlinedInput
                 value={searchString}
                 onChange={(event) => setSearchString(event.target.value)}
-                sx={{ marginBottom: 3, mt: 1 }}
+                sx={{ marginBottom: 3, mt: 1, backgroundColor: "white" }}
                 placeholder="Search"
                 fullWidth
                 disabled={recipeIds.isLoading}
@@ -63,29 +68,34 @@ export const DesktopLayout = (
             />
           </Box>
         </Grid>
-        <Grid item xs={12} sm={12} md={12} lg={4} xl={3} sx={{ pl: 2 }}>
-          {/* <Box component="div"> */}
-            <div
-              className="noSelect"
-              style={{
-                height: `calc(100vh - 64px - ${headerHeight}px - 40px)`,
-                position: "fixed",
-                overflowY: "scroll",
-                paddingLeft: 8,
-                paddingRight: 8,
-                minWidth: 350,
-              }}
-            >
-              <CreateShoppingListButton
-                selected={selected}
-                setSelected={setSelected}
-                openListDialog={turnOn}
-                setShoppingList={setShoppingListData}
-              />
-              <Planner selected={selected} setSelected={setSelected} />
-            </div>
-          {/* </Box> */}
-        </Grid>
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            height: `calc(100vh - 64px - ${headerHeight}px - 40px)`,
+            flexGrow: 1,
+          }}
+        >
+          <div
+            className="noSelect"
+            style={{
+              top: 0,
+              position: "sticky",
+              overflowY: "scroll",
+              paddingLeft: 24,
+              paddingRight: 8,
+              minWidth: 350,
+            }}
+          >
+            <CreateShoppingListButton
+              selected={selected}
+              setSelected={setSelected}
+              openListDialog={turnOn}
+              setShoppingList={setShoppingListData}
+            />
+            <Planner selected={selected} setSelected={setSelected} />
+          </div>
+        </div>
       </Grid>
     </main>
   );

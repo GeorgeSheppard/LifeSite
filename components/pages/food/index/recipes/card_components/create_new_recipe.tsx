@@ -2,6 +2,7 @@ import { Typography } from "@mui/material";
 import { useRouter } from "next/router";
 import { useCallback } from "react";
 import { NewRecipe } from "../../../../../../pages/food/[recipeUuid]";
+import { RecipeContainer } from "../styling/RecipeContainer";
 
 export interface ICreateNewRecipeCard {}
 
@@ -15,22 +16,18 @@ export const CreateNewRecipeCard = (props: ICreateNewRecipeCard) => {
 
   return (
     <>
-      <div
-        className="drop-shadow-[0_0px_5px_rgba(0,0,0,0.25)] flex hover:shadow-xl ease-in duration-200 flex-grow shadow rounded-lg h-40"
-        onClick={uuidOnClick}
-      >
-        <Typography variant="button" className="m-auto">
+      <RecipeContainer onClick={uuidOnClick}>
+        <Typography variant="button" className="flex p-16 justify-center text-center">
           Create New Recipe
         </Typography>
-      </div>
-      <div
-        className="drop-shadow-[0_0px_5px_rgba(0,0,0,0.25)] flex hover:shadow-xl ease-in duration-200 flex-grow shadow rounded-lg h-40"
+      </RecipeContainer>
+      <RecipeContainer
         onClick={uploadExistingOnClick}
-      >
-        <Typography variant="button" className="m-auto">
+        >
+        <Typography variant="button" className="flex p-16 justify-center text-center">
           Upload Existing Recipe
         </Typography>
-      </div>
+      </RecipeContainer>
     </>
   );
 };

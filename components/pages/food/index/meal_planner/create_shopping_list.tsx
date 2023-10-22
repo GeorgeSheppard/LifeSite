@@ -40,12 +40,12 @@ export const CreateShoppingListButton = memo(function MemoCreateShoppingList(
     <Tooltip
       title={
         props.selected.size === 0
-          ? "Drag recipes into your meal plan, then select date(s) manually or use the checkbox to select all available dates to create a shopping list"
+          ? "Drag recipes into your meal plan, then select date(s) to create a shopping list from!"
           : ""
       }
       placement="bottom"
     >
-      <ButtonGroup sx={{ width: "100%", position: "sticky" }}>
+      <ButtonGroup sx={{ width: "100%", position: "sticky", backgroundColor: 'white' }}>
         <Button variant="outlined" onClick={selectOrUnselect}>
           {allSelected ? <CheckBoxIcon /> : <CheckBoxOutlineBlankIcon />}
         </Button>
