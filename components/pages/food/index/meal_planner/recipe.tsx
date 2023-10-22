@@ -55,7 +55,7 @@ export const RecipeName = ({
             className="flex place-content-between w-full"
           >
             <Typography variant="subtitle2" className="ml-5 my-auto font-[500]" color="#717171">{name}</Typography>
-            <div className="flex">
+            <div className="flex gap-2">
               <ServingsIcon servings={servings} />
               <ButtonGroup variant="outlined" className="my-auto h-6">
                 <Button

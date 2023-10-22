@@ -5,6 +5,5 @@ export const RecipeContentContainer = tw.div`
   p-3
   space-y-3
   shadow
-  rounded-b-lg
-  bg-white
+  rounded-lg
 `

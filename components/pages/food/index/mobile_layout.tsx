@@ -52,7 +52,7 @@ export const MobileLayout = (props: MobileStateProps) => {
     <main>
       <Grid
         container
-        sx={{ py: 3, margin: "auto", display: "flex", px: 3 }}
+        sx={{ py: 3, margin: "auto", display: "flex", px: 3}}
         maxWidth="xl"
       >
         <ShoppingListDialog
@@ -65,7 +65,7 @@ export const MobileLayout = (props: MobileStateProps) => {
             value={tab}
             onChange={changeTab}
             variant="fullWidth"
-            sx={{ marginY: 3 }}
+            sx={{ marginY: 3, backgroundColor: 'white' }}
           >
             <Tab value="recipes" label="Recipes" />
             <Tab value="mealplan" label="Meal Plan" />
@@ -76,7 +76,7 @@ export const MobileLayout = (props: MobileStateProps) => {
                 <OutlinedInput
                   value={searchString}
                   onChange={(event) => setSearchString(event.target.value)}
-                  sx={{ marginBottom: 3 }}
+                  sx={{ marginBottom: 3, backgroundColor: 'white' }}
                   placeholder="Search"
                   fullWidth
                   disabled={recipeIds.isLoading}

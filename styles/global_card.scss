@@ -23,6 +23,7 @@
 
 html {
   overflow-y: scroll !important;
+  background-color: rgba(200, 200, 200, 0.47);
 }
 
 @supports (overflow-y: overlay) {

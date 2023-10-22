@@ -8,4 +8,5 @@ export const RecipeContainer = tw.div`
   flex-grow
   hover:cursor-pointer
   rounded-lg
+  bg-white
 `

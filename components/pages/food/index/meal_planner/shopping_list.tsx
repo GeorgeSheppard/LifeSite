@@ -38,7 +38,7 @@ export const ShoppingListDialog = (props: IShoppingListDialogProps) => {
         Shopping list
       </DialogTitle>
       <DialogContent>
-        <div className="flex gap-1">
+        <div className="flex gap-1 justify-start">
           <Chip
             label={"Include meals"}
             size="small"
