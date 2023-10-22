@@ -29,7 +29,7 @@ export const S3CardMedia = (props: IS3CardMediaProps) => {
   return (
     <div style={{ position: "relative", aspectRatio: "1", width: "100%" }}>
       {(signedUrl.isLoading || imageLoading) && (
-        <Skeleton variant="rectangular" height="100%" animation="wave" />
+        <Skeleton variant="rectangular" height="100%" animation="wave" className={className} />
       )}
       <CardMedia
         src={signedUrl.data}
