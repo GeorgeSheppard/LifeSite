@@ -9,16 +9,22 @@
 
 .cardHover {
   transition: 0.3s;
-
   box-shadow: 0 0 40px -12px rgba(0, 0, 0, 0.3);
-  &:hover {
-    box-shadow: 0 0 70px -12.125px rgba(0, 0, 0, 0.3), 0 0 0 3px rgba(32, 125, 57, 0.3);
-  }
+}
+
+.cardHover:hover {
+  box-shadow: 0 0 70px -12.125px rgba(0, 0, 0, 0.3), 0 0 0 3px rgba(32, 125, 57, 0.3);
 }
 
 .cardWithHover {
-  @extend .card;
-  @extend .cardHover;
+  margin: auto;
+  background-color: rgba(255, 255, 255, 1.0);
+  transition: 0.3s;
+  box-shadow: 0 0 40px -12px rgba(0, 0, 0, 0.3);
+}
+
+.cardWithHover:hover {
+  box-shadow: 0 0 70px -12.125px rgba(0, 0, 0, 0.3), 0 0 0 3px rgba(32, 125, 57, 0.3);
 }
 
 html {
@@ -31,4 +37,4 @@ html {
     overflow-y: overlay;
     scrollbar-gutter: auto;
   }
-}
+} 
