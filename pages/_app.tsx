@@ -1,8 +1,8 @@
 import "../styles/globals.css";
-import "../styles/global_card.scss";
-import "../styles/scrollbar.scss";
-import "../styles/utilities.scss";
-import "../styles/padding.scss";
+import "../styles/global_card.css";
+import "../styles/scrollbar.css";
+import "../styles/utilities.css";
+import "../styles/padding.css";
 import 'tailwindcss/tailwind.css'
 import { Session } from "next-auth";
 import { SessionProvider } from "next-auth/react";
