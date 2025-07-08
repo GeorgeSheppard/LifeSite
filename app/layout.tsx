@@ -1,34 +1,19 @@
-'use client';
-
 import "../styles/globals.css";
 import "../styles/global_card.css";
 import "../styles/scrollbar.css";
 import "../styles/utilities.css";
 import "../styles/padding.css";
 import 'tailwindcss/tailwind.css'
-import * as React from "react";
-import { ClientProviders } from "./providers/client-providers";
-import CssBaseline from "@mui/material/CssBaseline";
+import * as Sentry from '@sentry/nextjs';
+import type { Metadata } from 'next';
+import { RootLayout } from "./ClientLayout";
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactElement;
-}) {
-  return (
-    <html lang="en">
-      <head>
-        <link
-          href="https://fonts.googleapis.com/css?family=Roboto&display=swap"
-          rel="stylesheet"
-        />
-      </head>
-      <body>
-        <CssBaseline />
-        <ClientProviders>
-          {children}
-        </ClientProviders>
-      </body>
-    </html>
-  );
-} 
+export function generateMetadata(): Metadata {
+  return {
+    other: {
+      ...Sentry.getTraceData()
+    }
+  };
+}
+
+export default RootLayout;
