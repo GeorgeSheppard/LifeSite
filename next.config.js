@@ -2,14 +2,12 @@
 // with Sentry.
 // https://nextjs.org/docs/api-reference/next.config.js/introduction
 // https://docs.sentry.io/platforms/javascript/guides/nextjs/manual-setup/
-const { withSentryConfig } = require("@sentry/nextjs");
 
 const path = require("path");
 const { PHASE_DEVELOPMENT_SERVER } = require("next/constants");
 
 /** @type {import('next').NextConfig} */
-module.exports = withSentryConfig(
-  (phase) => {
+module.exports = (phase) => {
     if (Object.keys(process.env).length === 0) {
       console.error("No environment variables");
     }
@@ -53,9 +51,6 @@ module.exports = withSentryConfig(
 
     return {
       reactStrictMode: true,
-      sassOptions: {
-        includePaths: [path.join(__dirname, "styles")],
-      },
       env: envVariables,
       async rewrites() {
         return {
@@ -77,7 +72,4 @@ module.exports = withSentryConfig(
         ],
       },
     };
-  },
-  { silent: true },
-  { hideSourcemaps: false }
-);
+  }

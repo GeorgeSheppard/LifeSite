@@ -3,7 +3,7 @@ import { CircularProgress } from "@mui/material";
 import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
 import { signIn, signOut, useSession } from "next-auth/react";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 import { mainGreen } from "./theme";
 import LogoutIcon from "@mui/icons-material/Logout";
 
