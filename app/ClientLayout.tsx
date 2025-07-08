@@ -7,16 +7,13 @@ import { ClientProviders } from "./providers/client-providers";
 
 export function RootLayout({
     children,
+    className,
 }: {
-    children: React.ReactElement;
+    children: React.ReactNode;
+    className?: string;
 }) {
     return (
-        <html lang="en">
-            <head>
-                <link
-                    href="https://fonts.googleapis.com/css?family=Roboto&display=swap"
-                    rel="stylesheet" />
-            </head>
+        <html lang="en" className={className}>
             <body>
                 <CssBaseline />
                 <ClientProviders>
