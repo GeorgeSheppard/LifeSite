@@ -1,11 +1,12 @@
-import LinearProgress from "@mui/material/LinearProgress";
-import { useRouter } from "next/router";
-import { v4 as uuidv4 } from "uuid";
-import { useRecipe } from "../../core/dynamo/hooks/use_dynamo_get";
-import { RecipeUuid } from "../../core/types/recipes";
-import { FormWithData } from "../../components/pages/food/[recipeUuid]/form_with_data";
+'use client';
 
-export const NewRecipe = "newRecipe";
+import LinearProgress from "@mui/material/LinearProgress";
+import { useRouter } from "next/navigation";
+import { v4 as uuidv4 } from "uuid";
+import { useRecipe } from "../../../core/dynamo/hooks/use_dynamo_get";
+import { RecipeUuid } from "../../../core/types/recipes";
+import { FormWithData } from "../../../components/pages/food/[recipeUuid]/form_with_data";
+import { NewRecipe } from "../../../lib/constants";
 
 const getDefaultRecipe = (uuid: string) => ({
   uuid,
@@ -24,16 +25,25 @@ const getDefaultRecipe = (uuid: string) => ({
   ],
 });
 
-export default function RecipeForm() {
+interface Props {
+  params: {
+    recipeUuid: string;
+  };
+}
+
+export default function RecipeForm({ params }: Props) {
   const router = useRouter();
-  const uuid = router.query.recipeUuid as RecipeUuid | undefined;
+  const uuid = params.recipeUuid as RecipeUuid | undefined;
   const recipe = useRecipe(uuid);
+  
   if (!uuid) {
     return <LinearProgress />;
   }
+  
   if (uuid === NewRecipe) {
     return <FormWithData recipe={getDefaultRecipe(uuidv4())} />;
   }
+  
   if (recipe.isError) {
     console.error("Error: ", recipe.error);
     router.push("/food");
@@ -51,4 +61,4 @@ export default function RecipeForm() {
   }
 
   return <FormWithData recipe={recipe.data} />;
-}
+} 

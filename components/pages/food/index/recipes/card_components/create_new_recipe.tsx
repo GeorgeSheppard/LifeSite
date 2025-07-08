@@ -1,7 +1,7 @@
 import { Typography } from "@mui/material";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 import { useCallback } from "react";
-import { NewRecipe } from "../../../../../../pages/food/[recipeUuid]";
+import { NewRecipe } from "../../../../../../lib/constants";
 import { RecipeContainer } from "../styling/RecipeContainer";
 
 export interface ICreateNewRecipeCard {}

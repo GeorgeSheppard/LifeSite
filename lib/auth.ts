@@ -1,6 +1,6 @@
-import NextAuth, { NextAuthOptions, Session } from "next-auth";
+import { NextAuthOptions, Session } from "next-auth";
 import CognitoProvider from "next-auth/providers/cognito";
-import { RealUserId } from "../../../core/types/utilities";
+import { RealUserId } from "../core/types/utilities";
 
 export type CustomSession = Session & { id?: RealUserId };
 
@@ -19,6 +19,4 @@ export const authOptions: NextAuthOptions = {
       return session;
     },
   },
-}
-
-export default NextAuth(authOptions);
+} 

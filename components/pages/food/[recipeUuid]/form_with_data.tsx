@@ -1,4 +1,4 @@
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 import { IRecipe } from "../../../../core/types/recipes";
 import { useState, MouseEvent } from "react";
 import { useForm } from "react-hook-form";
