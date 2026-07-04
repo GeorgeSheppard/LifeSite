@@ -1,4 +1,4 @@
-import { useState, useCallback, useMemo } from "react";
+import { useState, useCallback, useMemo, useRef, useEffect } from "react";
 import {
   subDays,
   addDays,
@@ -35,6 +35,14 @@ export function ConnectedMealPlanner() {
   );
 
   const [searchString, debouncedSearch, setSearchString] = useSearchDebounce("");
+  const sidebarScrollRef = useRef<HTMLElement>(null);
+
+  // Searching filters the recipe list, so reset scroll to avoid landing
+  // partway down a list that's now shorter (or reordered).
+  useEffect(() => {
+    sidebarScrollRef.current?.scrollTo({ top: 0 });
+  }, [searchString]);
+
   const [selectedRecipe, setSelectedRecipe] = useState<IRecipe | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
   const { data: recipes, isLoading: recipesLoading } = useRecipes();
@@ -236,7 +244,10 @@ export function ConnectedMealPlanner() {
 
       {/* Desktop: side-by-side layout with independent scrolling */}
       <div className="hidden lg:flex lg:gap-6">
-        <aside className="w-[280px] shrink-0 overflow-y-auto max-h-[calc(100vh-14rem)]">
+        <aside
+          ref={sidebarScrollRef}
+          className="w-[280px] shrink-0 overflow-y-auto max-h-[calc(100vh-14rem)]"
+        >
           <RecipeSidebar recipes={sidebarRecipes} searchString={searchString} onSearchChange={setSearchString} onRecipeClick={handleRecipeClick} />
         </aside>
         <div className="flex-1 min-w-0 overflow-y-auto max-h-[calc(100vh-14rem)]">
