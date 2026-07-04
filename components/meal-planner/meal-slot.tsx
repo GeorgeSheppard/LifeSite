@@ -10,6 +10,7 @@ interface MealSlotProps {
   recipes: Map<RecipeUuid, IRecipe>
   onUpdateComponentServings: (recipeId: RecipeUuid, componentId: ComponentUuid, timestamp: number, servings: number) => void
   onRemoveMeal: (recipeId: RecipeUuid, timestamp: number) => void
+  onRecipeClick: (recipe: IRecipe) => void
 }
 
 export function MealSlot({
@@ -18,6 +19,7 @@ export function MealSlot({
   recipes,
   onUpdateComponentServings,
   onRemoveMeal,
+  onRecipeClick,
 }: MealSlotProps) {
   return (
     <div className="flex gap-2 flex-wrap flex-1">
@@ -30,6 +32,7 @@ export function MealSlot({
           recipes={recipes}
           onUpdateComponentServings={onUpdateComponentServings}
           onRemove={onRemoveMeal}
+          onRecipeClick={onRecipeClick}
         />
       ))}
     </div>

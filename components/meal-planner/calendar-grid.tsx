@@ -5,7 +5,7 @@ import { format, isToday } from "date-fns"
 import { Plus } from "lucide-react"
 import type { Recipe } from "@/lib/recipe-data"
 import type { RecipeUuid, ComponentUuid, IRecipe } from "../../core/types/recipes"
-import type { IMealPlan } from "../../core/types/meal_plan"
+import type { IMealPlan, IMealPlanComponent } from "../../core/types/meal_plan"
 import { isoToTimestamp } from "../../core/meal_plan/meal_plan_utilities"
 import { MealSlot } from "./meal-slot"
 import { cn } from "@/lib/utils"
@@ -17,13 +17,16 @@ interface CalendarGridProps {
   selectedDates: Set<string>
   onToggleDate: (dateStr: string) => void
   onDrop: (recipe: Recipe, date: string) => void
+  onMoveMeal: (recipeId: RecipeUuid, originTimestamp: number, targetDate: string, components: IMealPlanComponent[]) => void
   onUpdateComponentServings: (recipeId: RecipeUuid, componentId: ComponentUuid, timestamp: number, servings: number) => void
   onRemoveMeal: (recipeId: RecipeUuid, timestamp: number) => void
+  onRecipeClick: (recipe: IRecipe) => void
 }
 
 function useDayDrop(
   dateStr: string,
-  onDrop: (recipe: Recipe, date: string) => void
+  onDrop: (recipe: Recipe, date: string) => void,
+  onMoveMeal: (recipeId: RecipeUuid, originTimestamp: number, targetDate: string, components: IMealPlanComponent[]) => void
 ) {
   const [isDragOver, setIsDragOver] = useState(false)
 
@@ -44,6 +47,16 @@ function useDayDrop(
   function handleDrop(e: React.DragEvent) {
     e.preventDefault()
     setIsDragOver(false)
+    const moveData = e.dataTransfer.getData("application/meal-move")
+    if (moveData) {
+      try {
+        const { recipeId, timestamp, components } = JSON.parse(moveData)
+        onMoveMeal(recipeId, timestamp, dateStr, components)
+        return
+      } catch {
+        // ignore malformed data
+      }
+    }
     const data = e.dataTransfer.getData("application/recipe")
     if (data) {
       try {
@@ -65,8 +78,10 @@ function DesktopDayRow({
   isSelected,
   onToggleDate,
   onDrop,
+  onMoveMeal,
   onUpdateComponentServings,
   onRemoveMeal,
+  onRecipeClick,
 }: {
   day: Date
   plan: IMealPlan
@@ -74,8 +89,10 @@ function DesktopDayRow({
   isSelected: boolean
   onToggleDate: (dateStr: string) => void
   onDrop: CalendarGridProps["onDrop"]
+  onMoveMeal: CalendarGridProps["onMoveMeal"]
   onUpdateComponentServings: CalendarGridProps["onUpdateComponentServings"]
   onRemoveMeal: CalendarGridProps["onRemoveMeal"]
+  onRecipeClick: CalendarGridProps["onRecipeClick"]
 }) {
   const dateStr = format(day, "yyyy-MM-dd")
   const today = isToday(day)
@@ -83,7 +100,7 @@ function DesktopDayRow({
   const dateItem = plan.find((item) => item.date === timestamp)
   const dayMeals = dateItem?.plan || []
   const { isDragOver, handleDragOver, handleDragLeave, handleDrop } =
-    useDayDrop(dateStr, onDrop)
+    useDayDrop(dateStr, onDrop, onMoveMeal)
 
   return (
     <div
@@ -132,6 +149,7 @@ function DesktopDayRow({
             recipes={recipes}
             onUpdateComponentServings={onUpdateComponentServings}
             onRemoveMeal={onRemoveMeal}
+            onRecipeClick={onRecipeClick}
           />
         ) : (
           <div
@@ -157,8 +175,10 @@ function MobileDayRow({
   isSelected,
   onToggleDate,
   onDrop,
+  onMoveMeal,
   onUpdateComponentServings,
   onRemoveMeal,
+  onRecipeClick,
 }: {
   day: Date
   plan: IMealPlan
@@ -166,8 +186,10 @@ function MobileDayRow({
   isSelected: boolean
   onToggleDate: (dateStr: string) => void
   onDrop: CalendarGridProps["onDrop"]
+  onMoveMeal: CalendarGridProps["onMoveMeal"]
   onUpdateComponentServings: CalendarGridProps["onUpdateComponentServings"]
   onRemoveMeal: CalendarGridProps["onRemoveMeal"]
+  onRecipeClick: CalendarGridProps["onRecipeClick"]
 }) {
   const dateStr = format(day, "yyyy-MM-dd")
   const today = isToday(day)
@@ -175,7 +197,7 @@ function MobileDayRow({
   const dateItem = plan.find((item) => item.date === timestamp)
   const dayMeals = dateItem?.plan || []
   const { isDragOver, handleDragOver, handleDragLeave, handleDrop } =
-    useDayDrop(dateStr, onDrop)
+    useDayDrop(dateStr, onDrop, onMoveMeal)
 
   return (
     <div
@@ -223,6 +245,7 @@ function MobileDayRow({
           recipes={recipes}
           onUpdateComponentServings={onUpdateComponentServings}
           onRemoveMeal={onRemoveMeal}
+          onRecipeClick={onRecipeClick}
         />
         {dayMeals.length === 0 && (
           <div
@@ -248,8 +271,10 @@ export function CalendarGrid({
   selectedDates,
   onToggleDate,
   onDrop,
+  onMoveMeal,
   onUpdateComponentServings,
   onRemoveMeal,
+  onRecipeClick,
 }: CalendarGridProps) {
   return (
     <div className="flex flex-col gap-0 rounded-xl border border-border bg-card overflow-hidden">
@@ -264,8 +289,10 @@ export function CalendarGrid({
             isSelected={selectedDates.has(format(day, "yyyy-MM-dd"))}
             onToggleDate={onToggleDate}
             onDrop={onDrop}
+            onMoveMeal={onMoveMeal}
             onUpdateComponentServings={onUpdateComponentServings}
             onRemoveMeal={onRemoveMeal}
+            onRecipeClick={onRecipeClick}
           />
         ))}
       </div>
@@ -281,8 +308,10 @@ export function CalendarGrid({
             isSelected={selectedDates.has(format(day, "yyyy-MM-dd"))}
             onToggleDate={onToggleDate}
             onDrop={onDrop}
+            onMoveMeal={onMoveMeal}
             onUpdateComponentServings={onUpdateComponentServings}
             onRemoveMeal={onRemoveMeal}
+            onRecipeClick={onRecipeClick}
           />
         ))}
       </div>
