@@ -162,13 +162,11 @@ export async function signOut(): Promise<void>
 ### Frontend (.env.development.local)
 ```env
 VITE_API_BASE_URL=https://api.georgesheppard.dev
-VITE_APP_URL=http://localhost:3000
 ```
 
 ### Frontend (.env.production.local)
 ```env
 VITE_API_BASE_URL=https://api.georgesheppard.dev
-VITE_APP_URL=https://my-life-nu.vercel.app
 ```
 
 ### Backend (Your API)

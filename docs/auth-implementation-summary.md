@@ -157,7 +157,6 @@ Features:
 
 ```env
 VITE_API_BASE_URL=https://api.georgesheppard.dev
-VITE_APP_URL=http://localhost:3000
 ```
 
 ### Backend (Your API server)
