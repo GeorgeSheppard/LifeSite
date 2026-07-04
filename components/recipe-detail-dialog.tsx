@@ -1,3 +1,6 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -21,10 +24,25 @@ export function RecipeDetailDialog({
   onOpenChange,
 }: RecipeDetailDialogProps) {
   const imageUrl = useRecipeImage(recipe?.images);
+  const baseServings = recipe?.components[0]?.servings;
+  const [servings, setServings] = useState(baseServings);
 
-  const v0Recipe = recipe ? iRecipeToRecipe(recipe, imageUrl) : null;
+  useEffect(() => {
+    setServings(baseServings);
+  }, [recipe?.uuid, baseServings]);
+
+  const v0Recipe = recipe ? iRecipeToRecipe(recipe, imageUrl, servings) : null;
 
   if (!v0Recipe) return null;
+
+  const servingsControl = baseServings
+    ? {
+        value: servings ?? baseServings,
+        onIncrease: () => setServings((prev) => (prev ?? baseServings) + 1),
+        onDecrease: () =>
+          setServings((prev) => Math.max(1, (prev ?? baseServings) - 1)),
+      }
+    : undefined;
 
   const actions = recipe ? (
     <RecipeActions
@@ -43,7 +61,11 @@ export function RecipeDetailDialog({
         </div>
         <div className="overflow-y-auto max-h-[calc(90vh-60px)]">
           <div className="p-1">
-            <RecipeCard recipe={v0Recipe} actions={actions} />
+            <RecipeCard
+              recipe={v0Recipe}
+              actions={actions}
+              servingsControl={servingsControl}
+            />
           </div>
         </div>
       </DialogContent>

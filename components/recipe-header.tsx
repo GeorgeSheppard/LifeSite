@@ -1,6 +1,7 @@
 import Image from "@/components/ui/next-image-compat"
 import { Badge } from "@/components/ui/badge"
-import { Clock, Users, ChefHat } from "lucide-react"
+import { Button } from "@/components/ui/button"
+import { Clock, Users, ChefHat, Minus, Plus } from "lucide-react"
 import type { Recipe } from "@/lib/recipe-data"
 
 const difficultyColor = {
@@ -9,7 +10,21 @@ const difficultyColor = {
   Hard: "bg-destructive/15 text-destructive",
 }
 
-export function RecipeHeader({ recipe, actions }: { recipe: Recipe; actions?: React.ReactNode }) {
+interface ServingsControl {
+  value: number
+  onIncrease: () => void
+  onDecrease: () => void
+}
+
+export function RecipeHeader({
+  recipe,
+  actions,
+  servingsControl,
+}: {
+  recipe: Recipe
+  actions?: React.ReactNode
+  servingsControl?: ServingsControl
+}) {
   const hasImage = recipe.image && recipe.image !== "/placeholder.svg"
   const hasTags = recipe.tags && recipe.tags.length > 0
   const hasMetadata = recipe.prepTime || recipe.cookTime || recipe.totalTime || recipe.servings
@@ -64,14 +79,58 @@ export function RecipeHeader({ recipe, actions }: { recipe: Recipe; actions?: Re
             {recipe.totalTime && (
               <MetaItem icon={<Clock className="size-4" />} label="Total" value={recipe.totalTime} />
             )}
-            {recipe.servings && (
+            {recipe.servings && !servingsControl && (
               <MetaItem icon={<Users className="size-4" />} label="Yield" value={recipe.servings} />
+            )}
+            {servingsControl && (
+              <ServingsMetaItem servingsControl={servingsControl} />
             )}
             {recipe.difficulty && (
               <MetaItem icon={<ChefHat className="size-4" />} label="Level" value={recipe.difficulty} />
             )}
           </div>
         )}
+      </div>
+    </div>
+  )
+}
+
+function ServingsMetaItem({ servingsControl }: { servingsControl: ServingsControl }) {
+  const { value, onIncrease, onDecrease } = servingsControl
+  return (
+    <div className="flex items-center gap-2 rounded-lg bg-secondary/60 px-3 py-2">
+      <span className="text-primary shrink-0">
+        <Users className="size-4" />
+      </span>
+      <div className="flex flex-col min-w-0 flex-1">
+        <span className="text-[10px] text-muted-foreground uppercase tracking-wide leading-none">
+          Servings
+        </span>
+        <div className="flex items-center gap-1.5 pt-0.5">
+          <Button
+            type="button"
+            variant="outline"
+            size="icon"
+            className="size-5 rounded-full"
+            onClick={onDecrease}
+            aria-label="Decrease servings"
+          >
+            <Minus className="size-2.5" />
+          </Button>
+          <span className="text-sm font-medium text-foreground min-w-[16px] text-center tabular-nums">
+            {value}
+          </span>
+          <Button
+            type="button"
+            variant="outline"
+            size="icon"
+            className="size-5 rounded-full"
+            onClick={onIncrease}
+            aria-label="Increase servings"
+          >
+            <Plus className="size-2.5" />
+          </Button>
+        </div>
       </div>
     </div>
   )

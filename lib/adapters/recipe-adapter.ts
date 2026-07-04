@@ -26,12 +26,18 @@ function unitToString(unit: Unit): string | undefined {
   }
 }
 
-function componentToRecipePart(component: IRecipeComponent): RecipePart {
+function componentToRecipePart(
+  component: IRecipeComponent,
+  scaleFactor: number
+): RecipePart {
   return {
     title: component.name || "Main",
     ingredients: component.ingredients.map((ing): Ingredient => {
+      const rawValue = ing.quantity.value;
       const amount =
-        ing.quantity.value !== undefined ? ing.quantity.value.toString() : "";
+        rawValue !== undefined
+          ? parseFloat((rawValue * scaleFactor).toFixed(2)).toString()
+          : "";
       const unit = unitToString(ing.quantity.unit);
       return {
         name: ing.name,
@@ -45,10 +51,15 @@ function componentToRecipePart(component: IRecipeComponent): RecipePart {
 
 export function iRecipeToRecipe(
   iRecipe: IRecipe,
-  imageUrl?: string
+  imageUrl?: string,
+  servingsOverride?: number
 ): Recipe {
-  const servings = iRecipe.components[0]?.servings;
-  const servingsStr = servings ? `${servings} servings` : "";
+  const baseServings = iRecipe.components[0]?.servings;
+  const servings = baseServings ? servingsOverride ?? baseServings : undefined;
+  const scaleFactor = baseServings && servings ? servings / baseServings : 1;
+  const servingsStr = servings
+    ? `${servings} serving${servings === 1 ? "" : "s"}`
+    : "";
 
   return {
     title: iRecipe.name || "Untitled Recipe",
@@ -58,7 +69,10 @@ export function iRecipeToRecipe(
     cookTime: "",
     totalTime: "",
     servings: servingsStr,
+    baseServings,
     tags: [],
-    parts: iRecipe.components.map(componentToRecipePart),
+    parts: iRecipe.components.map((component) =>
+      componentToRecipePart(component, scaleFactor)
+    ),
   };
 }
