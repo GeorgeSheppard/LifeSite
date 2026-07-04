@@ -16,10 +16,12 @@ import { iRecipeToRecipe } from "@/lib/adapters/recipe-adapter";
 import {
   removeRecipeFromPlan,
   buildAddRecipePayload,
+  addOrUpdatePlan,
   isoToTimestamp,
 } from "../core/meal_plan/meal_plan_utilities";
 import type { Recipe } from "@/lib/recipe-data";
 import { RecipeUuid, ComponentUuid, IRecipe } from "../core/types/recipes";
+import type { IMealPlanComponent } from "../core/types/meal_plan";
 import { WeekNavigation } from "./meal-planner/week-navigation";
 import { CalendarGrid } from "./meal-planner/calendar-grid";
 import { RecipeSidebar } from "./meal-planner/recipe-sidebar";
@@ -150,6 +152,25 @@ export function ConnectedMealPlanner() {
     [recipeByTitle, putMealPlan]
   );
 
+  const handleMoveMeal = useCallback(
+    (recipeId: RecipeUuid, originTimestamp: number, targetDate: string, components: IMealPlanComponent[]) => {
+      if (!mealPlan.data) return;
+      const targetTimestamp = isoToTimestamp(targetDate);
+      if (targetTimestamp === originTimestamp) return;
+      const planWithoutOrigin = removeRecipeFromPlan(mealPlan.data, recipeId, originTimestamp);
+      const updatedPlan = addOrUpdatePlan(planWithoutOrigin, {
+        timestamp: targetTimestamp,
+        components: components.map((c) => ({
+          recipeId,
+          componentId: c.componentId,
+          servingsIncrease: c.servings,
+        })),
+      });
+      putMealPlan.mutatePlan(updatedPlan);
+    },
+    [mealPlan.data, putMealPlan]
+  );
+
   const handleRemoveMeal = useCallback(
     (recipeId: RecipeUuid, timestamp: number) => {
       if (!mealPlan.data) return;
@@ -181,6 +202,11 @@ export function ConnectedMealPlanner() {
     },
     [weekPlan, putMealPlan]
   );
+
+  const handleOpenPlannedRecipe = useCallback((recipe: IRecipe) => {
+    setSelectedRecipe(recipe);
+    setDialogOpen(true);
+  }, []);
 
   const handleRecipeClick = useCallback(
     (recipe: Recipe) => {
@@ -258,8 +284,10 @@ export function ConnectedMealPlanner() {
             selectedDates={selectedDates}
             onToggleDate={handleToggleDate}
             onDrop={handleDrop}
+            onMoveMeal={handleMoveMeal}
             onUpdateComponentServings={handleUpdateComponentServings}
             onRemoveMeal={handleRemoveMeal}
+            onRecipeClick={handleOpenPlannedRecipe}
           />
         </div>
       </div>
@@ -274,8 +302,10 @@ export function ConnectedMealPlanner() {
           selectedDates={selectedDates}
           onToggleDate={handleToggleDate}
           onDrop={handleDrop}
+          onMoveMeal={handleMoveMeal}
           onUpdateComponentServings={handleUpdateComponentServings}
           onRemoveMeal={handleRemoveMeal}
+          onRecipeClick={handleOpenPlannedRecipe}
         />
       </div>
 

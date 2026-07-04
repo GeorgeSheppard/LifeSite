@@ -4,6 +4,7 @@ import type { RecipeUuid, ComponentUuid, IRecipe } from "../../core/types/recipe
 import type { IMealPlanComponent } from "../../core/types/meal_plan"
 import { Button } from "@/components/ui/button"
 import { Minus, Plus, X } from "lucide-react"
+import { iRecipeToRecipe } from "@/lib/adapters/recipe-adapter"
 
 interface PlannedMealCardProps {
   recipeId: RecipeUuid
@@ -12,6 +13,7 @@ interface PlannedMealCardProps {
   recipes: Map<RecipeUuid, IRecipe>
   onUpdateComponentServings: (recipeId: RecipeUuid, componentId: ComponentUuid, timestamp: number, servings: number) => void
   onRemove: (recipeId: RecipeUuid, timestamp: number) => void
+  onRecipeClick: (recipe: IRecipe) => void
 }
 
 export function PlannedMealCard({
@@ -21,16 +23,35 @@ export function PlannedMealCard({
   recipes,
   onUpdateComponentServings,
   onRemove,
+  onRecipeClick,
 }: PlannedMealCardProps) {
   const recipe = recipes.get(recipeId)
   const recipeTitle = recipe?.name || "Unknown Recipe"
 
+  function handleDragStart(e: React.DragEvent) {
+    if (!recipe) return
+    e.dataTransfer.setData("application/recipe", JSON.stringify(iRecipeToRecipe(recipe)))
+    e.dataTransfer.setData(
+      "application/meal-move",
+      JSON.stringify({ recipeId, timestamp, components })
+    )
+    e.dataTransfer.effectAllowed = "move"
+  }
+
   return (
-    <div className="group relative rounded-lg border border-border/50 bg-card shadow-sm transition-all hover:shadow-md min-w-[280px] flex-1">
+    <div
+      draggable
+      onDragStart={handleDragStart}
+      onClick={() => recipe && onRecipeClick(recipe)}
+      className="group relative rounded-lg border border-border/50 bg-card shadow-sm transition-all hover:shadow-md min-w-[280px] flex-1 cursor-grab active:cursor-grabbing"
+    >
       <Button
         variant="ghost"
         size="icon"
-        onClick={() => onRemove(recipeId, timestamp)}
+        onClick={(e) => {
+          e.stopPropagation()
+          onRemove(recipeId, timestamp)
+        }}
         className="absolute -right-1.5 -top-1.5 size-6 rounded-full bg-destructive/10 text-destructive opacity-0 group-hover:opacity-100 transition-opacity hover:bg-destructive/20"
         aria-label="Remove meal"
       >
@@ -62,14 +83,15 @@ export function PlannedMealCard({
                       variant="outline"
                       size="icon"
                       className="size-7 rounded-full"
-                      onClick={() =>
+                      onClick={(e) => {
+                        e.stopPropagation()
                         onUpdateComponentServings(
                           recipeId,
                           component.componentId,
                           timestamp,
                           Math.max(0, component.servings - 1)
                         )
-                      }
+                      }}
                       aria-label={`Decrease ${componentName} servings`}
                     >
                       <Minus className="size-3" />
@@ -81,14 +103,15 @@ export function PlannedMealCard({
                       variant="outline"
                       size="icon"
                       className="size-7 rounded-full"
-                      onClick={() =>
+                      onClick={(e) => {
+                        e.stopPropagation()
                         onUpdateComponentServings(
                           recipeId,
                           component.componentId,
                           timestamp,
                           component.servings + 1
                         )
-                      }
+                      }}
                       aria-label={`Increase ${componentName} servings`}
                     >
                       <Plus className="size-3" />
