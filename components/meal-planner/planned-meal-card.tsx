@@ -1,10 +1,17 @@
 "use client"
 
+import { useRef } from "react"
 import type { RecipeUuid, ComponentUuid, IRecipe } from "../../core/types/recipes"
 import type { IMealPlanComponent } from "../../core/types/meal_plan"
 import { Button } from "@/components/ui/button"
 import { Minus, Plus, X } from "lucide-react"
 import { iRecipeToRecipe } from "@/lib/adapters/recipe-adapter"
+
+// Below this many pixels of movement, a native drag gesture is treated as an
+// accidental click rather than an intentional drag, since the browser
+// suppresses the `click` event entirely once `dragstart` fires - even for
+// negligible mouse jitter.
+const DRAG_CLICK_THRESHOLD_PX = 20
 
 interface PlannedMealCardProps {
   recipeId: RecipeUuid
@@ -27,9 +34,11 @@ export function PlannedMealCard({
 }: PlannedMealCardProps) {
   const recipe = recipes.get(recipeId)
   const recipeTitle = recipe?.name || "Unknown Recipe"
+  const dragStartPosRef = useRef<{ x: number; y: number } | null>(null)
 
   function handleDragStart(e: React.DragEvent) {
     if (!recipe) return
+    dragStartPosRef.current = { x: e.clientX, y: e.clientY }
     e.dataTransfer.setData("application/recipe", JSON.stringify(iRecipeToRecipe(recipe)))
     e.dataTransfer.setData(
       "application/meal-move",
@@ -38,10 +47,21 @@ export function PlannedMealCard({
     e.dataTransfer.effectAllowed = "move"
   }
 
+  function handleDragEnd(e: React.DragEvent) {
+    const start = dragStartPosRef.current
+    dragStartPosRef.current = null
+    if (!start || !recipe) return
+    const distance = Math.hypot(e.clientX - start.x, e.clientY - start.y)
+    if (distance < DRAG_CLICK_THRESHOLD_PX) {
+      onRecipeClick(recipe)
+    }
+  }
+
   return (
     <div
       draggable
       onDragStart={handleDragStart}
+      onDragEnd={handleDragEnd}
       onClick={() => recipe && onRecipeClick(recipe)}
       className="group relative rounded-lg border border-border/50 bg-card shadow-sm transition-all hover:shadow-md min-w-[280px] flex-1 cursor-grab active:cursor-grabbing"
     >
