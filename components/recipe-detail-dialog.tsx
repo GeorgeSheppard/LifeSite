@@ -1,3 +1,4 @@
+import { useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -20,33 +21,59 @@ export function RecipeDetailDialog({
   open,
   onOpenChange,
 }: RecipeDetailDialogProps) {
-  const imageUrl = useRecipeImage(recipe?.images);
-
-  const v0Recipe = recipe ? iRecipeToRecipe(recipe, imageUrl) : null;
-
-  if (!v0Recipe) return null;
-
-  const actions = recipe ? (
-    <RecipeActions
-      recipe={recipe}
-      onClose={() => onOpenChange(false)}
-    />
-  ) : undefined;
-
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-3xl sm:max-w-3xl max-h-[90vh] p-0 gap-0 overflow-hidden">
-        <div className="flex items-center justify-between border-b border-border px-5 py-3">
-          <DialogTitle className="font-serif text-lg">
-            {v0Recipe.title}
-          </DialogTitle>
-        </div>
-        <div className="overflow-y-auto max-h-[calc(90vh-60px)]">
-          <div className="p-1">
-            <RecipeCard recipe={v0Recipe} actions={actions} />
-          </div>
-        </div>
+        {recipe && (
+          <RecipeDetailContent
+            key={recipe.uuid}
+            recipe={recipe}
+            onClose={() => onOpenChange(false)}
+          />
+        )}
       </DialogContent>
     </Dialog>
+  );
+}
+
+function RecipeDetailContent({
+  recipe,
+  onClose,
+}: {
+  recipe: IRecipe;
+  onClose: () => void;
+}) {
+  const imageUrl = useRecipeImage(recipe.images);
+  const baseServings = recipe.components[0]?.servings;
+  const [servings, setServings] = useState(baseServings);
+
+  const v0Recipe = iRecipeToRecipe(recipe, imageUrl, servings);
+
+  const servingsControl = baseServings
+    ? {
+        value: servings ?? baseServings,
+        onIncrease: () => setServings((prev) => (prev ?? baseServings) + 1),
+        onDecrease: () =>
+          setServings((prev) => Math.max(1, (prev ?? baseServings) - 1)),
+      }
+    : undefined;
+
+  return (
+    <>
+      <div className="flex items-center justify-between border-b border-border px-5 py-3">
+        <DialogTitle className="font-serif text-lg">
+          {v0Recipe.title}
+        </DialogTitle>
+      </div>
+      <div className="overflow-y-auto max-h-[calc(90vh-60px)]">
+        <div className="p-1">
+          <RecipeCard
+            recipe={v0Recipe}
+            actions={<RecipeActions recipe={recipe} onClose={onClose} />}
+            servingsControl={servingsControl}
+          />
+        </div>
+      </div>
+    </>
   );
 }

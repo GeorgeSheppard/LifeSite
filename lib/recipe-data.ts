@@ -18,6 +18,7 @@ export interface Recipe {
   cookTime: string
   totalTime: string
   servings: string
+  baseServings?: number
   difficulty?: "Easy" | "Medium" | "Hard"
   tags: string[]
   parts: RecipePart[]
