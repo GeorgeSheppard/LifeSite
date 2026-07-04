@@ -33,7 +33,7 @@ function useDayDrop(
   function handleDragOver(e: React.DragEvent) {
     if (e.dataTransfer.types.includes("application/recipe")) {
       e.preventDefault()
-      e.dataTransfer.dropEffect = "copy"
+      e.dataTransfer.dropEffect = e.dataTransfer.types.includes("application/meal-move") ? "move" : "copy"
       setIsDragOver(true)
     }
   }
