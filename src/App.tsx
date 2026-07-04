@@ -6,6 +6,7 @@ import RecipesPage from "./pages/food/RecipesPage";
 // Lazy load non-critical routes for code splitting
 const RecipeFormPage = lazy(() => import("./pages/food/RecipeFormPage"));
 const MealPlannerPage = lazy(() => import("./pages/food/MealPlannerPage"));
+const ShoppingListPage = lazy(() => import("./pages/food/ShoppingListPage"));
 
 export function App() {
   return (
@@ -29,6 +30,14 @@ export function App() {
           element={
             <Suspense fallback={null}>
               <MealPlannerPage />
+            </Suspense>
+          }
+        />
+        <Route
+          path="/food/shopping-list"
+          element={
+            <Suspense fallback={null}>
+              <ShoppingListPage />
             </Suspense>
           }
         />

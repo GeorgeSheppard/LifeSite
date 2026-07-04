@@ -5,10 +5,7 @@
  * Backend API for georgesheppard.dev websites
  * OpenAPI spec version: 1.0.0
  */
-import {
-  useMutation,
-  useQuery
-} from '@tanstack/react-query'
+import { useMutation, useQuery } from "@tanstack/react-query";
 import type {
   MutationFunction,
   QueryFunction,
@@ -16,9 +13,87 @@ import type {
   UseMutationOptions,
   UseMutationResult,
   UseQueryOptions,
-  UseQueryResult
-} from '@tanstack/react-query'
-import { axiosInstance } from '../../src/lib/axios';
+  UseQueryResult,
+} from "@tanstack/react-query";
+import { axiosInstance } from "../../src/lib/axios";
+export type GetMiseShoppingListActive500 = {
+  /** Error message */
+  error: string;
+};
+
+export type GetMiseShoppingListActive401 = {
+  /** Error message */
+  error: string;
+};
+
+export type GetMiseShoppingListActive200ItemsItemQuantitiesItem = {
+  /** Unit of measurement */
+  unit: string;
+  /** Quantity value */
+  value?: number;
+};
+
+export type GetMiseShoppingListActive200ItemsItem = {
+  /** Shopping category for the ingredient */
+  category: string;
+  /** Name of the ingredient */
+  ingredient: string;
+  /** List of meals this ingredient belongs to */
+  meals: string[];
+  /** Array of quantities with units */
+  quantities: GetMiseShoppingListActive200ItemsItemQuantitiesItem[];
+};
+
+export type GetMiseShoppingListActive200 = {
+  /**
+   * Unix timestamp (milliseconds) the list was generated at, null if none exists yet
+   * @nullable
+   */
+  generatedAt: number | null;
+  /** Array of shopping list items with ingredient, quantity, and category */
+  items: GetMiseShoppingListActive200ItemsItem[];
+};
+
+export type PostMiseShoppingListGenerate500 = {
+  /** Error message */
+  error: string;
+};
+
+export type PostMiseShoppingListGenerate401 = {
+  /** Error message */
+  error: string;
+};
+
+export type PostMiseShoppingListGenerate200ItemsItemQuantitiesItem = {
+  /** Unit of measurement */
+  unit: string;
+  /** Quantity value */
+  value?: number;
+};
+
+export type PostMiseShoppingListGenerate200ItemsItem = {
+  /** Shopping category for the ingredient */
+  category: string;
+  /** Name of the ingredient */
+  ingredient: string;
+  /** List of meals this ingredient belongs to */
+  meals: string[];
+  /** Array of quantities with units */
+  quantities: PostMiseShoppingListGenerate200ItemsItemQuantitiesItem[];
+};
+
+export type PostMiseShoppingListGenerate200 = {
+  /** Unix timestamp (milliseconds) the list was generated at */
+  generatedAt: number;
+  /** Array of shopping list items with ingredient, quantity, and category */
+  items: PostMiseShoppingListGenerate200ItemsItem[];
+};
+
+export type PostMiseShoppingListGenerateBody = {
+  /** Array of Unix timestamps (milliseconds) */
+  dates?: number[];
+};
+
 export type PostMiseParseRecipe500 = {
   /** Error message */
   error: string;
@@ -144,10 +219,10 @@ export type GetMiseShoppingList200Item = {
 };
 
 export type GetMiseShoppingListParams = {
-/**
- * Array of Unix timestamps (milliseconds) to include in shopping list
- */
-dates?: string | string[];
+  /**
+   * Array of Unix timestamps (milliseconds) to include in shopping list
+   */
+  dates?: string | string[];
 };
 
 export type PutMiseMealPlan500 = {
@@ -234,14 +309,14 @@ export type GetMiseRecipesSearch200 = {
 };
 
 export type GetMiseRecipesSearchParams = {
-/**
- * Search query string
- */
-q: string;
-/**
- * Comma-separated fields to search: name,description,ingredients,instructions
- */
-fields?: string;
+  /**
+   * Search query string
+   */
+  q: string;
+  /**
+   * Comma-separated fields to search: name,description,ingredients,instructions
+   */
+  fields?: string;
 };
 
 export type GetMiseRecipes500 = {
@@ -254,7 +329,7 @@ export type GetMiseRecipes401 = {
   error: string;
 };
 
-export type GetMiseRecipes200 = {[key: string]: Recipe};
+export type GetMiseRecipes200 = { [key: string]: Recipe };
 
 export type PostMcpAuthToken401 = {
   error: string;
@@ -265,6 +340,17 @@ export type PostMcpAuthToken200 = {
   token: string;
   /** User ID */
   userId: string;
+};
+
+export type GetApiReextractRecurringBooks401 = {
+  error: string;
+};
+
+export type GetApiReextractRecurringBooks200 = {
+  failures: number;
+  processedUsers: number;
+  skippedUsers: number;
+  totalUsers: number;
 };
 
 export type GetApiQueueDueRecommendations401 = {
@@ -310,7 +396,9 @@ export type PostApiRecommendationsAddEmail404AnyOf = {
   success: boolean;
 };
 
-export type PostApiRecommendationsAddEmail404 = PostApiRecommendationsAddEmail404AnyOf | PostApiRecommendationsAddEmail404AnyOfTwo;
+export type PostApiRecommendationsAddEmail404 =
+  | PostApiRecommendationsAddEmail404AnyOf
+  | PostApiRecommendationsAddEmail404AnyOfTwo;
 
 export type PostApiRecommendationsAddEmail400AnyOfTwo = {
   error: string;
@@ -321,7 +409,9 @@ export type PostApiRecommendationsAddEmail400AnyOf = {
   success: boolean;
 };
 
-export type PostApiRecommendationsAddEmail400 = PostApiRecommendationsAddEmail400AnyOf | PostApiRecommendationsAddEmail400AnyOfTwo;
+export type PostApiRecommendationsAddEmail400 =
+  | PostApiRecommendationsAddEmail400AnyOf
+  | PostApiRecommendationsAddEmail400AnyOfTwo;
 
 export type PostApiRecommendationsAddEmail200AnyOfTwo = {
   error: string;
@@ -332,14 +422,16 @@ export type PostApiRecommendationsAddEmail200AnyOf = {
   success: boolean;
 };
 
-export type PostApiRecommendationsAddEmail200 = PostApiRecommendationsAddEmail200AnyOf | PostApiRecommendationsAddEmail200AnyOfTwo;
+export type PostApiRecommendationsAddEmail200 =
+  | PostApiRecommendationsAddEmail200AnyOf
+  | PostApiRecommendationsAddEmail200AnyOfTwo;
 
-export type PostApiRecommendationsAddEmailBodyRecurring = typeof PostApiRecommendationsAddEmailBodyRecurring[keyof typeof PostApiRecommendationsAddEmailBodyRecurring];
-
+export type PostApiRecommendationsAddEmailBodyRecurring =
+  (typeof PostApiRecommendationsAddEmailBodyRecurring)[keyof typeof PostApiRecommendationsAddEmailBodyRecurring];
 
 export const PostApiRecommendationsAddEmailBodyRecurring = {
-  true: 'true',
-  false: 'false',
+  true: "true",
+  false: "false",
 } as const;
 
 export type PostApiRecommendationsAddEmailBody = {
@@ -372,7 +464,7 @@ export type PostAuthLogout200 = {
 };
 
 export type PostAuthLogoutParams = {
-redirect_uri?: string;
+  redirect_uri?: string;
 };
 
 export type GetAuthSession401 = {
@@ -389,21 +481,21 @@ export type GetAuthSession200 = {
 };
 
 export type GetAuthCallbackParams = {
-/**
- * Authorization code returned by Cognito
- */
-code?: string;
-/**
- * Must match the oauth_state cookie set during login
- */
-state?: string;
+  /**
+   * Authorization code returned by Cognito
+   */
+  code?: string;
+  /**
+   * Must match the oauth_state cookie set during login
+   */
+  state?: string;
 };
 
 export type GetAuthLoginParams = {
-/**
- * Frontend URL to return to after login; must be in the allowed origin list
- */
-redirect_uri?: string;
+  /**
+   * Frontend URL to return to after login; must be in the allowed origin list
+   */
+  redirect_uri?: string;
 };
 
 export interface MealPlanComponent {
@@ -439,19 +531,18 @@ export interface Instruction {
 /**
  * Unit of measurement
  */
-export type QuantityUnit = typeof QuantityUnit[keyof typeof QuantityUnit];
-
+export type QuantityUnit = (typeof QuantityUnit)[keyof typeof QuantityUnit];
 
 export const QuantityUnit = {
-  none: 'none',
-  mL: 'mL',
-  L: 'L',
-  g: 'g',
-  kg: 'kg',
-  cup: 'cup',
-  tsp: 'tsp',
-  tbsp: 'tbsp',
-  quantity: 'quantity',
+  none: "none",
+  mL: "mL",
+  L: "L",
+  g: "g",
+  kg: "kg",
+  cup: "cup",
+  tsp: "tsp",
+  tbsp: "tbsp",
+  quantity: "quantity",
 } as const;
 
 export interface Quantity {
@@ -512,1131 +603,1788 @@ export interface Recommendation {
   reason: string;
 }
 
-
-
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type SecondParameter<T extends (...args: any) => any> = Parameters<T>[1];
 
-
 export const getAuthLogin = (
-    params?: GetAuthLoginParams,
- options?: SecondParameter<typeof axiosInstance>,signal?: AbortSignal
+  params?: GetAuthLoginParams,
+  options?: SecondParameter<typeof axiosInstance>,
+  signal?: AbortSignal,
 ) => {
-      
-      
-      return axiosInstance<unknown>(
-      {url: `/auth/login`, method: 'GET',
-        params, signal
-    },
-      options);
-    }
-  
+  return axiosInstance<unknown>(
+    { url: `/auth/login`, method: "GET", params, signal },
+    options,
+  );
+};
 
-export const getGetAuthLoginQueryKey = (params?: GetAuthLoginParams,) => {
-    return [`/auth/login`, ...(params ? [params]: [])] as const;
-    }
+export const getGetAuthLoginQueryKey = (params?: GetAuthLoginParams) => {
+  return [`/auth/login`, ...(params ? [params] : [])] as const;
+};
 
-    
-export const getGetAuthLoginQueryOptions = <TData = Awaited<ReturnType<typeof getAuthLogin>>, TError = void>(params?: GetAuthLoginParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getAuthLogin>>, TError, TData>, request?: SecondParameter<typeof axiosInstance>}
+export const getGetAuthLoginQueryOptions = <
+  TData = Awaited<ReturnType<typeof getAuthLogin>>,
+  TError = void,
+>(
+  params?: GetAuthLoginParams,
+  options?: {
+    query?: UseQueryOptions<
+      Awaited<ReturnType<typeof getAuthLogin>>,
+      TError,
+      TData
+    >;
+    request?: SecondParameter<typeof axiosInstance>;
+  },
 ) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
 
-const {query: queryOptions, request: requestOptions} = options ?? {};
+  const queryKey = queryOptions?.queryKey ?? getGetAuthLoginQueryKey(params);
 
-  const queryKey =  queryOptions?.queryKey ?? getGetAuthLoginQueryKey(params);
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getAuthLogin>>> = ({
+    signal,
+  }) => getAuthLogin(params, requestOptions, signal);
 
-  
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof getAuthLogin>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getAuthLogin>>> = ({ signal }) => getAuthLogin(params, requestOptions, signal);
+export type GetAuthLoginQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getAuthLogin>>
+>;
+export type GetAuthLoginQueryError = void;
 
-      
+export const useGetAuthLogin = <
+  TData = Awaited<ReturnType<typeof getAuthLogin>>,
+  TError = void,
+>(
+  params?: GetAuthLoginParams,
+  options?: {
+    query?: UseQueryOptions<
+      Awaited<ReturnType<typeof getAuthLogin>>,
+      TError,
+      TData
+    >;
+    request?: SecondParameter<typeof axiosInstance>;
+  },
+): UseQueryResult<TData, TError> & { queryKey: QueryKey } => {
+  const queryOptions = getGetAuthLoginQueryOptions(params, options);
 
-      
+  const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
+    queryKey: QueryKey;
+  };
 
-   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getAuthLogin>>, TError, TData> & { queryKey: QueryKey }
-}
-
-export type GetAuthLoginQueryResult = NonNullable<Awaited<ReturnType<typeof getAuthLogin>>>
-export type GetAuthLoginQueryError = void
-
-export const useGetAuthLogin = <TData = Awaited<ReturnType<typeof getAuthLogin>>, TError = void>(
- params?: GetAuthLoginParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getAuthLogin>>, TError, TData>, request?: SecondParameter<typeof axiosInstance>}
-
-  ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } => {
-
-  const queryOptions = getGetAuthLoginQueryOptions(params,options)
-
-  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
-
-  query.queryKey = queryOptions.queryKey ;
+  query.queryKey = queryOptions.queryKey;
 
   return query;
-}
-
-
-
+};
 
 export const getAuthCallback = (
-    params?: GetAuthCallbackParams,
- options?: SecondParameter<typeof axiosInstance>,signal?: AbortSignal
+  params?: GetAuthCallbackParams,
+  options?: SecondParameter<typeof axiosInstance>,
+  signal?: AbortSignal,
 ) => {
-      
-      
-      return axiosInstance<unknown>(
-      {url: `/auth/callback`, method: 'GET',
-        params, signal
-    },
-      options);
-    }
-  
+  return axiosInstance<unknown>(
+    { url: `/auth/callback`, method: "GET", params, signal },
+    options,
+  );
+};
 
-export const getGetAuthCallbackQueryKey = (params?: GetAuthCallbackParams,) => {
-    return [`/auth/callback`, ...(params ? [params]: [])] as const;
-    }
+export const getGetAuthCallbackQueryKey = (params?: GetAuthCallbackParams) => {
+  return [`/auth/callback`, ...(params ? [params] : [])] as const;
+};
 
-    
-export const getGetAuthCallbackQueryOptions = <TData = Awaited<ReturnType<typeof getAuthCallback>>, TError = void>(params?: GetAuthCallbackParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getAuthCallback>>, TError, TData>, request?: SecondParameter<typeof axiosInstance>}
+export const getGetAuthCallbackQueryOptions = <
+  TData = Awaited<ReturnType<typeof getAuthCallback>>,
+  TError = void,
+>(
+  params?: GetAuthCallbackParams,
+  options?: {
+    query?: UseQueryOptions<
+      Awaited<ReturnType<typeof getAuthCallback>>,
+      TError,
+      TData
+    >;
+    request?: SecondParameter<typeof axiosInstance>;
+  },
 ) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
 
-const {query: queryOptions, request: requestOptions} = options ?? {};
+  const queryKey = queryOptions?.queryKey ?? getGetAuthCallbackQueryKey(params);
 
-  const queryKey =  queryOptions?.queryKey ?? getGetAuthCallbackQueryKey(params);
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getAuthCallback>>> = ({
+    signal,
+  }) => getAuthCallback(params, requestOptions, signal);
 
-  
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof getAuthCallback>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getAuthCallback>>> = ({ signal }) => getAuthCallback(params, requestOptions, signal);
+export type GetAuthCallbackQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getAuthCallback>>
+>;
+export type GetAuthCallbackQueryError = void;
 
-      
+export const useGetAuthCallback = <
+  TData = Awaited<ReturnType<typeof getAuthCallback>>,
+  TError = void,
+>(
+  params?: GetAuthCallbackParams,
+  options?: {
+    query?: UseQueryOptions<
+      Awaited<ReturnType<typeof getAuthCallback>>,
+      TError,
+      TData
+    >;
+    request?: SecondParameter<typeof axiosInstance>;
+  },
+): UseQueryResult<TData, TError> & { queryKey: QueryKey } => {
+  const queryOptions = getGetAuthCallbackQueryOptions(params, options);
 
-      
+  const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
+    queryKey: QueryKey;
+  };
 
-   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getAuthCallback>>, TError, TData> & { queryKey: QueryKey }
-}
-
-export type GetAuthCallbackQueryResult = NonNullable<Awaited<ReturnType<typeof getAuthCallback>>>
-export type GetAuthCallbackQueryError = void
-
-export const useGetAuthCallback = <TData = Awaited<ReturnType<typeof getAuthCallback>>, TError = void>(
- params?: GetAuthCallbackParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getAuthCallback>>, TError, TData>, request?: SecondParameter<typeof axiosInstance>}
-
-  ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } => {
-
-  const queryOptions = getGetAuthCallbackQueryOptions(params,options)
-
-  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
-
-  query.queryKey = queryOptions.queryKey ;
+  query.queryKey = queryOptions.queryKey;
 
   return query;
-}
-
-
-
+};
 
 export const getAuthSession = (
-    
- options?: SecondParameter<typeof axiosInstance>,signal?: AbortSignal
+  options?: SecondParameter<typeof axiosInstance>,
+  signal?: AbortSignal,
 ) => {
-      
-      
-      return axiosInstance<GetAuthSession200>(
-      {url: `/auth/session`, method: 'GET', signal
-    },
-      options);
-    }
-  
+  return axiosInstance<GetAuthSession200>(
+    { url: `/auth/session`, method: "GET", signal },
+    options,
+  );
+};
 
 export const getGetAuthSessionQueryKey = () => {
-    return [`/auth/session`] as const;
-    }
+  return [`/auth/session`] as const;
+};
 
-    
-export const getGetAuthSessionQueryOptions = <TData = Awaited<ReturnType<typeof getAuthSession>>, TError = GetAuthSession401>( options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getAuthSession>>, TError, TData>, request?: SecondParameter<typeof axiosInstance>}
-) => {
+export const getGetAuthSessionQueryOptions = <
+  TData = Awaited<ReturnType<typeof getAuthSession>>,
+  TError = GetAuthSession401,
+>(options?: {
+  query?: UseQueryOptions<
+    Awaited<ReturnType<typeof getAuthSession>>,
+    TError,
+    TData
+  >;
+  request?: SecondParameter<typeof axiosInstance>;
+}) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
 
-const {query: queryOptions, request: requestOptions} = options ?? {};
+  const queryKey = queryOptions?.queryKey ?? getGetAuthSessionQueryKey();
 
-  const queryKey =  queryOptions?.queryKey ?? getGetAuthSessionQueryKey();
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getAuthSession>>> = ({
+    signal,
+  }) => getAuthSession(requestOptions, signal);
 
-  
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof getAuthSession>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getAuthSession>>> = ({ signal }) => getAuthSession(requestOptions, signal);
+export type GetAuthSessionQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getAuthSession>>
+>;
+export type GetAuthSessionQueryError = GetAuthSession401;
 
-      
+export const useGetAuthSession = <
+  TData = Awaited<ReturnType<typeof getAuthSession>>,
+  TError = GetAuthSession401,
+>(options?: {
+  query?: UseQueryOptions<
+    Awaited<ReturnType<typeof getAuthSession>>,
+    TError,
+    TData
+  >;
+  request?: SecondParameter<typeof axiosInstance>;
+}): UseQueryResult<TData, TError> & { queryKey: QueryKey } => {
+  const queryOptions = getGetAuthSessionQueryOptions(options);
 
-      
+  const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
+    queryKey: QueryKey;
+  };
 
-   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getAuthSession>>, TError, TData> & { queryKey: QueryKey }
-}
-
-export type GetAuthSessionQueryResult = NonNullable<Awaited<ReturnType<typeof getAuthSession>>>
-export type GetAuthSessionQueryError = GetAuthSession401
-
-export const useGetAuthSession = <TData = Awaited<ReturnType<typeof getAuthSession>>, TError = GetAuthSession401>(
-  options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getAuthSession>>, TError, TData>, request?: SecondParameter<typeof axiosInstance>}
-
-  ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } => {
-
-  const queryOptions = getGetAuthSessionQueryOptions(options)
-
-  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
-
-  query.queryKey = queryOptions.queryKey ;
+  query.queryKey = queryOptions.queryKey;
 
   return query;
-}
-
-
-
+};
 
 export const postAuthLogout = (
-    params?: PostAuthLogoutParams,
- options?: SecondParameter<typeof axiosInstance>,) => {
-      
-      
-      return axiosInstance<PostAuthLogout200>(
-      {url: `/auth/logout`, method: 'POST',
-        params
-    },
-      options);
-    }
-  
+  params?: PostAuthLogoutParams,
+  options?: SecondParameter<typeof axiosInstance>,
+) => {
+  return axiosInstance<PostAuthLogout200>(
+    { url: `/auth/logout`, method: "POST", params },
+    options,
+  );
+};
 
+export const getPostAuthLogoutMutationOptions = <
+  TError = unknown,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof postAuthLogout>>,
+    TError,
+    { params?: PostAuthLogoutParams },
+    TContext
+  >;
+  request?: SecondParameter<typeof axiosInstance>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof postAuthLogout>>,
+  TError,
+  { params?: PostAuthLogoutParams },
+  TContext
+> => {
+  const { mutation: mutationOptions, request: requestOptions } = options ?? {};
 
-export const getPostAuthLogoutMutationOptions = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postAuthLogout>>, TError,{params?: PostAuthLogoutParams}, TContext>, request?: SecondParameter<typeof axiosInstance>}
-): UseMutationOptions<Awaited<ReturnType<typeof postAuthLogout>>, TError,{params?: PostAuthLogoutParams}, TContext> => {
-const {mutation: mutationOptions, request: requestOptions} = options ?? {};
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof postAuthLogout>>,
+    { params?: PostAuthLogoutParams }
+  > = (props) => {
+    const { params } = props ?? {};
 
-      
+    return postAuthLogout(params, requestOptions);
+  };
 
+  return { mutationFn, ...mutationOptions };
+};
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof postAuthLogout>>, {params?: PostAuthLogoutParams}> = (props) => {
-          const {params} = props ?? {};
+export type PostAuthLogoutMutationResult = NonNullable<
+  Awaited<ReturnType<typeof postAuthLogout>>
+>;
 
-          return  postAuthLogout(params,requestOptions)
-        }
+export type PostAuthLogoutMutationError = unknown;
 
-        
+export const usePostAuthLogout = <
+  TError = unknown,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof postAuthLogout>>,
+    TError,
+    { params?: PostAuthLogoutParams },
+    TContext
+  >;
+  request?: SecondParameter<typeof axiosInstance>;
+}): UseMutationResult<
+  Awaited<ReturnType<typeof postAuthLogout>>,
+  TError,
+  { params?: PostAuthLogoutParams },
+  TContext
+> => {
+  const mutationOptions = getPostAuthLogoutMutationOptions(options);
 
+  return useMutation(mutationOptions);
+};
 
-  return  { mutationFn, ...mutationOptions }}
-
-    export type PostAuthLogoutMutationResult = NonNullable<Awaited<ReturnType<typeof postAuthLogout>>>
-    
-    export type PostAuthLogoutMutationError = unknown
-
-    export const usePostAuthLogout = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postAuthLogout>>, TError,{params?: PostAuthLogoutParams}, TContext>, request?: SecondParameter<typeof axiosInstance>}
-): UseMutationResult<
-        Awaited<ReturnType<typeof postAuthLogout>>,
-        TError,
-        {params?: PostAuthLogoutParams},
-        TContext
-      > => {
-
-      const mutationOptions = getPostAuthLogoutMutationOptions(options);
-
-      return useMutation(mutationOptions);
-    }
-    
 export const getApiRecommendationsId = (
-    id: string,
- options?: SecondParameter<typeof axiosInstance>,signal?: AbortSignal
+  id: string,
+  options?: SecondParameter<typeof axiosInstance>,
+  signal?: AbortSignal,
 ) => {
-      
-      
-      return axiosInstance<GetApiRecommendationsId200>(
-      {url: `/api/recommendations/${id}`, method: 'GET', signal
-    },
-      options);
-    }
-  
+  return axiosInstance<GetApiRecommendationsId200>(
+    { url: `/api/recommendations/${id}`, method: "GET", signal },
+    options,
+  );
+};
 
-export const getGetApiRecommendationsIdQueryKey = (id: string,) => {
-    return [`/api/recommendations/${id}`] as const;
-    }
+export const getGetApiRecommendationsIdQueryKey = (id: string) => {
+  return [`/api/recommendations/${id}`] as const;
+};
 
-    
-export const getGetApiRecommendationsIdQueryOptions = <TData = Awaited<ReturnType<typeof getApiRecommendationsId>>, TError = GetApiRecommendationsId404 | GetApiRecommendationsId422>(id: string, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getApiRecommendationsId>>, TError, TData>, request?: SecondParameter<typeof axiosInstance>}
+export const getGetApiRecommendationsIdQueryOptions = <
+  TData = Awaited<ReturnType<typeof getApiRecommendationsId>>,
+  TError = GetApiRecommendationsId404 | GetApiRecommendationsId422,
+>(
+  id: string,
+  options?: {
+    query?: UseQueryOptions<
+      Awaited<ReturnType<typeof getApiRecommendationsId>>,
+      TError,
+      TData
+    >;
+    request?: SecondParameter<typeof axiosInstance>;
+  },
 ) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
 
-const {query: queryOptions, request: requestOptions} = options ?? {};
+  const queryKey =
+    queryOptions?.queryKey ?? getGetApiRecommendationsIdQueryKey(id);
 
-  const queryKey =  queryOptions?.queryKey ?? getGetApiRecommendationsIdQueryKey(id);
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof getApiRecommendationsId>>
+  > = ({ signal }) => getApiRecommendationsId(id, requestOptions, signal);
 
-  
+  return {
+    queryKey,
+    queryFn,
+    enabled: !!id,
+    ...queryOptions,
+  } as UseQueryOptions<
+    Awaited<ReturnType<typeof getApiRecommendationsId>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiRecommendationsId>>> = ({ signal }) => getApiRecommendationsId(id, requestOptions, signal);
+export type GetApiRecommendationsIdQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getApiRecommendationsId>>
+>;
+export type GetApiRecommendationsIdQueryError =
+  | GetApiRecommendationsId404
+  | GetApiRecommendationsId422;
 
-      
+export const useGetApiRecommendationsId = <
+  TData = Awaited<ReturnType<typeof getApiRecommendationsId>>,
+  TError = GetApiRecommendationsId404 | GetApiRecommendationsId422,
+>(
+  id: string,
+  options?: {
+    query?: UseQueryOptions<
+      Awaited<ReturnType<typeof getApiRecommendationsId>>,
+      TError,
+      TData
+    >;
+    request?: SecondParameter<typeof axiosInstance>;
+  },
+): UseQueryResult<TData, TError> & { queryKey: QueryKey } => {
+  const queryOptions = getGetApiRecommendationsIdQueryOptions(id, options);
 
-      
+  const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
+    queryKey: QueryKey;
+  };
 
-   return  { queryKey, queryFn, enabled: !!(id), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getApiRecommendationsId>>, TError, TData> & { queryKey: QueryKey }
-}
-
-export type GetApiRecommendationsIdQueryResult = NonNullable<Awaited<ReturnType<typeof getApiRecommendationsId>>>
-export type GetApiRecommendationsIdQueryError = GetApiRecommendationsId404 | GetApiRecommendationsId422
-
-export const useGetApiRecommendationsId = <TData = Awaited<ReturnType<typeof getApiRecommendationsId>>, TError = GetApiRecommendationsId404 | GetApiRecommendationsId422>(
- id: string, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getApiRecommendationsId>>, TError, TData>, request?: SecondParameter<typeof axiosInstance>}
-
-  ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } => {
-
-  const queryOptions = getGetApiRecommendationsIdQueryOptions(id,options)
-
-  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
-
-  query.queryKey = queryOptions.queryKey ;
+  query.queryKey = queryOptions.queryKey;
 
   return query;
-}
-
-
-
+};
 
 export const postApiRecommendationsAddEmail = (
-    postApiRecommendationsAddEmailBody: PostApiRecommendationsAddEmailBody,
- options?: SecondParameter<typeof axiosInstance>,) => {
-      
-      const formUrlEncoded = new URLSearchParams();
-formUrlEncoded.append('id', postApiRecommendationsAddEmailBody.id)
-if(postApiRecommendationsAddEmailBody.email !== undefined) {
- formUrlEncoded.append('email', postApiRecommendationsAddEmailBody.email)
- }
-if(postApiRecommendationsAddEmailBody.recurring !== undefined) {
- formUrlEncoded.append('recurring', postApiRecommendationsAddEmailBody.recurring)
- }
-
-      return axiosInstance<PostApiRecommendationsAddEmail200>(
-      {url: `/api/recommendations/add-email`, method: 'POST',
-      headers: {'Content-Type': 'application/x-www-form-urlencoded', },
-       data: formUrlEncoded
-    },
-      options);
-    }
-  
-
-
-export const getPostApiRecommendationsAddEmailMutationOptions = <TError = PostApiRecommendationsAddEmail400 | PostApiRecommendationsAddEmail404,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiRecommendationsAddEmail>>, TError,{data: PostApiRecommendationsAddEmailBody}, TContext>, request?: SecondParameter<typeof axiosInstance>}
-): UseMutationOptions<Awaited<ReturnType<typeof postApiRecommendationsAddEmail>>, TError,{data: PostApiRecommendationsAddEmailBody}, TContext> => {
-const {mutation: mutationOptions, request: requestOptions} = options ?? {};
-
-      
-
-
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof postApiRecommendationsAddEmail>>, {data: PostApiRecommendationsAddEmailBody}> = (props) => {
-          const {data} = props ?? {};
-
-          return  postApiRecommendationsAddEmail(data,requestOptions)
-        }
-
-        
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type PostApiRecommendationsAddEmailMutationResult = NonNullable<Awaited<ReturnType<typeof postApiRecommendationsAddEmail>>>
-    export type PostApiRecommendationsAddEmailMutationBody = PostApiRecommendationsAddEmailBody
-    export type PostApiRecommendationsAddEmailMutationError = PostApiRecommendationsAddEmail400 | PostApiRecommendationsAddEmail404
-
-    export const usePostApiRecommendationsAddEmail = <TError = PostApiRecommendationsAddEmail400 | PostApiRecommendationsAddEmail404,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiRecommendationsAddEmail>>, TError,{data: PostApiRecommendationsAddEmailBody}, TContext>, request?: SecondParameter<typeof axiosInstance>}
-): UseMutationResult<
-        Awaited<ReturnType<typeof postApiRecommendationsAddEmail>>,
-        TError,
-        {data: PostApiRecommendationsAddEmailBody},
-        TContext
-      > => {
-
-      const mutationOptions = getPostApiRecommendationsAddEmailMutationOptions(options);
-
-      return useMutation(mutationOptions);
-    }
-    
-export const postApiRecommendationsDeleteEmail = (
-    postApiRecommendationsDeleteEmailBody: PostApiRecommendationsDeleteEmailBody,
- options?: SecondParameter<typeof axiosInstance>,) => {
-      
-      const formUrlEncoded = new URLSearchParams();
-formUrlEncoded.append('requestId', postApiRecommendationsDeleteEmailBody.requestId)
-
-      return axiosInstance<PostApiRecommendationsDeleteEmail200>(
-      {url: `/api/recommendations/delete-email`, method: 'POST',
-      headers: {'Content-Type': 'application/x-www-form-urlencoded', },
-       data: formUrlEncoded
-    },
-      options);
-    }
-  
-
-
-export const getPostApiRecommendationsDeleteEmailMutationOptions = <TError = PostApiRecommendationsDeleteEmail400,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiRecommendationsDeleteEmail>>, TError,{data: PostApiRecommendationsDeleteEmailBody}, TContext>, request?: SecondParameter<typeof axiosInstance>}
-): UseMutationOptions<Awaited<ReturnType<typeof postApiRecommendationsDeleteEmail>>, TError,{data: PostApiRecommendationsDeleteEmailBody}, TContext> => {
-const {mutation: mutationOptions, request: requestOptions} = options ?? {};
-
-      
-
-
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof postApiRecommendationsDeleteEmail>>, {data: PostApiRecommendationsDeleteEmailBody}> = (props) => {
-          const {data} = props ?? {};
-
-          return  postApiRecommendationsDeleteEmail(data,requestOptions)
-        }
-
-        
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type PostApiRecommendationsDeleteEmailMutationResult = NonNullable<Awaited<ReturnType<typeof postApiRecommendationsDeleteEmail>>>
-    export type PostApiRecommendationsDeleteEmailMutationBody = PostApiRecommendationsDeleteEmailBody
-    export type PostApiRecommendationsDeleteEmailMutationError = PostApiRecommendationsDeleteEmail400
-
-    export const usePostApiRecommendationsDeleteEmail = <TError = PostApiRecommendationsDeleteEmail400,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiRecommendationsDeleteEmail>>, TError,{data: PostApiRecommendationsDeleteEmailBody}, TContext>, request?: SecondParameter<typeof axiosInstance>}
-): UseMutationResult<
-        Awaited<ReturnType<typeof postApiRecommendationsDeleteEmail>>,
-        TError,
-        {data: PostApiRecommendationsDeleteEmailBody},
-        TContext
-      > => {
-
-      const mutationOptions = getPostApiRecommendationsDeleteEmailMutationOptions(options);
-
-      return useMutation(mutationOptions);
-    }
-    
-export const postApiRecommendationsFromBookcase = (
-    postApiRecommendationsFromBookcaseBody: PostApiRecommendationsFromBookcaseBody,
- options?: SecondParameter<typeof axiosInstance>,) => {
-      
-      const formData = new FormData();
-if(postApiRecommendationsFromBookcaseBody.bookcase !== undefined) {
- formData.append('bookcase', postApiRecommendationsFromBookcaseBody.bookcase)
- }
-
-      return axiosInstance<PostApiRecommendationsFromBookcase200>(
-      {url: `/api/recommendations/from-bookcase`, method: 'POST',
-      headers: {'Content-Type': 'multipart/form-data', },
-       data: formData
-    },
-      options);
-    }
-  
-
-
-export const getPostApiRecommendationsFromBookcaseMutationOptions = <TError = PostApiRecommendationsFromBookcase400 | PostApiRecommendationsFromBookcase500,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiRecommendationsFromBookcase>>, TError,{data: PostApiRecommendationsFromBookcaseBody}, TContext>, request?: SecondParameter<typeof axiosInstance>}
-): UseMutationOptions<Awaited<ReturnType<typeof postApiRecommendationsFromBookcase>>, TError,{data: PostApiRecommendationsFromBookcaseBody}, TContext> => {
-const {mutation: mutationOptions, request: requestOptions} = options ?? {};
-
-      
-
-
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof postApiRecommendationsFromBookcase>>, {data: PostApiRecommendationsFromBookcaseBody}> = (props) => {
-          const {data} = props ?? {};
-
-          return  postApiRecommendationsFromBookcase(data,requestOptions)
-        }
-
-        
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type PostApiRecommendationsFromBookcaseMutationResult = NonNullable<Awaited<ReturnType<typeof postApiRecommendationsFromBookcase>>>
-    export type PostApiRecommendationsFromBookcaseMutationBody = PostApiRecommendationsFromBookcaseBody
-    export type PostApiRecommendationsFromBookcaseMutationError = PostApiRecommendationsFromBookcase400 | PostApiRecommendationsFromBookcase500
-
-    export const usePostApiRecommendationsFromBookcase = <TError = PostApiRecommendationsFromBookcase400 | PostApiRecommendationsFromBookcase500,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiRecommendationsFromBookcase>>, TError,{data: PostApiRecommendationsFromBookcaseBody}, TContext>, request?: SecondParameter<typeof axiosInstance>}
-): UseMutationResult<
-        Awaited<ReturnType<typeof postApiRecommendationsFromBookcase>>,
-        TError,
-        {data: PostApiRecommendationsFromBookcaseBody},
-        TContext
-      > => {
-
-      const mutationOptions = getPostApiRecommendationsFromBookcaseMutationOptions(options);
-
-      return useMutation(mutationOptions);
-    }
-    
-export const getApiQueueDueRecommendations = (
-    
- options?: SecondParameter<typeof axiosInstance>,signal?: AbortSignal
+  postApiRecommendationsAddEmailBody: PostApiRecommendationsAddEmailBody,
+  options?: SecondParameter<typeof axiosInstance>,
 ) => {
-      
-      
-      return axiosInstance<void>(
-      {url: `/api/queue-due-recommendations`, method: 'GET', signal
+  const formUrlEncoded = new URLSearchParams();
+  formUrlEncoded.append("id", postApiRecommendationsAddEmailBody.id);
+  if (postApiRecommendationsAddEmailBody.email !== undefined) {
+    formUrlEncoded.append("email", postApiRecommendationsAddEmailBody.email);
+  }
+  if (postApiRecommendationsAddEmailBody.recurring !== undefined) {
+    formUrlEncoded.append(
+      "recurring",
+      postApiRecommendationsAddEmailBody.recurring,
+    );
+  }
+
+  return axiosInstance<PostApiRecommendationsAddEmail200>(
+    {
+      url: `/api/recommendations/add-email`,
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      data: formUrlEncoded,
     },
-      options);
-    }
-  
+    options,
+  );
+};
+
+export const getPostApiRecommendationsAddEmailMutationOptions = <
+  TError =
+    | PostApiRecommendationsAddEmail400
+    | PostApiRecommendationsAddEmail404,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof postApiRecommendationsAddEmail>>,
+    TError,
+    { data: PostApiRecommendationsAddEmailBody },
+    TContext
+  >;
+  request?: SecondParameter<typeof axiosInstance>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof postApiRecommendationsAddEmail>>,
+  TError,
+  { data: PostApiRecommendationsAddEmailBody },
+  TContext
+> => {
+  const { mutation: mutationOptions, request: requestOptions } = options ?? {};
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof postApiRecommendationsAddEmail>>,
+    { data: PostApiRecommendationsAddEmailBody }
+  > = (props) => {
+    const { data } = props ?? {};
+
+    return postApiRecommendationsAddEmail(data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type PostApiRecommendationsAddEmailMutationResult = NonNullable<
+  Awaited<ReturnType<typeof postApiRecommendationsAddEmail>>
+>;
+export type PostApiRecommendationsAddEmailMutationBody =
+  PostApiRecommendationsAddEmailBody;
+export type PostApiRecommendationsAddEmailMutationError =
+  | PostApiRecommendationsAddEmail400
+  | PostApiRecommendationsAddEmail404;
+
+export const usePostApiRecommendationsAddEmail = <
+  TError =
+    | PostApiRecommendationsAddEmail400
+    | PostApiRecommendationsAddEmail404,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof postApiRecommendationsAddEmail>>,
+    TError,
+    { data: PostApiRecommendationsAddEmailBody },
+    TContext
+  >;
+  request?: SecondParameter<typeof axiosInstance>;
+}): UseMutationResult<
+  Awaited<ReturnType<typeof postApiRecommendationsAddEmail>>,
+  TError,
+  { data: PostApiRecommendationsAddEmailBody },
+  TContext
+> => {
+  const mutationOptions =
+    getPostApiRecommendationsAddEmailMutationOptions(options);
+
+  return useMutation(mutationOptions);
+};
+
+export const postApiRecommendationsDeleteEmail = (
+  postApiRecommendationsDeleteEmailBody: PostApiRecommendationsDeleteEmailBody,
+  options?: SecondParameter<typeof axiosInstance>,
+) => {
+  const formUrlEncoded = new URLSearchParams();
+  formUrlEncoded.append(
+    "requestId",
+    postApiRecommendationsDeleteEmailBody.requestId,
+  );
+
+  return axiosInstance<PostApiRecommendationsDeleteEmail200>(
+    {
+      url: `/api/recommendations/delete-email`,
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      data: formUrlEncoded,
+    },
+    options,
+  );
+};
+
+export const getPostApiRecommendationsDeleteEmailMutationOptions = <
+  TError = PostApiRecommendationsDeleteEmail400,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof postApiRecommendationsDeleteEmail>>,
+    TError,
+    { data: PostApiRecommendationsDeleteEmailBody },
+    TContext
+  >;
+  request?: SecondParameter<typeof axiosInstance>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof postApiRecommendationsDeleteEmail>>,
+  TError,
+  { data: PostApiRecommendationsDeleteEmailBody },
+  TContext
+> => {
+  const { mutation: mutationOptions, request: requestOptions } = options ?? {};
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof postApiRecommendationsDeleteEmail>>,
+    { data: PostApiRecommendationsDeleteEmailBody }
+  > = (props) => {
+    const { data } = props ?? {};
+
+    return postApiRecommendationsDeleteEmail(data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type PostApiRecommendationsDeleteEmailMutationResult = NonNullable<
+  Awaited<ReturnType<typeof postApiRecommendationsDeleteEmail>>
+>;
+export type PostApiRecommendationsDeleteEmailMutationBody =
+  PostApiRecommendationsDeleteEmailBody;
+export type PostApiRecommendationsDeleteEmailMutationError =
+  PostApiRecommendationsDeleteEmail400;
+
+export const usePostApiRecommendationsDeleteEmail = <
+  TError = PostApiRecommendationsDeleteEmail400,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof postApiRecommendationsDeleteEmail>>,
+    TError,
+    { data: PostApiRecommendationsDeleteEmailBody },
+    TContext
+  >;
+  request?: SecondParameter<typeof axiosInstance>;
+}): UseMutationResult<
+  Awaited<ReturnType<typeof postApiRecommendationsDeleteEmail>>,
+  TError,
+  { data: PostApiRecommendationsDeleteEmailBody },
+  TContext
+> => {
+  const mutationOptions =
+    getPostApiRecommendationsDeleteEmailMutationOptions(options);
+
+  return useMutation(mutationOptions);
+};
+
+export const postApiRecommendationsFromBookcase = (
+  postApiRecommendationsFromBookcaseBody: PostApiRecommendationsFromBookcaseBody,
+  options?: SecondParameter<typeof axiosInstance>,
+) => {
+  const formData = new FormData();
+  if (postApiRecommendationsFromBookcaseBody.bookcase !== undefined) {
+    formData.append(
+      "bookcase",
+      postApiRecommendationsFromBookcaseBody.bookcase,
+    );
+  }
+
+  return axiosInstance<PostApiRecommendationsFromBookcase200>(
+    {
+      url: `/api/recommendations/from-bookcase`,
+      method: "POST",
+      headers: { "Content-Type": "multipart/form-data" },
+      data: formData,
+    },
+    options,
+  );
+};
+
+export const getPostApiRecommendationsFromBookcaseMutationOptions = <
+  TError =
+    | PostApiRecommendationsFromBookcase400
+    | PostApiRecommendationsFromBookcase500,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof postApiRecommendationsFromBookcase>>,
+    TError,
+    { data: PostApiRecommendationsFromBookcaseBody },
+    TContext
+  >;
+  request?: SecondParameter<typeof axiosInstance>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof postApiRecommendationsFromBookcase>>,
+  TError,
+  { data: PostApiRecommendationsFromBookcaseBody },
+  TContext
+> => {
+  const { mutation: mutationOptions, request: requestOptions } = options ?? {};
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof postApiRecommendationsFromBookcase>>,
+    { data: PostApiRecommendationsFromBookcaseBody }
+  > = (props) => {
+    const { data } = props ?? {};
+
+    return postApiRecommendationsFromBookcase(data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type PostApiRecommendationsFromBookcaseMutationResult = NonNullable<
+  Awaited<ReturnType<typeof postApiRecommendationsFromBookcase>>
+>;
+export type PostApiRecommendationsFromBookcaseMutationBody =
+  PostApiRecommendationsFromBookcaseBody;
+export type PostApiRecommendationsFromBookcaseMutationError =
+  | PostApiRecommendationsFromBookcase400
+  | PostApiRecommendationsFromBookcase500;
+
+export const usePostApiRecommendationsFromBookcase = <
+  TError =
+    | PostApiRecommendationsFromBookcase400
+    | PostApiRecommendationsFromBookcase500,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof postApiRecommendationsFromBookcase>>,
+    TError,
+    { data: PostApiRecommendationsFromBookcaseBody },
+    TContext
+  >;
+  request?: SecondParameter<typeof axiosInstance>;
+}): UseMutationResult<
+  Awaited<ReturnType<typeof postApiRecommendationsFromBookcase>>,
+  TError,
+  { data: PostApiRecommendationsFromBookcaseBody },
+  TContext
+> => {
+  const mutationOptions =
+    getPostApiRecommendationsFromBookcaseMutationOptions(options);
+
+  return useMutation(mutationOptions);
+};
+
+export const getApiQueueDueRecommendations = (
+  options?: SecondParameter<typeof axiosInstance>,
+  signal?: AbortSignal,
+) => {
+  return axiosInstance<void>(
+    { url: `/api/queue-due-recommendations`, method: "GET", signal },
+    options,
+  );
+};
 
 export const getGetApiQueueDueRecommendationsQueryKey = () => {
-    return [`/api/queue-due-recommendations`] as const;
-    }
+  return [`/api/queue-due-recommendations`] as const;
+};
 
-    
-export const getGetApiQueueDueRecommendationsQueryOptions = <TData = Awaited<ReturnType<typeof getApiQueueDueRecommendations>>, TError = GetApiQueueDueRecommendations401>( options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getApiQueueDueRecommendations>>, TError, TData>, request?: SecondParameter<typeof axiosInstance>}
-) => {
+export const getGetApiQueueDueRecommendationsQueryOptions = <
+  TData = Awaited<ReturnType<typeof getApiQueueDueRecommendations>>,
+  TError = GetApiQueueDueRecommendations401,
+>(options?: {
+  query?: UseQueryOptions<
+    Awaited<ReturnType<typeof getApiQueueDueRecommendations>>,
+    TError,
+    TData
+  >;
+  request?: SecondParameter<typeof axiosInstance>;
+}) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
 
-const {query: queryOptions, request: requestOptions} = options ?? {};
+  const queryKey =
+    queryOptions?.queryKey ?? getGetApiQueueDueRecommendationsQueryKey();
 
-  const queryKey =  queryOptions?.queryKey ?? getGetApiQueueDueRecommendationsQueryKey();
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof getApiQueueDueRecommendations>>
+  > = ({ signal }) => getApiQueueDueRecommendations(requestOptions, signal);
 
-  
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof getApiQueueDueRecommendations>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiQueueDueRecommendations>>> = ({ signal }) => getApiQueueDueRecommendations(requestOptions, signal);
+export type GetApiQueueDueRecommendationsQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getApiQueueDueRecommendations>>
+>;
+export type GetApiQueueDueRecommendationsQueryError =
+  GetApiQueueDueRecommendations401;
 
-      
+export const useGetApiQueueDueRecommendations = <
+  TData = Awaited<ReturnType<typeof getApiQueueDueRecommendations>>,
+  TError = GetApiQueueDueRecommendations401,
+>(options?: {
+  query?: UseQueryOptions<
+    Awaited<ReturnType<typeof getApiQueueDueRecommendations>>,
+    TError,
+    TData
+  >;
+  request?: SecondParameter<typeof axiosInstance>;
+}): UseQueryResult<TData, TError> & { queryKey: QueryKey } => {
+  const queryOptions = getGetApiQueueDueRecommendationsQueryOptions(options);
 
-      
+  const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
+    queryKey: QueryKey;
+  };
 
-   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getApiQueueDueRecommendations>>, TError, TData> & { queryKey: QueryKey }
-}
-
-export type GetApiQueueDueRecommendationsQueryResult = NonNullable<Awaited<ReturnType<typeof getApiQueueDueRecommendations>>>
-export type GetApiQueueDueRecommendationsQueryError = GetApiQueueDueRecommendations401
-
-export const useGetApiQueueDueRecommendations = <TData = Awaited<ReturnType<typeof getApiQueueDueRecommendations>>, TError = GetApiQueueDueRecommendations401>(
-  options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getApiQueueDueRecommendations>>, TError, TData>, request?: SecondParameter<typeof axiosInstance>}
-
-  ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } => {
-
-  const queryOptions = getGetApiQueueDueRecommendationsQueryOptions(options)
-
-  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
-
-  query.queryKey = queryOptions.queryKey ;
+  query.queryKey = queryOptions.queryKey;
 
   return query;
-}
+};
 
+export const getApiReextractRecurringBooks = (
+  options?: SecondParameter<typeof axiosInstance>,
+  signal?: AbortSignal,
+) => {
+  return axiosInstance<GetApiReextractRecurringBooks200>(
+    { url: `/api/reextract-recurring-books`, method: "GET", signal },
+    options,
+  );
+};
 
+export const getGetApiReextractRecurringBooksQueryKey = () => {
+  return [`/api/reextract-recurring-books`] as const;
+};
 
+export const getGetApiReextractRecurringBooksQueryOptions = <
+  TData = Awaited<ReturnType<typeof getApiReextractRecurringBooks>>,
+  TError = GetApiReextractRecurringBooks401,
+>(options?: {
+  query?: UseQueryOptions<
+    Awaited<ReturnType<typeof getApiReextractRecurringBooks>>,
+    TError,
+    TData
+  >;
+  request?: SecondParameter<typeof axiosInstance>;
+}) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey =
+    queryOptions?.queryKey ?? getGetApiReextractRecurringBooksQueryKey();
+
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof getApiReextractRecurringBooks>>
+  > = ({ signal }) => getApiReextractRecurringBooks(requestOptions, signal);
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof getApiReextractRecurringBooks>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
+
+export type GetApiReextractRecurringBooksQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getApiReextractRecurringBooks>>
+>;
+export type GetApiReextractRecurringBooksQueryError =
+  GetApiReextractRecurringBooks401;
+
+export const useGetApiReextractRecurringBooks = <
+  TData = Awaited<ReturnType<typeof getApiReextractRecurringBooks>>,
+  TError = GetApiReextractRecurringBooks401,
+>(options?: {
+  query?: UseQueryOptions<
+    Awaited<ReturnType<typeof getApiReextractRecurringBooks>>,
+    TError,
+    TData
+  >;
+  request?: SecondParameter<typeof axiosInstance>;
+}): UseQueryResult<TData, TError> & { queryKey: QueryKey } => {
+  const queryOptions = getGetApiReextractRecurringBooksQueryOptions(options);
+
+  const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
+    queryKey: QueryKey;
+  };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+};
 
 /**
  * Exchange a Cognito JWT for a long-lived MCP JWT token
  */
 export const postMcpAuthToken = (
-    
- options?: SecondParameter<typeof axiosInstance>,) => {
-      
-      
-      return axiosInstance<PostMcpAuthToken200>(
-      {url: `/mcp/auth/token`, method: 'POST'
-    },
-      options);
-    }
-  
+  options?: SecondParameter<typeof axiosInstance>,
+) => {
+  return axiosInstance<PostMcpAuthToken200>(
+    { url: `/mcp/auth/token`, method: "POST" },
+    options,
+  );
+};
 
+export const getPostMcpAuthTokenMutationOptions = <
+  TError = PostMcpAuthToken401,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof postMcpAuthToken>>,
+    TError,
+    void,
+    TContext
+  >;
+  request?: SecondParameter<typeof axiosInstance>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof postMcpAuthToken>>,
+  TError,
+  void,
+  TContext
+> => {
+  const { mutation: mutationOptions, request: requestOptions } = options ?? {};
 
-export const getPostMcpAuthTokenMutationOptions = <TError = PostMcpAuthToken401,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postMcpAuthToken>>, TError,void, TContext>, request?: SecondParameter<typeof axiosInstance>}
-): UseMutationOptions<Awaited<ReturnType<typeof postMcpAuthToken>>, TError,void, TContext> => {
-const {mutation: mutationOptions, request: requestOptions} = options ?? {};
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof postMcpAuthToken>>,
+    void
+  > = () => {
+    return postMcpAuthToken(requestOptions);
+  };
 
-      
+  return { mutationFn, ...mutationOptions };
+};
 
+export type PostMcpAuthTokenMutationResult = NonNullable<
+  Awaited<ReturnType<typeof postMcpAuthToken>>
+>;
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof postMcpAuthToken>>, void> = () => {
-          
+export type PostMcpAuthTokenMutationError = PostMcpAuthToken401;
 
-          return  postMcpAuthToken(requestOptions)
-        }
+export const usePostMcpAuthToken = <
+  TError = PostMcpAuthToken401,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof postMcpAuthToken>>,
+    TError,
+    void,
+    TContext
+  >;
+  request?: SecondParameter<typeof axiosInstance>;
+}): UseMutationResult<
+  Awaited<ReturnType<typeof postMcpAuthToken>>,
+  TError,
+  void,
+  TContext
+> => {
+  const mutationOptions = getPostMcpAuthTokenMutationOptions(options);
 
-        
+  return useMutation(mutationOptions);
+};
 
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type PostMcpAuthTokenMutationResult = NonNullable<Awaited<ReturnType<typeof postMcpAuthToken>>>
-    
-    export type PostMcpAuthTokenMutationError = PostMcpAuthToken401
-
-    export const usePostMcpAuthToken = <TError = PostMcpAuthToken401,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postMcpAuthToken>>, TError,void, TContext>, request?: SecondParameter<typeof axiosInstance>}
-): UseMutationResult<
-        Awaited<ReturnType<typeof postMcpAuthToken>>,
-        TError,
-        void,
-        TContext
-      > => {
-
-      const mutationOptions = getPostMcpAuthTokenMutationOptions(options);
-
-      return useMutation(mutationOptions);
-    }
-    
 /**
  * Get all recipes for the authenticated user
  */
 export const getMiseRecipes = (
-    
- options?: SecondParameter<typeof axiosInstance>,signal?: AbortSignal
+  options?: SecondParameter<typeof axiosInstance>,
+  signal?: AbortSignal,
 ) => {
-      
-      
-      return axiosInstance<GetMiseRecipes200>(
-      {url: `/mise/recipes`, method: 'GET', signal
-    },
-      options);
-    }
-  
+  return axiosInstance<GetMiseRecipes200>(
+    { url: `/mise/recipes`, method: "GET", signal },
+    options,
+  );
+};
 
 export const getGetMiseRecipesQueryKey = () => {
-    return [`/mise/recipes`] as const;
-    }
+  return [`/mise/recipes`] as const;
+};
 
-    
-export const getGetMiseRecipesQueryOptions = <TData = Awaited<ReturnType<typeof getMiseRecipes>>, TError = GetMiseRecipes401 | GetMiseRecipes500>( options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getMiseRecipes>>, TError, TData>, request?: SecondParameter<typeof axiosInstance>}
-) => {
+export const getGetMiseRecipesQueryOptions = <
+  TData = Awaited<ReturnType<typeof getMiseRecipes>>,
+  TError = GetMiseRecipes401 | GetMiseRecipes500,
+>(options?: {
+  query?: UseQueryOptions<
+    Awaited<ReturnType<typeof getMiseRecipes>>,
+    TError,
+    TData
+  >;
+  request?: SecondParameter<typeof axiosInstance>;
+}) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
 
-const {query: queryOptions, request: requestOptions} = options ?? {};
+  const queryKey = queryOptions?.queryKey ?? getGetMiseRecipesQueryKey();
 
-  const queryKey =  queryOptions?.queryKey ?? getGetMiseRecipesQueryKey();
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getMiseRecipes>>> = ({
+    signal,
+  }) => getMiseRecipes(requestOptions, signal);
 
-  
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof getMiseRecipes>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getMiseRecipes>>> = ({ signal }) => getMiseRecipes(requestOptions, signal);
+export type GetMiseRecipesQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getMiseRecipes>>
+>;
+export type GetMiseRecipesQueryError = GetMiseRecipes401 | GetMiseRecipes500;
 
-      
+export const useGetMiseRecipes = <
+  TData = Awaited<ReturnType<typeof getMiseRecipes>>,
+  TError = GetMiseRecipes401 | GetMiseRecipes500,
+>(options?: {
+  query?: UseQueryOptions<
+    Awaited<ReturnType<typeof getMiseRecipes>>,
+    TError,
+    TData
+  >;
+  request?: SecondParameter<typeof axiosInstance>;
+}): UseQueryResult<TData, TError> & { queryKey: QueryKey } => {
+  const queryOptions = getGetMiseRecipesQueryOptions(options);
 
-      
+  const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
+    queryKey: QueryKey;
+  };
 
-   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getMiseRecipes>>, TError, TData> & { queryKey: QueryKey }
-}
-
-export type GetMiseRecipesQueryResult = NonNullable<Awaited<ReturnType<typeof getMiseRecipes>>>
-export type GetMiseRecipesQueryError = GetMiseRecipes401 | GetMiseRecipes500
-
-export const useGetMiseRecipes = <TData = Awaited<ReturnType<typeof getMiseRecipes>>, TError = GetMiseRecipes401 | GetMiseRecipes500>(
-  options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getMiseRecipes>>, TError, TData>, request?: SecondParameter<typeof axiosInstance>}
-
-  ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } => {
-
-  const queryOptions = getGetMiseRecipesQueryOptions(options)
-
-  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
-
-  query.queryKey = queryOptions.queryKey ;
+  query.queryKey = queryOptions.queryKey;
 
   return query;
-}
-
-
-
+};
 
 /**
  * Search recipes by name, description, ingredients, or instructions
  */
 export const getMiseRecipesSearch = (
-    params: GetMiseRecipesSearchParams,
- options?: SecondParameter<typeof axiosInstance>,signal?: AbortSignal
+  params: GetMiseRecipesSearchParams,
+  options?: SecondParameter<typeof axiosInstance>,
+  signal?: AbortSignal,
 ) => {
-      
-      
-      return axiosInstance<GetMiseRecipesSearch200>(
-      {url: `/mise/recipes/search`, method: 'GET',
-        params, signal
-    },
-      options);
-    }
-  
+  return axiosInstance<GetMiseRecipesSearch200>(
+    { url: `/mise/recipes/search`, method: "GET", params, signal },
+    options,
+  );
+};
 
-export const getGetMiseRecipesSearchQueryKey = (params: GetMiseRecipesSearchParams,) => {
-    return [`/mise/recipes/search`, ...(params ? [params]: [])] as const;
-    }
-
-    
-export const getGetMiseRecipesSearchQueryOptions = <TData = Awaited<ReturnType<typeof getMiseRecipesSearch>>, TError = GetMiseRecipesSearch400 | GetMiseRecipesSearch401 | GetMiseRecipesSearch500>(params: GetMiseRecipesSearchParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getMiseRecipesSearch>>, TError, TData>, request?: SecondParameter<typeof axiosInstance>}
+export const getGetMiseRecipesSearchQueryKey = (
+  params: GetMiseRecipesSearchParams,
 ) => {
+  return [`/mise/recipes/search`, ...(params ? [params] : [])] as const;
+};
 
-const {query: queryOptions, request: requestOptions} = options ?? {};
+export const getGetMiseRecipesSearchQueryOptions = <
+  TData = Awaited<ReturnType<typeof getMiseRecipesSearch>>,
+  TError =
+    | GetMiseRecipesSearch400
+    | GetMiseRecipesSearch401
+    | GetMiseRecipesSearch500,
+>(
+  params: GetMiseRecipesSearchParams,
+  options?: {
+    query?: UseQueryOptions<
+      Awaited<ReturnType<typeof getMiseRecipesSearch>>,
+      TError,
+      TData
+    >;
+    request?: SecondParameter<typeof axiosInstance>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
 
-  const queryKey =  queryOptions?.queryKey ?? getGetMiseRecipesSearchQueryKey(params);
+  const queryKey =
+    queryOptions?.queryKey ?? getGetMiseRecipesSearchQueryKey(params);
 
-  
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof getMiseRecipesSearch>>
+  > = ({ signal }) => getMiseRecipesSearch(params, requestOptions, signal);
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getMiseRecipesSearch>>> = ({ signal }) => getMiseRecipesSearch(params, requestOptions, signal);
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof getMiseRecipesSearch>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
 
-      
+export type GetMiseRecipesSearchQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getMiseRecipesSearch>>
+>;
+export type GetMiseRecipesSearchQueryError =
+  | GetMiseRecipesSearch400
+  | GetMiseRecipesSearch401
+  | GetMiseRecipesSearch500;
 
-      
+export const useGetMiseRecipesSearch = <
+  TData = Awaited<ReturnType<typeof getMiseRecipesSearch>>,
+  TError =
+    | GetMiseRecipesSearch400
+    | GetMiseRecipesSearch401
+    | GetMiseRecipesSearch500,
+>(
+  params: GetMiseRecipesSearchParams,
+  options?: {
+    query?: UseQueryOptions<
+      Awaited<ReturnType<typeof getMiseRecipesSearch>>,
+      TError,
+      TData
+    >;
+    request?: SecondParameter<typeof axiosInstance>;
+  },
+): UseQueryResult<TData, TError> & { queryKey: QueryKey } => {
+  const queryOptions = getGetMiseRecipesSearchQueryOptions(params, options);
 
-   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getMiseRecipesSearch>>, TError, TData> & { queryKey: QueryKey }
-}
+  const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
+    queryKey: QueryKey;
+  };
 
-export type GetMiseRecipesSearchQueryResult = NonNullable<Awaited<ReturnType<typeof getMiseRecipesSearch>>>
-export type GetMiseRecipesSearchQueryError = GetMiseRecipesSearch400 | GetMiseRecipesSearch401 | GetMiseRecipesSearch500
-
-export const useGetMiseRecipesSearch = <TData = Awaited<ReturnType<typeof getMiseRecipesSearch>>, TError = GetMiseRecipesSearch400 | GetMiseRecipesSearch401 | GetMiseRecipesSearch500>(
- params: GetMiseRecipesSearchParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getMiseRecipesSearch>>, TError, TData>, request?: SecondParameter<typeof axiosInstance>}
-
-  ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } => {
-
-  const queryOptions = getGetMiseRecipesSearchQueryOptions(params,options)
-
-  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
-
-  query.queryKey = queryOptions.queryKey ;
+  query.queryKey = queryOptions.queryKey;
 
   return query;
-}
-
-
-
+};
 
 /**
  * Delete a recipe for the authenticated user
  */
 export const deleteMiseRecipesUuid = (
-    uuid: string,
- options?: SecondParameter<typeof axiosInstance>,) => {
-      
-      
-      return axiosInstance<DeleteMiseRecipesUuid200>(
-      {url: `/mise/recipes/${uuid}`, method: 'DELETE'
-    },
-      options);
-    }
-  
+  uuid: string,
+  options?: SecondParameter<typeof axiosInstance>,
+) => {
+  return axiosInstance<DeleteMiseRecipesUuid200>(
+    { url: `/mise/recipes/${uuid}`, method: "DELETE" },
+    options,
+  );
+};
 
+export const getDeleteMiseRecipesUuidMutationOptions = <
+  TError = DeleteMiseRecipesUuid401 | DeleteMiseRecipesUuid500,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof deleteMiseRecipesUuid>>,
+    TError,
+    { uuid: string },
+    TContext
+  >;
+  request?: SecondParameter<typeof axiosInstance>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof deleteMiseRecipesUuid>>,
+  TError,
+  { uuid: string },
+  TContext
+> => {
+  const { mutation: mutationOptions, request: requestOptions } = options ?? {};
 
-export const getDeleteMiseRecipesUuidMutationOptions = <TError = DeleteMiseRecipesUuid401 | DeleteMiseRecipesUuid500,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteMiseRecipesUuid>>, TError,{uuid: string}, TContext>, request?: SecondParameter<typeof axiosInstance>}
-): UseMutationOptions<Awaited<ReturnType<typeof deleteMiseRecipesUuid>>, TError,{uuid: string}, TContext> => {
-const {mutation: mutationOptions, request: requestOptions} = options ?? {};
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof deleteMiseRecipesUuid>>,
+    { uuid: string }
+  > = (props) => {
+    const { uuid } = props ?? {};
 
-      
+    return deleteMiseRecipesUuid(uuid, requestOptions);
+  };
 
+  return { mutationFn, ...mutationOptions };
+};
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof deleteMiseRecipesUuid>>, {uuid: string}> = (props) => {
-          const {uuid} = props ?? {};
+export type DeleteMiseRecipesUuidMutationResult = NonNullable<
+  Awaited<ReturnType<typeof deleteMiseRecipesUuid>>
+>;
 
-          return  deleteMiseRecipesUuid(uuid,requestOptions)
-        }
+export type DeleteMiseRecipesUuidMutationError =
+  | DeleteMiseRecipesUuid401
+  | DeleteMiseRecipesUuid500;
 
-        
+export const useDeleteMiseRecipesUuid = <
+  TError = DeleteMiseRecipesUuid401 | DeleteMiseRecipesUuid500,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof deleteMiseRecipesUuid>>,
+    TError,
+    { uuid: string },
+    TContext
+  >;
+  request?: SecondParameter<typeof axiosInstance>;
+}): UseMutationResult<
+  Awaited<ReturnType<typeof deleteMiseRecipesUuid>>,
+  TError,
+  { uuid: string },
+  TContext
+> => {
+  const mutationOptions = getDeleteMiseRecipesUuidMutationOptions(options);
 
+  return useMutation(mutationOptions);
+};
 
-  return  { mutationFn, ...mutationOptions }}
-
-    export type DeleteMiseRecipesUuidMutationResult = NonNullable<Awaited<ReturnType<typeof deleteMiseRecipesUuid>>>
-    
-    export type DeleteMiseRecipesUuidMutationError = DeleteMiseRecipesUuid401 | DeleteMiseRecipesUuid500
-
-    export const useDeleteMiseRecipesUuid = <TError = DeleteMiseRecipesUuid401 | DeleteMiseRecipesUuid500,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteMiseRecipesUuid>>, TError,{uuid: string}, TContext>, request?: SecondParameter<typeof axiosInstance>}
-): UseMutationResult<
-        Awaited<ReturnType<typeof deleteMiseRecipesUuid>>,
-        TError,
-        {uuid: string},
-        TContext
-      > => {
-
-      const mutationOptions = getDeleteMiseRecipesUuidMutationOptions(options);
-
-      return useMutation(mutationOptions);
-    }
-    
 /**
  * Get the meal plan for the authenticated user
  */
 export const getMiseMealPlan = (
-    
- options?: SecondParameter<typeof axiosInstance>,signal?: AbortSignal
+  options?: SecondParameter<typeof axiosInstance>,
+  signal?: AbortSignal,
 ) => {
-      
-      
-      return axiosInstance<MealPlan>(
-      {url: `/mise/meal-plan`, method: 'GET', signal
-    },
-      options);
-    }
-  
+  return axiosInstance<MealPlan>(
+    { url: `/mise/meal-plan`, method: "GET", signal },
+    options,
+  );
+};
 
 export const getGetMiseMealPlanQueryKey = () => {
-    return [`/mise/meal-plan`] as const;
-    }
+  return [`/mise/meal-plan`] as const;
+};
 
-    
-export const getGetMiseMealPlanQueryOptions = <TData = Awaited<ReturnType<typeof getMiseMealPlan>>, TError = GetMiseMealPlan401 | GetMiseMealPlan500>( options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getMiseMealPlan>>, TError, TData>, request?: SecondParameter<typeof axiosInstance>}
-) => {
+export const getGetMiseMealPlanQueryOptions = <
+  TData = Awaited<ReturnType<typeof getMiseMealPlan>>,
+  TError = GetMiseMealPlan401 | GetMiseMealPlan500,
+>(options?: {
+  query?: UseQueryOptions<
+    Awaited<ReturnType<typeof getMiseMealPlan>>,
+    TError,
+    TData
+  >;
+  request?: SecondParameter<typeof axiosInstance>;
+}) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
 
-const {query: queryOptions, request: requestOptions} = options ?? {};
+  const queryKey = queryOptions?.queryKey ?? getGetMiseMealPlanQueryKey();
 
-  const queryKey =  queryOptions?.queryKey ?? getGetMiseMealPlanQueryKey();
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getMiseMealPlan>>> = ({
+    signal,
+  }) => getMiseMealPlan(requestOptions, signal);
 
-  
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof getMiseMealPlan>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getMiseMealPlan>>> = ({ signal }) => getMiseMealPlan(requestOptions, signal);
+export type GetMiseMealPlanQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getMiseMealPlan>>
+>;
+export type GetMiseMealPlanQueryError = GetMiseMealPlan401 | GetMiseMealPlan500;
 
-      
+export const useGetMiseMealPlan = <
+  TData = Awaited<ReturnType<typeof getMiseMealPlan>>,
+  TError = GetMiseMealPlan401 | GetMiseMealPlan500,
+>(options?: {
+  query?: UseQueryOptions<
+    Awaited<ReturnType<typeof getMiseMealPlan>>,
+    TError,
+    TData
+  >;
+  request?: SecondParameter<typeof axiosInstance>;
+}): UseQueryResult<TData, TError> & { queryKey: QueryKey } => {
+  const queryOptions = getGetMiseMealPlanQueryOptions(options);
 
-      
+  const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
+    queryKey: QueryKey;
+  };
 
-   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getMiseMealPlan>>, TError, TData> & { queryKey: QueryKey }
-}
-
-export type GetMiseMealPlanQueryResult = NonNullable<Awaited<ReturnType<typeof getMiseMealPlan>>>
-export type GetMiseMealPlanQueryError = GetMiseMealPlan401 | GetMiseMealPlan500
-
-export const useGetMiseMealPlan = <TData = Awaited<ReturnType<typeof getMiseMealPlan>>, TError = GetMiseMealPlan401 | GetMiseMealPlan500>(
-  options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getMiseMealPlan>>, TError, TData>, request?: SecondParameter<typeof axiosInstance>}
-
-  ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } => {
-
-  const queryOptions = getGetMiseMealPlanQueryOptions(options)
-
-  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
-
-  query.queryKey = queryOptions.queryKey ;
+  query.queryKey = queryOptions.queryKey;
 
   return query;
-}
-
-
-
+};
 
 /**
  * Update the meal plan for the authenticated user
  */
 export const putMiseMealPlan = (
-    mealPlan: MealPlan,
- options?: SecondParameter<typeof axiosInstance>,) => {
-      
-      
-      return axiosInstance<PutMiseMealPlan200>(
-      {url: `/mise/meal-plan`, method: 'PUT',
-      headers: {'Content-Type': 'application/json', },
-      data: mealPlan
+  mealPlan: MealPlan,
+  options?: SecondParameter<typeof axiosInstance>,
+) => {
+  return axiosInstance<PutMiseMealPlan200>(
+    {
+      url: `/mise/meal-plan`,
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      data: mealPlan,
     },
-      options);
-    }
-  
+    options,
+  );
+};
 
+export const getPutMiseMealPlanMutationOptions = <
+  TError = PutMiseMealPlan400 | PutMiseMealPlan401 | PutMiseMealPlan500,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof putMiseMealPlan>>,
+    TError,
+    { data: MealPlan },
+    TContext
+  >;
+  request?: SecondParameter<typeof axiosInstance>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof putMiseMealPlan>>,
+  TError,
+  { data: MealPlan },
+  TContext
+> => {
+  const { mutation: mutationOptions, request: requestOptions } = options ?? {};
 
-export const getPutMiseMealPlanMutationOptions = <TError = PutMiseMealPlan400 | PutMiseMealPlan401 | PutMiseMealPlan500,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof putMiseMealPlan>>, TError,{data: MealPlan}, TContext>, request?: SecondParameter<typeof axiosInstance>}
-): UseMutationOptions<Awaited<ReturnType<typeof putMiseMealPlan>>, TError,{data: MealPlan}, TContext> => {
-const {mutation: mutationOptions, request: requestOptions} = options ?? {};
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof putMiseMealPlan>>,
+    { data: MealPlan }
+  > = (props) => {
+    const { data } = props ?? {};
 
-      
+    return putMiseMealPlan(data, requestOptions);
+  };
 
+  return { mutationFn, ...mutationOptions };
+};
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof putMiseMealPlan>>, {data: MealPlan}> = (props) => {
-          const {data} = props ?? {};
+export type PutMiseMealPlanMutationResult = NonNullable<
+  Awaited<ReturnType<typeof putMiseMealPlan>>
+>;
+export type PutMiseMealPlanMutationBody = MealPlan;
+export type PutMiseMealPlanMutationError =
+  | PutMiseMealPlan400
+  | PutMiseMealPlan401
+  | PutMiseMealPlan500;
 
-          return  putMiseMealPlan(data,requestOptions)
-        }
+export const usePutMiseMealPlan = <
+  TError = PutMiseMealPlan400 | PutMiseMealPlan401 | PutMiseMealPlan500,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof putMiseMealPlan>>,
+    TError,
+    { data: MealPlan },
+    TContext
+  >;
+  request?: SecondParameter<typeof axiosInstance>;
+}): UseMutationResult<
+  Awaited<ReturnType<typeof putMiseMealPlan>>,
+  TError,
+  { data: MealPlan },
+  TContext
+> => {
+  const mutationOptions = getPutMiseMealPlanMutationOptions(options);
 
-        
+  return useMutation(mutationOptions);
+};
 
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type PutMiseMealPlanMutationResult = NonNullable<Awaited<ReturnType<typeof putMiseMealPlan>>>
-    export type PutMiseMealPlanMutationBody = MealPlan
-    export type PutMiseMealPlanMutationError = PutMiseMealPlan400 | PutMiseMealPlan401 | PutMiseMealPlan500
-
-    export const usePutMiseMealPlan = <TError = PutMiseMealPlan400 | PutMiseMealPlan401 | PutMiseMealPlan500,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof putMiseMealPlan>>, TError,{data: MealPlan}, TContext>, request?: SecondParameter<typeof axiosInstance>}
-): UseMutationResult<
-        Awaited<ReturnType<typeof putMiseMealPlan>>,
-        TError,
-        {data: MealPlan},
-        TContext
-      > => {
-
-      const mutationOptions = getPutMiseMealPlanMutationOptions(options);
-
-      return useMutation(mutationOptions);
-    }
-    
 /**
  * Get aggregated shopping list from recipes in the meal plan, optionally filtered by date range
  */
 export const getMiseShoppingList = (
-    params?: GetMiseShoppingListParams,
- options?: SecondParameter<typeof axiosInstance>,signal?: AbortSignal
+  params?: GetMiseShoppingListParams,
+  options?: SecondParameter<typeof axiosInstance>,
+  signal?: AbortSignal,
 ) => {
-      
-      
-      return axiosInstance<GetMiseShoppingList200Item[]>(
-      {url: `/mise/shopping-list`, method: 'GET',
-        params, signal
-    },
-      options);
-    }
-  
+  return axiosInstance<GetMiseShoppingList200Item[]>(
+    { url: `/mise/shopping-list`, method: "GET", params, signal },
+    options,
+  );
+};
 
-export const getGetMiseShoppingListQueryKey = (params?: GetMiseShoppingListParams,) => {
-    return [`/mise/shopping-list`, ...(params ? [params]: [])] as const;
-    }
-
-    
-export const getGetMiseShoppingListQueryOptions = <TData = Awaited<ReturnType<typeof getMiseShoppingList>>, TError = GetMiseShoppingList401 | GetMiseShoppingList500>(params?: GetMiseShoppingListParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getMiseShoppingList>>, TError, TData>, request?: SecondParameter<typeof axiosInstance>}
+export const getGetMiseShoppingListQueryKey = (
+  params?: GetMiseShoppingListParams,
 ) => {
+  return [`/mise/shopping-list`, ...(params ? [params] : [])] as const;
+};
 
-const {query: queryOptions, request: requestOptions} = options ?? {};
+export const getGetMiseShoppingListQueryOptions = <
+  TData = Awaited<ReturnType<typeof getMiseShoppingList>>,
+  TError = GetMiseShoppingList401 | GetMiseShoppingList500,
+>(
+  params?: GetMiseShoppingListParams,
+  options?: {
+    query?: UseQueryOptions<
+      Awaited<ReturnType<typeof getMiseShoppingList>>,
+      TError,
+      TData
+    >;
+    request?: SecondParameter<typeof axiosInstance>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
 
-  const queryKey =  queryOptions?.queryKey ?? getGetMiseShoppingListQueryKey(params);
+  const queryKey =
+    queryOptions?.queryKey ?? getGetMiseShoppingListQueryKey(params);
 
-  
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof getMiseShoppingList>>
+  > = ({ signal }) => getMiseShoppingList(params, requestOptions, signal);
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getMiseShoppingList>>> = ({ signal }) => getMiseShoppingList(params, requestOptions, signal);
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof getMiseShoppingList>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
 
-      
+export type GetMiseShoppingListQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getMiseShoppingList>>
+>;
+export type GetMiseShoppingListQueryError =
+  | GetMiseShoppingList401
+  | GetMiseShoppingList500;
 
-      
+export const useGetMiseShoppingList = <
+  TData = Awaited<ReturnType<typeof getMiseShoppingList>>,
+  TError = GetMiseShoppingList401 | GetMiseShoppingList500,
+>(
+  params?: GetMiseShoppingListParams,
+  options?: {
+    query?: UseQueryOptions<
+      Awaited<ReturnType<typeof getMiseShoppingList>>,
+      TError,
+      TData
+    >;
+    request?: SecondParameter<typeof axiosInstance>;
+  },
+): UseQueryResult<TData, TError> & { queryKey: QueryKey } => {
+  const queryOptions = getGetMiseShoppingListQueryOptions(params, options);
 
-   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getMiseShoppingList>>, TError, TData> & { queryKey: QueryKey }
-}
+  const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
+    queryKey: QueryKey;
+  };
 
-export type GetMiseShoppingListQueryResult = NonNullable<Awaited<ReturnType<typeof getMiseShoppingList>>>
-export type GetMiseShoppingListQueryError = GetMiseShoppingList401 | GetMiseShoppingList500
-
-export const useGetMiseShoppingList = <TData = Awaited<ReturnType<typeof getMiseShoppingList>>, TError = GetMiseShoppingList401 | GetMiseShoppingList500>(
- params?: GetMiseShoppingListParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getMiseShoppingList>>, TError, TData>, request?: SecondParameter<typeof axiosInstance>}
-
-  ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } => {
-
-  const queryOptions = getGetMiseShoppingListQueryOptions(params,options)
-
-  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
-
-  query.queryKey = queryOptions.queryKey ;
+  query.queryKey = queryOptions.queryKey;
 
   return query;
-}
-
-
-
+};
 
 /**
  * Generate a signed GET URL for downloading files from S3
  */
 export const postMiseS3SignedUrl = (
-    postMiseS3SignedUrlBody: PostMiseS3SignedUrlBody,
- options?: SecondParameter<typeof axiosInstance>,) => {
-      
-      
-      return axiosInstance<PostMiseS3SignedUrl200>(
-      {url: `/mise/s3/signed-url`, method: 'POST',
-      headers: {'Content-Type': 'application/json', },
-      data: postMiseS3SignedUrlBody
+  postMiseS3SignedUrlBody: PostMiseS3SignedUrlBody,
+  options?: SecondParameter<typeof axiosInstance>,
+) => {
+  return axiosInstance<PostMiseS3SignedUrl200>(
+    {
+      url: `/mise/s3/signed-url`,
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      data: postMiseS3SignedUrlBody,
     },
-      options);
-    }
-  
+    options,
+  );
+};
 
+export const getPostMiseS3SignedUrlMutationOptions = <
+  TError = PostMiseS3SignedUrl400 | PostMiseS3SignedUrl500,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof postMiseS3SignedUrl>>,
+    TError,
+    { data: PostMiseS3SignedUrlBody },
+    TContext
+  >;
+  request?: SecondParameter<typeof axiosInstance>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof postMiseS3SignedUrl>>,
+  TError,
+  { data: PostMiseS3SignedUrlBody },
+  TContext
+> => {
+  const { mutation: mutationOptions, request: requestOptions } = options ?? {};
 
-export const getPostMiseS3SignedUrlMutationOptions = <TError = PostMiseS3SignedUrl400 | PostMiseS3SignedUrl500,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postMiseS3SignedUrl>>, TError,{data: PostMiseS3SignedUrlBody}, TContext>, request?: SecondParameter<typeof axiosInstance>}
-): UseMutationOptions<Awaited<ReturnType<typeof postMiseS3SignedUrl>>, TError,{data: PostMiseS3SignedUrlBody}, TContext> => {
-const {mutation: mutationOptions, request: requestOptions} = options ?? {};
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof postMiseS3SignedUrl>>,
+    { data: PostMiseS3SignedUrlBody }
+  > = (props) => {
+    const { data } = props ?? {};
 
-      
+    return postMiseS3SignedUrl(data, requestOptions);
+  };
 
+  return { mutationFn, ...mutationOptions };
+};
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof postMiseS3SignedUrl>>, {data: PostMiseS3SignedUrlBody}> = (props) => {
-          const {data} = props ?? {};
+export type PostMiseS3SignedUrlMutationResult = NonNullable<
+  Awaited<ReturnType<typeof postMiseS3SignedUrl>>
+>;
+export type PostMiseS3SignedUrlMutationBody = PostMiseS3SignedUrlBody;
+export type PostMiseS3SignedUrlMutationError =
+  | PostMiseS3SignedUrl400
+  | PostMiseS3SignedUrl500;
 
-          return  postMiseS3SignedUrl(data,requestOptions)
-        }
+export const usePostMiseS3SignedUrl = <
+  TError = PostMiseS3SignedUrl400 | PostMiseS3SignedUrl500,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof postMiseS3SignedUrl>>,
+    TError,
+    { data: PostMiseS3SignedUrlBody },
+    TContext
+  >;
+  request?: SecondParameter<typeof axiosInstance>;
+}): UseMutationResult<
+  Awaited<ReturnType<typeof postMiseS3SignedUrl>>,
+  TError,
+  { data: PostMiseS3SignedUrlBody },
+  TContext
+> => {
+  const mutationOptions = getPostMiseS3SignedUrlMutationOptions(options);
 
-        
+  return useMutation(mutationOptions);
+};
 
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type PostMiseS3SignedUrlMutationResult = NonNullable<Awaited<ReturnType<typeof postMiseS3SignedUrl>>>
-    export type PostMiseS3SignedUrlMutationBody = PostMiseS3SignedUrlBody
-    export type PostMiseS3SignedUrlMutationError = PostMiseS3SignedUrl400 | PostMiseS3SignedUrl500
-
-    export const usePostMiseS3SignedUrl = <TError = PostMiseS3SignedUrl400 | PostMiseS3SignedUrl500,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postMiseS3SignedUrl>>, TError,{data: PostMiseS3SignedUrlBody}, TContext>, request?: SecondParameter<typeof axiosInstance>}
-): UseMutationResult<
-        Awaited<ReturnType<typeof postMiseS3SignedUrl>>,
-        TError,
-        {data: PostMiseS3SignedUrlBody},
-        TContext
-      > => {
-
-      const mutationOptions = getPostMiseS3SignedUrlMutationOptions(options);
-
-      return useMutation(mutationOptions);
-    }
-    
 /**
  * Generate a signed PUT URL for uploading files to S3
  */
 export const postMiseS3Upload = (
-    postMiseS3UploadBody: PostMiseS3UploadBody,
- options?: SecondParameter<typeof axiosInstance>,) => {
-      
-      
-      return axiosInstance<PostMiseS3Upload200>(
-      {url: `/mise/s3/upload`, method: 'POST',
-      headers: {'Content-Type': 'application/json', },
-      data: postMiseS3UploadBody
+  postMiseS3UploadBody: PostMiseS3UploadBody,
+  options?: SecondParameter<typeof axiosInstance>,
+) => {
+  return axiosInstance<PostMiseS3Upload200>(
+    {
+      url: `/mise/s3/upload`,
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      data: postMiseS3UploadBody,
     },
-      options);
-    }
-  
+    options,
+  );
+};
 
+export const getPostMiseS3UploadMutationOptions = <
+  TError = PostMiseS3Upload400 | PostMiseS3Upload401 | PostMiseS3Upload500,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof postMiseS3Upload>>,
+    TError,
+    { data: PostMiseS3UploadBody },
+    TContext
+  >;
+  request?: SecondParameter<typeof axiosInstance>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof postMiseS3Upload>>,
+  TError,
+  { data: PostMiseS3UploadBody },
+  TContext
+> => {
+  const { mutation: mutationOptions, request: requestOptions } = options ?? {};
 
-export const getPostMiseS3UploadMutationOptions = <TError = PostMiseS3Upload400 | PostMiseS3Upload401 | PostMiseS3Upload500,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postMiseS3Upload>>, TError,{data: PostMiseS3UploadBody}, TContext>, request?: SecondParameter<typeof axiosInstance>}
-): UseMutationOptions<Awaited<ReturnType<typeof postMiseS3Upload>>, TError,{data: PostMiseS3UploadBody}, TContext> => {
-const {mutation: mutationOptions, request: requestOptions} = options ?? {};
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof postMiseS3Upload>>,
+    { data: PostMiseS3UploadBody }
+  > = (props) => {
+    const { data } = props ?? {};
 
-      
+    return postMiseS3Upload(data, requestOptions);
+  };
 
+  return { mutationFn, ...mutationOptions };
+};
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof postMiseS3Upload>>, {data: PostMiseS3UploadBody}> = (props) => {
-          const {data} = props ?? {};
+export type PostMiseS3UploadMutationResult = NonNullable<
+  Awaited<ReturnType<typeof postMiseS3Upload>>
+>;
+export type PostMiseS3UploadMutationBody = PostMiseS3UploadBody;
+export type PostMiseS3UploadMutationError =
+  | PostMiseS3Upload400
+  | PostMiseS3Upload401
+  | PostMiseS3Upload500;
 
-          return  postMiseS3Upload(data,requestOptions)
-        }
+export const usePostMiseS3Upload = <
+  TError = PostMiseS3Upload400 | PostMiseS3Upload401 | PostMiseS3Upload500,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof postMiseS3Upload>>,
+    TError,
+    { data: PostMiseS3UploadBody },
+    TContext
+  >;
+  request?: SecondParameter<typeof axiosInstance>;
+}): UseMutationResult<
+  Awaited<ReturnType<typeof postMiseS3Upload>>,
+  TError,
+  { data: PostMiseS3UploadBody },
+  TContext
+> => {
+  const mutationOptions = getPostMiseS3UploadMutationOptions(options);
 
-        
+  return useMutation(mutationOptions);
+};
 
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type PostMiseS3UploadMutationResult = NonNullable<Awaited<ReturnType<typeof postMiseS3Upload>>>
-    export type PostMiseS3UploadMutationBody = PostMiseS3UploadBody
-    export type PostMiseS3UploadMutationError = PostMiseS3Upload400 | PostMiseS3Upload401 | PostMiseS3Upload500
-
-    export const usePostMiseS3Upload = <TError = PostMiseS3Upload400 | PostMiseS3Upload401 | PostMiseS3Upload500,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postMiseS3Upload>>, TError,{data: PostMiseS3UploadBody}, TContext>, request?: SecondParameter<typeof axiosInstance>}
-): UseMutationResult<
-        Awaited<ReturnType<typeof postMiseS3Upload>>,
-        TError,
-        {data: PostMiseS3UploadBody},
-        TContext
-      > => {
-
-      const mutationOptions = getPostMiseS3UploadMutationOptions(options);
-
-      return useMutation(mutationOptions);
-    }
-    
 /**
  * Delete a file from S3
  */
 export const postMiseS3Delete = (
-    postMiseS3DeleteBody: PostMiseS3DeleteBody,
- options?: SecondParameter<typeof axiosInstance>,) => {
-      
-      
-      return axiosInstance<PostMiseS3Delete200>(
-      {url: `/mise/s3/delete`, method: 'POST',
-      headers: {'Content-Type': 'application/json', },
-      data: postMiseS3DeleteBody
+  postMiseS3DeleteBody: PostMiseS3DeleteBody,
+  options?: SecondParameter<typeof axiosInstance>,
+) => {
+  return axiosInstance<PostMiseS3Delete200>(
+    {
+      url: `/mise/s3/delete`,
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      data: postMiseS3DeleteBody,
     },
-      options);
-    }
-  
+    options,
+  );
+};
 
+export const getPostMiseS3DeleteMutationOptions = <
+  TError = PostMiseS3Delete400 | PostMiseS3Delete500,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof postMiseS3Delete>>,
+    TError,
+    { data: PostMiseS3DeleteBody },
+    TContext
+  >;
+  request?: SecondParameter<typeof axiosInstance>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof postMiseS3Delete>>,
+  TError,
+  { data: PostMiseS3DeleteBody },
+  TContext
+> => {
+  const { mutation: mutationOptions, request: requestOptions } = options ?? {};
 
-export const getPostMiseS3DeleteMutationOptions = <TError = PostMiseS3Delete400 | PostMiseS3Delete500,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postMiseS3Delete>>, TError,{data: PostMiseS3DeleteBody}, TContext>, request?: SecondParameter<typeof axiosInstance>}
-): UseMutationOptions<Awaited<ReturnType<typeof postMiseS3Delete>>, TError,{data: PostMiseS3DeleteBody}, TContext> => {
-const {mutation: mutationOptions, request: requestOptions} = options ?? {};
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof postMiseS3Delete>>,
+    { data: PostMiseS3DeleteBody }
+  > = (props) => {
+    const { data } = props ?? {};
 
-      
+    return postMiseS3Delete(data, requestOptions);
+  };
 
+  return { mutationFn, ...mutationOptions };
+};
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof postMiseS3Delete>>, {data: PostMiseS3DeleteBody}> = (props) => {
-          const {data} = props ?? {};
+export type PostMiseS3DeleteMutationResult = NonNullable<
+  Awaited<ReturnType<typeof postMiseS3Delete>>
+>;
+export type PostMiseS3DeleteMutationBody = PostMiseS3DeleteBody;
+export type PostMiseS3DeleteMutationError =
+  | PostMiseS3Delete400
+  | PostMiseS3Delete500;
 
-          return  postMiseS3Delete(data,requestOptions)
-        }
+export const usePostMiseS3Delete = <
+  TError = PostMiseS3Delete400 | PostMiseS3Delete500,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof postMiseS3Delete>>,
+    TError,
+    { data: PostMiseS3DeleteBody },
+    TContext
+  >;
+  request?: SecondParameter<typeof axiosInstance>;
+}): UseMutationResult<
+  Awaited<ReturnType<typeof postMiseS3Delete>>,
+  TError,
+  { data: PostMiseS3DeleteBody },
+  TContext
+> => {
+  const mutationOptions = getPostMiseS3DeleteMutationOptions(options);
 
-        
+  return useMutation(mutationOptions);
+};
 
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type PostMiseS3DeleteMutationResult = NonNullable<Awaited<ReturnType<typeof postMiseS3Delete>>>
-    export type PostMiseS3DeleteMutationBody = PostMiseS3DeleteBody
-    export type PostMiseS3DeleteMutationError = PostMiseS3Delete400 | PostMiseS3Delete500
-
-    export const usePostMiseS3Delete = <TError = PostMiseS3Delete400 | PostMiseS3Delete500,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postMiseS3Delete>>, TError,{data: PostMiseS3DeleteBody}, TContext>, request?: SecondParameter<typeof axiosInstance>}
-): UseMutationResult<
-        Awaited<ReturnType<typeof postMiseS3Delete>>,
-        TError,
-        {data: PostMiseS3DeleteBody},
-        TContext
-      > => {
-
-      const mutationOptions = getPostMiseS3DeleteMutationOptions(options);
-
-      return useMutation(mutationOptions);
-    }
-    
 /**
  * Parse natural language recipe text and save to the user account
  */
 export const postMiseParseRecipe = (
-    postMiseParseRecipeBody: PostMiseParseRecipeBody,
- options?: SecondParameter<typeof axiosInstance>,) => {
-      
-      
-      return axiosInstance<Recipe>(
-      {url: `/mise/parse-recipe`, method: 'POST',
-      headers: {'Content-Type': 'application/json', },
-      data: postMiseParseRecipeBody
+  postMiseParseRecipeBody: PostMiseParseRecipeBody,
+  options?: SecondParameter<typeof axiosInstance>,
+) => {
+  return axiosInstance<Recipe>(
+    {
+      url: `/mise/parse-recipe`,
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      data: postMiseParseRecipeBody,
     },
-      options);
-    }
-  
+    options,
+  );
+};
 
+export const getPostMiseParseRecipeMutationOptions = <
+  TError =
+    | PostMiseParseRecipe400
+    | PostMiseParseRecipe401
+    | PostMiseParseRecipe500,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof postMiseParseRecipe>>,
+    TError,
+    { data: PostMiseParseRecipeBody },
+    TContext
+  >;
+  request?: SecondParameter<typeof axiosInstance>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof postMiseParseRecipe>>,
+  TError,
+  { data: PostMiseParseRecipeBody },
+  TContext
+> => {
+  const { mutation: mutationOptions, request: requestOptions } = options ?? {};
 
-export const getPostMiseParseRecipeMutationOptions = <TError = PostMiseParseRecipe400 | PostMiseParseRecipe401 | PostMiseParseRecipe500,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postMiseParseRecipe>>, TError,{data: PostMiseParseRecipeBody}, TContext>, request?: SecondParameter<typeof axiosInstance>}
-): UseMutationOptions<Awaited<ReturnType<typeof postMiseParseRecipe>>, TError,{data: PostMiseParseRecipeBody}, TContext> => {
-const {mutation: mutationOptions, request: requestOptions} = options ?? {};
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof postMiseParseRecipe>>,
+    { data: PostMiseParseRecipeBody }
+  > = (props) => {
+    const { data } = props ?? {};
 
-      
+    return postMiseParseRecipe(data, requestOptions);
+  };
 
+  return { mutationFn, ...mutationOptions };
+};
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof postMiseParseRecipe>>, {data: PostMiseParseRecipeBody}> = (props) => {
-          const {data} = props ?? {};
+export type PostMiseParseRecipeMutationResult = NonNullable<
+  Awaited<ReturnType<typeof postMiseParseRecipe>>
+>;
+export type PostMiseParseRecipeMutationBody = PostMiseParseRecipeBody;
+export type PostMiseParseRecipeMutationError =
+  | PostMiseParseRecipe400
+  | PostMiseParseRecipe401
+  | PostMiseParseRecipe500;
 
-          return  postMiseParseRecipe(data,requestOptions)
-        }
+export const usePostMiseParseRecipe = <
+  TError =
+    | PostMiseParseRecipe400
+    | PostMiseParseRecipe401
+    | PostMiseParseRecipe500,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof postMiseParseRecipe>>,
+    TError,
+    { data: PostMiseParseRecipeBody },
+    TContext
+  >;
+  request?: SecondParameter<typeof axiosInstance>;
+}): UseMutationResult<
+  Awaited<ReturnType<typeof postMiseParseRecipe>>,
+  TError,
+  { data: PostMiseParseRecipeBody },
+  TContext
+> => {
+  const mutationOptions = getPostMiseParseRecipeMutationOptions(options);
 
-        
+  return useMutation(mutationOptions);
+};
 
+/**
+ * Generate a shopping list from the meal plan (optionally filtered by dates) and store it as the active shopping list for mobile use
+ */
+export const postMiseShoppingListGenerate = (
+  postMiseShoppingListGenerateBody: PostMiseShoppingListGenerateBody,
+  options?: SecondParameter<typeof axiosInstance>,
+) => {
+  return axiosInstance<PostMiseShoppingListGenerate200>(
+    {
+      url: `/mise/shopping-list/generate`,
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      data: postMiseShoppingListGenerateBody,
+    },
+    options,
+  );
+};
 
-  return  { mutationFn, ...mutationOptions }}
+export const getPostMiseShoppingListGenerateMutationOptions = <
+  TError = PostMiseShoppingListGenerate401 | PostMiseShoppingListGenerate500,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof postMiseShoppingListGenerate>>,
+    TError,
+    { data: PostMiseShoppingListGenerateBody },
+    TContext
+  >;
+  request?: SecondParameter<typeof axiosInstance>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof postMiseShoppingListGenerate>>,
+  TError,
+  { data: PostMiseShoppingListGenerateBody },
+  TContext
+> => {
+  const { mutation: mutationOptions, request: requestOptions } = options ?? {};
 
-    export type PostMiseParseRecipeMutationResult = NonNullable<Awaited<ReturnType<typeof postMiseParseRecipe>>>
-    export type PostMiseParseRecipeMutationBody = PostMiseParseRecipeBody
-    export type PostMiseParseRecipeMutationError = PostMiseParseRecipe400 | PostMiseParseRecipe401 | PostMiseParseRecipe500
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof postMiseShoppingListGenerate>>,
+    { data: PostMiseShoppingListGenerateBody }
+  > = (props) => {
+    const { data } = props ?? {};
 
-    export const usePostMiseParseRecipe = <TError = PostMiseParseRecipe400 | PostMiseParseRecipe401 | PostMiseParseRecipe500,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postMiseParseRecipe>>, TError,{data: PostMiseParseRecipeBody}, TContext>, request?: SecondParameter<typeof axiosInstance>}
-): UseMutationResult<
-        Awaited<ReturnType<typeof postMiseParseRecipe>>,
-        TError,
-        {data: PostMiseParseRecipeBody},
-        TContext
-      > => {
+    return postMiseShoppingListGenerate(data, requestOptions);
+  };
 
-      const mutationOptions = getPostMiseParseRecipeMutationOptions(options);
+  return { mutationFn, ...mutationOptions };
+};
 
-      return useMutation(mutationOptions);
-    }
-    
+export type PostMiseShoppingListGenerateMutationResult = NonNullable<
+  Awaited<ReturnType<typeof postMiseShoppingListGenerate>>
+>;
+export type PostMiseShoppingListGenerateMutationBody =
+  PostMiseShoppingListGenerateBody;
+export type PostMiseShoppingListGenerateMutationError =
+  | PostMiseShoppingListGenerate401
+  | PostMiseShoppingListGenerate500;
+
+export const usePostMiseShoppingListGenerate = <
+  TError = PostMiseShoppingListGenerate401 | PostMiseShoppingListGenerate500,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof postMiseShoppingListGenerate>>,
+    TError,
+    { data: PostMiseShoppingListGenerateBody },
+    TContext
+  >;
+  request?: SecondParameter<typeof axiosInstance>;
+}): UseMutationResult<
+  Awaited<ReturnType<typeof postMiseShoppingListGenerate>>,
+  TError,
+  { data: PostMiseShoppingListGenerateBody },
+  TContext
+> => {
+  const mutationOptions =
+    getPostMiseShoppingListGenerateMutationOptions(options);
+
+  return useMutation(mutationOptions);
+};
+
+/**
+ * Get the active (previously generated) shopping list for the authenticated user
+ */
+export const getMiseShoppingListActive = (
+  options?: SecondParameter<typeof axiosInstance>,
+  signal?: AbortSignal,
+) => {
+  return axiosInstance<GetMiseShoppingListActive200>(
+    { url: `/mise/shopping-list/active`, method: "GET", signal },
+    options,
+  );
+};
+
+export const getGetMiseShoppingListActiveQueryKey = () => {
+  return [`/mise/shopping-list/active`] as const;
+};
+
+export const getGetMiseShoppingListActiveQueryOptions = <
+  TData = Awaited<ReturnType<typeof getMiseShoppingListActive>>,
+  TError = GetMiseShoppingListActive401 | GetMiseShoppingListActive500,
+>(options?: {
+  query?: UseQueryOptions<
+    Awaited<ReturnType<typeof getMiseShoppingListActive>>,
+    TError,
+    TData
+  >;
+  request?: SecondParameter<typeof axiosInstance>;
+}) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey =
+    queryOptions?.queryKey ?? getGetMiseShoppingListActiveQueryKey();
+
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof getMiseShoppingListActive>>
+  > = ({ signal }) => getMiseShoppingListActive(requestOptions, signal);
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof getMiseShoppingListActive>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
+
+export type GetMiseShoppingListActiveQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getMiseShoppingListActive>>
+>;
+export type GetMiseShoppingListActiveQueryError =
+  | GetMiseShoppingListActive401
+  | GetMiseShoppingListActive500;
+
+export const useGetMiseShoppingListActive = <
+  TData = Awaited<ReturnType<typeof getMiseShoppingListActive>>,
+  TError = GetMiseShoppingListActive401 | GetMiseShoppingListActive500,
+>(options?: {
+  query?: UseQueryOptions<
+    Awaited<ReturnType<typeof getMiseShoppingListActive>>,
+    TError,
+    TData
+  >;
+  request?: SecondParameter<typeof axiosInstance>;
+}): UseQueryResult<TData, TError> & { queryKey: QueryKey } => {
+  const queryOptions = getGetMiseShoppingListActiveQueryOptions(options);
+
+  const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
+    queryKey: QueryKey;
+  };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+};

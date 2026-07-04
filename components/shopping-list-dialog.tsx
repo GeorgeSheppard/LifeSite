@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -7,33 +8,19 @@ import {
   DialogTitle,
   DialogFooter,
 } from "@/components/ui/dialog";
-import { ShoppingCart, Copy, Check, ArrowLeft } from "lucide-react";
+import { ShoppingCart, Copy, Check, ArrowLeft, Smartphone } from "lucide-react";
 import { Spinner } from "@/components/ui/spinner";
+import { formatQuantity } from "@/lib/format-quantity";
 import {
-  useGetMiseShoppingList,
-  GetMiseShoppingList200Item,
+  usePostMiseShoppingListGenerate,
+  PostMiseShoppingListGenerate200ItemsItem,
 } from "../client/generated/hooks";
 
 interface ShoppingListDialogProps {
   selectedDates: Set<string>;
 }
 
-function formatQuantity(
-  qty: { value?: number; unit: string }
-): string {
-  if (qty.unit === "none") {
-    return "";
-  }
-  if (qty.unit === "quantity") {
-    return qty.value !== undefined && qty.value !== null ? `${Number(qty.value).toFixed(2)}` : "";
-  }
-  if (qty.value !== undefined && qty.value !== null) {
-    return `${Number(qty.value).toFixed(2)} ${qty.unit}`.trim();
-  }
-  return qty.unit;
-}
-
-function formatItem(item: GetMiseShoppingList200Item): string {
+function formatItem(item: PostMiseShoppingListGenerate200ItemsItem): string {
   const quantities = item.quantities.map(formatQuantity).filter(Boolean).join(" + ");
   const base = quantities ? `${item.ingredient} — ${quantities}` : item.ingredient;
   if (item.meals && item.meals.length > 0) {
@@ -43,9 +30,9 @@ function formatItem(item: GetMiseShoppingList200Item): string {
 }
 
 function shoppingListToText(
-  items: GetMiseShoppingList200Item[]
+  items: PostMiseShoppingListGenerate200ItemsItem[]
 ): string {
-  const byCategory: Record<string, GetMiseShoppingList200Item[]> = {};
+  const byCategory: Record<string, PostMiseShoppingListGenerate200ItemsItem[]> = {};
   for (const item of items) {
     const cat = item.category || "Other";
     if (!byCategory[cat]) byCategory[cat] = [];
@@ -55,7 +42,7 @@ function shoppingListToText(
   return Object.entries(byCategory)
     .map(
       ([category, catItems]) =>
-        `${category}\n${catItems.map((i: GetMiseShoppingList200Item) => `  ${formatItem(i)}`).join("\n")}`
+        `${category}\n${catItems.map((i) => `  ${formatItem(i)}`).join("\n")}`
     )
     .join("\n\n");
 }
@@ -63,43 +50,23 @@ function shoppingListToText(
 export function ShoppingListDialog({ selectedDates }: ShoppingListDialogProps) {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [shoppingList, setShoppingList] = useState<
-    GetMiseShoppingList200Item[] | null
+    PostMiseShoppingListGenerate200ItemsItem[] | null
   >(null);
   const [copied, setCopied] = useState(false);
 
   // Convert selected ISO dates (YYYY-MM-DD) to Unix timestamps (milliseconds)
-  const dates = Array.from(selectedDates).map((iso) => {
-    const date = new Date(`${iso}T00:00:00Z`);
-    return String(date.getTime());
-  });
-
-  const { refetch, isFetching } = useGetMiseShoppingList(
-    dates.length > 0 ? { dates } : undefined,
-    {
-      query: {
-        enabled: false,
-      },
-      request: {
-        paramsSerializer: (params) => {
-          const searchParams = new URLSearchParams();
-          for (const [key, value] of Object.entries(params as Record<string, unknown>)) {
-            if (Array.isArray(value)) {
-              value.forEach((v) => searchParams.append(key, String(v)));
-            } else if (value !== undefined && value !== null) {
-              searchParams.append(key, String(value));
-            }
-          }
-          return searchParams.toString();
-        },
-      },
-    }
+  const dates = Array.from(selectedDates).map((iso) =>
+    new Date(`${iso}T00:00:00Z`).getTime()
   );
 
+  const { mutateAsync: generateShoppingList, isLoading: isPending } =
+    usePostMiseShoppingListGenerate();
+
   const handleCreate = async () => {
-    const result = await refetch();
-    if (result.data) {
-      setShoppingList(result.data);
-    }
+    const result = await generateShoppingList({
+      data: dates.length > 0 ? { dates } : {},
+    });
+    setShoppingList(result.items);
   };
 
   const handleCopy = async () => {
@@ -120,11 +87,11 @@ export function ShoppingListDialog({ selectedDates }: ShoppingListDialogProps) {
   };
 
   // Group items by category for display
-  const groupedItems: [string, GetMiseShoppingList200Item[]][] =
+  const groupedItems: [string, PostMiseShoppingListGenerate200ItemsItem[]][] =
     shoppingList
       ? Object.entries(
           shoppingList.reduce<
-            Record<string, GetMiseShoppingList200Item[]>
+            Record<string, PostMiseShoppingListGenerate200ItemsItem[]>
           >((acc, item) => {
             const cat = item.category || "Other";
             if (!acc[cat]) acc[cat] = [];
@@ -190,18 +157,34 @@ export function ShoppingListDialog({ selectedDates }: ShoppingListDialogProps) {
                   </div>
                 ))}
               </div>
-              <DialogFooter>
-                <Button variant="outline" onClick={() => setDialogOpen(false)}>
-                  Close
-                </Button>
-                <Button onClick={handleCopy}>
-                  {copied ? (
-                    <Check className="size-4 mr-2" />
-                  ) : (
-                    <Copy className="size-4 mr-2" />
-                  )}
-                  {copied ? "Copied!" : "Copy to clipboard"}
-                </Button>
+              <DialogFooter className="flex-col sm:flex-col gap-2">
+                <Link
+                  to="/food/shopping-list"
+                  className="w-full"
+                  onClick={() => setDialogOpen(false)}
+                >
+                  <Button variant="secondary" className="w-full">
+                    <Smartphone className="size-4 mr-2" />
+                    Open checklist on mobile
+                  </Button>
+                </Link>
+                <div className="flex w-full gap-2">
+                  <Button
+                    variant="outline"
+                    onClick={() => setDialogOpen(false)}
+                    className="flex-1"
+                  >
+                    Close
+                  </Button>
+                  <Button onClick={handleCopy} className="flex-1">
+                    {copied ? (
+                      <Check className="size-4 mr-2" />
+                    ) : (
+                      <Copy className="size-4 mr-2" />
+                    )}
+                    {copied ? "Copied!" : "Copy to clipboard"}
+                  </Button>
+                </div>
               </DialogFooter>
             </>
           ) : (
@@ -218,10 +201,10 @@ export function ShoppingListDialog({ selectedDates }: ShoppingListDialogProps) {
               <DialogFooter>
                 <Button
                   onClick={handleCreate}
-                  disabled={selectedDates.size === 0 || isFetching}
+                  disabled={selectedDates.size === 0 || isPending}
                   className="w-full"
                 >
-                  {isFetching ? (
+                  {isPending ? (
                     <Spinner className="size-4 mr-2" />
                   ) : (
                     <ShoppingCart className="size-4 mr-2" />
