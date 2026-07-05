@@ -12,6 +12,7 @@ export function AppHeader() {
   const navLinks = [
     { href: "/food", label: "Recipes" },
     { href: "/food/meal-planner", label: "Meal Planner" },
+    { href: "/food/chef", label: "Chef" },
   ];
 
   return (
