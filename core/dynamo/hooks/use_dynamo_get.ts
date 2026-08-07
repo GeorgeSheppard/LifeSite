@@ -51,6 +51,11 @@ export const useMealPlan = () => {
     query: {
       enabled: !loading,
       placeholderData: mealPlanEmptyState,
+      // Restored IndexedDB cache can win the race against the live fetch on
+      // a fresh page load (the IDB read isn't gated on it), leaving stale
+      // data under the 15min staleTime. Always hit the server on mount so a
+      // reload/pull-to-refresh is guaranteed to reconcile with it.
+      refetchOnMount: "always",
     },
   });
   return {
